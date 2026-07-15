@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C2 Professional Communication - Managing Uncertainty</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9; /* Stone 50 background */
+            color: #44403c; /* Stone 700 text */
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Inter', sans-serif; /* Clean executive feel */
+        }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #e7e5e4;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #a8a29e;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+            /* Max-height is handled via JS for smooth animation */
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+            border-left: 4px solid #d97706; /* Amber 600 */
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.4s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* AI Prompt Box Style */
+        .ai-prompt-box {
+            background-color: #fffbeb; /* Amber 50 */
+            border: 1px solid #fcd34d; /* Amber 300 */
+            border-left: 6px solid #d97706; /* Amber 600 */
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Form Elements */
+        textarea, input[type="text"] {
+            background-color: #ffffff;
+            border: 1px solid #d6d3d1;
+            transition: all 0.2s;
+        }
+        textarea:focus, input[type="text"]:focus {
+            border-color: #d97706;
+            ring: 2px solid #fcd34d;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+        }
+        
+        /* Reading Text Highlight */
+        .highlight-term {
+            background-color: #fef3c7; /* Amber 100 */
+            color: #92400e; /* Amber 800 */
+            padding: 0 4px;
+            border-radius: 2px;
+            font-weight: 600;
+            border-bottom: 1px dotted #d97706;
+        }
+        
+        /* C2 Badge */
+        .level-badge {
+            background: #292524; /* Stone 800 */
+            color: #f5f5f4;
+            font-weight: 800;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-xl border border-stone-200">
+        
+        <!-- Breadcrumbs & Level -->
+        <div class="flex justify-between items-center mb-8">
+            <div class="text-base text-stone-500 font-medium uppercase tracking-wider flex items-center gap-2 flex-wrap">
+                <span>Business English</span> <i class="fas fa-chevron-right text-xs"></i>
+                <span>Communication</span> <i class="fas fa-chevron-right text-xs"></i>
+                <span>C2 Level</span> <span>&gt;</span>
+                <span class="text-amber-700 font-bold">Strategic Decision-Making</span>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-12">
+            <div class="md:w-3/4">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-stone-800 tracking-tight mb-4 leading-tight">
+                    Managing Uncertainty in <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-700">Problem Solving</span>
+                </h1>
+                <p class="text-xl text-stone-500 font-medium italic">Context: Global Corporate L&D & Strategic Decisions</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-lg text-stone-500 hover:text-red-700 transition-colors font-medium hover:bg-stone-50 rounded-xl border border-transparent hover:border-stone-200">
+                    <i class="fas fa-rotate-right"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-stone-100 border-l-8 border-stone-600 p-6 mb-10 rounded-r-lg shadow-sm">
+            <p class="text-xl text-stone-700 leading-relaxed font-light">
+                <i class="fas fa-layer-group mr-3 text-stone-800"></i> 
+                <strong>Executive Instructions:</strong> This session focuses on high-level cognitive framing. Complete the <strong>Preparation</strong> to calibrate your vocabulary, then engage with the <strong>Case Study</strong> to practice managing ambiguity in real-time.
+            </p>
+        </div>
+
+        <!-- Section 1: Preparation (Amber Theme) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-8 bg-stone-50 hover:bg-amber-50/50 border-l-8 border-amber-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-amber-100 text-amber-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-2xl shadow-inner group-hover:scale-105 transition-transform">1</div>
+                    <div>
+                        <span class="block text-2xl font-bold text-stone-800">Preparation</span>
+                        <span class="text-base text-stone-500 font-normal">Activating Ideas & Language in Context</span>
+                    </div>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-stone-400 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part1" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 1.1 -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-stone-800 mb-6 flex items-center gap-3">
+                            <span class="w-2 h-8 bg-amber-500 rounded-full"></span>
+                            1.1 Activating Ideas
+                        </h3>
+                        <div class="space-y-8">
+                            <div>
+                                <p class="text-lg text-stone-700 font-medium mb-3">Why does uncertainty tend to <span class="font-bold text-amber-700">throw even experienced professionals off balance</span> in meetings?</p>
+                                <textarea class="w-full p-4 rounded-xl text-lg h-28 focus:shadow-inner custom-scrollbar" placeholder="Analyze the psychological impact..."></textarea>
+                            </div>
+                            <div>
+                                <p class="text-lg text-stone-700 font-medium mb-3">How can speaking while your thinking is still <span class="font-bold text-amber-700">taking shape</span> strengthen rather than weaken credibility?</p>
+                                <textarea class="w-full p-4 rounded-xl text-lg h-28 focus:shadow-inner custom-scrollbar" placeholder="Consider transparency and process..."></textarea>
+                            </div>
+                            <div>
+                                <p class="text-lg text-stone-700 font-medium mb-3">Why do senior leaders often <span class="font-bold text-amber-700">read calm delivery as competence</span> when situations are unclear?</p>
+                                <textarea class="w-full p-4 rounded-xl text-lg h-28 focus:shadow-inner custom-scrollbar" placeholder="Reflect on leadership presence..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 1.2: Vocab MCQ -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
+                                <span class="w-2 h-8 bg-amber-500 rounded-full"></span>
+                                1.2 Language in Context
+                            </h3>
+                            <button onclick="checkVocab()" class="text-base font-bold text-amber-700 border border-amber-200 bg-amber-50 px-6 py-2 rounded-full hover:bg-amber-100 transition-colors shadow-sm">Validate Answers</button>
+                        </div>
+                        <p class="text-lg text-stone-500 mb-6 italic">Select the subtle nuance that fits the high-level professional context.</p>
+                        <div id="vocab-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Task 1.3: AI Check -->
+                    <div class="pt-6 border-t border-stone-100">
+                        <div class="ai-prompt-box">
+                            <div class="flex items-center gap-3 mb-4 text-amber-800 border-b border-amber-200 pb-2">
+                                <i class="fas fa-microchip text-xl"></i>
+                                <span class="font-bold text-sm tracking-wide uppercase">AI Supported Analysis</span>
+                            </div>
+                            <p class="text-lg text-stone-800 font-serif italic mb-4">
+                                “Explain the difference between <span class="font-bold">SOUNDING CERTAIN</span> and <span class="font-bold">SOUNDING CREDIBLE</span> in professional discussions. Use C2-level English and natural figurative language.”
+                            </p>
+                            
+                            <div class="bg-white p-6 rounded-lg border border-stone-200 shadow-inner">
+                                <p class="text-stone-700 font-medium mb-4">Check whether the explanations focus on trust, perception, and leadership presence. Decide which quality matters more when information is still <strong>UP IN THE AIR</strong> and explain why.</p>
+                                <textarea class="w-full p-4 rounded-lg text-lg h-32" placeholder="Your critical evaluation..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Reading Case (Stone Theme) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-8 bg-stone-100 hover:bg-stone-200 border-l-8 border-stone-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-stone-300 text-stone-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-2xl shadow-inner group-hover:scale-105 transition-transform"><i class="fas fa-file-contract"></i></div>
+                    <div>
+                        <span class="block text-2xl font-bold text-stone-800">Reading: Professional Case</span>
+                        <span class="text-base text-stone-500 font-normal">Thinking on your feet when the ground is shifting</span>
+                    </div>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-stone-500 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-10 bg-white">
+                    <div class="prose prose-stone max-w-none text-justify leading-loose text-lg border-l-4 border-stone-300 pl-8 py-2">
+                        <h3 class="text-2xl font-bold text-stone-900 mb-6">Thinking On Your Feet When The Ground Is Shifting</h3>
+                        
+                        <p class="mb-6">You are asked to recommend ways to improve learning impact across several regions. However, the picture is far from complete. The data is <span class="highlight-term">patchy</span>, engagement metrics point in different directions, and timelines are still <span class="highlight-term">up in the air</span>. Despite this, senior stakeholders expect you to <span class="highlight-term">step up</span> and contribute meaningfully during a live discussion.</p>
+                        
+                        <p class="mb-6">As the conversation unfolds, the <span class="highlight-term">goalposts keep moving</span>. Budget headroom turns out to be tighter than expected. Certain regions are suddenly <span class="highlight-term">taken off the table</span>. A senior leader introduces a hard deadline that changes the rhythm of the discussion. Each new input reshapes the problem you are trying to solve.</p>
+                        
+                        <p>In this environment, professional authority is not about having all the answers neatly wrapped up. It is about keeping your footing, <span class="highlight-term">talking through</span> your reasoning, and adjusting course without looking rattled. You paraphrase the problem as it evolves, <span class="highlight-term">sketch out</span> a direction rather than a finished blueprint, and make it clear which assumptions are driving your thinking.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Comprehension (Teal Theme - Insight) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-8 bg-teal-50 hover:bg-teal-100 border-l-8 border-teal-600 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-teal-100 text-teal-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-2xl shadow-inner group-hover:scale-105 transition-transform">3</div>
+                    <div>
+                        <span class="block text-2xl font-bold text-stone-800">Comprehension & Discussion</span>
+                        <span class="text-base text-stone-500 font-normal">Critical analysis of the reading</span>
+                    </div>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-stone-400 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 3 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
+                                <span class="w-2 h-8 bg-teal-600 rounded-full"></span>
+                                3. Critical Discussion
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t3', this)" class="text-base font-bold text-teal-700 border border-teal-200 bg-teal-50 px-6 py-2 rounded-full hover:bg-teal-100 transition-colors shadow-sm">Show Sample Insights</button>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <p class="text-lg text-stone-700 font-medium mb-2">Why is it unrealistic to pin down a final solution at the start of this discussion?</p>
+                                <textarea class="w-full p-4 rounded-xl text-lg h-24"></textarea>
+                            </div>
+                            <div>
+                                <p class="text-lg text-stone-700 font-medium mb-2">What can go wrong if a professional waits for perfect information before speaking up?</p>
+                                <textarea class="w-full p-4 rounded-xl text-lg h-24"></textarea>
+                            </div>
+                            <div>
+                                <p class="text-lg text-stone-700 font-medium mb-2">What is the difference between ADAPTING YOUR COURSE and CHANGING YOUR MIND?</p>
+                                <textarea class="w-full p-4 rounded-xl text-lg h-24"></textarea>
+                            </div>
+                            
+                            <div id="ans-t3" class="answer-box hidden mt-8 p-8 bg-teal-50/50 rounded-r-xl border-l-4 border-teal-500 text-lg text-stone-700 shadow-sm">
+                                <h4 class="font-bold text-teal-800 mb-4 uppercase tracking-wide text-sm">Model Responses</h4>
+                                <ul class="list-none space-y-4">
+                                    <li class="pl-4 border-l-2 border-teal-200"><strong>Unrealistic:</strong> A final solution is unrealistic because the parameters (goalposts) keep shifting. Staying oriented matters more than locking in an early answer.</li>
+                                    <li class="pl-4 border-l-2 border-teal-200"><strong>Risks of Waiting:</strong> Waiting leads to silence, which can be interpreted as a lack of contribution or leadership presence.</li>
+                                    <li class="pl-4 border-l-2 border-teal-200"><strong>Adapting vs Changing:</strong> Adapting is a strategic response to new data while maintaining the goal; changing your mind can imply the initial thought was flawed without cause.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 AI Check -->
+                    <div class="pt-6 border-t border-stone-100">
+                        <div class="ai-prompt-box">
+                            <div class="flex items-center gap-3 mb-4 text-amber-800 border-b border-amber-200 pb-2">
+                                <i class="fas fa-robot text-xl"></i>
+                                <span class="font-bold text-sm tracking-wide uppercase">AI Roleplay</span>
+                            </div>
+                            <p class="text-lg text-stone-800 font-serif italic mb-4">
+                                “Give ONE reason why being able to <span class="font-bold">PIVOT SMOOTHLY</span> signals senior-level competence. Use C2 English and figurative language where appropriate.”
+                            </p>
+                            <p class="text-stone-600 font-medium mb-3">Decide whether you agree or disagree with the AI’s view. Support your response using ONE idea from the case.</p>
+                            <textarea class="w-full p-4 rounded-lg text-lg h-32"></textarea>
+                            
+                             <div class="mt-4">
+                                <button onclick="toggleAnswer('sample-ai-check', this)" class="text-sm font-bold text-teal-700 underline hover:text-teal-900">Show AI Perspective</button>
+                                <div id="sample-ai-check" class="answer-box hidden mt-3 p-4 bg-white rounded border border-stone-200 text-base text-stone-600 italic">
+                                    “Being able to pivot smoothly shows you can keep your balance when the ground shifts. The case highlights that leaders value this composure over rigid certainty.”
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Analysis (Slate Theme) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-8 bg-slate-50 hover:bg-slate-100 border-l-8 border-slate-600 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-slate-200 text-slate-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-2xl shadow-inner group-hover:scale-105 transition-transform">4</div>
+                    <div>
+                        <span class="block text-2xl font-bold text-stone-800">Analysis</span>
+                        <span class="text-base text-stone-500 font-normal">Uncertainty, Response, and Adjustment</span>
+                    </div>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-stone-400 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 4.1 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
+                                <span class="w-2 h-8 bg-slate-600 rounded-full"></span>
+                                4.1 Uncertainty, Response, and Adjustment
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t41', this)" class="text-base font-bold text-slate-700 border border-slate-200 bg-slate-50 px-6 py-2 rounded-full hover:bg-slate-100 transition-colors shadow-sm">Show Sample Flow</button>
+                        </div>
+                        
+                        <!-- Organized Table Layout -->
+                        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                            <!-- Header (Desktop) -->
+                            <div class="hidden md:flex bg-slate-100 p-4 border-b border-slate-200">
+                                <div class="w-1/3 text-right pr-8 font-bold text-slate-600 text-sm uppercase tracking-wide">The Situation (Input)</div>
+                                <div class="flex-1 pl-4 font-bold text-slate-600 text-sm uppercase tracking-wide">The Strategic Response (Output)</div>
+                            </div>
+
+                            <!-- Row 1 -->
+                            <div class="flex flex-col md:flex-row md:items-center p-5 border-b border-slate-100 hover:bg-slate-50 transition-colors group">
+                                <div class="md:w-1/3 md:text-right md:pr-8 mb-2 md:mb-0">
+                                    <span class="md:hidden text-xs font-bold text-slate-400 uppercase block mb-1">Situation</span>
+                                    <span class="text-lg font-bold text-stone-700 group-hover:text-slate-900 transition-colors">Incomplete and patchy data</span>
+                                </div>
+                                <div class="flex-1 md:pl-4 relative">
+                                    <i class="fas fa-arrow-right absolute left-[-10px] top-1/2 -translate-y-1/2 text-slate-300 hidden md:block"></i>
+                                    <span class="md:hidden text-xs font-bold text-slate-400 uppercase block mb-1">Response</span>
+                                    <input type="text" class="w-full p-3 rounded-lg border border-slate-300 focus:border-slate-500 focus:ring-1 focus:ring-slate-500 outline-none transition-all bg-slate-50/50 focus:bg-white" placeholder="Executive Consequence...">
+                                </div>
+                            </div>
+
+                            <!-- Row 2 -->
+                            <div class="flex flex-col md:flex-row md:items-center p-5 border-b border-slate-100 hover:bg-slate-50 transition-colors group">
+                                <div class="md:w-1/3 md:text-right md:pr-8 mb-2 md:mb-0">
+                                    <span class="md:hidden text-xs font-bold text-slate-400 uppercase block mb-1">Situation</span>
+                                    <span class="text-lg font-bold text-stone-700 group-hover:text-slate-900 transition-colors">Problem framed as a moving target</span>
+                                </div>
+                                <div class="flex-1 md:pl-4 relative">
+                                    <i class="fas fa-arrow-right absolute left-[-10px] top-1/2 -translate-y-1/2 text-slate-300 hidden md:block"></i>
+                                    <span class="md:hidden text-xs font-bold text-slate-400 uppercase block mb-1">Response</span>
+                                    <input type="text" class="w-full p-3 rounded-lg border border-slate-300 focus:border-slate-500 focus:ring-1 focus:ring-slate-500 outline-none transition-all bg-slate-50/50 focus:bg-white" placeholder="Executive Consequence...">
+                                </div>
+                            </div>
+
+                            <!-- Row 3 -->
+                            <div class="flex flex-col md:flex-row md:items-center p-5 border-b border-slate-100 hover:bg-slate-50 transition-colors group">
+                                <div class="md:w-1/3 md:text-right md:pr-8 mb-2 md:mb-0">
+                                    <span class="md:hidden text-xs font-bold text-slate-400 uppercase block mb-1">Situation</span>
+                                    <span class="text-lg font-bold text-stone-700 group-hover:text-slate-900 transition-colors">Thinking aloud to keep stakeholders aligned</span>
+                                </div>
+                                <div class="flex-1 md:pl-4 relative">
+                                    <i class="fas fa-arrow-right absolute left-[-10px] top-1/2 -translate-y-1/2 text-slate-300 hidden md:block"></i>
+                                    <span class="md:hidden text-xs font-bold text-slate-400 uppercase block mb-1">Response</span>
+                                    <input type="text" class="w-full p-3 rounded-lg border border-slate-300 focus:border-slate-500 focus:ring-1 focus:ring-slate-500 outline-none transition-all bg-slate-50/50 focus:bg-white" placeholder="Executive Consequence...">
+                                </div>
+                            </div>
+
+                            <!-- Row 4 -->
+                            <div class="flex flex-col md:flex-row md:items-center p-5 hover:bg-slate-50 transition-colors group">
+                                <div class="md:w-1/3 md:text-right md:pr-8 mb-2 md:mb-0">
+                                    <span class="md:hidden text-xs font-bold text-slate-400 uppercase block mb-1">Situation</span>
+                                    <span class="text-lg font-bold text-stone-700 group-hover:text-slate-900 transition-colors">Recommendation adjusted without losing coherence</span>
+                                </div>
+                                <div class="flex-1 md:pl-4 relative">
+                                    <i class="fas fa-arrow-right absolute left-[-10px] top-1/2 -translate-y-1/2 text-slate-300 hidden md:block"></i>
+                                    <span class="md:hidden text-xs font-bold text-slate-400 uppercase block mb-1">Response</span>
+                                    <input type="text" class="w-full p-3 rounded-lg border border-slate-300 focus:border-slate-500 focus:ring-1 focus:ring-slate-500 outline-none transition-all bg-slate-50/50 focus:bg-white" placeholder="Executive Consequence...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="ans-t41" class="answer-box hidden mt-8 p-8 bg-slate-50 rounded-r-xl border-l-4 border-slate-500 text-lg text-stone-700">
+                            <ul class="list-disc pl-6 space-y-3">
+                                <li>...inability to land a definitive answer.</li>
+                                <li>...shared understanding of shifting constraints.</li>
+                                <li>...visible, controlled reasoning.</li>
+                                <li>...sustained credibility under pressure.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 4.2 -->
+                      <div>
+                          <h3 class="text-2xl font-bold text-stone-800 mb-4">4.2 Speaking Focus – Thinking Aloud with Authority</h3>
+                          <p class="text-lg text-stone-600 font-medium mb-4">How can talking through your reasoning help you <span class="font-bold text-slate-800">HOLD THE FLOOR</span> and build trust when your answer is still evolving?</p>
+                          <textarea class="w-full p-4 rounded-xl text-lg h-32 custom-scrollbar" placeholder="Speaking preparation notes..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Case Applications (Deep Red Theme - Critical) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-8 bg-red-50 hover:bg-red-100 border-l-8 border-red-700 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-red-200 text-red-900 w-14 h-14 rounded-full flex items-center justify-center font-bold text-2xl shadow-inner group-hover:scale-105 transition-transform">5</div>
+                    <div>
+                        <span class="block text-2xl font-bold text-stone-800">Case Applications</span>
+                        <span class="text-base text-stone-500 font-normal">Scenarios for applying C2 strategies</span>
+                    </div>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-stone-400 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 5.1 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-stone-800">5.1 Making Sense of Ambiguity</h3>
+                            <button onclick="toggleAnswer('ans-c1', this)" class="text-base font-bold text-red-700 border border-red-200 bg-red-50 px-6 py-2 rounded-full hover:bg-red-100 transition-colors shadow-sm">Show Sample</button>
+                        </div>
+                        <p class="text-lg text-stone-600 mb-4 bg-stone-50 p-4 rounded border-l-4 border-stone-300"><strong>Scenario:</strong> Engagement data sends mixed signals, and no single cause stands out.<br>How would you acknowledge the grey areas without sounding unsure? Which phrases help you signal that you are <span class="italic">working the problem</span>?</p>
+                        <textarea class="w-full p-4 rounded-xl text-lg h-32 custom-scrollbar"></textarea>
+                        <div id="ans-c1" class="answer-box hidden mt-6 p-6 bg-red-50 border-l-4 border-red-600 rounded-r-xl text-base text-stone-700">
+                            <strong>Strategy:</strong> Don't fake certainty. Validate the complexity.<br>
+                            <strong>Phrasing:</strong> "The data is currently presenting a nuanced picture. Rather than locking ourselves into a single cause, I am examining three potential drivers: X, Y, and Z. Let's proceed with X as the working assumption for now."
+                        </div>
+                    </div>
+
+                    <!-- Task 5.2 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-stone-800">5.2 Adapting Mid-Stream</h3>
+                            <button onclick="toggleAnswer('ans-c2', this)" class="text-base font-bold text-red-700 border border-red-200 bg-red-50 px-6 py-2 rounded-full hover:bg-red-100 transition-colors shadow-sm">Show Sample</button>
+                        </div>
+                        <p class="text-lg text-stone-600 mb-4 bg-stone-50 p-4 rounded border-l-4 border-stone-300"><strong>Scenario:</strong> Halfway through your explanation, a leader announces a fixed, non-negotiable deadline.<br>How would you <span class="italic">shift gears</span> in real time? How can you show continuity in your thinking even as constraints change?</p>
+                        <textarea class="w-full p-4 rounded-xl text-lg h-32 custom-scrollbar"></textarea>
+                        <div id="ans-c2" class="answer-box hidden mt-6 p-6 bg-red-50 border-l-4 border-red-600 rounded-r-xl text-base text-stone-700">
+                            <strong>Strategy:</strong> Acknowledge the constraint immediately and pivot the scope, not the logic.<br>
+                            <strong>Phrasing:</strong> "Understood. That deadline shifts the priority from 'comprehensive rollout' to 'rapid prototyping'. I can adjust the recommendation to fit that timeline by focusing exclusively on..."
+                        </div>
+                    </div>
+
+                    <!-- Task 5.3 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-stone-800">5.3 Reframing the Ask</h3>
+                            <button onclick="toggleAnswer('ans-c3', this)" class="text-base font-bold text-red-700 border border-red-200 bg-red-50 px-6 py-2 rounded-full hover:bg-red-100 transition-colors shadow-sm">Show Sample</button>
+                        </div>
+                        <p class="text-lg text-stone-600 mb-4 bg-stone-50 p-4 rounded border-l-4 border-stone-300"><strong>Scenario:</strong> Stakeholders push for “quick wins” despite limited insight.<br>How could you <span class="italic">recast</span> this request as a phased approach? Why does reframing protect you from being boxed into weak solutions?</p>
+                        <textarea class="w-full p-4 rounded-xl text-lg h-32 custom-scrollbar"></textarea>
+                        <div id="ans-c3" class="answer-box hidden mt-6 p-6 bg-red-50 border-l-4 border-red-600 rounded-r-xl text-base text-stone-700">
+                            <strong>Strategy:</strong> Accept the "quick win" desire but frame it as "Phase 1: Discovery".<br>
+                            <strong>Phrasing:</strong> "We can certainly target immediate impact. I propose we treat next month as a 'Pilot Phase' to generate the insight we are currently missing, while delivering X to the business immediately."
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Debate & Reflection (Purple Theme - Synthesis) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+            <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-8 bg-purple-50 hover:bg-purple-100 border-l-8 border-purple-600 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-purple-200 text-purple-900 w-14 h-14 rounded-full flex items-center justify-center font-bold text-2xl shadow-inner group-hover:scale-105 transition-transform">6</div>
+                    <div>
+                        <span class="block text-2xl font-bold text-stone-800">Debate & Reflection</span>
+                        <span class="text-base text-stone-500 font-normal">Synthesis of learning</span>
+                    </div>
+                </div>
+                <i id="icon-part6" class="fas fa-chevron-down text-stone-400 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part6" class="accordion-content">
+                <div class="p-10 bg-white space-y-8">
+                    
+                    <!-- Task 6 Debate -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-stone-800 mb-4 flex items-center gap-3">
+                             <span class="w-2 h-8 bg-purple-600 rounded-full"></span>
+                             Task 6: Debate with AI
+                        </h3>
+                         <div class="ai-prompt-box">
+                            <div class="flex items-center gap-3 mb-4 text-amber-800 border-b border-amber-200 pb-2">
+                                <i class="fas fa-robot text-xl"></i>
+                                <span class="font-bold text-sm tracking-wide uppercase">AI Role Prompt</span>
+                            </div>
+                            <p class="text-lg text-stone-800 font-serif italic mb-4">
+                                “You are a SENIOR EXECUTIVE who believes professionals should <span class="font-bold">KEEP QUIET</span> until all the facts are on the table. Give ONE argument supporting this position. Use C2 English and 2 sentences.”
+                            </p>
+                        </div>
+                        <div class="p-6 bg-purple-50 border border-purple-200 rounded-xl mb-4 text-stone-700">
+                            <strong>Guidelines:</strong> Respond by defending informed contribution under uncertainty. Refer to momentum, leadership expectations, and decision paralysis.
+                        </div>
+                        <textarea class="w-full p-4 rounded-xl text-lg h-48 custom-scrollbar" placeholder="Formulate your rebuttal..."></textarea>
+                         <div class="mt-4">
+                            <button onclick="toggleAnswer('sample-debate', this)" class="text-sm font-bold text-purple-700 underline hover:text-purple-900">Show Sample Rebuttal</button>
+                            <div id="sample-debate" class="answer-box hidden mt-3 p-4 bg-white rounded border border-stone-200 text-base text-stone-600 italic">
+                                “Waiting for all the facts often brings decision-making to a standstill. The reading makes it clear that leaders expect professionals to move the conversation forward, even when visibility is limited.”
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Final Reflection -->
+                    <div class="pt-8 border-t border-stone-100">
+                        <h3 class="text-2xl font-bold text-stone-800 mb-4">Task 7: Executive Reflection</h3>
+                         <div class="space-y-4">
+                            <p class="text-lg text-stone-700">How comfortable are you <span class="font-bold text-amber-700">SPEAKING WHILE THINKING</span> in English? Which expressions help you manage uncertainty without sounding vague or evasive?</p>
+                            <textarea class="w-full p-4 rounded-xl text-lg h-48 custom-scrollbar"></textarea>
+                            
+                            <div class="mt-4">
+                                <button onclick="toggleAnswer('sample-reflect', this)" class="text-sm font-bold text-purple-700 underline hover:text-purple-900">Show Reflection Model</button>
+                                <div id="sample-reflect" class="answer-box hidden mt-3 p-4 bg-white rounded border border-stone-200 text-base text-stone-600 italic">
+                                    “Speaking while thinking helps me sound deliberate rather than hesitant. I realized that authority comes from how you manage uncertainty—by framing it and working through it—not from pretending it does not exist.”
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-stone-200 text-center">
+             <p class="text-stone-400 text-lg font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" rel="noopener noreferrer" class="text-stone-500 hover:text-amber-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        
+        // Attempts Tracking
+        const attempts = {};
+
+        // Task 1.2: Vocab Data
+        const vocabData = [
+            { 
+                id: "v1", 
+                sentence: "The available data is <strong>PATCHY</strong>, so we should not jump to conclusions.", 
+                correct: "b", 
+                options: { a: "carefully organised", b: "incomplete and uneven", c: "fully validated" } 
+            },
+            { 
+                id: "v2", 
+                sentence: "Before we move forward, let me <strong>TALK THROUGH</strong> my thinking.", 
+                correct: "b", 
+                options: { a: "speak informally", b: "explain the reasoning step by step", c: "delay the discussion" } 
+            },
+            { 
+                id: "v3", 
+                sentence: "At this point, I would <strong>FRAME</strong> this as a working assumption.", 
+                correct: "c", 
+                options: { a: "treat it as final", b: "reject it", c: "present it as provisional" } 
+            },
+            { 
+                id: "v4", 
+                sentence: "New constraints mean we need to <strong>REVISIT</strong> our earlier recommendation.", 
+                correct: "c", 
+                options: { a: "ignore it", b: "defend it strongly", c: "adjust it thoughtfully" } 
+            },
+            { 
+                id: "v5", 
+                sentence: "Rather than <strong>LOCKING OURSELVES INTO</strong> a single solution, we should outline a direction.", 
+                correct: "a", 
+                options: { a: "committing too early", b: "analysing deeply", c: "simplifying" } 
+            },
+            { 
+                id: "v6", 
+                sentence: "Staying <strong>STEADY UNDER PRESSURE</strong> reassures stakeholders.", 
+                correct: "b", 
+                options: { a: "silent", b: "calm and controlled", c: "distant" } 
+            }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col gap-4 p-6 bg-white rounded-xl border border-stone-200 hover:border-amber-300 transition-colors shadow-sm">
+                    <p class="text-lg text-stone-800 font-medium italic border-l-4 border-amber-400 pl-3">"${item.sentence}"</p>
+                    <div class="flex flex-col gap-2">
+                        ${Object.keys(item.options).map(key => `
+                            <label class="flex items-center gap-3 p-3 bg-stone-50 rounded-lg border border-stone-100 cursor-pointer hover:bg-amber-50 hover:border-amber-200 transition-all">
+                                <input type="radio" name="${item.id}" value="${key}" class="w-5 h-5 accent-amber-600 shrink-0">
+                                <span class="text-base text-stone-700"><strong>${key}.</strong> ${item.options[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-lg font-bold min-h-[28px] mt-2"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-green-700 flex items-center gap-2"><i class="fas fa-check-circle"></i> Correct</span>';
+                    radios.forEach(r => r.disabled = true);
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-700 flex items-center gap-2"><i class="fas fa-info-circle"></i> Answer: ${item.correct}) ${item.options[item.correct]}</span>`;
+                    } else {
+                        feedback.innerHTML = '<span class="text-amber-700 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> Re-evaluate context</span>';
+                    }
+                }
+            });
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Sample";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                // Close
+                content.style.maxHeight = null;
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                // Open
+                content.classList.add('active');
+                // Dynamically calculate height to ensure smooth animation regardless of content size
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Reset all inputs and clear progress?")) {
+                for (const key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                
+                // Clear Feedback
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                
+                // Hide Answers
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+                
+                // Reset Buttons
+                document.querySelectorAll('button').forEach(btn => {
+                   if(btn.innerText.includes("Hide")) btn.innerText = "Show Sample"; 
+                });
+
+                // Close all accordions
+                document.querySelectorAll('.accordion-content').forEach(el => {
+                    el.style.maxHeight = null;
+                    el.classList.remove('active');
+                });
+                document.querySelectorAll('.fa-chevron-down').forEach(icon => {
+                    icon.style.transform = 'rotate(0deg)';
+                });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+        });
+
+    </script>
+</body>
+</html>

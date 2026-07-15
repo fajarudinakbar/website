@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITP Listening Part A: Inference from the Second Speaker</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-lg': '12px 12px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #fff1f2;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #fff1f2; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #fff1f2; }
+        ::-webkit-scrollbar-thumb:hover { background: #9f1239; }
+
+        /* Neo-Brutalist Utility Classes */
+        .neo-card {
+            border: 4px solid #0f172a;
+            box-shadow: 8px 8px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            font-weight: 800;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea, input[type="text"] {
+            resize: vertical;
+            min-height: 60px;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.2s;
+        }
+        textarea:focus, input[type="text"]:focus {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+            outline: none;
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230f172a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            border: 3px solid #0f172a;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto neo-card p-6 md:p-10 mb-12">
+        
+        <!-- Breadcrumbs -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#facc15] border-2 border-dark text-dark text-xs font-black uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a] mb-8">
+            <span>TOEFL ITP</span> <i class="fas fa-caret-right"></i> 
+            <span>Listening</span> <i class="fas fa-caret-right"></i> 
+            <span>Part A</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 border-b-4 border-dark pb-6">
+            <div>
+                <h1 class="text-3xl md:text-5xl font-black text-dark tracking-tighter uppercase mb-3" style="text-shadow: 2px 2px 0px #fda4af;">
+                    Inference from<br>the Second Speaker
+                </h1>
+                <p class="text-dark bg-brand-100 inline-block px-3 py-1 border-2 border-dark font-bold text-sm shadow-[2px_2px_0_0_#0f172a]">
+                    Topic: Suggestions, Refusals, and Indirect Meanings
+                </p>
+            </div>
+            <div class="flex flex-col gap-3 shrink-0">
+                <button onclick="resetAll()" class="neo-btn bg-white px-4 py-3 flex items-center justify-center gap-2 text-sm text-dark hover:bg-[#f87171] hover:text-white uppercase">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-brand-50 border-3 border-dark shadow-neo-sm p-5 mb-10 relative">
+            <div class="absolute -top-3 -left-3 bg-[#e11d48] text-white px-3 py-1 text-[10px] sm:text-xs font-black uppercase border-2 border-dark">Strategy Guide</div>
+            <p class="text-dark font-medium leading-relaxed mt-2">
+                <i class="fas fa-info-circle mr-2 text-[#e11d48]"></i> 
+                <strong>Instructions:</strong> In Listening Part A, the answer is usually found in what the <em>second speaker</em> says. Read the strategy text, then complete the "Audio Script" drills to practice finding the hidden meaning.
+            </p>
+        </div>
+
+        <!-- Part 1: Preparation (Cyan Theme) -->
+        <div class="mb-6 border-4 border-dark shadow-neo-sm bg-white">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-4 md:p-6 bg-[#22d3ee] hover:bg-[#06b6d4] transition-colors text-left border-b-4 border-dark group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-10 h-10 flex items-center justify-center font-black text-lg shadow-[2px_2px_0_0_#0f172a] group-hover:shadow-[4px_4px_0_0_#0f172a] group-hover:-translate-y-0.5 transition-all">1</div>
+                    <span class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight">Preparation: Tuning In</span>
+                </div>
+                <div class="w-10 h-10 bg-white border-3 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a]">
+                    <i id="icon-part1" class="fas fa-chevron-down text-dark transition-transform duration-300"></i>
+                </div>
+            </button>
+            <div id="content-part1" class="accordion-content">
+                <div class="p-6 md:p-8 space-y-10 bg-[#cffafe]">
+                    
+                    <!-- Task 1 -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#22d3ee] px-2 border-2 border-dark text-sm">Task 1</span> 
+                                "Kode" vs. Inference
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t1', this)" class="neo-btn bg-[#22d3ee] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Strategy</button>
+                        </div>
+                        <p class="font-medium text-slate-800 mb-4 bg-slate-100 p-3 border-2 border-dark">In Indonesia, we often use "basa-basi" or "kode" (indirect codes) instead of saying "No" directly. English speakers do this too! <br><br><strong>Example:</strong> If you ask a friend to eat, and they say <em>"I just had a big lunch,"</em> what do they actually mean?</p>
+                        <textarea placeholder="What is the hidden meaning?" class="w-full p-4 font-medium focus:outline-none"></textarea>
+                        <div id="ans-t1" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform -rotate-1">
+                            <strong class="uppercase font-black text-lg">Meaning:</strong> They are refusing your invitation (No, thanks).
+                            <br><br>
+                            <span class="bg-dark text-white px-2 py-0.5 uppercase font-black text-xs mr-1">TOEFL Tip:</span> In Part A, if the second speaker gives a reason/excuse, the answer is usually a <strong>Refusal</strong>.
+                        </div>
+                    </div>
+
+                    <!-- Task 2 (Interactive Vocab) -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2 mb-2">
+                            <span class="bg-[#22d3ee] px-2 border-2 border-dark text-sm">Task 2</span> 
+                            Functional Vocabulary
+                        </h3>
+                        <p class="font-bold text-slate-700 mb-6 pb-3 border-b-2 border-slate-200">Match the academic terms to their simple definitions.</p>
+                        <div id="vocab-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-8 flex justify-end">
+                            <button onclick="checkVocab()" class="neo-btn bg-dark text-white hover:bg-slate-800 px-6 py-3 text-sm uppercase">
+                                <i class="fas fa-check-double mr-2"></i> Check Vocabulary
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                         <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                             <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#22d3ee] px-2 border-2 border-dark text-sm">Task 3</span> 
+                                The "Sound Trap" Rule
+                            </h3>
+                             <button onclick="toggleAnswer('ans-t3', this)" class="neo-btn bg-[#22d3ee] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Rule</button>
+                          </div>
+                          <p class="font-medium text-slate-800 mb-4 bg-slate-100 p-3 border-2 border-dark">If you hear the word "department" in the audio, and answer (A) says "apartment", should you choose it? Why or why not?</p>
+                          <textarea placeholder="Explain your reasoning..." class="w-full p-4 font-medium focus:outline-none"></textarea>
+                          <div id="ans-t3" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform 1-rotate-1">
+                            <strong class="uppercase font-black text-lg text-[#e11d48]">The Rule:</strong> Avoid similar sounds! If an answer choice contains a word that sounds exactly like a word in the conversation, it is usually a <strong>distractor</strong> (wrong answer). Focus on the <em>meaning</em>, not the sound.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Reading Passage (Blue Theme) -->
+        <div class="mb-6 border-4 border-dark shadow-neo-sm bg-white">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-4 md:p-6 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left border-b-4 border-dark group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-10 h-10 flex items-center justify-center font-black text-lg shadow-[2px_2px_0_0_#0f172a] group-hover:shadow-[4px_4px_0_0_#0f172a] group-hover:-translate-y-0.5 transition-all"><i class="fas fa-book-reader"></i></div>
+                    <span class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight">Study Guide: Decoding Part A</span>
+                </div>
+                <div class="w-10 h-10 bg-white border-3 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a]">
+                    <i id="icon-part2" class="fas fa-chevron-down text-dark transition-transform duration-300"></i>
+                </div>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-6 md:p-8 bg-[#eff6ff]">
+                    <div class="bg-white border-4 border-dark p-6 md:p-8 shadow-[6px_6px_0_0_#0f172a]">
+                        <h3 class="text-2xl font-black text-dark uppercase mb-6 pb-4 border-b-4 border-dark inline-block">Strategies for Short Conversations</h3>
+                        
+                        <div class="space-y-6 text-base md:text-lg font-medium leading-relaxed text-slate-800 text-pretty">
+                            <p class="bg-[#fefce8] p-4 border-l-4 border-dark">
+                                TOEFL ITP Listening Part A consists of 30 short conversations. Each conversation is followed by a single question. The most critical strategy for this section is to <strong class="bg-[#facc15] px-1 border border-dark">focus on the second speaker</strong>. While the first speaker provides the context, the second speaker usually provides the answer.
+                            </p>
+                            
+                            <div class="pl-4 border-l-4 border-[#60a5fa]">
+                                <h4 class="font-black uppercase text-dark mb-1">1. Suggestions</h4>
+                                <p>The second speaker often suggests a solution. Look for phrases like <em>"Why not..."</em>, <em>"Let's..."</em>, or <em>"If I were you..."</em>. The correct answer will often use a synonym, such as "recommend," "should," or "advise."</p>
+                            </div>
+                            
+                            <div class="pl-4 border-l-4 border-[#60a5fa]">
+                                <h4 class="font-black uppercase text-dark mb-1">2. Polite Refusals</h4>
+                                <p>When invited to do something, speakers rarely say "No" directly. Instead, they offer an excuse.</p>
+                                <div class="mt-2 bg-slate-100 p-3 border-2 border-slate-300 font-bold">
+                                    <em>Example:</em> "I'd love to, but I have a paper due." <br>
+                                    <em>Meaning:</em> He cannot go.
+                                </div>
+                                <p class="mt-2">If the second speaker expresses uncertainty (<em>"I'm not sure if..."</em>), the answer usually implies they probably will <strong>not</strong> do it.</p>
+                            </div>
+                            
+                            <div class="pl-4 border-l-4 border-[#60a5fa]">
+                                <h4 class="font-black uppercase text-dark mb-1">3. Agreement</h4>
+                                <p>If the second speaker says <em>"You can say that again"</em> or <em>"I couldn't agree more,"</em> they are agreeing emphatically. The answer choice will usually say "She shares the man's opinion."</p>
+                            </div>
+
+                            <div class="pl-4 border-l-4 border-[#60a5fa]">
+                                <h4 class="font-black uppercase text-dark mb-1">4. Passive Statements</h4>
+                                <p>If the dialogue uses the active voice (<em>"The committee approved the budget"</em>), the correct answer often uses the passive voice (<em>"The budget was accepted"</em>). This tests your ability to understand structure changes while keeping the same meaning.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Understanding (Emerald Theme) -->
+        <div class="mb-6 border-4 border-dark shadow-neo-sm bg-white">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-4 md:p-6 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left border-b-4 border-dark group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-10 h-10 flex items-center justify-center font-black text-lg shadow-[2px_2px_0_0_#0f172a] group-hover:shadow-[4px_4px_0_0_#0f172a] group-hover:-translate-y-0.5 transition-all">3</div>
+                    <span class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight">Practice Drills (Tasks 4 to 7)</span>
+                </div>
+                <div class="w-10 h-10 bg-white border-3 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a]">
+                    <i id="icon-part3" class="fas fa-chevron-down text-dark transition-transform duration-300"></i>
+                </div>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-6 md:p-8 space-y-10 bg-[#dcfce7]">
+                    
+                    <!-- Task 4 -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#4ade80] px-2 border-2 border-dark text-sm">Task 4</span> 
+                                Strategy Check
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t4', this)" class="neo-btn bg-[#4ade80] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Answer</button>
+                        </div>
+                        <textarea placeholder="Why is listening to the second speaker more important than the first?" class="w-full p-4 font-medium focus:outline-none"></textarea>
+                        <div id="ans-t4" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform 1-rotate-1">
+                            <strong class="uppercase font-black text-lg">Answer:</strong> The second speaker usually answers the first speaker's question, gives a reaction, or provides the crucial information needed to answer the TOEFL question.
+                        </div>
+                    </div>
+
+                    <!-- Task 5 (Interactive Listening Drills) -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2 mb-2">
+                            <span class="bg-[#4ade80] px-2 border-2 border-dark text-sm">Task 5</span> 
+                            Audio Drills (8 Items)
+                        </h3>
+                        <div class="font-bold text-slate-700 mb-6 pb-4 border-b-2 border-slate-200">
+                            <p class="bg-blue-50 p-3 border-l-4 border-blue-50 mb-2">
+                                <i class="fas fa-headphones-alt mr-2 text-blue-600"></i>
+                                <strong>Authentic Listening Practice:</strong> Use the audio player below to listen to each short conversation. The transcript is intentionally hidden to help you focus on your listening skills.
+                            </p>
+                            <p class="text-sm italic">If you are using Microsoft Edge, this module will utilize high-quality "Natural" AI voices for an enhanced experience.</p>
+                        </div>
+                        
+                        <div id="mcq-container" class="space-y-8">
+                            <!-- Populated by JS -->
+                        </div>
+                        
+                        <div class="mt-8 flex justify-end border-t-4 border-dark pt-6">
+                            <button onclick="checkMCQ()" class="neo-btn bg-dark text-white hover:bg-slate-800 px-6 py-3 text-sm uppercase">
+                                <i class="fas fa-check-double mr-2"></i> Check Answers
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 6 (Interactive T/F) -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2 mb-4 pb-3 border-b-2 border-dark">
+                            <span class="bg-[#4ade80] px-2 border-2 border-dark text-sm">Task 6</span> 
+                            Strategy True or False
+                        </h3>
+                        <div id="tf-container" class="space-y-4 font-medium text-lg">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-8 flex justify-end">
+                            <button onclick="checkTF()" class="neo-btn bg-dark text-white hover:bg-slate-800 px-6 py-3 text-sm uppercase">
+                                <i class="fas fa-check-double mr-2"></i> Check T/F
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 7 -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#4ade80] px-2 border-2 border-dark text-sm">Task 7</span> 
+                                Identify the Function
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t7', this)" class="neo-btn bg-[#4ade80] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Answer</button>
+                        </div>
+                        <div class="space-y-4">
+                            <p class="font-medium text-lg bg-slate-100 p-4 border-2 border-dark">Read this line: <strong><em>"If I were you, I would speak to the professor immediately."</em></strong></p>
+                            <p class="font-bold text-slate-700">What is the function of this sentence? (e.g., Agreement, Refusal, Suggestion, Surprise)</p>
+                            <input type="text" class="w-full p-4 font-medium focus:outline-none bg-white">
+                        </div>
+                        <div id="ans-t7" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform -rotate-1">
+                            <strong class="uppercase font-black text-lg">Function:</strong> Suggestion (or Advice). <br><br>
+                            Common answers for this include: "She recommends speaking to the instructor" or "He should contact the professor."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Discussion (Orange Theme) -->
+        <div class="mb-6 border-4 border-dark shadow-neo-sm bg-white">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-4 md:p-6 bg-[#fb923c] hover:bg-[#f97316] transition-colors text-left border-b-4 border-dark group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-10 h-10 flex items-center justify-center font-black text-lg shadow-[2px_2px_0_0_#0f172a] group-hover:shadow-[4px_4px_0_0_#0f172a] group-hover:-translate-y-0.5 transition-all">4</div>
+                    <span class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight">Discussion (Tasks 8 to 11)</span>
+                </div>
+                <div class="w-10 h-10 bg-white border-3 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a]">
+                    <i id="icon-part4" class="fas fa-chevron-down text-dark transition-transform duration-300"></i>
+                </div>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-6 md:p-8 space-y-10 bg-[#ffedd5]">
+                    
+                    <!-- Task 8: Cause/Effect -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                         <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#fb923c] px-2 border-2 border-dark text-sm">Task 8</span> 
+                                Analyzing Refusals
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t8', this)" class="neo-btn bg-[#fb923c] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Sample</button>
+                        </div>
+                        <p class="font-bold text-slate-800 mb-4 bg-slate-100 p-3 border-2 border-dark">Why do speakers in TOEFL (and real life) rarely say "No" directly? Why do they give excuses instead?</p>
+                        <textarea class="w-full p-4 font-medium focus:outline-none"></textarea>
+                        <div id="ans-t8" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform 1-rotate-1">
+                            <strong class="uppercase font-black text-lg">Analysis:</strong> It is considered polite (social etiquette) to soften a refusal with a reason. Direct "No" can sound rude or aggressive.
+                        </div>
+                    </div>
+
+                    <!-- Task 9 & 10 -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#fb923c] px-2 border-2 border-dark text-sm">Task 9 & 10</span> 
+                                Idiom Translation
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t9', this)" class="neo-btn bg-[#fb923c] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Ideas</button>
+                        </div>
+                        <p class="font-bold text-slate-800 mb-4">Translate the feeling of these English idioms into an Indonesian context/phrase:</p>
+                        <ul class="list-none space-y-2 font-black text-lg text-dark mb-6 bg-slate-100 p-4 border-2 border-dark">
+                            <li class="flex items-center gap-2"><i class="fas fa-arrow-right text-[#fb923c]"></i> "You can say that again!" (Agreement)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-arrow-right text-[#fb923c]"></i> "I am all ears." (Listening)</li>
+                        </ul>
+                        <textarea class="w-full p-4 font-medium focus:outline-none"></textarea>
+                        <div id="ans-t9" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform -rotate-1">
+                             <strong class="uppercase font-black text-lg">Samples:</strong><br><br>
+                             <div class="space-y-2 font-bold">
+                                 <p>"You can say that again" <i class="fas fa-equals text-slate-400 mx-2"></i> "Setuju banget!" or "Betul sekali!"</p>
+                                 <p>"I am all ears" <i class="fas fa-equals text-slate-400 mx-2"></i> "Aku dengerin nih" or "Siap menyimak."</p>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Advanced (Violet Theme) -->
+        <div class="mb-12 border-4 border-dark shadow-neo-sm bg-white">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-4 md:p-6 bg-[#c084fc] hover:bg-[#a855f7] transition-colors text-left border-b-4 border-dark group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-10 h-10 flex items-center justify-center font-black text-lg shadow-[2px_2px_0_0_#0f172a] group-hover:shadow-[4px_4px_0_0_#0f172a] group-hover:-translate-y-0.5 transition-all">5</div>
+                    <span class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight">Advanced (Tasks 12 to 15)</span>
+                </div>
+                <div class="w-10 h-10 bg-white border-3 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a]">
+                    <i id="icon-part5" class="fas fa-chevron-down text-dark transition-transform duration-300"></i>
+                </div>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-6 md:p-8 space-y-10 bg-[#f3e8ff]">
+                    
+                    <!-- Task 12 & 13 -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                         <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#c084fc] px-2 border-2 border-dark text-sm">Task 12 & 13</span> 
+                                Script Writing
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t12', this)" class="neo-btn bg-[#c084fc] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Sample</button>
+                        </div>
+                        <p class="font-bold text-slate-800 mb-4 bg-slate-100 p-4 border-2 border-dark leading-relaxed">Write a short dialogue (Man/Woman) where one person invites the other to the cinema, and the other refuses <strong>indirectly</strong>.</p>
+                        <textarea class="w-full p-4 font-medium focus:outline-none min-h-[120px]"></textarea>
+                         <div id="ans-t12" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform 1-rotate-1">
+                            <strong class="uppercase font-black text-lg mb-2 block">Sample Dialogue:</strong>
+                            <div class="bg-white p-3 border-2 border-dark font-bold space-y-2">
+                                <p><span class="bg-slate-200 px-2 py-0.5 border border-dark inline-block w-24 text-center text-sm font-black mr-2">Man</span> Are you coming to the new Marvel movie tonight?</p>
+                                <p><span class="bg-[#c084fc] text-white px-2 py-0.5 border border-dark inline-block w-24 text-center text-sm font-black mr-2">Woman</span> I have not finished my biology lab report yet.</p>
+                            </div>
+                            <p class="mt-3 font-bold text-sm italic text-slate-600">(Implied: No, I cannot come.)</p>
+                        </div>
+                    </div>
+
+                      <!-- Task 15: Reflection -->
+                      <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#c084fc] px-2 border-2 border-dark text-sm">Task 15</span> 
+                                Reflection
+                            </h3>
+                        </div>
+                        <p class="font-bold text-slate-800 mb-4">What is the most difficult part of Listening Part A for you? (Speed, Vocabulary, Idioms?)</p>
+                        <textarea placeholder="Type your reflection here..." class="w-full p-4 font-medium focus:outline-none"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t-4 border-dark text-center">
+            <p class="font-bold text-dark text-xs sm:text-sm bg-[#facc15] inline-block px-4 py-3 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] uppercase tracking-wide">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="underline hover:text-white transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data Configuration Section ---
+        
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { 
+                id: "v1", 
+                word: "1. Imply", 
+                correct: "b", 
+                options: { 
+                    a: "To speak very loudly", 
+                    b: "To suggest something without saying it directly", 
+                    c: "To agree with someone", 
+                    d: "To refuse an invitation" 
+                },
+                explanation: "To imply means to communicate an idea or feeling without saying it explicitly."
+            },
+            { 
+                id: "v2", 
+                word: "2. Infer", 
+                correct: "c", 
+                options: { 
+                    a: "To create a problem", 
+                    b: "To make a suggestion", 
+                    c: "To understand a hidden meaning based on evidence", 
+                    d: "To listen to music" 
+                },
+                explanation: "To infer is to deduce or conclude information from evidence rather than from direct statements."
+            },
+            { 
+                id: "v3", 
+                word: "3. Postpone", 
+                correct: "a", 
+                options: { 
+                    a: "To do something at a later time (delay)", 
+                    b: "To cancel something completely", 
+                    c: "To arrive early", 
+                    d: "To mail a letter" 
+                },
+                explanation: "To postpone means to arrange for an event to take place at a later time than originally scheduled."
+            },
+             { 
+                id: "v4", 
+                word: "4. Exhausted", 
+                correct: "d", 
+                options: { 
+                    a: "Very happy", 
+                    b: "Confused", 
+                    c: "Hungry", 
+                    d: "Very tired" 
+                },
+                explanation: "Exhausted means completely drained of physical or mental resources, meaning very tired."
+            }
+        ];
+
+        // 2. MULTIPLE CHOICE DATA (Structured for TTS)
+        const mcqData = [
+            { 
+                id: "m1", 
+                dialogue: [
+                    { speaker: "Man", text: "It is freezing in here." },
+                    { speaker: "Woman", text: "Why do I not turn up the heat?" }
+                ],
+                questionText: "What does the woman offer to do?", 
+                correct: "a", 
+                options: ["a. Make the room warmer.", "b. Open the window.", "c. Buy a new heater.", "d. Wear a coat."],
+                explanation: "The phrase 'Why do I not turn up the heat?' is an offer or suggestion to make the room warmer."
+            },
+            { 
+                id: "m2", 
+                dialogue: [
+                    { speaker: "Woman", text: "Are you going to the library now?" },
+                    { speaker: "Man", text: "I wish I could, but I have a dentist appointment." }
+                ],
+                questionText: "What does the man imply?", 
+                correct: "b", 
+                options: ["a. He will go to the library later.", "b. He cannot go to the library now.", "c. He does not like the library.", "d. He is already at the dentist."],
+                explanation: "By giving an excuse about a dentist appointment, the man implies a polite refusal to go to the library right now."
+            },
+            { 
+                id: "m3", 
+                dialogue: [
+                    { speaker: "Man", text: "That physics exam was impossible!" },
+                    { speaker: "Woman", text: "You can say that again." }
+                ],
+                questionText: "What does the woman mean?", 
+                correct: "c", 
+                options: ["a. She wants the man to repeat himself.", "b. She did not hear the man.", "c. She agrees that the exam was very hard.", "d. She thinks the exam was easy."],
+                explanation: "The idiom 'You can say that again' is used to express strong agreement with what someone just said."
+            },
+            { 
+                id: "m4", 
+                dialogue: [
+                    { speaker: "Woman", text: "I thought the department store was open today." },
+                    { speaker: "Man", text: "It is a holiday, is it not?" }
+                ],
+                questionText: "What does the man imply?", 
+                correct: "b", 
+                options: ["a. The store is definitely open.", "b. The store is likely closed.", "c. He loves holidays.", "d. He wants to go shopping."],
+                explanation: "The man mentions it is a holiday, which serves as a reason why the store is likely closed."
+            },
+             { 
+                id: "m5", 
+                dialogue: [
+                    { speaker: "Man", text: "I am totally exhausted from studying all night." },
+                    { speaker: "Woman", text: "If I were you, I would skip the gym today." }
+                ],
+                questionText: "What does the woman suggest?", 
+                correct: "a", 
+                options: ["a. He should not exercise today.", "b. He should go to the gym.", "c. He should study more.", "d. He needs to sleep in the gym."],
+                explanation: "The phrase 'If I were you, I would...' is used to give advice. She is advising him to rest instead of going to the gym."
+            },
+            { 
+                id: "m6", 
+                dialogue: [
+                    { speaker: "Woman", text: "Have you finished the assignment for Dr. Smith?" },
+                    { speaker: "Man", text: "I have barely started it." }
+                ],
+                questionText: "What does the man mean?", 
+                correct: "c", 
+                options: ["a. He is almost finished.", "b. He has not looked at it yet.", "c. He has a lot of work left to do.", "d. He finished it yesterday."],
+                explanation: "Saying he has 'barely started' means he has completed very little, implying a significant amount of work remains."
+            },
+            { 
+                id: "m7", 
+                dialogue: [
+                    { speaker: "Man", text: "Does this bus go to the museum?" },
+                    { speaker: "Woman", text: "You are going the wrong way." }
+                ],
+                questionText: "What does the woman imply?", 
+                correct: "d", 
+                options: ["a. The museum is closed.", "b. The bus is broken.", "c. He should stay on the bus.", "d. He needs to take a bus in the other direction."],
+                explanation: "Because he is going the 'wrong way', he needs to get off and take a bus traveling in the opposite direction."
+            },
+            { 
+                id: "m8", 
+                dialogue: [
+                    { speaker: "Woman", text: "Nice jacket! Is it new?" },
+                    { speaker: "Man", text: "My sister gave it to me for my birthday." }
+                ],
+                questionText: "What do we learn about the jacket?", 
+                correct: "b", 
+                options: ["a. The man bought it himself.", "b. It was a gift.", "c. It belongs to his sister.", "d. It is very old."],
+                explanation: "The man states his sister 'gave it to me for my birthday', which directly means the jacket was a gift."
+            }
+        ];
+
+        // 3. TRUE / FALSE DATA
+        const tfData = [
+            { id: "tf1", text: "1. The answer to the question is usually found in what the first speaker says.", correct: "False", explanation: "The first speaker provides context, but the second speaker almost always provides the crucial information needed to answer the question." },
+            { id: "tf2", text: "2. If an answer choice sounds exactly like a word in the conversation, it is likely a trap (distractor).", correct: "True", explanation: "This is known as the 'sound trap'. Distractors intentionally use similar sounding words to confuse test takers. Focus on meaning instead." },
+            { id: "tf3", text: "3. 'Why not...' is a phrase used to ask for a reason.", correct: "False", explanation: "In conversational English, 'Why not...' or 'Why don't we...' are common phrases used to make a suggestion." },
+            { id: "tf4", text: "4. If a speaker gives an excuse, they are usually refusing an invitation.", correct: "True", explanation: "Giving a polite reason or excuse is the most common indirect way to refuse an invitation or offer." }
+        ];
+
+        // --- State for Attempts ---
+        let attemptsCount = {};
+
+        // --- Text to Speech Logic (Edge Natural Support) ---
+        let voices = [];
+        let currentlyPlayingId = null;
+
+        function loadVoices() {
+            voices = window.speechSynthesis.getVoices();
+        }
+        
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        // Trigger immediately for browsers that already have voices loaded
+        setTimeout(loadVoices, 100);
+
+        function getVoiceByGender(gender, isNarrator = false) {
+            // Strictly use Microsoft Edge 'Natural' online neural voices
+            let naturalVoices = voices.filter(v => v.name.includes('Natural') && v.lang.startsWith('en'));
+            if (naturalVoices.length === 0) return null;
+            
+            if (gender === 'male') {
+                let maleVoices = naturalVoices.filter(v => 
+                    v.name.includes('Guy') || v.name.includes('Roger') || 
+                    v.name.includes('Steffan') || v.name.includes('Christopher') || 
+                    v.name.includes('Eric') || v.name.includes('Ryan') || v.name.includes('William')
+                );
+                
+                // Fallback to any natural voice if no specific male names match
+                if (maleVoices.length === 0) maleVoices = naturalVoices;
+
+                if (isNarrator) {
+                    // Find a male voice that is NOT Guy to differentiate the narrator
+                    let narrator = maleVoices.find(v => !v.name.includes('Guy'));
+                    return narrator || maleVoices[0];
+                }
+                
+                // Regular Man dialogue
+                let man = maleVoices.find(v => v.name.includes('Guy'));
+                return man || maleVoices[0];
+
+            } else if (gender === 'female') {
+                let femaleVoices = naturalVoices.filter(v => 
+                    v.name.includes('Aria') || v.name.includes('Jenny') || 
+                    v.name.includes('Michelle') || v.name.includes('Sonia') || v.name.includes('Mia')
+                );
+                
+                if (femaleVoices.length === 0) femaleVoices = naturalVoices;
+                
+                let woman = femaleVoices.find(v => v.name.includes('Aria') || v.name.includes('Jenny'));
+                return woman || femaleVoices[0];
+            }
+
+            return naturalVoices[0];
+        }
+
+        function stopAudioGlobal() {
+            window.speechSynthesis.cancel();
+            updateAllPlayButtons();
+            currentlyPlayingId = null;
+        }
+
+        function updateAllPlayButtons() {
+            document.querySelectorAll('[id^="play-icon-"]').forEach(icon => {
+                icon.className = 'fas fa-play';
+            });
+            document.querySelectorAll('[id^="play-text-"]').forEach(text => {
+                text.innerText = 'Play Audio';
+            });
+            document.querySelectorAll('[id^="play-btn-"]').forEach(btn => {
+                btn.classList.remove('bg-yellow-400');
+                btn.classList.add('bg-[#4ade80]');
+            });
+        }
+
+        function playAudioTask(id) {
+            stopAudioGlobal(); // Stop anything currently playing
+            
+            const item = mcqData.find(m => m.id === id);
+            if(!item) return;
+
+            currentlyPlayingId = id;
+            
+            // UI Update
+            const btn = document.getElementById(`play-btn-${id}`);
+            const icon = document.getElementById(`play-icon-${id}`);
+            const text = document.getElementById(`play-text-${id}`);
+            
+            btn.classList.remove('bg-[#4ade80]');
+            btn.classList.add('bg-yellow-400');
+            icon.className = 'fas fa-volume-up fa-fade';
+            text.innerText = 'Playing...';
+
+            // Build sequence
+            let sequence = [];
+            item.dialogue.forEach(line => {
+                sequence.push({ speaker: line.speaker, text: line.text });
+            });
+            sequence.push({ speaker: 'Narrator', text: "Question: " + item.questionText });
+
+            playSequence(sequence, id);
+        }
+
+        function playSequence(sequence, id) {
+            if (sequence.length === 0 || currentlyPlayingId !== id) {
+                updateAllPlayButtons();
+                return;
+            }
+
+            let currentItem = sequence.shift();
+            let utterance = new SpeechSynthesisUtterance(currentItem.text);
+            
+            // Base properties
+            utterance.rate = 0.95; // Slightly slower for clear TOEFL pace
+            
+            // Note: Pitch adjustments have been removed to preserve Edge Natural stability
+
+            // Voice selection logic
+            if (currentItem.speaker === 'Man') {
+                let voice = getVoiceByGender('male');
+                if (voice) utterance.voice = voice;
+            } else if (currentItem.speaker === 'Woman') {
+                let voice = getVoiceByGender('female');
+                if (voice) utterance.voice = voice;
+            } else {
+                // Narrator
+                let voice = getVoiceByGender('male', true); 
+                if (voice) utterance.voice = voice;
+            }
+
+            utterance.onend = () => {
+                // Short pause between speakers
+                setTimeout(() => {
+                    playSequence(sequence, id);
+                }, 400); 
+            };
+
+            utterance.onerror = () => {
+                updateAllPlayButtons();
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            if(vocabData.length === 0) return;
+
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="">Select definition...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col p-4 bg-white border-3 border-dark shadow-[2px_2px_0_0_#0f172a] hover:shadow-[4px_4px_0_0_#0f172a] transition-shadow">
+                    <div class="flex flex-col md:flex-row md:items-center gap-3 w-full">
+                        <div class="md:w-1/3 font-black text-xl uppercase tracking-tight text-dark">${item.word}</div>
+                        <div class="md:w-2/3 flex items-center gap-3">
+                            <select id="${item.id}" class="flex-1 p-3 text-sm md:text-base font-bold border-3 border-dark bg-slate-50 focus:ring-0 focus:shadow-[2px_2px_0_0_#0f172a] outline-none cursor-pointer">
+                                ${optionsHtml}
+                            </select>
+                            <span id="feedback-${item.id}" class="w-8 flex justify-center text-xl"></span>
+                        </div>
+                    </div>
+                    <div id="explanation-${item.id}" class="hidden w-full mt-3 text-sm font-medium"></div>
+                </div>
+            `}).join('');
+        }
+
+        function renderMCQ() {
+            const container = document.getElementById('mcq-container');
+            container.innerHTML = mcqData.map((item, index) => {
+                
+                // Build transcript HTML
+                const transcriptHtml = item.dialogue.map(line => {
+                    const bgClass = line.speaker === 'Man' ? 'bg-slate-200 text-dark' : 'bg-[#4ade80] text-dark';
+                    return `<p><span class="${bgClass} px-2 py-0.5 border border-dark inline-block w-24 text-center text-sm font-black mr-2">${line.speaker}</span> ${line.text}</p>`;
+                }).join('') + `<p class="mt-3 pt-3 border-t-2 border-slate-200"><span class="bg-gray-300 text-dark px-2 py-0.5 border border-dark inline-block w-24 text-center text-sm font-black mr-2">Narrator</span> Question: ${item.questionText}</p>`;
+
+                return `
+                <div class="p-5 md:p-6 border-4 border-dark bg-white shadow-[4px_4px_0_0_#0f172a]">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="font-black text-white bg-dark h-8 w-8 flex items-center justify-center text-lg flex-shrink-0 border-2 border-dark shadow-[2px_2px_0_0_#4ade80]">${index + 1}</span>
+                        <h4 class="font-black text-lg uppercase tracking-tight">Audio Task</h4>
+                    </div>
+
+                    <!-- Audio Player UI -->
+                    <div class="bg-slate-50 border-3 border-dark p-4 flex flex-wrap items-center gap-4 shadow-[2px_2px_0_0_#0f172a] mb-6">
+                        <button onclick="playAudioTask('${item.id}')" class="neo-btn bg-[#4ade80] text-dark px-4 py-2 flex items-center gap-2 text-sm" id="play-btn-${item.id}">
+                            <i class="fas fa-play" id="play-icon-${item.id}"></i> <span id="play-text-${item.id}">Play Audio</span>
+                        </button>
+                        <button onclick="stopAudioGlobal()" class="neo-btn bg-white text-dark px-4 py-2 flex items-center gap-2 text-sm" id="stop-btn-${item.id}">
+                            <i class="fas fa-stop"></i> Stop
+                        </button>
+                        <button onclick="toggleTranscript('${item.id}', this)" class="neo-btn bg-white text-dark px-4 py-2 flex items-center gap-2 ml-auto text-sm">
+                            <i class="fas fa-eye"></i> Show Transcript
+                        </button>
+                    </div>
+
+                    <!-- Hidden Transcript -->
+                    <div id="transcript-${item.id}" class="hidden mb-6 p-4 border-l-4 border-dark bg-slate-50 space-y-3 text-base font-medium">
+                        ${transcriptHtml}
+                    </div>
+
+                    <!-- Options -->
+                    <div class="space-y-3 pl-2 md:pl-12">
+                        ${item.options.map((opt, idx) => {
+                            const val = ['a','b','c','d'][idx];
+                            return `
+                            <label class="flex items-center gap-3 p-3 bg-white border-2 border-transparent hover:border-dark hover:bg-[#dcfce7] cursor-pointer text-sm md:text-base font-bold transition-all group">
+                                <input type="radio" name="${item.id}" value="${val}" class="w-5 h-5 accent-dark border-2 border-dark cursor-pointer">
+                                <span class="group-hover:translate-x-1 transition-transform">${opt}</span>
+                            </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-lg font-black min-h-[2rem] mt-4 pl-2 md:pl-12"></div>
+                    <div id="explanation-${item.id}" class="hidden mt-2 pl-2 md:pl-12 text-sm font-medium"></div>
+                </div>
+            `}).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col p-4 bg-white border-3 border-dark shadow-[2px_2px_0_0_#0f172a] hover:shadow-[4px_4px_0_0_#0f172a] transition-shadow" id="row-${item.id}">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between w-full">
+                        <span class="text-base md:text-lg font-bold text-dark mb-4 md:mb-0 w-full md:w-2/3 leading-snug">${item.text}</span>
+                        <div class="flex items-center gap-6 font-black uppercase tracking-wide">
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-[#4ade80] group">
+                                <input type="radio" name="${item.id}" value="True" class="w-5 h-5 accent-dark border-2 border-dark cursor-pointer"> 
+                                <span class="group-hover:-translate-y-0.5 transition-transform inline-block">True</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-[#e11d48] group">
+                                <input type="radio" name="${item.id}" value="False" class="w-5 h-5 accent-dark border-2 border-dark cursor-pointer"> 
+                                <span class="group-hover:-translate-y-0.5 transition-transform inline-block">False</span>
+                            </label>
+                            <span id="feedback-${item.id}" class="ml-2 w-8 text-xl"></span>
+                        </div>
+                    </div>
+                    <div id="explanation-${item.id}" class="hidden w-full mt-3 text-sm font-medium"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Helper: Update Parent Height ---
+        function updateParentHeight(element) {
+            const parentAccordion = element.closest('.accordion-content');
+            if (parentAccordion && parentAccordion.classList.contains('active')) {
+                setTimeout(() => {
+                    parentAccordion.style.maxHeight = parentAccordion.scrollHeight + "px";
+                }, 50);
+            }
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select || select.disabled) return; 
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const expl = document.getElementById(`explanation-${item.id}`);
+                const userVal = select.value;
+                
+                if (userVal === "") return;
+
+                if (attemptsCount[item.id] === undefined) attemptsCount[item.id] = 0;
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-[#4ade80] stroke-dark stroke-2"></i>';
+                    select.classList.add('bg-[#dcfce7]', 'border-dark');
+                    select.classList.remove('bg-slate-50', 'bg-[#ffe4e6]', 'bg-[#fefce8]');
+                    select.disabled = true;
+                    expl.innerHTML = `<div class="bg-[#dcfce7] p-3 border-2 border-dark"><strong>Explanation:</strong> ${item.explanation}</div>`;
+                    expl.classList.remove('hidden');
+                } else {
+                    attemptsCount[item.id]++;
+                    if (attemptsCount[item.id] >= 2) {
+                        feedback.innerHTML = '<i class="fas fa-times-circle text-[#e11d48]"></i>';
+                        select.classList.add('bg-[#ffe4e6]');
+                        select.classList.remove('bg-slate-50', 'bg-[#fefce8]');
+                        select.disabled = true;
+                        
+                        const correctOptionText = item.options[item.correct];
+                        expl.innerHTML = `<div class="bg-[#ffe4e6] p-3 border-2 border-dark"><strong class="text-[#e11d48]">Correct Answer:</strong> ${correctOptionText}<br><br><strong>Explanation:</strong> ${item.explanation}</div>`;
+                        expl.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-exclamation-triangle text-[#facc15]"></i>';
+                        select.classList.add('bg-[#fefce8]');
+                        select.classList.remove('bg-slate-50');
+                    }
+                }
+                updateParentHeight(expl);
+            });
+        }
+
+        function checkMCQ() {
+            mcqData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                if(radios[0] && radios[0].disabled) return; 
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const expl = document.getElementById(`explanation-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === "") return;
+
+                if (attemptsCount[item.id] === undefined) attemptsCount[item.id] = 0;
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-white bg-[#4ade80] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-block uppercase tracking-wider text-sm"><i class="fas fa-check mr-2"></i> Correct!</span>';
+                    radios.forEach(r => r.disabled = true);
+                    expl.innerHTML = `<div class="bg-[#dcfce7] p-3 border-2 border-dark"><strong>Explanation:</strong> ${item.explanation}</div>`;
+                    expl.classList.remove('hidden');
+                } else {
+                    attemptsCount[item.id]++;
+                    if (attemptsCount[item.id] >= 2) {
+                        feedback.innerHTML = `<span class="text-white bg-[#e11d48] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-block uppercase tracking-wider text-sm"><i class="fas fa-times mr-2"></i> Incorrect</span>`;
+                        radios.forEach(r => r.disabled = true);
+                        
+                        const correctIndex = ['a','b','c','d'].indexOf(item.correct);
+                        const correctText = item.options[correctIndex];
+                        expl.innerHTML = `<div class="bg-[#ffe4e6] p-3 border-2 border-dark"><strong class="text-[#e11d48]">Correct Answer:</strong> ${correctText}<br><br><strong>Explanation:</strong> ${item.explanation}</div>`;
+                        expl.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<span class="text-dark bg-[#facc15] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-block uppercase tracking-wider text-sm"><i class="fas fa-exclamation-triangle mr-2"></i> Try again (1 attempt left)</span>';
+                    }
+                }
+                updateParentHeight(expl);
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                if(radios[0] && radios[0].disabled) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const expl = document.getElementById(`explanation-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === "") return;
+
+                if (attemptsCount[item.id] === undefined) attemptsCount[item.id] = 0;
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-[#4ade80]"></i>';
+                    radios.forEach(r => r.disabled = true);
+                    expl.innerHTML = `<div class="bg-[#dcfce7] p-3 border-2 border-dark mt-2"><strong>Explanation:</strong> ${item.explanation}</div>`;
+                    expl.classList.remove('hidden');
+                } else {
+                    attemptsCount[item.id]++;
+                    if (attemptsCount[item.id] >= 2) {
+                        feedback.innerHTML = '<i class="fas fa-times-circle text-[#e11d48]"></i>';
+                        radios.forEach(r => r.disabled = true);
+                        expl.innerHTML = `<div class="bg-[#ffe4e6] p-3 border-2 border-dark mt-2"><strong class="text-[#e11d48]">Correct Answer:</strong> ${item.correct}<br><br><strong>Explanation:</strong> ${item.explanation}</div>`;
+                        expl.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-exclamation-triangle text-[#facc15]"></i>';
+                    }
+                }
+                updateParentHeight(expl);
+            });
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerHTML = "<i class='fas fa-eye-slash mr-1'></i> Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                
+                // Restore original button text based on the specific task
+                const originalText = btn.getAttribute('onclick').includes('t12') ? 'Show Sample' : 
+                                     btn.getAttribute('onclick').includes('t9') ? 'Show Ideas' : 
+                                     btn.getAttribute('onclick').includes('t8') ? 'Show Sample' : 
+                                     btn.getAttribute('onclick').includes('t3') ? 'Show Rule' : 
+                                     btn.getAttribute('onclick').includes('t1') ? 'Show Strategy' : 'Show Answer';
+                btn.innerHTML = originalText;
+            }
+            updateParentHeight(el);
+        }
+
+        function toggleTranscript(id, btn) {
+            const el = document.getElementById(`transcript-${id}`);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('block');
+                btn.innerHTML = "<i class='fas fa-eye-slash'></i> Hide Transcript";
+                btn.classList.add('bg-slate-200');
+            } else {
+                el.classList.remove('block');
+                el.classList.add('hidden');
+                btn.innerHTML = "<i class='fas fa-eye'></i> Show Transcript";
+                btn.classList.remove('bg-slate-200');
+            }
+            updateParentHeight(el);
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers and reset audio?")) {
+                stopAudioGlobal();
+                attemptsCount = {}; // Reset attempts tracker
+                document.querySelectorAll('textarea, input[type="text"]').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.classList.remove('bg-[#dcfce7]', 'bg-[#ffe4e6]', 'bg-[#fefce8]'); 
+                    s.classList.add('bg-slate-50');
+                });
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('[id^="explanation-"]').forEach(el => { el.classList.add('hidden'); el.innerHTML = ""; });
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+                
+                // Hide transcripts
+                document.querySelectorAll('[id^="transcript-"]').forEach(el => { el.classList.add('hidden'); el.classList.remove('block'); });
+                document.querySelectorAll('button[onclick^="toggleTranscript"]').forEach(btn => { 
+                    btn.innerHTML = "<i class='fas fa-eye'></i> Show Transcript";
+                    btn.classList.remove('bg-slate-200');
+                });
+
+                // Reset regular answer buttons
+                document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                    const originalText = btn.getAttribute('onclick').includes('t12') ? 'Show Sample' : 
+                                         btn.getAttribute('onclick').includes('t9') ? 'Show Ideas' : 
+                                         btn.getAttribute('onclick').includes('t8') ? 'Show Sample' : 
+                                         btn.getAttribute('onclick').includes('t3') ? 'Show Rule' : 
+                                         btn.getAttribute('onclick').includes('t1') ? 'Show Strategy' : 'Show Answer';
+                    btn.innerHTML = originalText;
+                });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderMCQ();
+            renderTF();
+        });
+
+    </script>
+</body>
+</html>

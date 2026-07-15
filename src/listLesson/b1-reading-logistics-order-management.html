@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Reading - Order Management Systems</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Reading Highlights */
+        .highlight-text {
+            background-color: #fef08a; /* Yellow-200 */
+            padding: 2px 4px;
+            border-radius: 4px;
+            border-bottom: 2px solid #eab308; /* Yellow-500 */
+            transition: all 0.5s ease;
+            font-weight: bold;
+            color: #854d0e;
+        }
+
+        /* Flowchart Specifics */
+        .flow-box {
+            position: relative;
+            z-index: 10;
+        }
+        .flow-line-vertical {
+            width: 2px;
+            background-color: #cbd5e1;
+            margin: 0 auto;
+            height: 20px;
+        }
+        .flow-arrow-down::after {
+            content: "↓";
+            display: block;
+            text-align: center;
+            color: #94a3b8;
+            font-weight: bold;
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base text-slate-500 mb-8 flex gap-2 font-medium uppercase tracking-wider">
+            <span>Business English</span> <span>&gt;</span> 
+            <span>Reading</span> <span>&gt;</span> 
+            <span>B1 Level</span> <span>&gt;</span> 
+            <span class="text-blue-700 font-bold">Order Management Systems</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-600 tracking-tight mb-3">
+                    Logistics & Order Management
+                </h1>
+                <p class="text-xl text-slate-500 font-medium">Topic: Analyzing Complex Processes & Conditional Logic</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-lg text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-blue-600 p-6 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-xl text-slate-700 leading-relaxed">
+                <i class="fas fa-sitemap mr-3 text-blue-600"></i> 
+                <strong>Instructions:</strong> Understand the logic of the fulfillment cycle. Complete the vocabulary, flowchart, and logic puzzles.
+                <br><span class="text-base text-slate-500 italic ml-10">(Correct answers appear after 2 incorrect attempts.)</span>
+            </p>
+        </div>
+
+        <!-- Part 1: Vocabulary (Cyan Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-2xl font-bold text-cyan-900">Preparation</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-2xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 2000px;">
+                <div class="p-10 bg-white">
+                    <p class="text-lg text-slate-600 mb-6 font-medium">Match the words with their definitions.</p>
+                    <div id="vocab-container" class="grid gap-4">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-8 text-right">
+                        <button onclick="checkVocab()" class="text-lg font-bold text-white bg-cyan-600 px-8 py-3 rounded-xl hover:bg-cyan-700 transition-colors shadow-lg">Check Vocabulary</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: Reading Passage (Blue Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-file-invoice"></i></div>
+                    <span class="text-2xl font-bold text-blue-900">Reading: The E-Commerce Fulfillment Cycle</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 2000px;">
+                <div class="p-10 bg-white prose prose-slate max-w-none text-justify leading-loose text-xl border-t border-blue-50">
+                    <p class="mb-6">When a customer places an order on our platform, a complex chain of events begins. The system must pass two major security checks before the package leaves the warehouse.</p>
+                    
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Phase 1: Inventory and Allocation</h3>
+                    <p class="mb-6">First, the order enters the system. The database immediately checks the <span id="read-fc1">stock levels</span>. If the item is out of stock, the system automatically triggers a "Restock Request" to the supplier and sends an apology email to the customer. The order is then cancelled. However, if the item is available, the system <span id="read-fc2">allocates</span> the product to the customer so no one else can buy it. The status changes to "Reserved."</p>
+                    
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Phase 2: Payment Verification</h3>
+                    <p class="mb-6">Next, the customer must pay. The system connects to the bank gateway. If the funds are <strong>insufficient</strong> or the bank details are wrong, the payment fails. The system does not cancel the order immediately. Instead, it enters a "Payment Pending" state for <span id="read-fc3">24 hours</span>. If the customer does not retry successfully within this <strong>timeout</strong> period, the order is <span id="read-fc4">cancelled</span>, and the item is returned to inventory. If the payment is successful, the system <strong>issues</strong> a digital invoice and sends the data to the warehouse.</p>
+                    
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Phase 3: Fulfillment and Dispatch</h3>
+                    <p>Once the warehouse receives the data, staff pick the item from the shelf. Before packing, the item goes through <span id="read-fc5">Quality Control (QC)</span>. If the item is damaged, it is discarded, and the process restarts at Phase 1. If the item passes QC, it is packed, labeled, and finally <span id="read-fc6">dispatched</span> to the logistics courier for delivery.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: Flowchart (Emerald Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-2xl font-bold text-emerald-900">Complex Flowchart</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-10 bg-white">
+                    <p class="text-lg text-slate-600 mb-8 font-medium text-center">Fill in the missing logic steps based on the text. Correct answers will highlight the text in Part 2.</p>
+                    
+                    <div class="max-w-4xl mx-auto flex flex-col items-center space-y-4">
+                        
+                        <!-- Start -->
+                        <div class="bg-emerald-100 text-emerald-900 px-6 py-3 rounded-full font-bold border border-emerald-300">START: Customer places order</div>
+                        <div class="flow-line-vertical flow-arrow-down"></div>
+
+                        <!-- Step 1 -->
+                        <div class="bg-white border-2 border-slate-300 p-4 rounded-xl shadow-sm w-full md:w-2/3 text-center">
+                            <span class="font-bold text-emerald-700">Step 1:</span> System checks 
+                            <select id="fc1" data-correct="stock" class="border-b-2 border-emerald-300 focus:border-emerald-600 outline-none text-center w-48 p-1 bg-emerald-50/50 cursor-pointer">
+                                <option value="">Select...</option>
+                                <option value="stock">Stock Levels</option>
+                                <option value="payment">Payment Details</option>
+                                <option value="address">Shipping Address</option>
+                            </select>
+                            <div id="fb-fc1" class="text-sm h-5 font-bold"></div>
+                        </div>
+                        <div class="flow-line-vertical flow-arrow-down"></div>
+
+                        <!-- Decision A -->
+                        <div class="bg-yellow-50 border-2 border-yellow-200 p-4 rounded-xl transform rotate-0 w-full md:w-2/3 text-center relative">
+                            <div class="font-bold text-yellow-800">Decision A: Is item available?</div>
+                        </div>
+
+                        <!-- Branching -->
+                        <div class="flex justify-between w-full md:w-5/6 relative">
+                            <!-- Left Branch (NO) -->
+                            <div class="flex flex-col items-center w-1/2 border-r border-slate-200 pr-2">
+                                <div class="text-red-500 font-bold mb-2">NO ↙</div>
+                                <div class="bg-red-50 border border-red-200 p-3 rounded-lg text-center text-sm w-full mb-2">
+                                    <strong>Step 2:</strong><br>Send "Restock Request"
+                                </div>
+                                <div class="flow-line-vertical flow-arrow-down"></div>
+                                <div class="bg-red-50 border border-red-200 p-3 rounded-lg text-center text-sm w-full">
+                                    <strong>Step 4:</strong><br>Cancel Order
+                                </div>
+                            </div>
+
+                            <!-- Right Branch (YES) -->
+                            <div class="flex flex-col items-center w-1/2 pl-2">
+                                <div class="text-green-500 font-bold mb-2">↘ YES</div>
+                                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg text-center text-sm w-full mb-2">
+                                    <strong>Step 3:</strong> System 
+                                    <select id="fc2" data-correct="allocates" class="border-b border-emerald-400 w-32 text-center bg-white outline-none cursor-pointer">
+                                        <option value="">Select...</option>
+                                        <option value="allocates">Allocates</option>
+                                        <option value="discards">Discards</option>
+                                        <option value="restocks">Restocks</option>
+                                    </select> the item.
+                                    <div id="fb-fc2" class="text-xs h-4 font-bold"></div>
+                                </div>
+                                <div class="flow-line-vertical flow-arrow-down"></div>
+                                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg text-center text-sm w-full">
+                                    <strong>Step 5:</strong> Attempt Payment
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decision B (Below Right Branch logic effectively, simplified for layout) -->
+                        <div class="flow-line-vertical flow-arrow-down"></div>
+                        <div class="bg-yellow-50 border-2 border-yellow-200 p-4 rounded-xl w-full md:w-2/3 text-center">
+                            <div class="font-bold text-yellow-800">Decision B: Is Payment Successful?</div>
+                        </div>
+
+                        <!-- Branching B -->
+                        <div class="flex justify-between w-full md:w-5/6 relative">
+                            <!-- Left Branch (NO) -->
+                            <div class="flex flex-col items-center w-1/2 border-r border-slate-200 pr-2">
+                                <div class="text-red-500 font-bold mb-2">NO ↙</div>
+                                <div class="bg-red-50 border border-red-200 p-3 rounded-lg text-center text-sm w-full mb-2">
+                                    <strong>Step 6:</strong> Wait 
+                                    <select id="fc3" data-correct="24" class="w-20 text-center border-b border-red-300 outline-none cursor-pointer">
+                                        <option value="">Select</option>
+                                        <option value="12">12</option>
+                                        <option value="24">24</option>
+                                        <option value="48">48</option>
+                                    </select> hours
+                                    <div id="fb-fc3" class="text-xs h-4 font-bold"></div>
+                                </div>
+                                <div class="text-xs text-slate-400 mb-1">(Timeout?)</div>
+                                <div class="bg-red-50 border border-red-200 p-3 rounded-lg text-center text-sm w-full">
+                                    <strong>Step 8:</strong> 
+                                    <select id="fc4" data-correct="cancel" class="w-24 text-center border-b border-red-300 outline-none cursor-pointer">
+                                        <option value="">Select</option>
+                                        <option value="cancel">Cancel</option>
+                                        <option value="retry">Retry</option>
+                                        <option value="ship">Ship</option>
+                                    </select> Order
+                                    <div id="fb-fc4" class="text-xs h-4 font-bold"></div>
+                                </div>
+                            </div>
+
+                            <!-- Right Branch (YES) -->
+                            <div class="flex flex-col items-center w-1/2 pl-2">
+                                <div class="text-green-500 font-bold mb-2">↘ YES</div>
+                                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg text-center text-sm w-full mb-2">
+                                    <strong>Step 7:</strong> Issue Invoice
+                                </div>
+                                <div class="flow-line-vertical flow-arrow-down"></div>
+                                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg text-center text-sm w-full">
+                                    <strong>Step 9:</strong> Perform 
+                                    <select id="fc5" data-correct="qc" class="w-28 text-center border-b border-emerald-400 outline-none cursor-pointer">
+                                        <option value="">Select</option>
+                                        <option value="qc">QC</option>
+                                        <option value="payment">Payment</option>
+                                        <option value="stock">Inventory</option>
+                                    </select> check
+                                    <div id="fb-fc5" class="text-xs h-4 font-bold"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Convergence -->
+                        <div class="flow-line-vertical flow-arrow-down"></div>
+                        <div class="bg-white border-2 border-slate-300 p-4 rounded-xl shadow-sm w-full md:w-2/3 text-center">
+                            <span class="font-bold text-emerald-700">Step 10:</span> 
+                            <select id="fc6" data-correct="dispatch" class="border-b-2 border-emerald-300 focus:border-emerald-600 outline-none text-center w-40 p-1 bg-emerald-50/50 cursor-pointer">
+                                <option value="">Select...</option>
+                                <option value="dispatch">Dispatch</option>
+                                <option value="return">Return</option>
+                                <option value="archive">Archive</option>
+                            </select> to Courier
+                            <div id="fb-fc6" class="text-sm h-5 font-bold"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-8 text-right">
+                        <button onclick="checkFlowchart()" class="text-lg font-bold text-white bg-emerald-600 px-8 py-3 rounded-xl hover:bg-emerald-700 transition-colors shadow-lg">Check Flowchart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: Logical Analysis (Orange Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-orange-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-8 bg-orange-50 hover:bg-orange-100 border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-orange-200 text-orange-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-2xl font-bold text-orange-900">Logical Analysis (If Sentences)</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-10 bg-white">
+                    <div class="space-y-6">
+                        <!-- Logic 1 -->
+                        <div>
+                            <p class="mb-2 text-slate-700 font-medium">1. If the payment fails, the system waits 24 hours before it...</p>
+                            <input type="text" id="log1" data-correct="cancels the order,cancels order,cancel order" class="w-full p-4 border border-orange-200 rounded-xl text-lg focus:border-orange-500 outline-none" placeholder="Finish the sentence...">
+                            <div id="fb-log1" class="text-sm font-bold mt-2 h-6"></div>
+                        </div>
+                        <!-- Logic 2 -->
+                        <div>
+                            <p class="mb-2 text-slate-700 font-medium">2. The product is not dispatched unless it passes...</p>
+                            <input type="text" id="log2" data-correct="quality control,qc,quality control check" class="w-full p-4 border border-orange-200 rounded-xl text-lg focus:border-orange-500 outline-none" placeholder="Finish the sentence...">
+                            <div id="fb-log2" class="text-sm font-bold mt-2 h-6"></div>
+                        </div>
+                        <!-- Logic 3 -->
+                        <div>
+                            <p class="mb-2 text-slate-700 font-medium">3. If the item is damaged during Quality Control, the process...</p>
+                            <input type="text" id="log3" data-correct="restarts at phase 1,restarts,goes back to phase 1" class="w-full p-4 border border-orange-200 rounded-xl text-lg focus:border-orange-500 outline-none" placeholder="Finish the sentence...">
+                            <div id="fb-log3" class="text-sm font-bold mt-2 h-6"></div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-right">
+                        <button onclick="checkLogic()" class="text-lg font-bold text-white bg-orange-500 px-8 py-3 rounded-xl hover:bg-orange-600 transition-colors shadow-lg">Check Logic</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: Discussion & Troubleshooting (Violet Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-2xl font-bold text-violet-900">Discussion & Troubleshooting</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-10 bg-white">
+                    <div class="bg-violet-50 p-4 rounded-lg border border-violet-100 mb-6">
+                        <p class="text-violet-900 italic text-base"><strong>Role Play:</strong> You are the Customer Service Manager. Answer these complaints based strictly on the text logic.</p>
+                    </div>
+                    
+                    <!-- Complaint 1 -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-slate-700 font-bold w-3/4">Complaint 1: "I ordered yesterday, but my credit card failed. Why did you cancel my order immediately?"</p>
+                            <button onclick="toggleAnswer('ans-comp1', this)" class="text-sm font-bold text-violet-600 border border-violet-200 bg-white px-3 py-1 rounded hover:bg-violet-50 transition-colors">Show Sample Answer</button>
+                        </div>
+                        <textarea class="w-full p-3 border border-slate-200 rounded-lg text-lg focus:ring-2 focus:ring-violet-400 outline-none h-24" placeholder='Your Answer: "Actually, sir, according to our system, we do not cancel immediately. We..."'></textarea>
+                        <div id="ans-comp1" class="answer-box hidden mt-3 p-4 bg-white rounded-lg border border-violet-200 text-base text-slate-700">
+                            <strong>Sample Answer:</strong> "Actually, sir, according to our system, we do not cancel immediately. We enter a 'Payment Pending' state for 24 hours to give you time to retry."
+                        </div>
+                    </div>
+
+                    <!-- Complaint 2 -->
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-slate-700 font-bold w-3/4">Complaint 2: "My status says 'Reserved' but I haven't received a shipping email yet."</p>
+                            <button onclick="toggleAnswer('ans-comp2', this)" class="text-sm font-bold text-violet-600 border border-violet-200 bg-white px-3 py-1 rounded hover:bg-violet-50 transition-colors">Show Sample Answer</button>
+                        </div>
+                        <textarea class="w-full p-3 border border-slate-200 rounded-lg text-lg focus:ring-2 focus:ring-violet-400 outline-none h-24" placeholder='Your Answer: "That means we have the item, but we are still waiting for..."'></textarea>
+                        <div id="ans-comp2" class="answer-box hidden mt-3 p-4 bg-white rounded-lg border border-violet-200 text-base text-slate-700">
+                            <strong>Sample Answer:</strong> "That means we have allocated the item to you, but we are still waiting for successful payment verification before we can issue an invoice and dispatch it."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-lg font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-blue-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        
+        // Attempts Tracking
+        const attempts = {};
+
+        // Part 1: Vocab Data
+        const vocabData = [
+            { id: "v1", word: "1. Allocate", correct: "c", options: { a: "Send goods to destination", b: "Not enough (e.g. money)", c: "Set aside for specific purpose", d: "Check for defects", e: "Generate document", f: "Time limit before cancel", g: "Proving info is correct", h: "Put items back in inventory" } },
+            { id: "v2", word: "2. Insufficient", correct: "b" },
+            { id: "v3", word: "3. Dispatch", correct: "a" },
+            { id: "v4", word: "4. Verification", correct: "g" },
+            { id: "v5", word: "5. Quality Control (QC)", correct: "d" },
+            { id: "v6", word: "6. Issue (verb)", correct: "e" },
+            { id: "v7", word: "7. Timeout", correct: "f" },
+            { id: "v8", word: "8. Restock", correct: "h" }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            const optionsHtml = `
+                <option value="">Select definition...</option>
+                <option value="a">a. Send goods to destination</option>
+                <option value="b">b. Not enough (e.g. money)</option>
+                <option value="c">c. Set aside for specific purpose</option>
+                <option value="d">d. Check for defects</option>
+                <option value="e">e. Generate/Create document</option>
+                <option value="f">f. Time limit before cancel</option>
+                <option value="g">g. Proving info is correct</option>
+                <option value="h">h. Put items back in inventory</option>
+            `;
+            
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col md:flex-row md:items-center gap-4 p-4 bg-cyan-50/50 rounded-xl border border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <div class="md:w-1/3 font-bold text-cyan-900">${item.word}</div>
+                    <div class="md:w-2/3 flex items-center gap-4">
+                        <select id="${item.id}" class="flex-1 p-3 border border-slate-300 rounded-lg text-lg focus:outline-none focus:border-cyan-500 cursor-pointer bg-white">
+                            ${optionsHtml}
+                        </select>
+                        <div id="feedback-${item.id}" class="w-auto flex-shrink-0 text-lg font-bold min-w-[24px]"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    select.classList.add('border-green-500', 'bg-green-50');
+                    select.classList.remove('border-red-300');
+                    select.disabled = true;
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    if (attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-sm font-bold text-red-600 bg-red-100 px-2 rounded">Ans: ${item.correct}</span>`;
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    }
+                    select.classList.add('border-red-300');
+                }
+            });
+        }
+
+        function highlightReading(stepId) {
+            // Remove highlight from this specific step if it exists
+            const el = document.getElementById(`read-${stepId}`);
+            if(el) {
+                el.classList.add('highlight-text');
+                // Optional: Scroll to it? Might be annoying if user is working.
+                // el.scrollIntoView({behavior: "smooth", block: "center"}); 
+            }
+        }
+
+        function checkFlowchart() {
+            // IDs fc1 to fc6
+            for (let i = 1; i <= 6; i++) {
+                const input = document.getElementById(`fc${i}`);
+                const feedback = document.getElementById(`fb-fc${i}`);
+                const val = input.value;
+                const correct = input.dataset.correct;
+                const key = `fc${i}`;
+
+                if (!attempts[key]) attempts[key] = 0;
+
+                if (val === correct) {
+                    feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check"></i></span>';
+                    input.classList.add('border-green-500', 'bg-green-50');
+                    input.classList.remove('border-red-300');
+                    input.disabled = true;
+                    highlightReading(key);
+                } else if (val !== "") {
+                    attempts[key]++;
+                    if (attempts[key] >= 2) {
+                        // Reveal logic
+                        // Find the option text
+                        const selectedOption = input.querySelector(`option[value="${correct}"]`);
+                        const correctText = selectedOption ? selectedOption.text : correct;
+                        feedback.innerHTML = `<span class="text-red-600 text-xs">Ans: ${correctText}</span>`;
+                        input.value = correct; // Set correct value
+                        input.classList.add('border-green-500'); 
+                        input.disabled = true;
+                        highlightReading(key); // Also highlight in text
+                    } else {
+                        feedback.innerHTML = '<span class="text-red-500 text-xs">Try again</span>';
+                        input.classList.add('border-red-300');
+                    }
+                }
+            }
+        }
+
+        function checkLogic() {
+            // IDs log1 to log3
+            for (let i = 1; i <= 3; i++) {
+                const input = document.getElementById(`log${i}`);
+                const feedback = document.getElementById(`fb-log${i}`);
+                const correctList = input.dataset.correct.split(',');
+                const val = input.value.trim().toLowerCase();
+                const key = `log${i}`;
+
+                if (!attempts[key]) attempts[key] = 0;
+
+                const isCorrect = correctList.some(c => val.includes(c));
+
+                if (isCorrect) {
+                    feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check"></i> Correct Logic</span>';
+                    input.classList.add('border-green-500', 'bg-green-50');
+                    input.classList.remove('border-red-300');
+                    input.disabled = true;
+                } else if (val !== "") {
+                    attempts[key]++;
+                    if (attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-600">Sample: "...${correctList[0]}"</span>`;
+                    } else {
+                        feedback.innerHTML = '<span class="text-red-500">Not quite. Check the text.</span>';
+                    }
+                    input.classList.add('border-red-300');
+                }
+            }
+        }
+
+        // --- Utility ---
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Sample Answer";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '3000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your work?")) {
+                // Reset Attempts
+                for (const key in attempts) delete attempts[key];
+
+                // Clear Inputs & Selects
+                document.querySelectorAll('input').forEach(i => {
+                    i.value = "";
+                    i.disabled = false;
+                    i.classList.remove('border-green-500', 'bg-green-50', 'border-red-300');
+                });
+                document.querySelectorAll('textarea').forEach(t => {
+                    t.value = "";
+                });
+                document.querySelectorAll('select').forEach(s => {
+                    s.value = "";
+                    s.disabled = false;
+                    s.classList.remove('border-green-500', 'bg-green-50', 'border-red-300');
+                });
+                
+                // Clear Highlights
+                document.querySelectorAll('.highlight-text').forEach(el => el.classList.remove('highlight-text'));
+
+                // Clear Feedback
+                document.querySelectorAll('[id^="feedback-"], [id^="fb-"]').forEach(f => f.innerHTML = "");
+                
+                // Hide Answers
+                document.querySelectorAll('.answer-box').forEach(el => {
+                    el.classList.add('hidden');
+                    el.classList.remove('visible');
+                });
+                
+                // Reset Buttons
+                document.querySelectorAll('button').forEach(btn => {
+                   if(btn.innerText.includes("Hide")) btn.innerText = "Show Sample Answer"; 
+                });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+        });
+
+    </script>
+</body>
+</html>

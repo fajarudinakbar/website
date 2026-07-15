@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Practice Test - Writing Section</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- html2pdf.js for Client-Side PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Animation for word chips */
+        .word-chip {
+            transition: all 0.2s ease-in-out;
+        }
+        .word-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* PDF specific styles to override marked.js output in the PDF */
+        .pdf-content h3 { font-size: 10px; color: #007777; margin-top: 4px; margin-bottom: 2px; border-bottom: 1px solid #e5e7eb; padding-bottom: 1px; }
+        .pdf-content p { margin-bottom: 3px; font-size: 9px; line-height: 1.2; }
+        .pdf-content strong { color: #111827; }
+        .pdf-content ul { margin-top: 2px; margin-bottom: 3px; padding-left: 12px; font-size: 9px; line-height: 1.2; }
+        .pdf-content li { margin-bottom: 1px; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- App Container -->
+    <div id="app"></div>
+
+    <script>
+        // --- DATA STRUCTURE ---
+        const testData = {
+            module1: {
+                title: "Writing Section",
+                sections: [
+                    {
+                        id: "sec_build",
+                        type: "build_sentence",
+                        title: "Build a Sentence",
+                        timeLimit: 600,
+                        description: "Move the words in the boxes to create grammatical sentences.",
+                        questions: [
+                            {
+                                id: 1,
+                                prompt: "What are your plans for the evening?",
+                                chunks: ["I am", "going to", "the movies", "with", "my friends", "tonight."],
+                                answer: "I am going to the movies with my friends tonight.",
+                                targetLength: 6
+                            },
+                            {
+                                id: 2,
+                                prompt: "Are you ready for class?",
+                                chunks: ["Did you", "finish", "the math homework", "that is due", "tomorrow?"],
+                                answer: "Did you finish the math homework that is due tomorrow?",
+                                targetLength: 5
+                            },
+                            {
+                                id: 3,
+                                prompt: "How did the tournament go?",
+                                chunks: ["Our", "soccer team", "won", "the championship game", "last weekend."],
+                                answer: "Our soccer team won the championship game last weekend.",
+                                targetLength: 5
+                            },
+                            {
+                                id: 4,
+                                prompt: "What is your opinion on gaming?",
+                                chunks: ["I think", "playing video games", "can improve", "problem-solving", "skills."],
+                                answer: "I think playing video games can improve problem-solving skills.",
+                                targetLength: 5
+                            },
+                            {
+                                id: 5,
+                                prompt: "What did the teacher say about the essay?",
+                                chunks: ["She reminded us", "that", "the final draft", "is due", "next week."],
+                                answer: "She reminded us that the final draft is due next week.",
+                                targetLength: 5
+                            },
+                            {
+                                id: 6,
+                                prompt: "Why wasn't she in first period?",
+                                chunks: ["She was", "late to school", "because", "she missed", "the morning bus."],
+                                answer: "She was late to school because she missed the morning bus.",
+                                targetLength: 5
+                            },
+                            {
+                                id: 7,
+                                prompt: "What are we doing after school?",
+                                chunks: ["Are we", "still meeting", "at the library", "after school", "today?"],
+                                answer: "Are we still meeting at the library after school today?",
+                                targetLength: 5
+                            },
+                            {
+                                id: 8,
+                                prompt: "What did you get for your birthday?",
+                                chunks: ["My parents", "bought me", "a new laptop", "for", "my birthday."],
+                                answer: "My parents bought me a new laptop for my birthday.",
+                                targetLength: 5
+                            },
+                            {
+                                id: 9,
+                                prompt: "Is the event still happening this Friday?",
+                                chunks: ["The school dance", "has been", "postponed", "until", "next month."],
+                                answer: "The school dance has been postponed until next month.",
+                                targetLength: 5
+                            },
+                            {
+                                id: 10,
+                                prompt: "Did you like the book assignment?",
+                                chunks: ["I really", "enjoyed", "reading the novel", "for our", "English class."],
+                                answer: "I really enjoyed reading the novel for our English class.",
+                                targetLength: 5
+                            }
+                        ]
+                    },
+                    {
+                        id: "sec_email",
+                        type: "email",
+                        title: "Write an Email Reply",
+                        timeLimit: 420,
+                        timeLimitNotice: "Time Limit: 7 minutes",
+                        receivedEmail: {
+                            from: "Ms. Robinson <robinson.english@school.edu>",
+                            body: "Hi everyone,\n\nOur school has been invited to participate in the Annual Regional Speech Competition next month! I am looking for interested students to represent us. You can choose to speak in one of two categories: 'The Impact of Technology' or 'Protecting Our Environment'. Please let me know which category you would prefer and why.\n\nAlso, let me know which days after school you are available for speech coaching sessions.\n\nBest,\nMs. Robinson"
+                        },
+                        prompt: `Write an email replying to Ms. Robinson. In your email, you should:\n\n• State which speech category you prefer and explain why.\n• Tell her your availability for coaching sessions.\n• Ask one question about the competition.\n\nWrite as much as you can and in complete sentences.`,
+                        to: "Ms. Robinson <robinson.english@school.edu>",
+                        subject: "Re: Regional Speech Competition",
+                        sampleAnswer: "Dear Ms. Robinson,\n\nThank you for sharing this exciting opportunity. I would love to represent our school in the speech competition.\n\nI prefer the 'Impact of Technology' category. Since I am very interested in computer science and how artificial intelligence is changing our daily lives, I feel confident speaking about this topic and have a lot of ideas to share.\n\nRegarding my availability, I am free for coaching sessions every Monday and Wednesday after school.\n\nI do have one question: how long does the speech need to be for the competition?\n\nBest regards,\n[Your Name]"
+                    },
+                    {
+                        id: "sec_discussion",
+                        type: "discussion",
+                        title: "Write for a Class Discussion",
+                        timeLimit: 600,
+                        timeLimitNotice: "Time Limit: 10 minutes",
+                        prompt: `Your teacher has posted a question to the class discussion board, and other students have responded. Make a contribution to the discussion.\n\nIn your response, you should do the following:\n• Express and support your opinion.\n• Make a contribution to the discussion in your own words.\n\nAn effective response will contain at least 50 words.`,
+                        professor: {
+                            name: "Mr. Harrison",
+                            text: "Many schools are deciding to ban smartphones completely during school hours to help students focus. Do you think this is a good idea, or should students be allowed to use their phones for educational purposes? Explain your thoughts."
+                        },
+                        students: [
+                            {
+                                name: "Alex",
+                                text: "I think banning them is a bad idea. We can use phones to quickly research things for class or use educational apps. Teachers should just make sure we are on task instead of taking them away completely."
+                            },
+                            {
+                                name: "Maya",
+                                text: "I agree with the ban. It's too easy to get distracted by social media or texts. Without phones, we talk to each other more between classes and pay much better attention to the lessons."
+                            }
+                        ],
+                        sampleAnswer: "I agree with Maya that smartphones can be very distracting in the classroom, but I think a complete ban is too strict. As Alex mentioned, smartphones are really useful tools for research and learning. Instead of banning them completely, schools should teach students how to use technology responsibly. For example, teachers could have students put their phones away during lectures, but allow them to use them during group projects to look up information. This hybrid approach helps students stay focused when they need to listen, while still taking advantage of the educational benefits of the internet. Also, parents sometimes need to reach their kids in emergencies, so having a phone available is important for safety."
+                    }
+                ]
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            currentModule: null,
+            flatSteps: [],
+            currentStepIndex: 0,
+            answers: {},          // Stores final text for email/discussion
+            sentenceStates: {},   // Stores { available: [], selected: [] } for building sentences
+            sectionTimes: {},     // Stores remaining time per section
+            currentSectionId: null,
+            showResults: false,
+            showInstructions: false,
+            timerInterval: null,
+            automatedFeedback: {}, // Stores automated rules-based feedback
+            automatedSuggestions: {}, // Stores actionable next steps
+            studentName: ""       // Stores the student's name for the report
+        };
+
+        // --- LOGIC FUNCTIONS ---
+
+        // Randomize array in-place using Durstenfeld shuffle algorithm
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initModule(moduleId) {
+            state.currentModule = moduleId;
+            state.answers = {};
+            state.sentenceStates = {};
+            state.sectionTimes = {};
+            state.showResults = false;
+            state.showInstructions = true;
+            state.currentSectionId = null;
+            state.currentStepIndex = 0;
+
+            const steps = [];
+            testData[moduleId].sections.forEach(section => {
+                state.sectionTimes[section.id] = section.timeLimit;
+                if (section.type === 'build_sentence') {
+                    section.questions.forEach((q, idx) => {
+                        // Initialize state for this specific sentence
+                        state.sentenceStates[q.id] = {
+                            available: shuffleArray([...q.chunks]),
+                            selected: []
+                        };
+
+                        steps.push({
+                            type: 'build_sentence',
+                            data: section,
+                            question: q,
+                            questionIndex: idx + 1,
+                            totalQuestions: section.questions.length,
+                            sectionId: section.id
+                        });
+                    });
+                } else if (section.type === 'email' || section.type === 'discussion') {
+                    state.answers[section.id] = ""; // Initialize empty text
+                    steps.push({
+                        type: section.type,
+                        data: section,
+                        sectionId: section.id
+                    });
+                }
+            });
+            state.flatSteps = steps;
+            
+            render();
+        }
+
+        function startTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                if (state.sectionTimes[state.currentSectionId] > 0) {
+                    state.sectionTimes[state.currentSectionId]--;
+                    updateTimerDisplay();
+                } else {
+                    forceNextSection();
+                }
+            }, 1000);
+        }
+
+        function forceNextSection() {
+            const nextStep = state.flatSteps.find((s, idx) => idx > state.currentStepIndex && s.sectionId !== state.currentSectionId);
+            if (nextStep) {
+                state.currentStepIndex = state.flatSteps.indexOf(nextStep);
+                state.currentSectionId = nextStep.sectionId;
+                render();
+            } else {
+                finishTest();
+            }
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function handleNext() {
+            if (state.currentStepIndex < state.flatSteps.length - 1) {
+                state.currentStepIndex++;
+                state.currentSectionId = state.flatSteps[state.currentStepIndex].sectionId;
+                render();
+            } else {
+                finishTest();
+            }
+        }
+
+        function handleBack() {
+            if (state.currentStepIndex > 0) {
+                state.currentStepIndex--;
+                state.currentSectionId = state.flatSteps[state.currentStepIndex].sectionId;
+                render();
+            }
+        }
+
+        function handleBeginTest() {
+            state.showInstructions = false;
+            state.currentSectionId = state.flatSteps[0].sectionId;
+            startTimer();
+            render();
+        }
+
+        function finishTest() {
+            stopTimer();
+            
+            // Automatically run analysis for writing tasks
+            testData[state.currentModule].sections.forEach(section => {
+                if (section.type === 'email' || section.type === 'discussion') {
+                    const text = state.answers[section.id] || "";
+                    if (text.trim()) {
+                        state.automatedFeedback[section.id] = analyzeWriting(text, section.id);
+                    }
+                }
+            });
+
+            state.showResults = true;
+            render();
+        }
+
+        // --- SENTENCE BUILDER LOGIC ---
+        function selectWord(qId, wordIndex) {
+            const sState = state.sentenceStates[qId];
+            const word = sState.available.splice(wordIndex, 1)[0];
+            sState.selected.push(word);
+            render();
+        }
+
+        function deselectWord(qId, wordIndex) {
+            const sState = state.sentenceStates[qId];
+            const word = sState.selected.splice(wordIndex, 1)[0];
+            sState.available.push(word);
+            render();
+        }
+
+        // --- TEXT INPUT LOGIC ---
+        function handleTextInput(sectionId, value) {
+            state.answers[sectionId] = value;
+            updateWordCount(sectionId);
+        }
+
+        function updateWordCount(sectionId) {
+            const text = state.answers[sectionId] || "";
+            const wordCount = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const el = document.getElementById(`wc-${sectionId}`);
+            if (el) el.innerText = wordCount;
+        }
+
+        function resetApp() {
+            state.currentModule = null;
+            state.flatSteps = [];
+            state.answers = {};
+            state.sentenceStates = {};
+            state.sectionTimes = {};
+            state.currentSectionId = null;
+            state.showResults = false;
+            state.showInstructions = false;
+            state.studentName = "";
+            state.automatedFeedback = {};
+            state.automatedSuggestions = {};
+            stopTimer();
+            render();
+        }
+
+        function calculateSentenceScore() {
+            let correct = 0;
+            let total = 0;
+
+            if (!state.currentModule) return { correct: 0, total: 0 };
+
+            testData[state.currentModule].sections.forEach(sec => {
+                if (sec.type === 'build_sentence') {
+                    sec.questions.forEach(q => {
+                        total++;
+                        // Fix: Remove unnatural spaces before standalone punctuation chunks for accurate scoring
+                        const userArrangement = state.sentenceStates[q.id].selected.join(" ").replace(/\s+([.,?!])/g, "$1").trim();
+                        if (userArrangement === q.answer) {
+                            correct++;
+                        }
+                    });
+                }
+            });
+            return { correct, total };
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('timer-display');
+            if (el) el.innerText = formatTime(state.sectionTimes[state.currentSectionId] || 0);
+        }
+
+        // --- AUTOMATED RULES-BASED FEEDBACK LOGIC ---
+        function analyzeWriting(text, sectionId) {
+            // 1. Basic Stats
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+            const wordCount = words.length;
+            // Split by punctuation for sentence count
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            const sentenceCount = Math.max(1, sentences.length);
+
+            // 2. Vocabulary Analysis (Type-Token Ratio for Lexical Resource)
+            const cleanWords = words.map(w => w.toLowerCase().replace(/[^a-z]/g, '')).filter(w => w.length > 0);
+            const uniqueWords = new Set(cleanWords);
+            const ttr = cleanWords.length > 0 ? (uniqueWords.size / cleanWords.length) : 0;
+            
+            // 3. Grammar/Cohesion Analysis (Differentiated by task)
+            const emailTransitions = ["however", "therefore", "because", "regarding", "also", "furthermore", "sincerely", "best", "dear", "thank you", "please", "could you"];
+            const discTransitions = ["however", "therefore", "because", "although", "since", "for example", "for instance", "in addition", "on the other hand", "i agree", "i disagree", "in my opinion", "while"];
+            
+            const transitionsToUse = sectionId === 'sec_email' ? emailTransitions : discTransitions;
+            const lowerText = text.toLowerCase();
+            let transitionCount = 0;
+            
+            transitionsToUse.forEach(t => { 
+                const regex = new RegExp(`\\b${t}\\b`, 'g');
+                const matches = lowerText.match(regex);
+                if (matches) transitionCount += matches.length; 
+            });
+
+            // 4. Score Calculation & Dynamic Suggestions (Out of 5)
+            let score = 3.0; // Base score
+            let feedbackPoints = [];
+            let suggestions = []; // Array for Actionable Next Steps
+
+            const minWords = sectionId === 'sec_email' ? 40 : 50; 
+
+            // Task fulfillment
+            if (wordCount >= minWords) {
+                score += 0.5;
+                feedbackPoints.push("✅ **Task Fulfillment (Length):** Excellent. You met the expected word count, giving you enough space to develop your ideas.");
+            } else {
+                score -= 1.0;
+                feedbackPoints.push(`⚠️ **Task Fulfillment (Length):** Your response is quite short (${wordCount} words). Try to write at least ${minWords} words to fully answer the prompt.`);
+                if (sectionId === 'sec_email') {
+                    suggestions.push(`**Add details:** Explain *why* you chose your category in more detail. (e.g., *"I prefer this topic because..."*)`);
+                } else {
+                    suggestions.push(`**Elaborate:** Give a specific real-world example to back up your point. (e.g., *"For instance, when I use my phone for..."*)`);
+                }
+            }
+
+            // Lexical Resource
+            if (wordCount > 20) {
+                if (ttr > 0.65) {
+                    score += 0.5;
+                    feedbackPoints.push(`✅ **Lexical Resource:** You demonstrated a great variety of vocabulary! You used ${uniqueWords.size} unique words.`);
+                } else if (ttr < 0.45) {
+                    score -= 0.5;
+                    feedbackPoints.push("⚠️ **Lexical Resource:** You repeated several words often. Try to use a wider range of vocabulary.");
+                    if (sectionId === 'sec_email') {
+                        suggestions.push(`**Upgrade vocabulary:** Instead of just repeating "speech", try using words like *"presentation"*, *"topic"*, or *"performance"*.`);
+                    } else {
+                        suggestions.push(`**Use synonyms:** Instead of saying "good" or "bad" multiple times, try words like *"beneficial"*, *"distracting"*, or *"essential"*.`);
+                    }
+                } else {
+                    feedbackPoints.push("✅ **Lexical Resource:** Good, standard use of vocabulary.");
+                }
+            }
+
+            // Grammatical Range & Structure
+            const avgSentenceLength = wordCount / sentenceCount;
+            if (transitionCount >= 2) {
+                score += 1.0;
+                feedbackPoints.push(`✅ **Cohesion & Grammar:** Excellent sentence structure! You used linking/functional words well.`);
+            } else if (transitionCount === 0 && wordCount > 25) {
+                score -= 0.5;
+                feedbackPoints.push("⚠️ **Cohesion & Grammar:** Your writing needs better flow and connection between ideas.");
+                if (sectionId === 'sec_email') {
+                    suggestions.push(`**Connect your thoughts:** Use polite email phrases. (e.g., *"Regarding my availability..."*, *"Furthermore,"*, *"Please let me know..."*)`);
+                } else {
+                    suggestions.push(`**Guide the reader:** Connect your arguments smoothly using academic transitions. (e.g., *"On the other hand,"*, *"Therefore,"*, *"For example,"*)`);
+                }
+            } else {
+                 feedbackPoints.push("✅ **Cohesion & Grammar:** Your sentence structures are generally clear and readable.");
+            }
+
+            // Sentence Length warning
+            if (avgSentenceLength > 25) {
+                score -= 0.5;
+                feedbackPoints.push("⚠️ **Readability:** Some of your sentences are very long, which can lead to run-on errors.");
+                suggestions.push(`**Improve clarity:** Break up long sentences. Try using a period and starting a new sentence with a transition word like *"However,"* or *"Additionally,"*.`);
+            } else if (avgSentenceLength < 6 && wordCount > 20) {
+                feedbackPoints.push("⚠️ **Readability:** Your sentences are very short and choppy.");
+                suggestions.push(`**Combine ideas:** Link short sentences using conjunctions (*"and"*, *"but"*, *"so"*) or complex structures (*"Even though..."*, *"Because..."*) to make your writing flow better.`);
+            }
+
+            // Default suggestion if doing very well
+            if (suggestions.length === 0) {
+                if (sectionId === 'sec_email') {
+                    suggestions.push(`**Professional Polish:** Great email! Next time, try adding a warm closing remark to make it sound even more natural. (e.g., *"I look forward to hearing from you."*)`);
+                } else {
+                    suggestions.push(`**Advanced Argument:** Strong point! To push your score higher, try acknowledging the opposing side before making your argument. (e.g., *"While I understand that [opposing point], I still believe..."*)`);
+                }
+            }
+
+            // Store suggestions globally for this section
+            state.automatedSuggestions = state.automatedSuggestions || {};
+            state.automatedSuggestions[sectionId] = suggestions;
+
+            // Cap score strictly between 1.0 and 5.0
+            score = Math.min(5, Math.max(1, score));
+            
+            // Format to half-points (e.g., 3.5, 4.0)
+            score = (Math.round(score * 2) / 2).toFixed(1);
+
+            let finalFeedback = `### Estimated Score: ${score} / 5.0\n\n`;
+            finalFeedback += `*This is an automated structural analysis based on grammar algorithms and vocabulary metrics.* \n\n`;
+            finalFeedback += feedbackPoints.join("\n\n");
+            
+            return finalFeedback;
+        }
+
+        // --- SCORE EXTRACTION & PDF GENERATION LOGIC ---
+        
+        function extractScore(sectionId) {
+            const feedback = state.automatedFeedback[sectionId];
+            if (!feedback) return 0;
+            const match = feedback.match(/Estimated Score:\s*([\d.]+)/);
+            return match ? parseFloat(match[1]) : 0;
+        }
+
+        function generateDetailedFeedbackHTML() {
+            let html = '';
+            testData[state.currentModule].sections.forEach(sec => {
+                if (sec.type === 'email' || sec.type === 'discussion') {
+                    const userText = state.answers[sec.id] || '(No response provided)';
+                    let feedbackStr = state.automatedFeedback[sec.id] || 'No feedback generated.';
+                    
+                    // Remove the redundant estimated score text from the detailed view since it's in the table
+                    feedbackStr = feedbackStr.replace(/### Estimated Score: [\d.]+ \/ 5\.0\n\n/, '');
+                    feedbackStr = feedbackStr.replace(/\*This is an automated structural analysis.*\n\n/, '');
+                    
+                    // Parse markdown to HTML
+                    let parsedFeedback = marked.parse(feedbackStr);
+                    
+                    html += `
+                    <div style="margin-bottom: 10px; page-break-inside: avoid;">
+                        <h4 style="color: #007777; border-bottom: 1px solid #eee; padding-bottom: 2px; margin-bottom: 4px; font-size: 11px;">${sec.title}</h4>
+                        <div style="background-color: #f9f9f9; padding: 4px 6px; border-left: 2px solid #007777; margin-bottom: 4px;">
+                            <strong style="color: #555; font-size: 8.5px;">YOUR RESPONSE:</strong><br/>
+                            <span style="white-space: pre-wrap; font-size: 9px; color: #333; line-height: 1.2;">${userText}</span>
+                        </div>
+                        <div class="pdf-content" style="font-size: 9px; color: #444; line-height: 1.2;">
+                            ${parsedFeedback}
+                        </div>
+                    </div>
+                    `;
+                }
+            });
+            return html;
+        }
+
+        function downloadPDFReport() {
+            // Set loading state on button
+            const btn = document.getElementById('download-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin inline-block"></i> Generating...';
+            lucide.createIcons();
+
+            const name = state.studentName ? state.studentName.trim() : 'Student';
+            const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            const { correct, total } = calculateSentenceScore();
+            const emailScore = extractScore('sec_email');
+            const discScore = extractScore('sec_discussion');
+            
+            // Apply new weighted scoring
+            const sentenceWeight = (correct / total) * 25;
+            const emailWeight = (emailScore / 5.0) * 35;
+            const discWeight = (discScore / 5.0) * 40;
+            const percentage = Math.round(sentenceWeight + emailWeight + discWeight);
+
+            // Create a simple, clean HTML string for the PDF using a vertical layout to fit on one portrait page
+            const reportHTML = `
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; font-size: 10px; box-sizing: border-box;">
+                    <h2 style="color: #007777; border-bottom: 2px solid #007777; padding-bottom: 4px; margin-bottom: 12px; font-size: 16px; margin-top: 0; text-align: center;">
+                        Academic Writing Practice Score Report
+                    </h2>
+                    
+                    <table style="width: 100%; margin-bottom: 12px; border-collapse: collapse;">
+                        <tr>
+                            <td style="vertical-align: bottom;">
+                                <div style="font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Student Name</div>
+                                <div style="font-size: 18px; font-weight: bold; color: #111827;">${name}</div>
+                                <div style="margin-top: 4px; font-size: 10px; color: #555;"><strong>Date:</strong> ${date}</div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <h3 style="color: #007777; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin-bottom: 6px; font-size: 12px; margin-top: 0;">Section Scores</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
+                        <tr style="background-color: #f0f0f0;">
+                            <th style="border: 1px solid #ccc; padding: 4px; text-align: left; font-size: 9.5px;">Task (Weight)</th>
+                            <th style="border: 1px solid #ccc; padding: 4px; text-align: center; font-size: 9.5px;">Raw Score</th>
+                            <th style="border: 1px solid #ccc; padding: 4px; text-align: center; font-size: 9.5px;">Weighted %</th>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ccc; padding: 4px; font-size: 9.5px;">1. Build a Sentence (25%)</td>
+                            <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-size: 9.5px;">${correct} / ${total}</td>
+                            <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-size: 9.5px;">${sentenceWeight.toFixed(1)}%</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ccc; padding: 4px; font-size: 9.5px;">2. Email Reply (35%)</td>
+                            <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-size: 9.5px;">${emailScore.toFixed(1)} / 5.0</td>
+                            <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-size: 9.5px;">${emailWeight.toFixed(1)}%</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ccc; padding: 4px; font-size: 9.5px;">3. Class Discussion (40%)</td>
+                            <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-size: 9.5px;">${discScore.toFixed(1)} / 5.0</td>
+                            <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-size: 9.5px;">${discWeight.toFixed(1)}%</td>
+                        </tr>
+                        <tr style="background-color: #e6f2f2;">
+                            <td style="border: 1px solid #ccc; padding: 6px; text-align: right; font-weight: bold; font-size: 10px;" colspan="2">TOTAL SCORE:</td>
+                            <td style="border: 1px solid #ccc; padding: 6px; text-align: center; font-weight: bold; color: #007777; font-size: 11px;">${percentage}%</td>
+                        </tr>
+                    </table>
+
+                    <h3 style="color: #007777; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin-bottom: 6px; font-size: 12px; margin-top: 0;">Detailed Analysis</h3>
+                    ${generateDetailedFeedbackHTML()}
+                    
+                    <div style="margin-top: 10px; font-size: 8.5px; color: #777; text-align: center; border-top: 1px solid #eee; padding-top: 6px; line-height: 1.3;">
+                        <strong>Generated by EnglishTech Solutions</strong><br/>
+                        Automated structural analysis based on grammar algorithms and vocabulary metrics.
+                    </div>
+                </div>
+            `;
+
+            // Configure html2pdf options
+            const safeName = name.replace(/[^a-zA-Z0-9\s]/g, '').trim() || 'Student';
+            const opt = {
+                margin:       0.5, // Standard half-inch margin
+                filename:     `Academic Writing Report - ${safeName}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' } // Changed back to portrait
+            };
+
+            // Generate and save the PDF directly from the HTML string
+            html2pdf().set(opt).from(reportHTML).save().then(() => {
+                btn.innerHTML = originalText;
+                lucide.createIcons(); 
+            }).catch(err => {
+                console.error("PDF generation error:", err);
+                alert("There was an issue generating the PDF. Please try again.");
+                btn.innerHTML = originalText;
+                lucide.createIcons();
+            });
+        }
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderWelcome() {
+            return `
+            <div class="min-h-screen bg-[#f0f0f0] flex items-center justify-center p-4">
+                <div class="bg-white max-w-3xl w-full shadow-lg rounded-lg overflow-hidden border-t-8 border-[#007777]">
+                    <div class="bg-[#007777] p-6 text-white text-center">
+                        <i data-lucide="edit-3" class="w-12 h-12 mx-auto mb-4 opacity-90"></i>
+                        <h1 class="text-3xl font-bold font-sans">Writing Practice for Teens</h1>
+                        <p class="opacity-90 mt-2">TOEFL® Style Exercises</p>
+                    </div>
+                    
+                    <div class="p-10 text-center">
+                        <p class="text-gray-600 mb-8 text-lg">
+                            This practice test simulates the digital interface of an English writing test. 
+                            You will complete sentence building tasks and write responses to realistic prompts.
+                        </p>
+                        
+                        <div class="flex justify-center">
+                            <button onclick="initModule('module1')" class="group relative p-6 border-2 border-gray-200 rounded-xl hover:border-[#007777] transition-all text-left max-w-md w-full">
+                                <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center justify-center">
+                                    <i data-lucide="file-text" class="w-5 h-5 mr-2 text-[#007777]"></i> Start Writing Practice
+                                </h3>
+                                <p class="text-sm text-gray-500 text-center">10 Sentence Builds • 1 Email Reply • 1 Class Discussion</p>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 text-center text-xs text-gray-400">
+                        Simulated interface for educational purposes.
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderReview() {
+            const { correct, total } = calculateSentenceScore();
+            const moduleData = testData[state.currentModule];
+            
+            let html = '<div class="max-w-5xl mx-auto mt-12 space-y-8 pb-16">';
+            
+            // Sentence Building Results
+            html += `
+            <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+                <div class="bg-gray-100 p-4 border-b border-gray-200 font-bold text-gray-800 flex items-center justify-between">
+                    <div class="flex items-center"><i data-lucide="check-square" class="w-5 h-5 mr-2 text-[#007777]"></i> Build a Sentence Results</div>
+                    <div class="bg-[#007777] text-white px-3 py-1 rounded-full text-sm">${correct} / ${total} Correct</div>
+                </div>
+                <div class="p-6 space-y-6">
+            `;
+
+            moduleData.sections.forEach(section => {
+                if (section.type === 'build_sentence') {
+                    section.questions.forEach((q) => {
+                        const userArrangement = state.sentenceStates[q.id].selected.join(" ").replace(/\s+([.,?!])/g, "$1").trim();
+                        const isCorrect = userArrangement === q.answer;
+                        
+                        html += `
+                        <div class="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                            <p class="text-sm text-gray-500 mb-1">Prompt: "${q.prompt}"</p>
+                            <div class="flex items-start">
+                                ${isCorrect 
+                                    ? '<i data-lucide="check-circle" class="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0"></i>' 
+                                    : '<i data-lucide="x-circle" class="w-5 h-5 text-red-500 mr-2 mt-0.5 flex-shrink-0"></i>'
+                                }
+                                <div>
+                                    <p class="font-medium ${isCorrect ? 'text-green-700' : 'text-red-600'}">${userArrangement || "(No answer provided)"}</p>
+                                    ${!isCorrect ? `<p class="text-sm text-gray-600 mt-1 italic">Incorrect. Review your structure and try again on your next attempt!</p>` : ''}
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                }
+            });
+            html += `</div></div>`;
+
+            // Written Essays Review (Automated Evaluation)
+            moduleData.sections.forEach(section => {
+                if (section.type === 'email' || section.type === 'discussion') {
+                    const userText = state.answers[section.id] || "";
+                    const wordCount = userText.trim().split(/\s+/).filter(w => w.length > 0).length;
+                    
+                    html += `
+                    <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden mt-8">
+                        <div class="bg-gray-100 p-4 border-b border-gray-200 font-bold text-gray-800 flex items-center">
+                            <i data-lucide="file-edit" class="w-5 h-5 mr-2 text-[#007777]"></i> Your Response: ${section.title}
+                        </div>
+                        <div class="p-6">
+                            <div class="mb-4">
+                                <span class="bg-gray-100 text-gray-700 text-xs font-bold px-2 py-1 rounded border border-gray-200 uppercase tracking-wide">
+                                    Word Count: ${wordCount}
+                                </span>
+                            </div>
+                            <div class="p-4 bg-gray-50 border border-gray-200 rounded text-gray-800 whitespace-pre-wrap font-sans min-h-[100px]">${userText || "<span class='text-gray-400 italic'>No response written.</span>"}</div>
+                            
+                            <!-- Automated Feedback Section -->
+                            <div class="mt-6 border-t border-gray-200 pt-6">
+                                <h4 class="font-bold text-[#007777] mb-3 flex items-center">
+                                    <i data-lucide="bar-chart" class="w-5 h-5 mr-2"></i> Structural Writing Analysis
+                                </h4>
+                                ${!userText.trim() ? 
+                                    '<p class="text-sm text-gray-500 italic">No response provided. A response is required to generate the structural analysis.</p>' 
+                                    : `<div class="p-5 bg-[#f0f9f9] border border-[#b3e0e0] rounded-lg text-gray-800 text-sm leading-relaxed prose max-w-none">${marked.parse(String(state.automatedFeedback[section.id]))}</div>`
+                                }
+                            </div>
+
+                            <!-- Automated Suggestions Section -->
+                            <div class="mt-6 border-t border-gray-200 pt-6">
+                                <h4 class="font-bold text-gray-700 mb-3 flex items-center">
+                                    <i data-lucide="lightbulb" class="w-4 h-4 mr-2 text-yellow-500"></i> Actionable Next Steps
+                                </h4>
+                                ${!userText.trim() ? 
+                                    '<p class="text-sm text-gray-500 italic">No response provided.</p>' 
+                                    : (state.automatedSuggestions && state.automatedSuggestions[section.id]) ?
+                                    `<ul class="space-y-2 text-sm text-gray-600">
+                                        ${state.automatedSuggestions[section.id].map(s => `<li class="flex items-start"><i data-lucide="arrow-right" class="w-4 h-4 mr-2 text-[#007777] mt-0.5 flex-shrink-0"></i> <span>${marked.parseInline(s)}</span></li>`).join('')}
+                                    </ul>`
+                                    : '<p class="text-sm text-gray-500 italic">Generating suggestions...</p>'
+                                }
+                            </div>
+                        </div>
+                    </div>`;
+                }
+            });
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderResults() {
+            const reviewHtml = renderReview();
+
+            // Calculate overall metrics for the header
+            const { correct, total } = calculateSentenceScore();
+            const emailScore = extractScore('sec_email');
+            const discScore = extractScore('sec_discussion');
+            
+            const sentenceWeight = (correct / total) * 25;
+            const emailWeight = (emailScore / 5.0) * 35;
+            const discWeight = (discScore / 5.0) * 40;
+            const percentage = Math.round(sentenceWeight + emailWeight + discWeight);
+
+            let scoreColor = percentage >= 80 ? 'text-green-400' : (percentage >= 70 ? 'text-yellow-300' : 'text-orange-400');
+
+            // Dynamic encouragement message and retake button styling based on score
+            let encouragementMessage = '';
+            let retakeBtnClass = 'bg-gray-200 text-gray-800 hover:bg-gray-300';
+            
+            if (percentage < 70) {
+                encouragementMessage = `
+                <div class="bg-orange-50 border-b border-gray-200 p-6 flex items-start">
+                    <i data-lucide="target" class="w-6 h-6 text-orange-500 mr-3 mt-0.5 flex-shrink-0"></i>
+                    <div>
+                        <h4 class="text-base font-bold text-orange-800">Keep Practicing!</h4>
+                        <p class="text-sm text-orange-700 mt-1">You scored below the 70% target. Review the detailed structural analysis below to identify areas for improvement, then retake the practice to achieve a higher score.</p>
+                    </div>
+                </div>`;
+                retakeBtnClass = 'bg-orange-500 text-white shadow hover:bg-orange-600';
+            } else {
+                encouragementMessage = `
+                <div class="bg-green-50 border-b border-gray-200 p-6 flex items-start">
+                    <i data-lucide="award" class="w-6 h-6 text-green-600 mr-3 mt-0.5 flex-shrink-0"></i>
+                    <div>
+                        <h4 class="text-base font-bold text-green-800">Excellent Work!</h4>
+                        <p class="text-sm text-green-700 mt-1">You achieved the target score of 70% or higher. Review your feedback below to see your strengths and areas for further polish.</p>
+                    </div>
+                </div>`;
+            }
+
+            return `
+            <div class="min-h-screen bg-[#f0f0f0] pt-24 pb-12 px-4 overflow-y-auto custom-scroll">
+                <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                    
+                    <!-- New Results Header with Total Score -->
+                    <div class="bg-gray-800 p-8 text-white flex flex-col md:flex-row items-center justify-between border-b-4 border-[#007777]">
+                        <div class="text-center md:text-left mb-6 md:mb-0">
+                            <h2 class="text-3xl font-bold mb-2 flex items-center justify-center md:justify-start">
+                                <i data-lucide="check-circle" class="w-8 h-8 mr-3 text-[#007777]"></i> Practice Completed
+                            </h2>
+                            <p class="text-gray-300">Review your objective scores and automated feedback.</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Total Score</p>
+                            <div class="text-5xl font-black ${scoreColor}">
+                                ${percentage}%
+                            </div>
+                            <p class="text-sm text-gray-300 mt-1">Weighted Academic Score</p>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Encouragement Block -->
+                    ${encouragementMessage}
+                    
+                    <!-- Download Report Section -->
+                    <div class="bg-blue-50 p-6 border-b border-gray-200">
+                        <div class="max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4">
+                            <div class="w-full">
+                                <label for="studentNameInput" class="block text-sm font-bold text-gray-700 mb-1">Student Name</label>
+                                <input type="text" id="studentNameInput" placeholder="Enter your full name for the official report" 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-[#007777]"
+                                    value="${state.studentName || ''}" 
+                                    oninput="state.studentName = this.value"
+                                >
+                            </div>
+                            <div class="w-full sm:w-auto flex-shrink-0 sm:mt-5">
+                                <button id="download-btn" onclick="downloadPDFReport()" class="w-full px-6 py-2 bg-[#007777] text-white font-bold rounded shadow hover:bg-[#005555] transition-colors flex items-center justify-center">
+                                    <i data-lucide="file-down" class="w-4 h-4 mr-2"></i> Download PDF Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-white flex justify-center border-b border-gray-200">
+                        <button onclick="resetApp()" class="px-6 py-2 font-bold rounded transition-colors flex items-center text-sm ${retakeBtnClass}">
+                            <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i> Retake Practice
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Detailed Review Section -->
+                ${reviewHtml}
+                
+                <div class="flex justify-center pb-12">
+                     <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-full shadow hover:bg-gray-400 transition-colors text-sm font-bold flex items-center">
+                        <i data-lucide="arrow-up" class="w-4 h-4 mr-2"></i> Back to Top
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        function renderHeader() {
+            const isInstructionPhase = state.showInstructions;
+            let navButtons = '';
+
+            if (isInstructionPhase) {
+                navButtons = `
+                    <button onclick="handleBeginTest()" class="flex items-center px-6 py-2 bg-white text-[#007777] font-bold rounded shadow hover:bg-gray-100 transition-colors">
+                        Begin
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            } else {
+                const backBtn = state.currentStepIndex > 0 
+                    ? `<button onclick="handleBack()" class="flex items-center px-6 py-2 bg-white text-[#007777] font-bold rounded shadow hover:bg-gray-100 transition-colors mr-2">
+                        <i data-lucide="chevron-left" class="mr-1 w-5 h-5"></i> Back
+                       </button>` 
+                    : '';
+                
+                const nextText = state.currentStepIndex === state.flatSteps.length - 1 ? 'Finish' : 'Next';
+                
+                navButtons = `
+                    ${backBtn}
+                    <button onclick="handleNext()" class="flex items-center px-6 py-2 bg-white text-[#007777] font-bold rounded shadow hover:bg-gray-100 transition-colors">
+                        ${nextText}
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            }
+
+            return `
+            <header class="bg-[#007777] h-16 flex items-center justify-between px-6 shadow-md z-50 fixed w-full top-0">
+                <div class="flex items-center space-x-4">
+                    <span class="text-white text-lg font-sans font-bold flex items-center">
+                        <i data-lucide="pen-tool" class="w-5 h-5 mr-2"></i> Writing Section
+                    </span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="flex space-x-2">
+                        ${navButtons}
+                    </div>
+                </div>
+            </header>
+            `;
+        }
+
+        function renderSubHeader() {
+            if (state.showInstructions) return '';
+            
+            const step = state.flatSteps[state.currentStepIndex];
+            const totalSteps = state.flatSteps.length;
+            
+            let displayTitle = step.data.title;
+            if (step.type === 'build_sentence') {
+                displayTitle = `${step.data.title} (${step.questionIndex}/${step.totalQuestions})`;
+            }
+
+            return `
+            <div class="fixed top-16 w-full bg-white border-b border-gray-300 px-6 py-3 flex justify-between items-center text-gray-700 text-sm font-sans z-40 shadow-sm">
+                <span class="font-semibold text-lg text-[#007777]">${displayTitle}</span>
+                <div class="flex items-center text-gray-500 font-mono bg-gray-100 px-3 py-1 rounded border border-gray-200">
+                    <i data-lucide="clock" class="mr-2 w-4 h-4"></i>
+                    <span id="timer-display" class="font-bold">${formatTime(state.sectionTimes[state.currentSectionId] || 0)}</span>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderInstructions() {
+            return `
+            <div class="pt-24 px-8 max-w-5xl mx-auto h-screen overflow-y-auto custom-scroll pb-10">
+                <h1 class="text-3xl text-gray-700 mb-6 font-sans">Writing Section</h1>
+                
+                <p class="text-gray-800 text-lg mb-4 leading-relaxed">
+                    In the writing section, you will demonstrate how well you can write in English. There are three types of tasks.
+                </p>
+
+                <div class="bg-blue-50 border-l-4 border-[#007777] p-4 mb-8">
+                    <p class="text-sm text-gray-700">
+                        <strong>EdTech Note:</strong> This digital adaptation replaces traditional drag-and-drop with an accessible "click-to-assemble" 
+                        interface for sentence building, ensuring smooth functionality across all devices. The productive writing tasks feature live word counts 
+                        and realistic form fields to authenticate the testing experience.
+                    </p>
+                </div>
+
+                <div class="border border-black max-w-3xl">
+                    <div class="grid grid-cols-[30%_70%] bg-[#00d2be] border-b border-black">
+                        <div class="p-3 font-bold border-r border-black">Type of Task</div>
+                        <div class="p-3 font-bold">Description</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-[30%_70%] border-b border-black bg-white">
+                        <div class="p-3 border-r border-black">Build a Sentence</div>
+                        <div class="p-3">Create a grammatical sentence by assembling word chunks.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] border-b border-black bg-white">
+                        <div class="p-3 border-r border-black">Write an Email Reply</div>
+                        <div class="p-3">Read a received email and write a response using the provided instructions.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] bg-white">
+                        <div class="p-3 border-r border-black">Write for a Class Discussion</div>
+                        <div class="p-3">Participate in an online discussion with a teacher and classmates.</div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderBuildSentence(step) {
+            const { data, question } = step;
+            const sState = state.sentenceStates[question.id];
+
+            const availableChips = sState.available.map((word, idx) => `
+                <button onclick="selectWord(${question.id}, ${idx})" class="word-chip m-1.5 px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 font-medium rounded shadow-sm hover:border-[#007777] hover:text-[#007777]">
+                    ${word}
+                </button>
+            `).join('');
+
+            const selectedChips = sState.selected.map((word, idx) => `
+                <button onclick="deselectWord(${question.id}, ${idx})" class="word-chip m-1.5 px-4 py-2 bg-[#007777] text-white font-medium rounded shadow hover:bg-[#005555]">
+                    ${word}
+                </button>
+            `).join('');
+
+            const targetCount = question.targetLength || question.chunks.length;
+            const emptySlotsCount = Math.max(0, targetCount - sState.selected.length);
+            let emptySlotsHtml = '';
+            for(let i = 0; i < emptySlotsCount; i++) {
+                emptySlotsHtml += `<div class="m-1.5 w-20 h-10 border-2 border-dashed border-gray-300 rounded bg-gray-50 opacity-60"></div>`;
+            }
+
+            return `
+            <div class="pt-32 px-4 md:px-12 max-w-4xl mx-auto pb-12 h-screen overflow-y-auto custom-scroll">
+                
+                <div class="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
+
+                    <div class="flex items-center mb-6 border-b border-gray-100 pb-4">
+                        <div class="bg-[#007777] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3 shadow-sm">
+                            ${step.questionIndex}
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800">${question.prompt}</h2>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider flex items-center">
+                                <i data-lucide="edit-2" class="w-4 h-4 mr-1"></i> Your Sentence
+                            </p>
+                            <span class="text-xs font-bold ${sState.selected.length === targetCount ? 'bg-green-100 text-green-700' : sState.selected.length > targetCount ? 'bg-red-100 text-red-700' : 'bg-blue-50 text-[#007777]'} px-3 py-1 rounded-full border ${sState.selected.length === targetCount ? 'border-green-200' : sState.selected.length > targetCount ? 'border-red-200' : 'border-blue-200'} shadow-sm">
+                                ${sState.selected.length} / ${targetCount} blocks
+                            </span>
+                        </div>
+                        <div class="min-h-[80px] p-4 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-wrap items-center">
+                            ${selectedChips}${emptySlotsHtml}
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                            <i data-lucide="list" class="w-4 h-4 mr-1"></i> Word Bank
+                        </p>
+                        <div class="p-4 bg-gray-100 border border-gray-200 rounded-lg flex flex-wrap">
+                            ${availableChips || '<span class="text-gray-400 italic py-2">All words used.</span>'}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            `;
+        }
+
+        function renderEmail(step) {
+            const { data } = step;
+            const currentText = state.answers[data.id] || "";
+            const wordCount = currentText.trim().split(/\s+/).filter(w => w.length > 0).length;
+
+            let receivedEmailHtml = '';
+            if (data.receivedEmail) {
+                receivedEmailHtml = `
+                <div class="mb-6 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                    <div class="bg-gray-100 px-4 py-2 border-b border-gray-200 text-sm">
+                        <span class="font-bold text-gray-700">From:</span> <span class="text-gray-600">${data.receivedEmail.from}</span>
+                    </div>
+                    <div class="p-4 text-gray-800 text-base font-sans whitespace-pre-wrap">${data.receivedEmail.body}</div>
+                </div>
+                `;
+            }
+
+            return `
+            <div class="pt-28 h-screen flex flex-col md:flex-row overflow-hidden bg-white">
+                <!-- Left Pane: Prompt -->
+                <div class="w-full md:w-1/2 h-full overflow-y-auto border-r border-gray-300 p-8 bg-gray-50 custom-scroll">
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                        <p class="text-sm text-yellow-800 font-bold flex items-center">
+                            <i data-lucide="timer" class="w-4 h-4 mr-2"></i> ${data.timeLimitNotice}
+                        </p>
+                    </div>
+                    ${receivedEmailHtml}
+                    <div class="prose max-w-none text-black font-sans leading-relaxed text-lg bg-blue-50 p-5 rounded-lg border border-blue-100">
+                        <h4 class="font-bold text-[#007777] mb-2 flex items-center"><i data-lucide="info" class="w-5 h-5 mr-2"></i> Task Instructions:</h4>
+                        ${data.prompt.replace(/\n/g, '<br/>')}
+                    </div>
+                </div>
+                
+                <!-- Right Pane: Compose -->
+                <div class="w-full md:w-1/2 h-full flex flex-col p-8 bg-white">
+                    <div class="flex-grow flex flex-col border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+                        
+                        <!-- Email Headers -->
+                        <div class="bg-gray-100 border-b border-gray-300 p-4 space-y-2">
+                            <div class="flex text-sm">
+                                <span class="font-bold text-gray-500 w-16">To:</span>
+                                <span class="text-gray-800">${data.to}</span>
+                            </div>
+                            <div class="flex text-sm">
+                                <span class="font-bold text-gray-500 w-16">Subject:</span>
+                                <span class="text-gray-800 font-medium">${data.subject}</span>
+                            </div>
+                        </div>
+
+                        <!-- Editor -->
+                        <textarea 
+                            class="flex-grow p-4 w-full resize-none focus:outline-none focus:ring-2 focus:ring-[#007777] text-gray-800 text-lg custom-scroll"
+                            placeholder="Type your email here..."
+                            oninput="handleTextInput('${data.id}', this.value)"
+                            onpaste="return false;" oncopy="return false;" oncut="return false;" ondrop="return false;" spellcheck="false" autocomplete="off"
+                        >${currentText}</textarea>
+                        
+                        <!-- Footer -->
+                        <div class="bg-gray-50 border-t border-gray-300 p-3 flex justify-between items-center text-sm text-gray-500">
+                            <span class="flex items-center"><i data-lucide="align-left" class="w-4 h-4 mr-1"></i> Word Count: <span id="wc-${data.id}" class="font-bold text-gray-800 ml-1">${wordCount}</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderDiscussion(step) {
+            const { data } = step;
+            const currentText = state.answers[data.id] || "";
+            const wordCount = currentText.trim().split(/\s+/).filter(w => w.length > 0).length;
+
+            const studentPosts = data.students.map(student => `
+                <div class="flex mb-6">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex-grow relative">
+                        <h4 class="font-bold text-gray-800 mb-1">${student.name}</h4>
+                        <p class="text-gray-700 text-sm leading-relaxed">${student.text}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+            <div class="pt-28 h-screen flex flex-col md:flex-row overflow-hidden bg-white">
+                <!-- Left Pane: Discussion Board -->
+                <div class="w-full md:w-[55%] h-full overflow-y-auto border-r border-gray-300 p-8 bg-gray-50 custom-scroll">
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                        <p class="text-sm text-yellow-800 font-bold flex items-center">
+                            <i data-lucide="timer" class="w-4 h-4 mr-2"></i> ${data.timeLimitNotice}
+                        </p>
+                    </div>
+
+                    <div class="prose max-w-none text-black font-sans leading-relaxed text-base mb-8 pb-6 border-b border-gray-300">
+                        ${data.prompt.replace(/\n/g, '<br/>')}
+                    </div>
+
+                    <!-- Teacher Post -->
+                    <div class="flex mb-8">
+                        <div class="bg-[#e6f4f4] p-5 rounded-lg border border-[#b3e0e0] flex-grow relative">
+                            <h4 class="font-bold text-[#007777] mb-2 flex items-center">
+                                ${data.professor.name} <span class="ml-2 text-xs bg-[#007777] text-white px-2 py-0.5 rounded-full">Teacher</span>
+                            </h4>
+                            <p class="text-gray-800 leading-relaxed">${data.professor.text}</p>
+                        </div>
+                    </div>
+
+                    <!-- Student Posts -->
+                    <div class="pl-4 border-l-2 border-gray-200 ml-2">
+                        ${studentPosts}
+                    </div>
+
+                </div>
+                
+                <!-- Right Pane: Compose -->
+                <div class="w-full md:w-[45%] h-full flex flex-col p-8 bg-white">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i data-lucide="message-square" class="w-5 h-5 mr-2 text-[#007777]"></i> Your Response
+                    </h3>
+                    <div class="flex-grow flex flex-col border border-gray-300 rounded-lg shadow-sm overflow-hidden">
+                        
+                        <textarea 
+                            class="flex-grow p-5 w-full resize-none focus:outline-none focus:ring-2 focus:ring-[#007777] text-gray-800 text-lg custom-scroll leading-relaxed"
+                            placeholder="Write your contribution to the discussion here..."
+                            oninput="handleTextInput('${data.id}', this.value)"
+                            onpaste="return false;" oncopy="return false;" oncut="return false;" ondrop="return false;" spellcheck="false" autocomplete="off"
+                        >${currentText}</textarea>
+                        
+                        <div class="bg-gray-50 border-t border-gray-300 p-3 flex justify-between items-center text-sm text-gray-500">
+                            <span class="flex items-center"><i data-lucide="bar-chart-2" class="w-4 h-4 mr-1"></i> Word Count: <span id="wc-${data.id}" class="font-bold ${wordCount >= 50 ? 'text-green-600' : 'text-orange-500'} ml-1">${wordCount}</span> <span class="ml-1 text-xs">/ min 50</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // --- MAIN RENDER LOOP ---
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!state.currentModule) {
+                app.innerHTML = renderWelcome();
+            } else if (state.showResults) {
+                app.innerHTML = renderResults();
+            } else {
+                let mainContent = '';
+                if (state.showInstructions) {
+                    mainContent = renderInstructions();
+                } else {
+                    const step = state.flatSteps[state.currentStepIndex];
+                    if (step.type === 'build_sentence') {
+                        mainContent = renderBuildSentence(step);
+                    } else if (step.type === 'email') {
+                        mainContent = renderEmail(step);
+                    } else if (step.type === 'discussion') {
+                        mainContent = renderDiscussion(step);
+                    }
+                }
+                
+                app.innerHTML = renderHeader() + renderSubHeader() + mainContent;
+            }
+
+            // Re-initialize icons
+            lucide.createIcons();
+        }
+
+        // Initialize App
+        render();
+
+    </script>
+</body>
+</html>

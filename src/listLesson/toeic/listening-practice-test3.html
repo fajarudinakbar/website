@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC Listening Practice Test 3 (TTS Edition)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f3f4f6;
+            color: #333333;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            user-select: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #e5e7eb; border-left: 1px solid #d1d5db; }
+        ::-webkit-scrollbar-thumb { background: #9ca3af; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        /* Theme Colors */
+        .theme-text { color: #0369a1; }
+        .bg-theme-main { background-color: #0284c7; }
+        .bg-theme-accent { background-color: #7dd3fc; }
+
+        /* Grid Item Styles */
+        .grid-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .grid-btn:hover { background: #f3f4f6; }
+        .grid-btn.answered { background: #9ca3af; color: #ffffff; border-color: #6b7280; }
+        .grid-btn.active { background: #0369a1; color: #ffffff; border-color: #0369a1; font-weight: bold; }
+
+        /* Review Grid Overrides */
+        .review-grid-btn.correct { background: #bbf7d0; color: #166534; border-color: #166534; }
+        .review-grid-btn.incorrect { background: #fecaca; color: #991b1b; border-color: #991b1b; }
+        .review-grid-btn.unanswered { background: #e5e7eb; color: #4b5563; border-color: #9ca3af; }
+
+        /* Classic Radio Options */
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .option-label:hover .radio-circle { border-color: #0369a1; }
+        
+        .radio-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            background: #fff;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-label input[type="radio"] { 
+            display: none; 
+        }
+
+        .option-label.selected .radio-circle { 
+            background: #333; 
+            color: #fff;
+            border-color: #333;
+        }
+
+        /* Full Screen Containers */
+        .screen {
+            display: none;
+            width: 100%;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+        }
+        .screen.active { display: flex; }
+
+        .cbt-card {
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* TTS Animation */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .tts-playing {
+            animation: pulse 1.5s infinite;
+            background-color: #0284c7 !important;
+        }
+    </style>
+</head>
+<body>
+
+<header id="global-header" class="hidden flex-col w-full shrink-0 z-50 bg-white">
+    <div class="px-6 py-3 flex justify-between items-center relative">
+        <div class="flex items-center space-x-2">
+            <span class="italic text-[#0369a1] font-bold text-3xl tracking-tighter">TOEIC&reg; Practice</span>
+            <span class="text-xs bg-[#0369a1] text-white px-2 py-0.5 rounded ml-2">TTS Edition</span>
+        </div>
+        <div class="absolute left-1/2 transform -translate-x-1/2 font-bold text-gray-800 text-lg">Listening Test 3</div>
+    </div>
+    <div class="h-1 bg-theme-accent w-full"></div>
+    <div class="h-5 bg-theme-main w-full"></div>
+</header>
+
+<div id="audio-subheader" class="hidden bg-[#e5e7eb] border-b border-[#d1d5db] p-2 w-full flex items-center justify-between z-40 shrink-0 shadow-sm px-6">
+    <div class="flex items-center space-x-4 w-full max-w-3xl">
+        <button id="play-btn" class="bg-white border border-gray-400 hover:bg-gray-100 flex items-center justify-center w-8 h-8 transition-colors">
+            <i id="play-icon" class="fas fa-play text-[#0369a1] text-sm"></i>
+        </button>
+        
+        <div class="flex-1 h-2 bg-white relative border border-gray-400">
+            <div class="absolute top-0 left-0 h-full bg-[#0369a1] transition-all duration-300" id="audio-progress" style="width: 0%"></div>
+        </div>
+        <span id="audio-status-text" class="text-xs font-bold text-gray-600 w-32">Ready</span>
+        
+        <div class="flex items-center space-x-2 ml-4 border-l border-gray-400 pl-4">
+            <i class="fas fa-tachometer-alt text-gray-600 text-sm" title="Playback Speed"></i>
+            <select id="speed-selector" class="text-xs border border-gray-300 bg-white px-1 py-0.5 outline-none">
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1.0x</option>
+                <option value="1.25">1.25x</option>
+            </select>
+        </div>
+    </div>
+    <div class="flex items-center space-x-4">
+        <div class="text-right flex items-center space-x-2 bg-white px-3 py-1 border border-gray-300">
+            <i class="far fa-clock text-gray-500 text-sm"></i>
+            <div id="timer" class="text-sm font-mono font-bold text-gray-800">45:00</div>
+        </div>
+        <button onclick="finishTest()" class="text-xs bg-red-50 text-red-700 border border-red-300 px-3 py-1 hover:bg-red-100 font-bold uppercase">End Practice</button>
+    </div>
+</div>
+
+<div class="flex flex-1 overflow-hidden w-full relative">
+    
+    <aside id="nav-sidebar" class="hidden w-64 bg-white border-r border-gray-300 flex-col shrink-0 z-30">
+        <div class="p-2 bg-gray-100 border-b border-gray-300 font-bold text-xs text-gray-600 uppercase tracking-wider text-center">
+            Item Review
+        </div>
+        <div class="p-3 overflow-y-auto flex-1">
+            <div id="question-grid" class="grid grid-cols-5 gap-1">
+                <!-- Grid items generated by JS -->
+            </div>
+        </div>
+        <div class="p-2 bg-gray-50 border-t border-gray-300 flex justify-center space-x-3 text-[10px] font-bold text-gray-500 uppercase">
+            <div class="flex items-center"><div class="w-2.5 h-2.5 bg-gray-400 border border-gray-500 mr-1"></div>Answered</div>
+            <div class="flex items-center"><div class="w-2.5 h-2.5 bg-white border border-gray-300 mr-1"></div>Unanswered</div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col items-center bg-[#f3f4f6] overflow-y-auto w-full relative pt-8 pb-8 px-6">
+        
+        <div id="welcome-screen" class="screen active max-w-3xl cbt-card p-10 relative pb-10">
+            <h1 class="text-2xl font-bold text-[#0369a1] mb-2">Computer-Based Test Simulation</h1>
+            <h2 class="text-lg text-gray-600 mb-6 pb-4 border-b border-gray-200">TOEIC&reg; Listening Practice Test 3 (TTS Edition)</h2>
+            
+            <div class="space-y-4 text-gray-700 text-sm mb-8 bg-sky-50 border border-sky-200 p-6">
+                <p class="font-bold text-[#0369a1]"><i class="fas fa-info-circle mr-2"></i> Instructions for Candidates:</p>
+                <p class="font-medium text-gray-800 mb-2">This practice test utilizes advanced Text-to-Speech technology. You must use <strong>Microsoft Edge</strong> browser to support the Web Speech API.</p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li>Ensure your headset is plugged in and the volume is comfortable.</li>
+                    <li>The audio will play automatically. You can use the Play/Pause button if you need to stop.</li>
+                    <li>You can adjust the playback speed in the top header.</li>
+                    <li>Once you click "Start Simulation", the exam timer will begin immediately.</li>
+                </ul>
+            </div>
+            
+            <div class="flex justify-end">
+                <button onclick="startSimulation()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm uppercase">
+                    Start Simulation
+                </button>
+            </div>
+        </div>
+
+        <div id="general-directions-screen" class="screen max-w-4xl cbt-card">
+            <div class="p-8 space-y-6 text-gray-800 text-sm leading-relaxed">
+                <h2 class="text-xl font-bold text-[#0369a1] uppercase tracking-wide mb-4">Listening Test</h2>
+                <p>In the Listening test, you will be asked to demonstrate how well you understand spoken English. The entire Listening test will last approximately 45 minutes. There are four parts, and directions are given for each part. You must mark your answers on the screen.</p>
+                
+                <div class="border border-gray-300 p-6 mt-6 bg-yellow-50">
+                    <h3 class="font-bold text-gray-700 mb-2 uppercase text-xs"><i class="fas fa-volume-up mr-2"></i> Audio Controls Notice</h3>
+                    <p class="text-xs text-gray-600">Audio will play automatically when you enter a new section or navigate to a new question. Use the audio controls at the top of the screen to adjust the speed, pause, or replay the audio as needed.</p>
+                </div>
+            </div>
+            <div class="bg-gray-100 border-t border-gray-300 px-6 py-4 flex justify-end">
+                <button onclick="showDirectionScreen(1)" class="bg-white hover:bg-gray-50 text-[#0369a1] px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm">
+                    Continue
+                </button>
+            </div>
+        </div>
+
+        <div id="direction-screen" class="screen max-w-4xl cbt-card">
+            <div class="p-10">
+                <h1 id="dir-title" class="text-xl font-bold text-[#0369a1] uppercase tracking-wide mb-4">PART X</h1>
+                <div id="dir-content" class="text-sm text-gray-800 leading-relaxed mb-8"></div>
+            </div>
+            
+            <div class="bg-gray-100 border-t border-gray-300 px-6 py-4 flex justify-end">
+                <button onclick="startPartFromDirection()" class="bg-white hover:bg-gray-50 text-[#0369a1] px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm">
+                    Begin <span id="dir-btn-text">Part X</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="main-app" class="screen w-full max-w-4xl">
+            <div class="w-full bg-white border border-gray-300 p-4 shadow-sm mb-4 flex items-center justify-between">
+                <div>
+                    <span id="part-badge" class="text-[#0369a1] font-bold uppercase mr-2">PART 1</span>
+                    <span id="part-mini-dir" class="text-sm text-gray-600">Select the best description for the picture.</span>
+                </div>
+                <div class="text-sm font-bold text-gray-500 border border-gray-300 px-3 py-1 bg-gray-50">
+                    Question <span id="q-counter" class="text-[#0369a1]">1</span>
+                </div>
+            </div>
+
+            <div class="w-full flex justify-center">
+                <div id="question-content" class="w-full cbt-card p-10 min-h-[400px]">
+                    <!-- Question rendered here via JS -->
+                </div>
+            </div>
+
+            <!-- Inner Footer Navigation -->
+            <footer id="inner-nav-footer" class="w-full mt-4 bg-[#0369a1] p-4 flex justify-between items-center shadow-md border border-[#0284c7]">
+                <button id="prev-btn" class="text-white hover:text-gray-200 font-bold text-sm uppercase disabled:opacity-50 disabled:cursor-not-allowed">
+                    &lt; Back
+                </button>
+                <button id="next-btn" class="text-white hover:text-gray-200 font-bold text-sm uppercase disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next &gt;
+                </button>
+            </footer>
+        </div>
+
+        <div id="results-screen" class="screen w-full max-w-4xl cbt-card relative">
+            <div class="bg-[#0369a1] px-6 py-4 border-b border-[#0284c7]">
+                <h1 class="text-lg font-bold text-white uppercase tracking-wide">Score Report</h1>
+            </div>
+            
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 border border-gray-300 p-6 flex flex-col items-center justify-center text-center">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Raw Score</p>
+                        <div class="text-3xl font-bold text-[#0369a1] mb-1"><span id="raw-score">0</span><span class="text-lg text-gray-400 font-medium">/100</span></div>
+                    </div>
+                    <div class="bg-gray-50 border border-gray-300 p-6 flex flex-col items-center justify-center text-center">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Estimated Scaled Score</p>
+                        <div class="text-3xl font-bold text-green-700 mb-1" id="scaled-score">0 - 0</div>
+                    </div>
+                </div>
+
+                <!-- PDF Generation Section -->
+                <div class="mt-6 mb-8 bg-sky-50 border border-sky-200 p-6 flex flex-col sm:flex-row items-center justify-between shadow-sm">
+                    <div class="mb-4 sm:mb-0">
+                        <h3 class="font-bold text-[#0369a1] text-lg">Download Score Report</h3>
+                        <p class="text-sm text-gray-600">Enter your name to generate your unofficial PDF score report.</p>
+                    </div>
+                    <div class="flex items-center space-x-3 w-full sm:w-auto">
+                        <input type="text" id="candidate-name" placeholder="Enter your name" class="border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-[#0369a1] flex-1 sm:w-48">
+                        <button onclick="downloadPDF()" class="bg-[#0369a1] hover:bg-[#0284c7] text-white px-5 py-2 text-sm font-bold shadow-sm transition whitespace-nowrap flex items-center">
+                            <i class="fas fa-file-pdf mr-2 text-lg"></i> Download
+                        </button>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-300 pt-6">
+                    <h2 class="text-base font-bold text-gray-800 mb-2 uppercase">Item Review</h2>
+                    <p class="text-sm text-gray-600 mb-6">Select a question number to review the transcript, correct answer, and an instructional rationale.</p>
+                    
+                    <div class="flex items-center space-x-6 mb-6 text-xs font-bold uppercase text-gray-600">
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#bbf7d0] border border-[#166534] mr-2"></div> Correct</div>
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#fecaca] border border-[#991b1b] mr-2"></div> Incorrect</div>
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#e5e7eb] border border-[#9ca3af] mr-2"></div> Omitted</div>
+                    </div>
+
+                    <div id="review-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
+                        <!-- Review items generated by JS -->
+                    </div>
+
+                    <div class="mt-12 pt-6 border-t border-gray-200 flex justify-end">
+                        <button onclick="window.location.reload()" class="bg-white border border-slate-400 text-[#00757c] hover:bg-slate-50 px-6 py-2.5 text-sm font-bold tracking-wide transition-colors shadow-sm">
+                            START NEW SESSION
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Global Persistent Disclaimer (Always visible at the absolute bottom) -->
+<div class="w-full bg-[#f3f4f6] py-5 px-6 text-center text-[13px] text-slate-500 border-t border-gray-200 shrink-0 z-50">
+    Disclaimer: This simulation is an independent practice tool and is not affiliated with, approved, or endorsed by ETS. TOEIC&reg; is a registered trademark of ETS.
+</div>
+
+<div id="review-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[60] hidden flex items-center justify-center transition-opacity opacity-0">
+    <div id="review-modal-content" class="bg-white w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-transform duration-200 border border-gray-500 shadow-2xl">
+        <div class="p-3 border-b border-gray-300 flex justify-between items-center bg-[#0369a1] text-white">
+            <h3 class="font-bold text-sm uppercase tracking-wide" id="modal-title">Question X Review</h3>
+            <button onclick="closeReviewModal()" class="text-gray-300 hover:text-white w-6 h-6 flex items-center justify-center transition">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto flex-1 space-y-6 bg-gray-50 text-sm">
+            <div class="flex space-x-4">
+                <div class="flex-1 bg-white border border-gray-300 p-3 text-center shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-1 tracking-wider">Your Selection</p>
+                    <p class="text-xl font-bold text-gray-800" id="modal-user-ans">-</p>
+                </div>
+                <div class="flex-1 bg-white border border-gray-300 p-3 text-center shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-1 tracking-wider">Key</p>
+                    <p class="text-xl font-bold text-green-700" id="modal-correct-ans">-</p>
+                </div>
+            </div>
+            
+            <div id="modal-image-container" class="hidden bg-white border border-gray-300 shadow-sm p-4 flex justify-center h-56">
+                <img id="modal-image" src="" alt="Question Image" class="max-w-full max-h-full object-contain">
+            </div>
+
+            <div class="bg-white border border-gray-300 shadow-sm">
+                <div class="bg-gray-100 px-3 py-1.5 border-b border-gray-300">
+                    <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-wider"><i class="fas fa-file-alt mr-2"></i>Audio Transcript</h4>
+                </div>
+                <div class="p-4 text-gray-800 leading-relaxed bg-[#fdfbf7]" id="modal-transcript">
+                    Transcript goes here.
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-300 shadow-sm">
+                <div class="bg-gray-100 px-3 py-1.5 border-b border-gray-300">
+                    <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-wider"><i class="fas fa-lightbulb mr-2 text-[#0369a1]"></i>Instructional Rationale</h4>
+                </div>
+                <div class="p-4 text-gray-800 leading-relaxed" id="modal-explanation">
+                    Teaching rationale goes here.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const officialKey = [
+        null, 
+        /* Part 1: 1-6 */
+        'B', 'C', 'A', 'D', 'B', 'A',
+        /* Part 2: 7-31 */
+        'B', 'C', 'A', 'B', 'A', 'B', 'A', 'B', 'A', 'C', 'B', 'A', 'A', 'A', 'B', 'A', 'A', 'B', 'A', 'A', 'B', 'B', 'A', 'B', 'C', 
+        /* Part 3: 32-70 */
+        'A', 'C', 'B', 'D', 'B', 'A', 'B', 'B', 'B', 'A', 'B', 'C', 'B', 'C', 'C', 'B', 'C', 'B', 'C', 'B', 'D', 'A', 'B', 'C', 'B', 'B', 'A', 'A', 'B', 'D', 'A', 'C', 'C', 'A', 'C', 'B', 'B', 'C', 'C',
+        /* Part 4: 71-100 */
+        'A', 'B', 'C', 'A', 'B', 'C', 'A', 'B', 'C', 'B', 'B', 'C', 'B', 'C', 'B', 'B', 'C', 'D', 'B', 'A', 'B', 'B', 'C', 'B', 'C', 'B', 'A', 'B', 'C', 'C'
+    ];
+    
+    const part1Visuals = {
+        1: "https://plus.unsplash.com/premium_photo-1663047018082-009032ba8789?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        2: "https://plus.unsplash.com/premium_photo-1736453485798-8d8c8d6bfade?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        3: "https://images.unsplash.com/photo-1652303713917-2666b8bee507?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        4: "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=600&h=400",
+        5: "https://media.istockphoto.com/id/2161097845/photo/asian-woman-using-ai-apps-for-calling-taxi.webp?a=1&b=1&s=612x612&w=0&k=20&c=TIkl3VVn4jUcsdWQFwA_O4jXog_omZ4VHgUVUwNiJn8=",
+        6: "https://images.unsplash.com/photo-1646173864575-4d39caaa8e37?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    };
+
+    const transcriptData = {
+        // Part 1
+        1: "(A) The man is erasing the whiteboard. (B) A graph is being presented to the group. (C) The audience is standing up. (D) He is handing out some documents.",
+        2: "(A) They are preparing food in a kitchen. (B) A waiter is taking an order. (C) They are dining outdoors on the grass. (D) The table is completely empty.",
+        3: "(A) Heavy machinery is excavating the dirt. (B) A brick wall is being constructed. (C) Workers are paving a road. (D) A truck is being loaded with cargo.",
+        4: "(A) Vehicles are driving on a highway. (B) A parking attendant is directing traffic. (C) A multistory garage is being built. (D) Cars are parked in marked spaces.",
+        5: "(A) She is typing an email on a laptop. (B) She is speaking into a mobile device. (C) She is putting on some headphones. (D) She is reading a book outdoors.",
+        6: "(A) Passengers are riding a public bus. (B) The driver is exiting the vehicle. (C) People are boarding an airplane. (D) Luggage is being loaded into the trunk.",
+        
+        // Part 2
+        7: "Where did you leave the client files? (A) Sometime tomorrow. (B) On top of your desk. (C) Mr. Davis is a client.",
+        8: "Who is going to lead the workshop? (A) In the conference room. (B) It starts at 9 AM. (C) The new training director.",
+        9: "When will the repairs be finished? (A) By the end of the week. (B) It's a pair of shoes. (C) The maintenance staff.",
+        10: "Why is the road closed? (A) It's close to the office. (B) Because of the construction. (C) Turn left at the corner.",
+        11: "How many people are attending the banquet? (A) At least fifty guests. (B) A bank teller. (C) Yes, I am attending.",
+        12: "Could you help me carry these boxes? (A) The box is empty. (B) Sure, let me grab the other side. (C) I drove my car.",
+        13: "Has the mail been delivered yet? (A) Yes, it's on the reception desk. (B) A male colleague. (C) I mailed the letter.",
+        14: "What time does the orientation start? (A) In the main auditorium. (B) At nine o'clock sharp. (C) I am well oriented.",
+        15: "You're going to the trade show, aren't you? (A) No, my schedule is too full. (B) It was a great show. (C) I trade stocks online.",
+        16: "Which color should we use for the brochure? (A) Yes, I have a brush. (B) A colorful painting. (C) I think blue looks the most professional.",
+        17: "Didn't you already send the invoice? (A) His voice is very clear. (B) I thought Sarah was handling that. (C) Inside the envelope.",
+        18: "How much did the new printer cost? (A) About three hundred dollars. (B) It prints very fast. (C) In the copy room.",
+        19: "Where can I find a stapler? (A) On the top shelf of the supply cabinet. (B) I prefer using paper clips. (C) To bind these documents.",
+        20: "Who was on the phone just now? (A) It was the travel agent. (B) Call me back later. (C) I bought a new phone.",
+        21: "Let's go to the cafeteria for lunch. (A) A cup of coffee. (B) That sounds like a good idea. (C) They sell office supplies.",
+        22: "Is the CEO arriving today or tomorrow? (A) She will be here this afternoon. (B) To lead the company. (C) Yes, I arrived early.",
+        23: "Why are you leaving so early? (A) I have a dentist appointment. (B) The leaves are falling. (C) Usually around 5 PM.",
+        24: "Do you know if this seat is taken? (A) Please take a seat. (B) No, you can sit there. (C) I took the bus.",
+        25: "How often do you visit the branch office? (A) Every other month. (B) It's a large branch. (C) Visiting hours are over.",
+        26: "The presentation was excellent, wasn't it? (A) I couldn't attend, unfortunately. (B) A present for my colleague. (C) In the meeting room.",
+        27: "Can I borrow your umbrella? (A) It's raining outside. (B) Mine is broken, sorry. (C) Yellow is my favorite.",
+        28: "What's the fastest way to get to the airport? (A) A plane ticket. (B) I recommend taking the express train. (C) At terminal four.",
+        29: "Would you rather have a window or aisle seat? (A) I prefer the aisle, please. (B) The window is open. (C) I have a seat.",
+        30: "Who is responsible for updating the website? (A) It looks very modern. (B) The marketing team handles that. (C) An online store.",
+        31: "We should really upgrade our software. (A) Soft and comfortable. (B) Up the stairs. (C) I completely agree with you.",
+
+        // Part 3
+        "32-34": "Man: Have you started packing up your desk yet? The movers are coming this weekend to relocate us to the new office building.\nWoman: Not yet. I just received my empty boxes this morning. I plan to pack my files this afternoon.\nMan: Make sure you use the red markers to label your moving boxes clearly. That way, they will end up in the correct department on Monday.\nWoman: Good idea. I'll ask the receptionist if she has any markers I can borrow.",
+        "35-37": "Man: Good evening. I have a reservation for a table for two under the name Roberts.\nWoman: Let me check. Ah, yes, Mr. Roberts. Unfortunately, the guests at your table have not finished their meal yet. It will be about another fifteen minutes.\nMan: Oh, I see. We are in a bit of a hurry because we have tickets to a show at eight.\nWoman: I apologize for the delay. Please take a seat at the bar, and I will bring you a complimentary drink while you wait.",
+        "38-40": "Man: Hello, my name is James Lin. I had an interview last Tuesday for the marketing coordinator position, and I am calling to follow up.\nWoman: Hello, James. Yes, I have your file right here in Human Resources. We are still finishing up the last round of interviews today.\nMan: Do you know when I might hear back regarding your decision?\nWoman: We plan to review all the candidates over the weekend. Final decisions will be made next week, and we will email you either way.",
+        "41-43": "Woman: David, have you booked our flights for the technology conference in Seattle next month?\nMan: Actually, I was looking at the options, and I think we should take the train instead. The flight is short, but getting to the airport takes forever.\nWoman: That makes sense. Plus, taking the train is much more comfortable, and we can work on our laptops during the ride.\nMan: Exactly. Could you go ahead and purchase the train tickets using the corporate credit card?",
+        "44-46": "Man: Did you read the report from the engineering team? We have to delay the launch of the new tablet.\nWoman: Really? Why? We already promised the retailers it would be shipped by November.\nMan: They discovered a manufacturing defect in the battery. It overheats quickly, so we need to fix the design before it goes to market.\nWoman: That is terrible news. We need to start informing the clients immediately so they can adjust their holiday promotions.",
+        "47-49": "Man: Hello, this is Mark from Summit Financial. I am calling to update the catering order for our luncheon next Wednesday.\nWoman: Hi Mark. I have your order for fifty sandwich platters right here. What needs to be changed?\nMan: We had several more people RSVP today, so I need to increase the food quantity to seventy platters.\nWoman: Not a problem. I will add the extra platters to your order right now and send you an updated invoice by the end of the day.",
+        "50-52": "Woman: Excuse me, what time is the normal checkout for this hotel?\nMan: Our standard checkout time is eleven o'clock in the morning, ma'am.\nWoman: My flight back to London was delayed, and it does not leave until 6 PM now. Is there any way I could request a late checkout?\nMan: Let me check our availability. Yes, I can extend your room until 2 PM at no extra charge. After that, you can leave your luggage with the bellhop.",
+        "53-55": "Man: I am getting really stressed about the marketing proposal. The deadline is tomorrow, and I still don't have the sales figures from the European branch.\nWoman: That is stressful. Have you tried calling the branch manager directly to ask for the data?\nMan: I left him a voicemail yesterday, but he hasn't returned my call. I can't finish the final charts without those numbers.\nWoman: Tell you what. I have some free time this afternoon. I will help you gather the information by calling their accounting department.",
+        "56-58": "Man: Hi, I just moved to the neighborhood and I am looking for a new gym. Can you tell me about your membership fees?\nWoman: Welcome! Our standard membership is forty dollars a month, which includes access to all the weight machines and the swimming pool.\nMan: That sounds reasonable. Do you offer any group fitness classes?\nWoman: Yes, but those are an extra ten dollars a month. However, we have a special promotion right now offering a free trial week so you can test everything out first.",
+        "59-61": "Woman: Hello, Mr. Clark? This is Sarah from the auto repair shop. We finished inspecting your vehicle.\nMan: Oh, great. Is it just the battery that needs replacing like I thought?\nWoman: Actually, your battery is fine. The problem is that the brakes need replacing. They are severely worn down.\nMan: I see. Well, go ahead and replace them. When will the car be ready to pick up?\nWoman: We have to order the parts, so it will be ready tomorrow afternoon.",
+        "62-64": "Woman: Excuse me, I am looking for the new Alpha digital camera, but the display shelf is completely empty.\nMan: Let me check our inventory system. I am sorry, but that item is currently out of stock. It has been very popular this week.\nWoman: Oh, that is disappointing. I need it for a trip I am taking on Friday.\nMan: I suggest ordering it online through our store's website. We offer next-day shipping, so it would arrive at your house by Thursday.",
+        "65-67": "Man: Hello, IT Support? I am trying to log into the company network, but it keeps rejecting my password.\nWoman: Okay, let me look up your user profile. What error message did you receive on the screen?\nMan: It says 'Password expired.' I didn't realize I needed to change it.\nWoman: Company policy requires a new password every ninety days. I will reset the system remotely so you can create a new password right now.",
+        "68-70": "Man: As you can see, this office space has plenty of natural light and a large conference room in the back.\nWoman: I do like the layout, and the rent is within our budget. But to be honest, I am worried about the location.\nMan: Really? It is in a very safe neighborhood with plenty of parking.\nWoman: Yes, but it is too far from public transit. Many of our employees take the train to work.\nMan: I understand. Let's go look at a different location downtown that is closer to the station.",
+
+        // Part 4
+        "71-73": "Man: Attention shoppers. Welcome to Anderson's Supermarket. For the next hour, we are offering free samples of our newly imported artisanal cheeses. Please make your way to the deli counter at the back of the store to taste these delicious new products. While you are there, don't forget to check out our freshly baked bread in the bakery section, which is currently twenty percent off. Thank you for shopping with us today.",
+        "74-76": "Woman: Hello, this is a message for David Lee. This is Mary from the Bright Smiles Dental Clinic. I am calling to confirm your appointment for a teeth cleaning tomorrow at two o'clock. Please arrive ten minutes early to fill out some paperwork. Also, since your provider changed last month, you must remember to bring your new insurance card with you. If you have any questions, please call us back at 555-0198.",
+        "77-79": "Man: Welcome, everyone, to the National Art Museum. My name is Gregory, and I will be guiding you through our new exhibits today. We will start on the second floor, where we will see our collection of contemporary paintings. After that, we will move to the sculpture garden outside. Just a quick reminder before we begin: while you are allowed to take pictures, please remember that no flash photography is permitted, as the bright light can damage the artwork. Follow me, please.",
+        "80-82": "Woman: You are listening to Radio 99 with your evening traffic report. Commuters heading north on Highway 10 will experience significant delays this evening. A stalled delivery truck is blocking the right lane near Exit 15, causing traffic to back up for several miles. Emergency crews are on the scene, but it will take some time to move the vehicle. Listeners are strongly advised to take an alternate route, such as the River Road, to avoid the congestion.",
+        "83-85": "Man: Good morning, team. Before we dive into the quarterly financial report, I would like to take a moment to introduce our newest company executive, Sarah Jenkins. Sarah is joining us as the Vice President of Marketing. She brings over fifteen years of experience in international marketing, having previously led successful campaigns in Europe and Asia. I know she has some exciting ideas for our brand. Sarah will now give a short speech to introduce herself and outline her initial goals for the department.",
+        "86-88": "Woman: Attention passengers for Flight 305 to Miami. We regret to inform you that the departure of this flight has been delayed. The maintenance crew has identified some minor mechanical difficulties with the aircraft that must be resolved before takeoff. We now expect to begin boarding at seven o'clock. We sincerely apologize for this inconvenience. At this time, our airline staff will be passing through the waiting area to distribute meal vouchers that can be used at any restaurant in the terminal.",
+        "89-91": "Man: Is your front yard looking messy and overgrown? It is time to call Green Thumb Landscaping. We are the premier landscaping service in the city, specializing in lawn care, tree trimming, and garden design. Our professional team will transform your outdoor space into a beautiful oasis. Call us today and mention this radio ad to receive a free consultation with one of our expert designers. Visit our website at green thumb dot com to see a gallery of our previous projects and book your appointment.",
+        "92-94": "Woman: Hello, this is Amanda Chen calling from Tech Solutions. I am calling for Robert Davis regarding his application for the Data Analyst position. We reviewed your resume and were very impressed with your background. We would like to schedule a job interview with you for sometime next week. Please return my phone call by this Friday so we can set up a specific date and time. You can reach me directly at 555-0234. I look forward to speaking with you.",
+        "95-97": "Man: Welcome back to Channel 5 News. Looking ahead at the weather for the weekend, we are expecting heavy thunderstorms to roll in by tomorrow afternoon. The rain will be quite intense, so if you have outdoor plans, you might want to cancel them and focus on staying indoors. Fortunately, the storm system will move quickly. By Sunday morning, the skies will clear up, and we will see bright sunshine and warm temperatures for the rest of the week.",
+        "98-100": "Woman: As we bring this year's medical conference to a close, I want to thank all of our incredible speakers and attendees for participating. It has been a truly inspiring three days of learning and networking. Before you leave the auditorium, please remember to fill out the feedback survey in your information packets. Your comments help us improve the event for next year. Finally, we invite everyone to join us for a farewell reception in the hotel lobby, where refreshments will be served. Safe travels home, everyone!"
+    };
+
+    const mcqData = {
+        // Part 3
+        32: { q: "What are the speakers discussing?", opts: ["An upcoming office relocation", "A new hiring policy", "A weekend seminar", "A building inspection"] },
+        33: { q: "When is the event taking place?", opts: ["This morning", "This afternoon", "This weekend", "Next Monday"] },
+        34: { q: "What does the man ask the woman to do?", opts: ["Call the movers", "Label her moving boxes", "Talk to the receptionist", "Pack the computers"] },
+        35: { q: "Where does the conversation take place?", opts: ["At a theater", "At a bar", "At a hotel", "At a restaurant"] },
+        36: { q: "What is the man's problem?", opts: ["He lost his tickets", "His table is not ready yet", "The food is cold", "He cannot find his friend"] },
+        37: { q: "What does the woman offer the man?", opts: ["A complimentary drink", "A discount on the meal", "A different table", "A free appetizer"] },
+        38: { q: "Why is the man calling?", opts: ["To reschedule an interview", "To follow up on a job application", "To ask for a reference", "To accept a job offer"] },
+        39: { q: "What department does the woman work in?", opts: ["Marketing", "Human Resources", "Customer Service", "Accounting"] },
+        40: { q: "What will happen next week?", opts: ["More interviews will be held", "Final decisions will be made", "A new policy will begin", "The office will be closed"] },
+        41: { q: "What are the speakers planning?", opts: ["Travel to a conference", "A vacation to Seattle", "A technology presentation", "A corporate retreat"] },
+        42: { q: "Why does the woman like the idea of taking the train?", opts: ["It is cheaper", "It is more comfortable", "It is faster", "It serves better food"] },
+        43: { q: "What will the woman do next?", opts: ["Pack her bags", "Call the airline", "Purchase the tickets", "Cancel the credit card"] },
+        44: { q: "What is the main topic of the conversation?", opts: ["A new advertising campaign", "A delay in a product launch", "A change in retail prices", "A software update"] },
+        45: { q: "What caused the issue?", opts: ["A shipping error", "Poor sales figures", "A manufacturing defect", "A lack of materials"] },
+        46: { q: "What does the woman suggest?", opts: ["Fixing the design", "Firing the engineers", "Informing the clients immediately", "Canceling the holiday promotions"] },
+        47: { q: "Who is the man talking to?", opts: ["A restaurant manager", "A caterer", "A financial advisor", "A hotel receptionist"] },
+        48: { q: "What change does the man request?", opts: ["Changing the delivery time", "Canceling the order", "Increasing the food quantity", "Adding vegetarian options"] },
+        49: { q: "What will the woman send the man?", opts: ["A new menu", "An updated invoice", "A discount code", "A list of ingredients"] },
+        50: { q: "Where does the conversation take place?", opts: ["At an airport", "At a train station", "At a hotel front desk", "At a travel agency"] },
+        51: { q: "What does the woman request?", opts: ["A room upgrade", "A late checkout", "A map of the city", "A taxi to the airport"] },
+        52: { q: "What is the reason for the woman's request?", opts: ["Her meeting ran late", "She is feeling ill", "She wants to sleep in", "Her flight was delayed"] },
+        53: { q: "What are the speakers discussing?", opts: ["A project deadline", "A flight to Europe", "A stressful client", "A marketing budget"] },
+        54: { q: "Why is the man concerned?", opts: ["He lost his computer", "He is missing important data", "He forgot his presentation", "He cannot find the manager"] },
+        55: { q: "What does the woman offer to do?", opts: ["Finish the charts", "Extend the deadline", "Help him gather the information", "Call the European branch manager"] },
+        56: { q: "What type of business does the woman work for?", opts: ["A real estate office", "A fitness center", "A community pool", "A sporting goods store"] },
+        57: { q: "What is the man inquiring about?", opts: ["Swimming lessons", "Membership fees", "Gym equipment", "Neighborhood events"] },
+        58: { q: "What special promotion is currently available?", opts: ["A free trial week", "A discounted monthly rate", "Free fitness classes", "A free gym bag"] },
+        59: { q: "Where most likely are the speakers?", opts: ["At an auto repair shop", "At a car dealership", "At a battery store", "At a gas station"] },
+        60: { q: "What is wrong with the man's car?", opts: ["The battery is dead", "The brakes need replacing", "The tires are flat", "The engine is broken"] },
+        61: { q: "When will the car be ready?", opts: ["This morning", "This afternoon", "Tomorrow morning", "Tomorrow afternoon"] },
+        62: { q: "What is the woman trying to buy?", opts: ["A digital camera", "A computer monitor", "A mobile phone", "A travel guide"] },
+        63: { q: "What is the problem?", opts: ["The item is too expensive", "The store is closing", "The item is out of stock", "The display is broken"] },
+        64: { q: "What does the man suggest?", opts: ["Visiting another store", "Waiting until next week", "Ordering it online", "Buying a different brand"] },
+        65: { q: "Why is the man calling?", opts: ["To report a computer issue", "To request new software", "To change his phone number", "To complain about a policy"] },
+        66: { q: "What error message did the man receive?", opts: ["Network unavailable", "User not found", "Password expired", "System failure"] },
+        67: { q: "What will the woman do?", opts: ["Send him a new computer", "Reset the system remotely", "Change the company policy", "Read him his password"] },
+        68: { q: "Who most likely is the man?", opts: ["An office manager", "A real estate agent", "A security guard", "An interior designer"] },
+        69: { q: "What does the woman dislike about the property?", opts: ["It is too small", "The rent is too high", "It is too far from public transit", "It lacks natural light"] },
+        70: { q: "What will the speakers do next?", opts: ["Sign a lease agreement", "Discuss the budget", "Look at a different location", "Hire new employees"] },
+
+        // Part 4
+        71: { q: "Where is the announcement taking place?", opts: ["In a supermarket", "In a bakery", "In a cheese factory", "In a clothing store"] },
+        72: { q: "What is being offered today?", opts: ["Free cooking classes", "Free samples", "Discounted cheeses", "Imported meats"] },
+        73: { q: "Where should listeners go for bread?", opts: ["To the deli counter", "To the front of the store", "To the bakery section", "To the checkout register"] },
+        74: { q: "Who is the intended listener?", opts: ["A dental patient", "An insurance agent", "A doctor", "A receptionist"] },
+        75: { q: "What is the purpose of the message?", opts: ["To change a phone number", "To confirm an appointment", "To discuss a bill", "To cancel a procedure"] },
+        76: { q: "What is the listener asked to bring?", opts: ["A credit card", "Medical records", "An insurance card", "A photo ID"] },
+        77: { q: "Where is the tour taking place?", opts: ["In an art museum", "In a botanical garden", "In a photography studio", "In a historic house"] },
+        78: { q: "What will the group see first?", opts: ["Classic sculptures", "Contemporary paintings", "A photography exhibit", "The outdoor garden"] },
+        79: { q: "What rule does the guide mention?", opts: ["Do not touch the sculptures", "Stay with the group", "No flash photography", "Do not eat in the galleries"] },
+        80: { q: "What is the main topic of the broadcast?", opts: ["A weather warning", "Traffic conditions", "Local news", "A radio contest"] },
+        81: { q: "What caused the delay?", opts: ["Road construction", "A stalled delivery truck", "A severe storm", "An accident"] },
+        82: { q: "What are listeners advised to do?", opts: ["Stay home", "Call for emergency help", "Take an alternate route", "Drive very slowly"] },
+        83: { q: "Who is the speaker introducing?", opts: ["A new client", "A new company executive", "A financial consultant", "An international investor"] },
+        84: { q: "What is the new person's background?", opts: ["Financial reporting", "Human resources", "International marketing", "Product design"] },
+        85: { q: "What will happen next?", opts: ["A financial report will be read", "A short speech will be given", "A break will be taken", "A marketing campaign will launch"] },
+        86: { q: "Where is the announcement taking place?", opts: ["At a train station", "At an airport", "At a bus terminal", "At a travel agency"] },
+        87: { q: "Why is there a delay?", opts: ["Bad weather conditions", "Missing flight crew", "Mechanical difficulties", "Security procedures"] },
+        88: { q: "What is offered to the passengers?", opts: ["A refund", "A free flight", "Hotel accommodations", "Meal vouchers"] },
+        89: { q: "What type of business is being advertised?", opts: ["A home cleaning service", "A landscaping service", "A furniture store", "A garden supply shop"] },
+        90: { q: "What special offer is mentioned?", opts: ["A free consultation", "A discount on trees", "A free lawn mower", "A money-back guarantee"] },
+        91: { q: "How can listeners contact the business?", opts: ["By calling a toll-free number", "By visiting a website", "By going to the store", "By sending an email"] },
+        92: { q: "Why is the speaker calling?", opts: ["To reject an application", "To schedule a job interview", "To request a resume", "To verify references"] },
+        93: { q: "What position did the listener apply for?", opts: ["Software Engineer", "Marketing Director", "Data Analyst", "Customer Support"] },
+        94: { q: "What must the listener do by Friday?", opts: ["Submit a portfolio", "Return the phone call", "Attend an interview", "Send a follow-up email"] },
+        95: { q: "What is the weather expected to be like tomorrow?", opts: ["Sunny and warm", "Cold and windy", "Heavy thunderstorms", "Light snowfall"] },
+        96: { q: "When will the weather improve?", opts: ["Tomorrow evening", "On Sunday", "Next Monday", "Next week"] },
+        97: { q: "What does the speaker recommend doing?", opts: ["Staying indoors", "Driving carefully", "Buying an umbrella", "Going to the beach"] },
+        98: { q: "Where most likely is the speaker?", opts: ["At a university", "At a professional conference", "At a hospital", "At an airport"] },
+        99: { q: "What does the speaker remind the audience to do?", opts: ["Pick up their luggage", "Sign a document", "Fill out a feedback survey", "Pay for their tickets"] },
+        100: { q: "Where will the reception be held?", opts: ["In the auditorium", "In the main restaurant", "In the hotel lobby", "On the outdoor terrace"] }
+    };
+
+    function getTranscript(qNum) {
+        if (qNum <= 31) return transcriptData[qNum];
+        
+        let baseQ = qNum;
+        if (qNum >= 32 && qNum <= 70) baseQ = Math.floor((qNum - 32) / 3) * 3 + 32;
+        else if (qNum >= 71 && qNum <= 100) baseQ = Math.floor((qNum - 71) / 3) * 3 + 71;
+        
+        let groupKey = `${baseQ}-${baseQ+2}`;
+        return transcriptData[groupKey] || "Transcript unavailable.";
+    }
+
+    function getExplanation(qNum, correctAns) {
+        if (qNum >= 1 && qNum <= 6) {
+            return `<strong>Strategy focus:</strong> Look at the main action and surroundings before listening. The correct answer (<strong>${correctAns}</strong>) accurately describes what is visibly happening without making false assumptions.`;
+        }
+        if (qNum >= 7 && qNum <= 31) {
+            return `<strong>Strategy focus:</strong> The correct response is <strong>${correctAns}</strong> because it provides the most logical and authentic reply to the spoken prompt. Listen closely to the first word (Who, What, Where, When, Why, How) to identify the required information.`;
+        }
+        if (qNum >= 32 && qNum <= 70) {
+            return `<strong>Strategy focus:</strong> The correct answer (<strong>${correctAns}</strong>) is supported directly by details in the dialogue. A core communicative strategy is to skim the questions before the audio begins so you know exactly what details to listen for.`;
+        }
+        return `<strong>Strategy focus:</strong> The correct answer (<strong>${correctAns}</strong>) reflects a specific detail or inference from the monologue. Pay attention to the speaker's main purpose at the beginning of the talk.`;
+    }
+
+    let testData = {
+        answers: new Array(101).fill(null),
+        currentQ: 1, 
+        currentPart: 0,
+        timeRemaining: 45 * 60
+    };
+    
+    let timerInterval = null;
+
+    const synth = window.speechSynthesis;
+    let voiceMale = null;
+    let voiceFemale = null;
+    let voiceNarrator = null;
+    let isSpeaking = false;
+
+    function initVoices() {
+        const voices = synth.getVoices();
+        if (voices.length === 0) return;
+        
+        const enVoices = voices.filter(v => v.lang.includes('en-US') || v.lang.includes('en-GB') || v.lang.includes('en-AU'));
+        
+        voiceFemale = enVoices.find(v => (v.name.includes('Aria') || v.name.includes('Jenny') || v.name.includes('Michelle')) && v.name.includes('Natural')) 
+                   || enVoices.find(v => v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Zira') || v.name.includes('Female')) 
+                   || enVoices[0];
+                   
+        voiceMale = enVoices.find(v => (v.name.includes('Guy') || v.name.includes('Christopher') || v.name.includes('Eric')) && v.name.includes('Natural')) 
+                 || enVoices.find(v => v.name.includes('Alex') || v.name.includes('Daniel') || v.name.includes('David') || v.name.includes('Male')) 
+                 || enVoices.find(v => v !== voiceFemale) 
+                 || enVoices[0];
+                 
+        voiceNarrator = enVoices.find(v => (v.name.includes('Sonia') || v.name.includes('Ana')) && v.name.includes('Natural')) 
+                     || enVoices.find(v => v.name.includes('Victoria') || v.name.includes('Moira') || v.name.includes('Fiona'))
+                     || enVoices.find(v => v !== voiceMale && v !== voiceFemale)
+                     || voiceFemale;
+    }
+    
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = initVoices;
+    }
+
+    function stopTTS() {
+        if(synth.speaking || isSpeaking) {
+            synth.cancel();
+            isSpeaking = false;
+            updatePlayUI(false);
+        }
+    }
+
+    function parseTranscript(text) {
+        const segments = [];
+        const regex = /(Narrator:|Man:|Woman:|Woman 1:|Woman 2:)/g;
+        const parts = text.split(regex);
+        
+        let currentRole = 'narrator'; 
+        
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i].trim();
+            if (!part) continue;
+            
+            if (part === 'Man:') {
+                currentRole = 'male';
+            } else if (part === 'Woman:' || part === 'Woman 1:' || part === 'Woman 2:') {
+                currentRole = 'female';
+            } else if (part === 'Narrator:') {
+                currentRole = 'narrator';
+            } else {
+                segments.push({ text: part, role: currentRole });
+            }
+        }
+        return segments;
+    }
+
+    async function speakText(text) {
+        stopTTS();
+        if (!text) return;
+
+        if (!voiceNarrator) initVoices();
+
+        const speedRate = parseFloat(document.getElementById('speed-selector').value) || 1.0;
+        const segments = parseTranscript(text);
+        
+        isSpeaking = true;
+        updatePlayUI(true);
+
+        for (let i = 0; i < segments.length; i++) {
+            if (!isSpeaking) break; 
+            
+            await new Promise((resolve) => {
+                const utterance = new SpeechSynthesisUtterance(segments[i].text);
+                
+                if (segments[i].role === 'male' && voiceMale) utterance.voice = voiceMale;
+                else if (segments[i].role === 'female' && voiceFemale) utterance.voice = voiceFemale;
+                else if (voiceNarrator) utterance.voice = voiceNarrator;
+                
+                utterance.rate = speedRate;
+                utterance.pitch = 1.0;
+                
+                utterance.onend = resolve;
+                utterance.onerror = resolve; 
+                
+                synth.speak(utterance);
+            });
+        }
+        
+        if (isSpeaking) {
+            isSpeaking = false;
+            updatePlayUI(false);
+        }
+    }
+
+    function playCurrentQuestionAudio() {
+        let textToSpeak = "";
+        let qNum = testData.currentQ;
+
+        let qVoice = (qNum % 2 === 0) ? "Man:" : "Woman:";
+        let optVoice = (qNum % 2 === 0) ? "Woman:" : "Man:";
+
+        if (qNum >= 1 && qNum <= 6) {
+            textToSpeak = `Narrator: Number ${qNum}. Look at the picture marked number ${qNum} on your screen. ${qVoice} ` + getTranscript(qNum);
+        } else if (qNum >= 7 && qNum <= 31) {
+            let script = getTranscript(qNum);
+            let splitIdx = script.indexOf('(A)');
+            
+            if (splitIdx !== -1) {
+                let questionPart = script.substring(0, splitIdx).trim();
+                let optionsPart = script.substring(splitIdx).trim();
+                textToSpeak = `Narrator: Number ${qNum}. ${qVoice} ${questionPart} ${optVoice} ${optionsPart}`;
+            } else {
+                textToSpeak = `Narrator: Number ${qNum}. ${qVoice} ` + script;
+            }
+        } else if (qNum >= 32 && qNum <= 70) {
+            let script = getTranscript(qNum);
+            textToSpeak = `Narrator: Questions ${qNum} through ${qNum + 2} refer to the following conversation. ` + script;
+        } else if (qNum >= 71) {
+            let script = getTranscript(qNum);
+            textToSpeak = `Narrator: Questions ${qNum} through ${qNum + 2} refer to the following talk. ` + script;
+        }
+
+        speakText(textToSpeak);
+    }
+
+    function toggleAudio() {
+        if (isSpeaking) {
+            stopTTS();
+        } else {
+            if (document.getElementById('direction-screen').classList.contains('active')) {
+                const dirText = document.getElementById('dir-content').innerText || document.getElementById('dir-content').textContent;
+                speakText(`Part ${testData.currentPart} Directions. ${dirText}`);
+            } else if (document.getElementById('main-app').classList.contains('active')) {
+                playCurrentQuestionAudio();
+            }
+        }
+    }
+
+    function updatePlayUI(playing) {
+        const playIcon = document.getElementById('play-icon');
+        const playBtn = document.getElementById('play-btn');
+        const statusText = document.getElementById('audio-status-text');
+        const progressBar = document.getElementById('audio-progress');
+
+        if (playing) {
+            playIcon.classList.replace('fa-play', 'fa-stop');
+            playIcon.classList.replace('text-[#0369a1]', 'text-red-600');
+            statusText.innerText = "Audio Playing...";
+            progressBar.classList.add('tts-playing');
+            progressBar.style.width = "100%";
+        } else {
+            playIcon.classList.replace('fa-stop', 'fa-play');
+            playIcon.classList.replace('text-red-600', 'text-[#0369a1]');
+            statusText.innerText = "Ready";
+            progressBar.classList.remove('tts-playing');
+            progressBar.style.width = "0%";
+        }
+    }
+
+    const partDirections = {
+        1: "<strong>Directions:</strong> For each question in this part, you will hear four statements about a picture on the screen. When you hear the statements, you must select the one statement that best describes what you see in the picture. The statements will not appear on the screen and will be spoken only one time.",
+        2: "<strong>Directions:</strong> You will hear a question or statement and three responses spoken in English. They will not be printed on your screen and will be spoken only one time. Select the best response to the question or statement.",
+        3: "<strong>Directions:</strong> You will hear some conversations between two or more people. You will be asked to answer three questions about what the speakers say in each conversation. Select the best response to each question. The conversations will not be printed and will be spoken only one time.",
+        4: "<strong>Directions:</strong> You will hear some talks given by a single speaker. You will be asked to answer three questions about what the speaker says in each talk. Select the best response to each question. The talks will not be printed and will be spoken only one time."
+    };
+
+    function startSimulation() {
+        document.getElementById('welcome-screen').classList.remove('active');
+        document.getElementById('general-directions-screen').classList.add('active');
+        
+        document.getElementById('global-header').classList.remove('hidden');
+        document.getElementById('global-header').classList.add('flex');
+        document.getElementById('audio-subheader').classList.remove('hidden');
+        document.getElementById('audio-subheader').classList.add('flex');
+        
+        startTimer();
+    }
+
+    function showDirectionScreen(partNum) {
+        stopTTS();
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('direction-screen').classList.add('active');
+        
+        testData.currentPart = partNum;
+        
+        if(partNum >= 1) {
+            document.getElementById('nav-sidebar').classList.remove('hidden');
+            document.getElementById('nav-sidebar').classList.add('flex');
+            renderQuestionGrid();
+        }
+
+        document.getElementById('dir-title').innerText = `PART ${partNum}`;
+        document.getElementById('dir-content').innerHTML = partDirections[partNum];
+        document.getElementById('dir-btn-text').innerText = `Part ${partNum}`;
+        
+        setTimeout(() => {
+            const dirText = document.getElementById('dir-content').innerText || document.getElementById('dir-content').textContent;
+            speakText(`Part ${partNum} Directions. ${dirText}`);
+        }, 500);
+    }
+
+    function startPartFromDirection() {
+        stopTTS();
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('main-app').classList.add('active');
+        
+        let firstQ = 1;
+        if (testData.currentPart === 2) firstQ = 7;
+        if (testData.currentPart === 3) firstQ = 32;
+        if (testData.currentPart === 4) firstQ = 71;
+        
+        goToQuestion(firstQ);
+    }
+
+    function switchPart(newPart) {
+        if(newPart !== testData.currentPart) {
+            showDirectionScreen(newPart);
+        }
+    }
+
+    function startTimer() {
+        if(timerInterval) return; 
+        const timerEl = document.getElementById('timer');
+        timerInterval = setInterval(() => {
+            if (testData.timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                finishTest();
+                return;
+            }
+            testData.timeRemaining--;
+            timerEl.innerText = formatTime(testData.timeRemaining);
+            if(testData.timeRemaining < 300) {
+                timerEl.classList.add('text-red-600');
+            }
+        }, 1000);
+    }
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function renderQuestionGrid() {
+        const grid = document.getElementById('question-grid');
+        grid.innerHTML = '';
+        
+        let currentBase = testData.currentQ;
+        let isCurrentGroup = (testData.currentPart === 3 || testData.currentPart === 4);
+        
+        for (let i = 1; i <= 100; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            
+            let isActive = false;
+            if (isCurrentGroup) {
+                isActive = (i >= currentBase && i <= currentBase + 2);
+            } else {
+                isActive = (i === currentBase);
+            }
+            
+            btn.className = `grid-btn ${testData.answers[i] ? 'answered' : ''} ${isActive ? 'active' : ''}`;
+            btn.onclick = () => {
+                let targetPart = 1;
+                if(i >= 7 && i <= 31) targetPart = 2;
+                if(i >= 32 && i <= 70) targetPart = 3;
+                if(i >= 71) targetPart = 4;
+                
+                if(targetPart !== testData.currentPart && testData.currentPart !== 0) {
+                    testData.currentQ = i; 
+                    switchPart(targetPart);
+                } else {
+                    goToQuestion(i);
+                }
+            };
+            grid.appendChild(btn);
+        }
+    }
+
+    function goToQuestion(qNum, isSelectionUpdate = false) {
+        if (qNum < 1 || qNum > 100) return;
+        
+        if (!isSelectionUpdate) {
+            stopTTS();
+        }
+
+        let targetPart = 1;
+        if(qNum >= 7 && qNum <= 31) targetPart = 2;
+        if(qNum >= 32 && qNum <= 70) targetPart = 3;
+        if(qNum >= 71) targetPart = 4;
+        
+        let baseQ = qNum;
+        let isGroup = false;
+        
+        if(targetPart === 3) {
+            baseQ = Math.floor((qNum - 32) / 3) * 3 + 32;
+            isGroup = true;
+        } else if(targetPart === 4) {
+            baseQ = Math.floor((qNum - 71) / 3) * 3 + 71;
+            isGroup = true;
+        }
+
+        if(!document.getElementById('main-app').classList.contains('active')) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('main-app').classList.add('active');
+        }
+
+        testData.currentQ = baseQ;
+        testData.currentPart = targetPart;
+        
+        document.getElementById('q-counter').innerText = isGroup ? `${baseQ} - ${baseQ + 2}` : baseQ;
+        
+        renderQuestionGrid();
+        const content = document.getElementById('question-content');
+        let html = '';
+        
+        let miniDir = "";
+        if(targetPart === 1) miniDir = "Select the best description for the picture.";
+        if(targetPart === 2) miniDir = "Select the best response.";
+        if(targetPart === 3) miniDir = "Answer based on the conversation.";
+        if(targetPart === 4) miniDir = "Answer based on the talk.";
+        document.getElementById('part-badge').innerText = `PART ${targetPart}`;
+        document.getElementById('part-mini-dir').innerText = miniDir;
+
+        if(targetPart === 1) {
+            html = `
+                <div class="w-full">
+                    <div class="bg-gray-50 h-[350px] flex flex-col items-center justify-center mb-6 border border-gray-300 relative p-4">
+                        <img src="${part1Visuals[baseQ]}" alt="Question ${baseQ}" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <div class="flex justify-center space-x-6 pt-4">
+                        ${generateOptions(baseQ, ['A', 'B', 'C', 'D'])}
+                    </div>
+                </div>
+            `;
+        } else if(targetPart === 2) {
+            html = `
+                <div class="w-full flex flex-col items-center py-12">
+                    <div class="text-center mb-8">
+                        <h2 class="text-lg text-gray-700">Listen to the audio, then select your answer.</h2>
+                    </div>
+                    <div class="flex justify-center space-x-6 border border-gray-300 p-8 bg-gray-50">
+                        ${generateOptions(baseQ, ['A', 'B', 'C'])}
+                    </div>
+                </div>
+            `;
+        } else {
+            html = `<div class="w-full flex flex-col space-y-6 py-2">`;
+            for(let i = baseQ; i <= baseQ + 2; i++) {
+                let qData = mcqData[i];
+                html += `
+                    <div class="bg-white p-6 border border-gray-300 shadow-sm">
+                        <h2 class="text-base text-gray-800 font-bold mb-4">${i}. ${qData.q}</h2>
+                        <div class="flex flex-col space-y-2">
+                            ${generateOptions(i, ['A', 'B', 'C', 'D'], true, qData.opts)}
+                        </div>
+                    </div>
+                `;
+            }
+            html += `</div>`;
+        }
+
+        content.innerHTML = html;
+        
+        document.getElementById('prev-btn').disabled = (baseQ === 1);
+        document.getElementById('prev-btn').onclick = () => goToQuestion(baseQ - 1);
+        
+        const nextBtn = document.getElementById('next-btn');
+        const isLastQuestion = (baseQ >= 98 && isGroup) || (baseQ === 100);
+
+        if (isLastQuestion) {
+            nextBtn.innerText = "Finish";
+            nextBtn.onclick = finishTest;
+            nextBtn.disabled = false;
+        } else {
+            nextBtn.innerText = "Next >";
+            nextBtn.onclick = () => goToQuestion(isGroup ? baseQ + 3 : baseQ + 1);
+            nextBtn.disabled = false;
+        }
+
+        if (!isSelectionUpdate) {
+            setTimeout(() => {
+                playCurrentQuestionAudio();
+            }, 500);
+        }
+    }
+
+    function generateOptions(qNum, letters, isVertical = false, simulatedOpts = null) {
+        let optionsHtml = '';
+        letters.forEach((letter, index) => {
+            const isSelected = testData.answers[qNum] === letter;
+            if (isVertical && simulatedOpts) {
+                optionsHtml += `
+                    <label class="option-label border border-gray-200 bg-white hover:bg-gray-50 ${isSelected ? '!border-gray-500 bg-gray-100' : ''}" onclick="selectOption(${qNum}, '${letter}')">
+                        <div class="radio-circle">${letter}</div>
+                        <span class="text-sm font-medium text-gray-700 ml-1">${simulatedOpts[index]}</span>
+                        <input type="radio" name="q${qNum}" value="${letter}" ${isSelected ? 'checked' : ''}>
+                    </label>
+                `;
+            } else {
+                optionsHtml += `
+                    <label class="option-label ${isSelected ? 'selected' : ''}" onclick="selectOption(${qNum}, '${letter}')">
+                        <div class="radio-circle">${letter}</div>
+                        <input type="radio" name="q${qNum}" value="${letter}" ${isSelected ? 'checked' : ''}>
+                    </label>
+                `;
+            }
+        });
+        return optionsHtml;
+    }
+
+    function selectOption(qNum, letter) {
+        testData.answers[qNum] = letter;
+        goToQuestion(testData.currentQ, true); 
+    }
+
+    function finishTest() {
+        if (timerInterval) clearInterval(timerInterval);
+        stopTTS();
+        
+        let rawScore = 0;
+        for(let i = 1; i <= 100; i++) {
+            if(testData.answers[i] === officialKey[i]) rawScore++;
+        }
+
+        let scaledMin = 5, scaledMax = 495;
+        if(rawScore >= 96) { scaledMin = 475; scaledMax = 495; }
+        else if(rawScore >= 81) { scaledMin = 365; scaledMax = 445; }
+        else if(rawScore >= 61) { scaledMin = 260; scaledMax = 335; }
+        else if(rawScore >= 41) { scaledMin = 150; scaledMax = 225; }
+        else if(rawScore >= 21) { scaledMin = 60; scaledMax = 110; }
+        else { scaledMin = 5; scaledMax = 50; }
+
+        document.getElementById('raw-score').innerText = rawScore;
+        document.getElementById('scaled-score').innerText = `${scaledMin} - ${scaledMax}`;
+
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('nav-sidebar').classList.add('hidden');
+        document.getElementById('nav-sidebar').classList.remove('flex');
+        document.getElementById('results-screen').classList.add('active');
+        
+        document.getElementById('audio-subheader').classList.add('hidden');
+        document.getElementById('audio-subheader').classList.remove('flex');
+
+        renderReviewGrid();
+    }
+
+    function renderReviewGrid() {
+        const grid = document.getElementById('review-grid');
+        grid.innerHTML = '';
+        
+        for (let i = 1; i <= 100; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            
+            let statusClass = 'unanswered';
+            if (testData.answers[i]) {
+                if (testData.answers[i] === officialKey[i]) statusClass = 'correct';
+                else statusClass = 'incorrect';
+            }
+            
+            btn.className = `grid-btn review-grid-btn ${statusClass}`;
+            btn.onclick = () => openReviewModal(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function openReviewModal(qNum) {
+        stopTTS();
+        const modal = document.getElementById('review-modal');
+        const content = document.getElementById('review-modal-content');
+        
+        document.getElementById('modal-title').innerText = `Question ${qNum} Review`;
+        document.getElementById('modal-user-ans').innerText = testData.answers[qNum] || "No Answer";
+        
+        const correctAns = officialKey[qNum];
+        document.getElementById('modal-correct-ans').innerText = correctAns;
+        
+        const userAnsEl = document.getElementById('modal-user-ans');
+        userAnsEl.className = testData.answers[qNum] === correctAns ? "text-xl font-bold text-green-700" : "text-xl font-bold text-red-600";
+
+        const imageContainer = document.getElementById('modal-image-container');
+        const modalImage = document.getElementById('modal-image');
+        if (qNum <= 6) {
+            modalImage.src = part1Visuals[qNum];
+            imageContainer.classList.remove('hidden');
+        } else {
+            imageContainer.classList.add('hidden');
+        }
+
+        document.getElementById('modal-transcript').innerHTML = getTranscript(qNum);
+        document.getElementById('modal-explanation').innerHTML = getExplanation(qNum, correctAns);
+        
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeReviewModal() {
+        const modal = document.getElementById('review-modal');
+        const content = document.getElementById('review-modal-content');
+        modal.classList.add('opacity-0');
+        content.classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const candidateName = document.getElementById('candidate-name').value.trim() || 'Candidate';
+        const rawScore = document.getElementById('raw-score').innerText;
+        const scaledScore = document.getElementById('scaled-score').innerText;
+        
+        doc.setFillColor(3, 105, 161);
+        doc.rect(0, 0, 210, 35, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
+        doc.text("TOEIC Listening Practice - Score Report", 105, 22, null, null, "center");
+        
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Name:`, 20, 55);
+        doc.setFont('helvetica', 'bold');
+        doc.text(candidateName, 40, 55);
+        
+        const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Date:`, 130, 55);
+        doc.setFont('helvetica', 'bold');
+        doc.text(today, 145, 55);
+        
+        doc.setDrawColor(200, 200, 200);
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(20, 70, 170, 40, 3, 3, 'FD');
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text("RAW SCORE", 60, 85, null, null, "center");
+        doc.text("ESTIMATED SCALED SCORE", 145, 85, null, null, "center");
+        
+        doc.setFontSize(24);
+        doc.setTextColor(3, 105, 161);
+        doc.text(`${rawScore} / 100`, 60, 100, null, null, "center");
+        doc.setTextColor(22, 101, 52);
+        doc.text(scaledScore, 145, 100, null, null, "center");
+        
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Performance Feedback", 20, 135);
+        
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        let feedback = parseInt(rawScore) >= 60 ? 
+            "Good job! You have a solid foundation in listening comprehension. Keep practicing to identify subtle details and paraphrased phrasing." : 
+            "Keep your chin up! Learning takes time. Focus on regular exposure to English audio to see steady improvement.";
+        
+        doc.text(doc.splitTextToSize(feedback, 170), 20, 145);
+        
+        doc.setFontSize(9);
+        doc.setTextColor(120, 120, 120);
+        doc.setFont('helvetica', 'italic');
+        const disclaimer = "Disclaimer: This report is generated from an unofficial practice tool utilizing TTS. The score provided is an estimation and is NOT endorsed by ETS. TOEIC® is a registered trademark of ETS.";
+        doc.text(doc.splitTextToSize(disclaimer, 170), 20, 270);
+        
+        doc.save(`TOEIC_TTS_Report_${candidateName.replace(/\s+/g, '_')}.pdf`);
+    }
+
+    window.onload = () => {
+        initVoices();
+        document.getElementById('play-btn').onclick = toggleAudio;
+    };
+</script>
+
+</body>
+</html>

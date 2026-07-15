@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A1 Reading - New Employee Orientation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-5xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base text-slate-500 mb-8 flex gap-2 font-medium uppercase tracking-wider">
+            <span>Business English</span> <span>&gt;</span> 
+            <span>Reading</span> <span>&gt;</span> 
+            <span>A1 Level</span> <span>&gt;</span> 
+            <span class="text-indigo-700 font-bold">HR & Onboarding</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-blue-600 tracking-tight mb-3">
+                    New Employee Orientation Day
+                </h1>
+                <p class="text-xl text-slate-500 font-medium">Topic: Reading for Specific Instructions & Schedules</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-lg text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-indigo-600 p-6 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-xl text-slate-700 leading-relaxed">
+                <i class="fas fa-info-circle mr-3 text-indigo-600"></i> 
+                <strong>Instructions:</strong> Complete the <strong>Preparation</strong> tasks first. Then read the email and answer the questions. 
+                <br><span class="text-base text-slate-500 italic ml-10">(Correct answers appear after 2 incorrect attempts.)</span>
+            </p>
+        </div>
+
+        <!-- Section 1: Preparation (Cyan Theme) - Part 1 -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-2xl font-bold text-cyan-900">Preparation (Part 1)</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-2xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 2000px;">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 1: Vocab -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-cyan-800">Vocabulary Pre-Teach</h3>
+                            <button onclick="checkVocab()" class="text-base font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-5 py-2.5 rounded-lg hover:bg-cyan-50 transition-colors shadow-sm">Check Vocabulary</button>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-6 font-medium">Match the HR words with the correct definitions.</p>
+                        <div id="vocab-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Reading Passage (Blue Theme) - Part 2 -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-envelope"></i></div>
+                    <span class="text-2xl font-bold text-blue-900">Reading: The Email Invitation</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 2000px;">
+                <div class="p-10 bg-white">
+                    
+                    <div class="bg-white border-2 border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                        <div class="bg-slate-100 p-6 border-b border-slate-200">
+                            <p class="text-lg mb-1"><strong>From:</strong> Sari (HR Manager)</p>
+                            <p class="text-lg mb-1"><strong>To:</strong> All New Staff</p>
+                            <p class="text-lg font-bold text-indigo-700">Subject: Invitation: New Employee Orientation Day</p>
+                        </div>
+                        <div class="p-8 prose prose-slate max-w-none text-justify leading-loose text-xl">
+                            <p>Welcome to PT. Global Solusi. We are happy you are joining our team!</p>
+                            <p>Next week is your <strong>Orientation Day</strong>. This training is <strong>mandatory</strong> (you must attend). Here is the important information:</p>
+                            
+                            <h4 class="text-xl font-bold text-slate-800 mt-6 mb-2">1. Time and Location</h4>
+                            <ul class="list-none pl-0">
+                                <li><strong>Date:</strong> Monday, August 5th.</li>
+                                <li><strong>Time:</strong> We start at 09:00 AM sharp. Please arrive 10 minutes early.</li>
+                                <li><strong>Location:</strong> Training Room A (2nd Floor). Please <strong>report to</strong> the Receptionist when you arrive. She will give you a visitor pass.</li>
+                            </ul>
+
+                            <h4 class="text-xl font-bold text-slate-800 mt-6 mb-2">2. The Schedule</h4>
+                            <p>In the morning, we will talk about company rules and office safety. At 12:00 PM, we provide a free lunch box (Chicken or Fish).</p>
+                            <p>In the afternoon, you will meet your new manager. Finally, at 3:00 PM, you will sign your employment <strong>contract</strong>.</p>
+
+                            <h4 class="text-xl font-bold text-slate-800 mt-6 mb-2">3. What to Bring</h4>
+                            <p>Please bring these documents with you:</p>
+                            <ul class="list-disc pl-6">
+                                <li>Your original ID Card (KTP).</li>
+                                <li>Your Bank Account book (so we can pay your salary).</li>
+                                <li>A red background photo (4x6) for your <strong>ID Badge</strong>.</li>
+                            </ul>
+                            
+                            <p class="mt-6">See you on Monday!</p>
+                            <p>Sari</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Comprehension (Emerald Theme) - Part 3 -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-2xl font-bold text-emerald-900">Comprehension (True or False)</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold text-emerald-800">Part 3: True or False?</h3>
+                        <button onclick="checkTF()" class="text-base font-bold text-emerald-600 border-2 border-emerald-200 bg-white px-5 py-2.5 rounded-lg hover:bg-emerald-50 transition-colors shadow-sm">Check Answers</button>
+                    </div>
+                    <div id="tf-container" class="space-y-4">
+                        <!-- Populated by JS -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Information Transfer (Orange Theme) - Part 4 -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-orange-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-8 bg-orange-50 hover:bg-orange-100 border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-orange-200 text-orange-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-2xl font-bold text-orange-900">Information Transfer (The Schedule)</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-10 bg-white">
+                    
+                    <p class="text-lg text-slate-600 font-medium mb-8 text-center">Complete the timeline for Monday.</p>
+                    
+                    <div class="max-w-3xl mx-auto relative">
+                        <!-- Vertical Line -->
+                        <div class="absolute left-[85px] top-4 bottom-4 w-1 bg-orange-200 hidden md:block"></div>
+
+                        <!-- 08:50 -->
+                        <div class="flex flex-col md:flex-row items-start md:items-center mb-10 relative">
+                            <div class="w-20 font-bold text-orange-800 text-xl text-right pr-6 hidden md:block">08:50</div>
+                            <div class="absolute left-[81px] w-3 h-3 bg-orange-500 rounded-full hidden md:block"></div>
+                            <div class="flex-1 ml-0 md:ml-8 bg-orange-50 p-6 rounded-xl border border-orange-100 w-full">
+                                <span class="md:hidden font-bold text-orange-800 block mb-2">08:50 AM</span>
+                                <p class="text-lg">Arrive and report to the <input type="text" id="sched1" data-correct="receptionist" class="border-b-2 border-orange-300 w-40 outline-none focus:border-orange-600 text-center font-bold text-orange-900 bg-transparent" placeholder="...">.</p>
+                                <div id="fb-sched1" class="text-sm font-bold h-6 mt-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- 09:00 -->
+                        <div class="flex flex-col md:flex-row items-start md:items-center mb-10 relative">
+                            <div class="w-20 font-bold text-orange-800 text-xl text-right pr-6 hidden md:block">09:00</div>
+                            <div class="absolute left-[81px] w-3 h-3 bg-orange-500 rounded-full hidden md:block"></div>
+                            <div class="flex-1 ml-0 md:ml-8 bg-orange-50 p-6 rounded-xl border border-orange-100 w-full">
+                                <span class="md:hidden font-bold text-orange-800 block mb-2">09:00 AM</span>
+                                <p class="text-lg">Orientation starts (Topic: Rules and <input type="text" id="sched2" data-correct="safety,office safety" class="border-b-2 border-orange-300 w-40 outline-none focus:border-orange-600 text-center font-bold text-orange-900 bg-transparent" placeholder="...">).</p>
+                                <div id="fb-sched2" class="text-sm font-bold h-6 mt-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- 12:00 -->
+                        <div class="flex flex-col md:flex-row items-start md:items-center mb-10 relative">
+                            <div class="w-20 font-bold text-orange-800 text-xl text-right pr-6 hidden md:block">12:00</div>
+                            <div class="absolute left-[81px] w-3 h-3 bg-orange-500 rounded-full hidden md:block"></div>
+                            <div class="flex-1 ml-0 md:ml-8 bg-orange-50 p-6 rounded-xl border border-orange-100 w-full">
+                                <span class="md:hidden font-bold text-orange-800 block mb-2">12:00 PM</span>
+                                <p class="text-lg">Eat <input type="text" id="sched3" data-correct="lunch,lunch box,free lunch" class="border-b-2 border-orange-300 w-40 outline-none focus:border-orange-600 text-center font-bold text-orange-900 bg-transparent" placeholder="...">.</p>
+                                <div id="fb-sched3" class="text-sm font-bold h-6 mt-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- 03:00 -->
+                        <div class="flex flex-col md:flex-row items-start md:items-center relative">
+                            <div class="w-20 font-bold text-orange-800 text-xl text-right pr-6 hidden md:block">03:00</div>
+                            <div class="absolute left-[81px] w-3 h-3 bg-orange-500 rounded-full hidden md:block"></div>
+                            <div class="flex-1 ml-0 md:ml-8 bg-orange-50 p-6 rounded-xl border border-orange-100 w-full">
+                                <span class="md:hidden font-bold text-orange-800 block mb-2">03:00 PM</span>
+                                <p class="text-lg">Sign the employment <input type="text" id="sched4" data-correct="contract" class="border-b-2 border-orange-300 w-40 outline-none focus:border-orange-600 text-center font-bold text-orange-900 bg-transparent" placeholder="...">.</p>
+                                <div id="fb-sched4" class="text-sm font-bold h-6 mt-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 text-center">
+                        <button onclick="checkSchedule()" class="text-lg font-bold text-white bg-orange-500 px-8 py-3 rounded-xl hover:bg-orange-600 transition-colors shadow-lg">Check Schedule</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: HR Checklist (Violet Theme) - Part 5 -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-2xl font-bold text-violet-900">HR Checklist (Logic)</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-10 bg-white space-y-8">
+                    
+                    <p class="text-lg text-slate-600 mb-6 text-center">What must the new employee bring? (Check 3 items)</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                        <label class="flex items-center gap-4 p-5 bg-white border-2 border-slate-200 rounded-xl cursor-pointer hover:bg-violet-50 transition-all shadow-sm">
+                            <input type="checkbox" id="chk1" value="laptop" class="w-6 h-6 accent-violet-600">
+                            <span class="text-lg font-medium text-slate-700">A laptop computer</span>
+                        </label>
+                        <label class="flex items-center gap-4 p-5 bg-white border-2 border-slate-200 rounded-xl cursor-pointer hover:bg-violet-50 transition-all shadow-sm">
+                            <input type="checkbox" id="chk2" value="ktp" class="w-6 h-6 accent-violet-600">
+                            <span class="text-lg font-medium text-slate-700">ID Card (KTP)</span>
+                        </label>
+                        <label class="flex items-center gap-4 p-5 bg-white border-2 border-slate-200 rounded-xl cursor-pointer hover:bg-violet-50 transition-all shadow-sm">
+                            <input type="checkbox" id="chk3" value="bank" class="w-6 h-6 accent-violet-600">
+                            <span class="text-lg font-medium text-slate-700">Bank Book</span>
+                        </label>
+                        <label class="flex items-center gap-4 p-5 bg-white border-2 border-slate-200 rounded-xl cursor-pointer hover:bg-violet-50 transition-all shadow-sm">
+                            <input type="checkbox" id="chk4" value="pen" class="w-6 h-6 accent-violet-600">
+                            <span class="text-lg font-medium text-slate-700">A pen</span>
+                        </label>
+                        <label class="flex items-center gap-4 p-5 bg-white border-2 border-slate-200 rounded-xl cursor-pointer hover:bg-violet-50 transition-all shadow-sm md:col-span-2 md:w-1/2 md:mx-auto">
+                            <input type="checkbox" id="chk5" value="photo" class="w-6 h-6 accent-violet-600">
+                            <span class="text-lg font-medium text-slate-700">A photo (4x6)</span>
+                        </label>
+                    </div>
+
+                    <div id="checklist-feedback" class="text-center font-bold text-xl min-h-[30px] mt-4"></div>
+
+                    <div class="mt-8 text-center">
+                        <button onclick="checkChecklist()" class="text-lg font-bold text-white bg-violet-600 px-8 py-3 rounded-xl hover:bg-violet-700 transition-colors shadow-lg">Check Items</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-lg font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        
+        // Attempts Tracking
+        const attempts = {};
+
+        // Task 1: Vocab Data
+        const vocabData = [
+            { id: "v1", word: "1. Orientation", correct: "c", explanation: "Orientation is a training day for new employees.", options: { a: "Plastic card with photo", b: "Arrive at a place", c: "Training day for new employees", d: "Go to an event", e: "Paper you sign for job rules" } },
+            { id: "v2", word: "2. Contract", correct: "e", explanation: "A contract is an important paper about job rules." },
+            { id: "v3", word: "3. ID Badge", correct: "a", explanation: "An ID badge is a card with your photo and name." },
+            { id: "v4", word: "4. Attend", correct: "d", explanation: "Attend means to go to an event or meeting." },
+            { id: "v5", word: "5. Report to", correct: "b", explanation: "Report to means to arrive or present yourself to someone." }
+        ];
+
+        // Task 3: True/False
+        const tfData = [
+            { id: "tf1", text: "1. The Orientation Day is optional (you don't have to go).", correct: "False", explanation: "The email says 'This training is mandatory'." },
+            { id: "tf2", text: "2. The training is on the second floor.", correct: "True", explanation: "Location: Training Room A (2nd Floor)." },
+            { id: "tf3", text: "3. You must buy your own lunch.", correct: "False", explanation: "The email says 'we provide a free lunch box'." },
+            { id: "tf4", text: "4. You will sign your contract in the morning.", correct: "False", explanation: "You sign it at 3:00 PM (in the afternoon)." },
+            { id: "tf5", text: "5. You need to bring a photo for your ID Badge.", correct: "True", explanation: "Bring a red background photo (4x6)." }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            const optionsHtml = `
+                <option value="">Select meaning...</option>
+                <option value="a">a. Plastic card with photo</option>
+                <option value="b">b. Arrive at a place</option>
+                <option value="c">c. Training day for new employees</option>
+                <option value="d">d. To go to an event</option>
+                <option value="e">e. Important paper to sign</option>
+            `;
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col gap-2 p-4 bg-cyan-50/50 rounded-xl border border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4">
+                        <div class="md:w-1/3 font-bold text-cyan-900">${item.word}</div>
+                        <div class="md:w-2/3 flex items-center gap-4">
+                            <select id="${item.id}" class="flex-1 p-3 border border-slate-300 rounded-lg text-lg focus:outline-none focus:border-cyan-500 cursor-pointer bg-white">
+                                ${optionsHtml}
+                            </select>
+                            <div id="feedback-${item.id}" class="w-auto flex-shrink-0 text-lg font-bold min-w-[24px]"></div>
+                        </div>
+                    </div>
+                    <div id="explain-${item.id}" class="hidden mt-2 p-3 bg-cyan-100 text-cyan-900 text-base rounded-lg border border-cyan-200"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col gap-2 p-4 border-b border-emerald-100 last:border-0">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between">
+                        <span class="text-lg text-slate-700 mb-3 sm:mb-0 w-full sm:w-2/3">${item.text}</span>
+                        <div class="flex items-center gap-6 text-lg font-medium">
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-600">
+                                <input type="radio" name="${item.id}" value="True" class="w-5 h-5 accent-emerald-600"> True
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-600">
+                                <input type="radio" name="${item.id}" value="False" class="w-5 h-5 accent-emerald-600"> False
+                            </label>
+                            <span id="feedback-${item.id}" class="w-8 flex justify-center text-xl"></span>
+                        </div>
+                    </div>
+                    <div id="explain-${item.id}" class="hidden mt-2 p-3 bg-emerald-100 text-emerald-900 text-base rounded-lg border border-emerald-200"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    select.classList.add('border-green-500', 'bg-green-50');
+                    select.disabled = true;
+                    explainDiv.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-sm font-bold text-red-600 bg-red-100 px-2 rounded">Ans: ${item.correct}</span>`;
+                        explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct}</strong><br>${item.explanation}`;
+                        explainDiv.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    }
+                    select.classList.add('border-red-300');
+                }
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    radios.forEach(r => r.disabled = true);
+                    explainDiv.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-sm font-bold text-red-600 bg-red-100 px-2 rounded">Ans: ${item.correct}</span>`;
+                        explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct}</strong><br>${item.explanation}`;
+                        explainDiv.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                    }
+                }
+            });
+        }
+
+        function checkSchedule() {
+            const items = [
+                {id: "sched1", correct: ["receptionist"]},
+                {id: "sched2", correct: ["safety"]},
+                {id: "sched3", correct: ["lunch", "lunch box"]},
+                {id: "sched4", correct: ["contract"]}
+            ];
+
+            items.forEach(item => {
+                const input = document.getElementById(item.id);
+                const feedback = document.getElementById(`fb-${item.id}`);
+                const key = item.id;
+                const val = input.value.trim().toLowerCase();
+
+                if (!attempts[key]) attempts[key] = 0;
+
+                if (item.correct.includes(val)) {
+                    input.classList.add('bg-green-100', 'border-green-500');
+                    input.classList.remove('border-orange-300', 'border-red-300');
+                    input.disabled = true;
+                    feedback.innerHTML = '<span class="text-green-600">Correct!</span>';
+                } else if (val !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        input.value = item.correct[0]; // Reveal
+                        input.classList.add('text-red-600', 'border-red-300');
+                        input.disabled = true;
+                        feedback.innerHTML = '<span class="text-red-600 text-sm">Answer Revealed</span>';
+                    } else {
+                        input.classList.add('border-red-300');
+                        feedback.innerHTML = '<span class="text-red-500 text-sm">Try again</span>';
+                    }
+                }
+            });
+        }
+
+        function checkChecklist() {
+            // Correct IDs: chk2, chk3, chk5
+            const correctIds = ["chk2", "chk3", "chk5"];
+            const wrongIds = ["chk1", "chk4"];
+            let feedback = document.getElementById("checklist-feedback");
+            let key = "checklist";
+            
+            if (!attempts[key]) attempts[key] = 0;
+
+            let allCorrectChecked = true;
+            let noWrongChecked = true;
+
+            correctIds.forEach(id => {
+                if(!document.getElementById(id).checked) allCorrectChecked = false;
+            });
+            wrongIds.forEach(id => {
+                if(document.getElementById(id).checked) noWrongChecked = false;
+            });
+
+            if (allCorrectChecked && noWrongChecked) {
+                feedback.innerHTML = '<span class="text-green-600">Perfect! You have everything.</span>';
+                // Disable all
+                document.querySelectorAll('input[type="checkbox"]').forEach(c => c.disabled = true);
+            } else {
+                attempts[key]++;
+                if(attempts[key] >= 2) {
+                    feedback.innerHTML = '<span class="text-red-600">Look at the email again: ID, Bank Book, Photo.</span>';
+                    // Force correct state
+                    correctIds.forEach(id => document.getElementById(id).checked = true);
+                    wrongIds.forEach(id => document.getElementById(id).checked = false);
+                    document.querySelectorAll('input[type="checkbox"]').forEach(c => c.disabled = true);
+                } else {
+                    feedback.innerHTML = '<span class="text-orange-600">Not quite. Check "What to Bring" again.</span>';
+                }
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '3000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                for (const key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => {
+                    i.value = "";
+                    i.disabled = false;
+                    i.classList.remove('bg-green-100', 'border-green-500', 'border-red-300', 'text-red-600');
+                    i.classList.add('border-orange-300'); // reset timeline style
+                });
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                document.querySelectorAll('input[type="checkbox"]').forEach(c => { c.checked = false; c.disabled = false; });
+                document.querySelectorAll('select').forEach(s => { s.value = ""; s.disabled = false; s.classList.remove('border-green-500', 'bg-green-50', 'border-red-300'); });
+                
+                // Clear Feedback & Explanations
+                document.querySelectorAll('[id^="feedback-"], [id^="fb-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('[id^="explain-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.add('hidden');
+                });
+                document.getElementById('checklist-feedback').innerHTML = "";
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderTF();
+        });
+
+    </script>
+</body>
+</html>

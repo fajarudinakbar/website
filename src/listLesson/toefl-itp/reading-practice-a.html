@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL ITP Reading - Practice A</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Custom Scrollbar for Reading Pane */
+        .reading-pane::-webkit-scrollbar { width: 8px; }
+        .reading-pane::-webkit-scrollbar-track { background: #f1f5f9; }
+        .reading-pane::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .reading-pane::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Accessibility & Interaction Styles */
+        .highlight-target {
+            transition: all 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .highlight-active {
+            background-color: #fef08a; /* Yellow-200 */
+            color: #854d0e; /* Yellow-800 */
+            font-weight: bold;
+            box-shadow: 0 0 0 3px #fef08a;
+            padding: 0 2px;
+        }
+
+        .ref-link {
+            color: #4f46e5; /* Indigo-600 */
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 1px dashed #4f46e5;
+            transition: background-color 0.2s;
+        }
+        .ref-link:hover {
+            background-color: #e0e7ff; /* Indigo-100 */
+            border-bottom-style: solid;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 sticky top-0 z-20 border-b border-slate-200">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-book text-indigo-600 text-2xl"></i>
+                <h1 class="font-bold text-slate-700 text-lg md:text-xl">TOEFL ITP Reading Practice</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="progress-display" class="hidden text-sm font-medium bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full border border-indigo-100">
+                    Question <span id="current-q-num">1</span> of 50
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="w-full bg-slate-200 h-1.5 z-10">
+        <div id="progress-bar" class="bg-indigo-600 h-1.5 transition-all duration-300 w-0"></div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-6xl mx-auto w-full p-4 md:p-6 flex flex-col">
+        
+        <!-- View: Intro (Home Page) -->
+        <div id="view-intro" class="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto mt-8 fade-in text-center">
+            <div class="mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 mb-4">
+                    <i class="fa-solid fa-book-open text-3xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">Reading Comprehension Practice</h2>
+                <p class="text-slate-500 font-medium">TOEFL ITP Section 3 Simulation</p>
+            </div>
+
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed max-w-lg mx-auto">
+                This practice test is designed to simulate the reading section of the TOEFL ITP exam. You will read academic passages and answer questions to test your ability to understand main ideas, details, vocabulary in context, and inferences.
+            </p>
+            
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 mb-8 text-left mx-auto max-w-lg">
+                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-indigo-500"></i> Test Overview
+                </h3>
+                <ul class="space-y-3 text-slate-700">
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                        <span>Contains <strong>5 Reading Passages</strong> similar to academic texts.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                        <span>Includes <strong>50 Questions</strong> (10 per passage).</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-hand-pointer text-indigo-500 mt-1"></i>
+                        <span><strong>Interactive Feature:</strong> Click highlighted references in questions (e.g., <span class="text-indigo-600 font-bold border-b border-indigo-600 border-dashed">paragraph 1</span>) to locate them in the text.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <button onclick="startTest()" class="w-full md:w-auto md:px-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-lg transition shadow-md flex items-center justify-center gap-2 mx-auto text-lg">
+                Start Practice Test <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- View: Test (Split Screen) -->
+        <div id="view-test" class="hidden fade-in flex-1 flex flex-col md:flex-row gap-6 h-[calc(100vh-140px)]">
+            
+            <!-- Left: Reading Passage -->
+            <div class="md:w-1/2 flex flex-col bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                <div class="bg-slate-50 p-3 border-b border-slate-200 flex justify-between items-center">
+                    <span class="font-bold text-slate-500 text-xs uppercase tracking-wide">Reading Passage</span>
+                    <span id="passage-indicator" class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-0.5 rounded">Passage 1 of 5</span>
+                </div>
+                <!-- Reading Pane -->
+                <div id="passage-content" class="reading-pane flex-1 overflow-y-auto p-6 text-lg leading-relaxed text-slate-800 font-serif">
+                    <!-- Passage text injected here via JS -->
+                </div>
+            </div>
+
+            <!-- Right: Questions -->
+            <div class="md:w-1/2 flex flex-col bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                <div class="bg-slate-50 p-3 border-b border-slate-200">
+                    <span class="font-bold text-slate-500 text-xs uppercase tracking-wide">Question</span>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-6 flex flex-col">
+                    <!-- Question Text (Supports HTML for clickable links) -->
+                    <h2 id="question-text" class="text-xl font-semibold text-slate-900 mb-6 leading-relaxed">
+                        Question goes here?
+                    </h2>
+                    
+                    <div id="options-container" class="space-y-3 mb-6">
+                        <!-- Options injected here -->
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="mt-auto flex justify-between pt-4 border-t border-slate-100">
+                        <button onclick="prevQuestion()" id="btn-prev" class="px-4 py-2 rounded-lg font-bold text-slate-500 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center gap-2">
+                            <i class="fa-solid fa-chevron-left"></i> Previous
+                        </button>
+                        <button onclick="nextQuestion()" id="btn-next" class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition shadow flex items-center gap-2">
+                            Next <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Results -->
+        <div id="view-results" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-center text-slate-800">Test Results</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-slate-100 p-6 rounded-xl text-center">
+                        <div class="text-sm text-slate-500 uppercase tracking-wide font-bold">Raw Score</div>
+                        <div class="text-4xl font-bold text-slate-900"><span id="score-raw">0</span> / 50</div>
+                    </div>
+                    <div class="bg-indigo-600 p-6 rounded-xl text-center text-white">
+                        <div class="text-sm text-indigo-100 uppercase tracking-wide font-bold">TOEFL Scaled Score</div>
+                        <div class="text-5xl font-bold" id="score-scaled">31</div>
+                        <div class="text-xs text-indigo-200 mt-2">Section 3 Scoring Table</div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold border-b pb-4 mb-6 text-slate-700">Detailed Review</h3>
+                <div id="review-container" class="space-y-8">
+                    <!-- Review items injected here -->
+                </div>
+
+                <button onclick="location.reload()" class="mt-8 w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 shadow-md transition">
+                    <i class="fa-solid fa-rotate"></i> Retake Test
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        // --- DATA: PASSAGES & QUESTIONS ---
+        
+        /* DATA STRUCTURE UPDATE:
+           - Passage 'text' is now raw HTML to allow for <p> tags and <span id=""> markers.
+           - Question 'text' now includes <span class="ref-link" onclick="locate('id')"> wrappers.
+        */
+
+        const passages = [
+            {
+                id: 1,
+                title: "The Sun",
+                text: `
+                    <p id="p1-par1" class="mb-4 highlight-target">The Sun today is a yellow dwarf star. It is <span id="p1-w-fueled" class="highlight-target">fueled</span> by thermonuclear reactions near its center that convert hydrogen to helium. The Sun has existed in its present <span id="p1-w-state" class="highlight-target">state</span> for about 4 billion, 600 million years and is thousands of times larger than the Earth.</p>
+                    
+                    <p id="p1-par2" class="mb-4 highlight-target">By studying other stars, astronomers can predict what the rest of the Sun's life will be like. About 5 billion years from now, the core of the Sun will shrink and become hotter. The surface temperature will fall. The higher temperature of the center will increase the rate of thermonuclear reactions. The outer regions of the Sun will expand approximately 35 million miles, about the distance to Mercury, which is the closest planet to the Sun. The Sun will then be a red giant star. Temperatures on the Earth will become too hot for life to exist.</p>
+
+                    <p id="p1-par3" class="mb-4 highlight-target">Once the Sun has used up its thermonuclear energy as a red giant, it will begin to shrink. After it shrinks to the size of the Earth, it will become a white dwarf star. The Sun may throw off huge amounts of gases in violent explosions called nova explosions as it changes from a red giant to a white dwarf.</p>
+
+                    <p id="p1-par4" class="mb-4 highlight-target">After <span id="p1-w-billions" class="highlight-target">billions</span> of years as a white dwarf, the Sun will have used up all its fuel and will have lost its heat. Such a star is called a black dwarf. After the Sun has become a black dwarf, the Earth will be dark and cold. If any atmosphere remains <span id="p1-w-there" class="highlight-target">there</span>, it will have frozen onto the Earth's surface.</p>
+                `,
+                questions: [
+                    { id: 1, text: "What is the primary purpose of this passage?", options: ["To alert people to the dangers posed by the Sun", "To discuss conditions on Earth in the far future", "To present a theory about the Sun's life cycle", "To describe changes in the Sun's surface temperature"], answer: 2, explanation: "The passage traces the development of the Sun from its present state to its eventual death as a black dwarf." },
+                    { id: 2, text: "The word <span class='ref-link' onclick=\"locate('p1-w-fueled')\">'fueled'</span> in <span class='ref-link' onclick=\"locate('p1-par1')\">paragraph 1</span> is closest in meaning to", options: ["powered", "bombarded", "created", "propelled"], answer: 0, explanation: "In this context, 'fueled' means supplied with energy or 'powered' by thermonuclear reactions." },
+                    { id: 3, text: "The word <span class='ref-link' onclick=\"locate('p1-w-state')\">'state'</span> in <span class='ref-link' onclick=\"locate('p1-par1')\">paragraph 1</span> is closest in meaning to", options: ["shape", "condition", "location", "size"], answer: 1, explanation: "'State' here refers to the physical 'condition' or phase of existence (yellow dwarf)." },
+                    { id: 4, text: "It can be inferred from the passage that the Sun", options: ["is approximately halfway through its life as a yellow dwarf", "has been in existence for 10 billion years", "is rapidly changing in size and brightness", "will continue as a yellow dwarf for another 10 billion years"], answer: 0, explanation: "It has existed for 4.6 billion years and will change in 'about 5 billion years'. Thus, it is roughly halfway through." },
+                    { id: 5, text: "What will probably happen to the Sun 5 billion years from now?", options: ["It will completely burn out.", "It will become a white dwarf.", "It will rapidly expand.", "It will become hotter on the surface."], answer: 2, explanation: "The text states: 'The outer regions of the Sun will expand approximately 35 million miles...'" },
+                    { id: 6, text: "The word <span class='ref-link' onclick=\"locate('p1-w-there')\">'there'</span> in the last sentence of <span class='ref-link' onclick=\"locate('p1-par4')\">paragraph 4</span> refers to", options: ["our own planet", "the outer surface of the Sun", "the core of a black dwarf", "the planet Mercury"], answer: 0, explanation: "The sentence discusses 'If any atmosphere remains there...', referring back to 'the Earth' mentioned in the previous sentence." },
+                    { id: 7, text: "Which of the following best describes the sequence of stages that the Sun will probably pass through?", options: ["Yellow dwarf, white dwarf, red giant, black giant", "Red giant, white dwarf, red dwarf, nova explosion", "Yellow dwarf, red giant, white dwarf, black dwarf", "White dwarf, red giant, black dwarf, yellow dwarf"], answer: 2, explanation: "The passage lists the stages in order: currently yellow dwarf -> red giant -> white dwarf -> black dwarf." },
+                    { id: 8, text: "The word <span class='ref-link' onclick=\"locate('p1-w-billions')\">'billions'</span> in <span class='ref-link' onclick=\"locate('p1-par4')\">paragraph 4</span> is closest in meaning to", options: ["hundreds", "thousands", "millions", "huge numbers"], answer: 3, explanation: "While literally a number, in this context it emphasizes a vast, 'huge number' of years." },
+                    { id: 9, text: "According to the passage, which of the following best describes the Sun as a white dwarf?", options: ["It is larger than the Earth.", "It uses thermonuclear energy.", "It is cooler than a red giant.", "It is about the size of the Earth."], answer: 3, explanation: "Paragraph 3 states: 'After it shrinks to the size of the Earth, it will become a white dwarf star.'" },
+                    { id: 10, text: "The passage suggests that the Sun", options: ["is an unusual type of star", "changes from one form to another very suddenly", "follows a life cycle similar to other stars", "was formed from the remains of a black dwarf"], answer: 2, explanation: "Paragraph 2 says: 'By studying other stars, astronomers can predict what the rest of the Sun's life will be like.' This implies similarity." }
+                ]
+            },
+            {
+                id: 2,
+                title: "Washington D.C.",
+                text: `
+                    <p id="p2-par1" class="mb-4 highlight-target">The plan for the capital city of the United States, Washington, D.C., was designed by Pierre Charles L'Enfant. L'Enfant was a French engineer and architect who had arrived in America in 1777 to serve in the Revolutionary War. In 1791, George Washington <span id="p2-w-commissioned" class="highlight-target">commissioned</span> L'Enfant to plan the new capital city.</p>
+                    
+                    <p id="p2-par2" class="mb-4 highlight-target">L'Enfant's plan was a gridiron of streets <span id="p2-w-intersected" class="highlight-target">intersected</span> by wide, diagonal avenues. The diagonal avenues were designed to connect the city's main focal points and to create open squares and circles. The most important <span id="p2-w-focal" class="highlight-target">focal point</span> was the Capitol building, which L'Enfant placed on a high hill. He described this location as a "pedestal waiting for a monument."</p>
+                    
+                    <p id="p2-par3" class="mb-4 highlight-target">From the Capitol, L'Enfant planned a grand avenue, now known as the National Mall, leading west to the Potomac River. He also planned a President's House (the White House) connected to the Capitol by Pennsylvania Avenue.</p>
+                    
+                    <p id="p2-par4" class="mb-4 highlight-target">Although L'Enfant's plan was brilliant, his difficult personality caused problems. He refused to cooperate with the city commissioners and was dismissed by George Washington in 1792. However, the plan was largely <span id="p2-w-preserved" class="highlight-target">preserved</span> by L'Enfant's assistants, and today Washington, D.C., remains one of the few planned cities in the world that closely follows its original design.</p>
+                `,
+                questions: [
+                    { id: 11, text: "What is the main topic of the passage?", options: ["The life of Pierre Charles L'Enfant", "The role of the city commissioners", "The design of Washington, D.C.", "The architecture of the Capitol"], answer: 2, explanation: "The passage focuses on L'Enfant's plan and design for the capital city." },
+                    { id: 12, text: "The word <span class='ref-link' onclick=\"locate('p2-w-commissioned')\">'commissioned'</span> in <span class='ref-link' onclick=\"locate('p2-par1')\">paragraph 1</span> is closest in meaning to", options: ["hired", "ordered", "forced", "requested"], answer: 0, explanation: "To commission an architect means to hire or authorize them to do a job." },
+                    { id: 13, text: "According to the passage, L'Enfant was", options: ["an American politician", "a French soldier", "a city commissioner", "a French engineer and architect"], answer: 3, explanation: "Paragraph 1 explicitly states: 'L'Enfant was a French engineer and architect'." },
+                    { id: 14, text: "The word <span class='ref-link' onclick=\"locate('p2-w-intersected')\">'intersected'</span> in <span class='ref-link' onclick=\"locate('p2-par2')\">paragraph 2</span> is closest in meaning to", options: ["blocked", "crossed", "bordered", "surrounded"], answer: 1, explanation: "Streets that are 'intersected' are crossed by others." },
+                    { id: 15, text: "Where did L'Enfant place the Capitol building?", options: ["Near the Potomac River", "On a high hill", "Next to the White House", "In an open square"], answer: 1, explanation: "Paragraph 2 states he placed it 'on a high hill'." },
+                    { id: 16, text: "The phrase <span class='ref-link' onclick=\"locate('p2-w-focal')\">'focal point'</span> in <span class='ref-link' onclick=\"locate('p2-par2')\">paragraph 2</span> refers to", options: ["a center of attention", "a high place", "a government building", "a traffic circle"], answer: 0, explanation: "A focal point is a central point of interest or attention." },
+                    { id: 17, text: "Which avenue connects the Capitol and the White House?", options: ["The National Mall", "Pennsylvania Avenue", "Potomac Avenue", "L'Enfant Avenue"], answer: 1, explanation: "Paragraph 3 states they are connected by 'Pennsylvania Avenue'." },
+                    { id: 18, text: "Why was L'Enfant dismissed?", options: ["His plan was too expensive.", "He was a spy.", "He refused to cooperate.", "He wanted to return to France."], answer: 2, explanation: "Paragraph 4 says: 'He refused to cooperate with the city commissioners...'" },
+                    { id: 19, text: "The word <span class='ref-link' onclick=\"locate('p2-w-preserved')\">'preserved'</span> in <span class='ref-link' onclick=\"locate('p2-par4')\">paragraph 4</span> is closest in meaning to", options: ["changed", "kept", "destroyed", "forgotten"], answer: 1, explanation: "To preserve a plan means to keep or maintain it." },
+                    { id: 20, text: "It can be inferred that Washington, D.C. today", options: ["looks very different from L'Enfant's plan", "is a disorganized city", "still reflects L'Enfant's original design", "has no diagonal avenues"], answer: 2, explanation: "The passage ends by saying the city 'closely follows its original design'." }
+                ]
+            },
+            {
+                id: 3,
+                title: "Albrecht Dürer",
+                text: `
+                    <p id="p3-par1" class="mb-4 highlight-target">Albrecht Dürer (1471–1528) was a German painter, printmaker, and theorist from Nuremberg. His high-quality woodcuts (now <span id="p3-w-principally" class="highlight-target">principally</span> known as "Master Prints") established his reputation and influence across Europe when he was still in his twenties.</p>
+                    
+                    <p id="p3-par2" class="mb-4 highlight-target">Dürer's vast body of work includes engravings, his preferred technique in his later prints, altarpieces, portraits and self-portraits, watercolors and books. The woodcuts, such as the Apocalypse series (1498), are more Gothic than the rest of his work. His well-known engravings include the Knight, Death and the Devil (1513), Saint Jerome in His Study (1514) and Melencolia I (1514), which has been the subject of extensive analysis and speculation.</p>
+                    
+                    <p id="p3-par3" class="mb-4 highlight-target">His watercolours also mark him as one of the first European landscape artists, while his ambitious woodcuts <span id="p3-w-revolutionized" class="highlight-target">revolutionized</span> the potential of that medium. Dürer's introduction of classical motifs into Northern art, through his knowledge of Italian artists and German humanists, has secured his reputation as one of the most important figures of the Northern Renaissance. This is reinforced by his theoretical treatises, which involve principles of mathematics, perspective, and ideal proportions.</p>
+                `,
+                questions: [
+                    { id: 21, text: "What is the passage mainly about?", options: ["The painting techniques of the Renaissance", "The life and work of Albrecht Dürer", "The history of Nuremberg", "Woodcutting in the 15th century"], answer: 1, explanation: "The passage is a biographical overview of Albrecht Dürer and his artistic contributions." },
+                    { id: 22, text: "When did Dürer establish his reputation?", options: ["In his twenties", "In his forties", "After his death", "In 1528"], answer: 0, explanation: "Paragraph 1 states he established his reputation 'when he was still in his twenties'." },
+                    { id: 23, text: "The word <span class='ref-link' onclick=\"locate('p3-w-principally')\">'principally'</span> in <span class='ref-link' onclick=\"locate('p3-par1')\">paragraph 1</span> is closest in meaning to", options: ["only", "mainly", "historically", "technically"], answer: 1, explanation: "'Principally' means primarily or mainly." },
+                    { id: 24, text: "Which technique did Dürer prefer for his later prints?", options: ["Woodcuts", "Watercolors", "Engravings", "Oil painting"], answer: 2, explanation: "Paragraph 2 mentions 'engravings, his preferred technique in his later prints'." },
+                    { id: 25, text: "The Apocalypse series is described as being more ______ than his other work.", options: ["Modern", "Italian", "Gothic", "Realistic"], answer: 2, explanation: "Paragraph 2 states: 'The woodcuts, such as the Apocalypse series... are more Gothic than the rest of his work.'" },
+                    { id: 26, text: "Melencolia I is mentioned as an example of", options: ["a woodcut", "a watercolor", "an engraving", "a portrait"], answer: 2, explanation: "It is listed under 'His well-known engravings include... Melencolia I'." },
+                    { id: 27, text: "According to the passage, Dürer is considered one of the first European artists to", options: ["use oil paint", "focus on landscapes in watercolor", "visit Italy", "write books"], answer: 1, explanation: "Paragraph 3 says: 'His watercolours also mark him as one of the first European landscape artists'." },
+                    { id: 28, text: "The word <span class='ref-link' onclick=\"locate('p3-w-revolutionized')\">'revolutionized'</span> in <span class='ref-link' onclick=\"locate('p3-par3')\">paragraph 3</span> is closest in meaning to", options: ["destroyed", "copied", "transformed", "limited"], answer: 2, explanation: "To revolutionize means to change radically or transform." },
+                    { id: 29, text: "Dürer's theoretical treatises involved principles of", options: ["chemistry", "astronomy", "mathematics", "politics"], answer: 2, explanation: "The last sentence mentions 'principles of mathematics, perspective, and ideal proportions'." },
+                    { id: 30, text: "Dürer is associated with which artistic movement?", options: ["The Italian Renaissance", "The Northern Renaissance", "Impressionism", "Cubism"], answer: 1, explanation: "The text calls him 'one of the most important figures of the Northern Renaissance'." }
+                ]
+            },
+            {
+                id: 4,
+                title: "Patterns of Culture",
+                text: `
+                    <p id="p4-par1" class="mb-4 highlight-target">In her book "Patterns of Culture" (1934), the anthropologist Ruth Benedict defined culture as a complex whole which includes knowledge, belief, art, morals, law, custom, and any other capabilities and habits acquired by man as a member of society. Benedict believed that culture is not biologically transmitted but is learned.</p>
+                    
+                    <p id="p4-par2" class="mb-4 highlight-target">She argued that each culture chooses from the "great arc of human <span id="p4-w-potentialities" class="highlight-target">potentialities</span>" only a few characteristics which become the leading personality traits of the persons living in that culture. These traits comprise an interdependent constellation of aesthetics and values in each culture which together form a unique <span id="p4-w-gestalt" class="highlight-target">"gestalt."</span></p>
+                    
+                    <p id="p4-par3" class="mb-4 highlight-target">Benedict described cultures in terms of "personality types." For example, she characterized the Pueblo Indians of the American Southwest as "Apollonian," meaning they were <span id="p4-w-moderate" class="highlight-target">moderate</span>, cooperative, and orderly. In contrast, she described the Kwakiutl of the Northwest Coast as "Dionysian," implying they were given to <span id="p4-w-excess" class="highlight-target">excess</span> and individualism.</p>
+                    
+                    <p id="p4-par4" class="mb-4 highlight-target">While some anthropologists have criticized Benedict's approach as being too simplified or impressionistic, her work remains influential in the field of cultural anthropology for establishing the concept of cultural relativism—the idea that a person's beliefs and activities should be understood based on that person's own culture, rather than be judged against the criteria of another.</p>
+                `,
+                questions: [
+                    { id: 31, text: "According to Ruth Benedict, how is culture acquired?", options: ["Through biology", "Through learning", "Through instinct", "Through climate"], answer: 1, explanation: "Paragraph 1 states: 'culture is not biologically transmitted but is learned'." },
+                    { id: 32, text: "The word <span class='ref-link' onclick=\"locate('p4-w-potentialities')\">'potentialities'</span> in <span class='ref-link' onclick=\"locate('p4-par2')\">paragraph 2</span> is closest in meaning to", options: ["possibilities", "weaknesses", "histories", "regions"], answer: 0, explanation: "Potentialities refer to what is possible; 'possibilities'." },
+                    { id: 33, text: "What does the term <span class='ref-link' onclick=\"locate('p4-w-gestalt')\">'gestalt'</span> refer to in the passage?", options: ["A biological trait", "A type of law", "A unique unified whole", "A religious ceremony"], answer: 2, explanation: "In this context, 'gestalt' refers to the 'interdependent constellation... which together form a unique' whole or pattern." },
+                    { id: 34, text: "Which group did Benedict describe as 'Apollonian'?", options: ["The Kwakiutl", "The Pueblo Indians", "The ancient Greeks", "Modern Americans"], answer: 1, explanation: "Paragraph 3 explicitly links 'Pueblo Indians' with 'Apollonian'." },
+                    { id: 35, text: "The word <span class='ref-link' onclick=\"locate('p4-w-moderate')\">'moderate'</span> in <span class='ref-link' onclick=\"locate('p4-par3')\">paragraph 3</span> is closest in meaning to", options: ["violent", "extreme", "restrained", "wealthy"], answer: 2, explanation: "Moderate means avoiding extremes; 'restrained' or 'balanced'." },
+                    { id: 36, text: "The Kwakiutl are described as being", options: ["cooperative", "Dionysian", "orderly", "scientific"], answer: 1, explanation: "Paragraph 3 describes the Kwakiutl as 'Dionysian'." },
+                    { id: 37, text: "The word <span class='ref-link' onclick=\"locate('p4-w-excess')\">'excess'</span> in <span class='ref-link' onclick=\"locate('p4-par3')\">paragraph 3</span> is closest in meaning to", options: ["extreme behavior", "poverty", "caution", "harmony"], answer: 0, explanation: "Dionysian is linked to 'excess', implying a lack of restraint or 'extreme behavior'." },
+                    { id: 38, text: "What is a criticism of Benedict's work mentioned in the passage?", options: ["It is too complex.", "It ignores biology.", "It is too simplified.", "It is too mathematical."], answer: 2, explanation: "Paragraph 4 states critics found her approach 'too simplified or impressionistic'." },
+                    { id: 39, text: "What is 'cultural relativism'?", options: ["Judging others by your own standards", "Understanding beliefs within their own cultural context", "Believing all cultures are the same", "The study of relatives"], answer: 1, explanation: "The text defines it as: 'the idea that a person's beliefs... should be understood based on that person's own culture'." },
+                    { id: 40, text: "The passage implies that Ruth Benedict was", options: ["a psychologist", "a biologist", "a historian", "an anthropologist"], answer: 3, explanation: "Paragraph 1 identifies her as 'the anthropologist Ruth Benedict'." }
+                ]
+            },
+            {
+                id: 5,
+                title: "The Bald Eagle",
+                text: `
+                    <p id="p5-par1" class="mb-4 highlight-target">The bald eagle is a bird of prey found in North America. A sea eagle, it has two known subspecies and forms a species pair with the white-tailed eagle. Its range includes most of Canada and Alaska, all of the contiguous United States, and northern Mexico. It is found near large bodies of open water with an <span id="p5-w-abundant" class="highlight-target">abundant</span> food supply and old-growth trees for nesting.</p>
+                    
+                    <p id="p5-par2" class="mb-4 highlight-target">The bald eagle is an opportunistic feeder which subsists mainly on fish, which it swoops down and snatches from the water with its talons. It builds the largest nest of any North American bird and the largest tree nests ever recorded for any animal species, up to 4 meters (13 ft) deep, 2.5 meters (8.2 ft) wide, and 1 metric ton in weight. Sexual maturity is attained at the age of four to five years.</p>
+                    
+                    <p id="p5-par3" class="mb-4 highlight-target">Bald eagles are not actually bald; the name derives from an older meaning of the word, "white headed." The adult is mainly brown with a white head and tail. The sexes are identical in plumage, but females are about 25 percent larger than males. The beak is large and hooked. The plumage of the immature is brown.</p>
+                    
+                    <p id="p5-par4" class="mb-4 highlight-target">The bald eagle is the national bird and national animal of the United States of America. The bald eagle appears on its seal. In the late 20th century it was on the brink of <span id="p5-w-extirpation" class="highlight-target">extirpation</span> in the contiguous United States. Populations have since recovered, and the species was removed from the U.S. government's list of endangered species on July 12, 1995, and transferred to the list of threatened species.</p>
+                `,
+                questions: [
+                    { id: 41, text: "Where is the bald eagle NOT typically found?", options: ["Canada", "Alaska", "Mexico", "South America"], answer: 3, explanation: "The passage lists Canada, Alaska, US, and northern Mexico. It does not mention South America." },
+                    { id: 42, text: "The bald eagle primarily eats", options: ["small mammals", "fish", "insects", "fruit"], answer: 1, explanation: "Paragraph 2 states it 'subsists mainly on fish'." },
+                    { id: 43, text: "The word <span class='ref-link' onclick=\"locate('p5-w-abundant')\">'abundant'</span> in <span class='ref-link' onclick=\"locate('p5-par1')\">paragraph 1</span> is closest in meaning to", options: ["scarce", "plentiful", "fresh", "warm"], answer: 1, explanation: "Abundant means existing in large quantities; 'plentiful'." },
+                    { id: 44, text: "Which of the following is true about the bald eagle's nest?", options: ["It is built on the ground.", "It is very small.", "It is the largest tree nest of any animal.", "It is made of mud."], answer: 2, explanation: "Paragraph 2 claims it builds 'the largest tree nests ever recorded for any animal species'." },
+                    { id: 45, text: "At what age does the bald eagle become sexually mature?", options: ["1 year", "2-3 years", "4-5 years", "10 years"], answer: 2, explanation: "Paragraph 2 states: 'Sexual maturity is attained at the age of four to five years'." },
+                    { id: 46, text: "Why is the bird called 'bald'?", options: ["It has no feathers on its head.", "It was named after a person.", "The word used to mean 'white headed'.", "It looks old."], answer: 2, explanation: "Paragraph 3 explains: 'the name derives from an older meaning of the word, white headed'." },
+                    { id: 47, text: "How do male and female bald eagles differ?", options: ["Color", "Beak shape", "Size", "Tail length"], answer: 2, explanation: "Paragraph 3 states: 'females are about 25 percent larger than males'." },
+                    { id: 48, text: "The word <span class='ref-link' onclick=\"locate('p5-w-extirpation')\">'extirpation'</span> in <span class='ref-link' onclick=\"locate('p5-par4')\">paragraph 4</span> is closest in meaning to", options: ["extinction", "explosion", "exportation", "expansion"], answer: 0, explanation: "In this context, 'brink of extirpation' implies disappearing or 'extinction' from that area." },
+                    { id: 49, text: "The bald eagle is a symbol of", options: ["Canada", "The United States", "Mexico", "The United Nations"], answer: 1, explanation: "It is the 'national bird... of the United States of America'." },
+                    { id: 50, text: "What happened in 1995?", options: ["The bald eagle became extinct.", "The bald eagle was removed from the endangered list.", "The bald eagle was chosen as the national bird.", "The bald eagle population crashed."], answer: 1, explanation: "The last sentence says it was 'removed from the U.S. government's list of endangered species on July 12, 1995'." }
+                ]
+            }
+        ];
+
+        // --- STATE ---
+        let currentPassageIdx = 0;
+        let currentQuestionIdx = 0; // Relative to the passage (0-9)
+        let totalQuestionIdx = 0;   // Global (0-49)
+        let userAnswers = {}; // Map of global question ID to selected option index
+
+        // --- DOM ELEMENTS ---
+        const viewIntro = document.getElementById('view-intro');
+        const viewTest = document.getElementById('view-test');
+        const viewResults = document.getElementById('view-results');
+        
+        const progressBar = document.getElementById('progress-bar');
+        const progressDisplay = document.getElementById('progress-display');
+        const currentQNum = document.getElementById('current-q-num');
+        
+        const passageContent = document.getElementById('passage-content');
+        const passageIndicator = document.getElementById('passage-indicator');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        // --- LOGIC ---
+
+        function startTest() {
+            viewIntro.classList.add('hidden');
+            viewTest.classList.remove('hidden');
+            progressDisplay.classList.remove('hidden');
+            loadState();
+        }
+
+        function loadState() {
+            // Determine current passage based on global question index
+            currentPassageIdx = Math.floor(totalQuestionIdx / 10);
+            currentQuestionIdx = totalQuestionIdx % 10;
+            
+            const passage = passages[currentPassageIdx];
+            const question = passage.questions[currentQuestionIdx];
+
+            // Render Passage
+            passageIndicator.innerText = `Passage ${currentPassageIdx + 1} of ${passages.length}`;
+            
+            // NOTE: Using innerHTML to render the raw HTML string which includes our <span> hooks
+            // Only update innerHTML if we switched passages, or if it's the first load
+            // This prevents scroll position resetting if we are just moving questions within the same passage
+            // However, for simplicity in this version, we reload it to ensure highlights are reset.
+            const currentPassageHTML = passageContent.innerHTML;
+            if (passageContent.getAttribute('data-id') != passage.id) {
+                 passageContent.innerHTML = passage.text;
+                 passageContent.setAttribute('data-id', passage.id);
+                 passageContent.scrollTop = 0;
+            }
+
+            // Render Question
+            currentQNum.innerText = totalQuestionIdx + 1;
+            progressBar.style.width = `${((totalQuestionIdx + 1) / 50) * 100}%`;
+            
+            // Allow HTML in question text for the clickable links
+            questionText.innerHTML = `${totalQuestionIdx + 1}. ${question.text}`;
+            
+            optionsContainer.innerHTML = '';
+            question.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[question.id] === idx;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-3 rounded-lg border transition-all flex items-start gap-3 text-base ${
+                    isSelected 
+                    ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600' 
+                    : 'border-slate-200 hover:bg-slate-50'
+                }`;
+                btn.onclick = () => selectAnswer(question.id, idx);
+                
+                const badge = document.createElement('span');
+                badge.className = `w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 ${
+                    isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-600'
+                }`;
+                badge.innerText = String.fromCharCode(65 + idx);
+                
+                const text = document.createElement('span');
+                text.className = 'text-slate-700';
+                text.innerText = opt;
+
+                btn.appendChild(badge);
+                btn.appendChild(text);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Navigation State
+            btnPrev.disabled = (totalQuestionIdx === 0);
+            
+            if (totalQuestionIdx === 49) { // 50 questions total
+                btnNext.innerHTML = 'Finish Test <i class="fa-solid fa-check"></i>';
+                btnNext.onclick = finishTest;
+                btnNext.className = "px-6 py-2 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition shadow flex items-center gap-2";
+            } else {
+                btnNext.innerHTML = 'Next <i class="fa-solid fa-chevron-right"></i>';
+                btnNext.onclick = nextQuestion;
+                btnNext.className = "px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition shadow flex items-center gap-2";
+            }
+        }
+
+        // New Interaction Function
+        function locate(id) {
+            // 1. Remove existing highlights
+            document.querySelectorAll('.highlight-active').forEach(el => el.classList.remove('highlight-active'));
+
+            // 2. Find new target
+            const el = document.getElementById(id);
+            if (el) {
+                // 3. Scroll into view
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // 4. Add highlight style
+                el.classList.add('highlight-active');
+            }
+        }
+
+        function selectAnswer(qId, optIdx) {
+            userAnswers[qId] = optIdx;
+            loadState(); 
+        }
+
+        function nextQuestion() {
+            if (totalQuestionIdx < 49) {
+                totalQuestionIdx++;
+                loadState();
+            }
+        }
+
+        function prevQuestion() {
+            if (totalQuestionIdx > 0) {
+                totalQuestionIdx--;
+                loadState();
+            }
+        }
+
+        function calculateScaledScore(raw) {
+            // TOEFL ITP Section 3 Conversion (Approx)
+            if (raw >= 50) return 67;
+            if (raw >= 48) return 66;
+            if (raw >= 45) return 63;
+            if (raw >= 40) return 57;
+            if (raw >= 35) return 54;
+            if (raw >= 30) return 50;
+            if (raw >= 25) return 46;
+            if (raw >= 20) return 41;
+            if (raw >= 15) return 35;
+            if (raw >= 10) return 31;
+            return 31; 
+        }
+
+        function finishTest() {
+            let rawScore = 0;
+            let reviewHTML = '';
+
+            passages.forEach((p, pIdx) => {
+                reviewHTML += `<div class="border-b border-slate-200 pb-2 mb-4 font-bold text-xl text-slate-400 uppercase tracking-wide">Passage ${pIdx + 1}: ${p.title}</div>`;
+                
+                p.questions.forEach((q, qIdx) => {
+                    const isCorrect = userAnswers[q.id] === q.answer;
+                    if (isCorrect) rawScore++;
+                    
+                    const userOptIdx = userAnswers[q.id];
+                    
+                    // Sanitize question text for review (remove clickable links to avoid confusion in review mode)
+                    const cleanQuestionText = q.text.replace(/<[^>]*>/g, '');
+
+                    reviewHTML += `
+                        <div class="mb-6 p-4 rounded-lg border ${isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
+                             <div class="flex justify-between items-start mb-2">
+                                <span class="font-bold text-slate-700">Q${q.id}. ${cleanQuestionText}</span>
+                                ${isCorrect 
+                                    ? '<span class="text-green-700 text-sm font-bold"><i class="fa-solid fa-check"></i> Correct</span>' 
+                                    : '<span class="text-red-700 text-sm font-bold"><i class="fa-solid fa-xmark"></i> Incorrect</span>'}
+                             </div>
+                             
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm mb-3">
+                                <div class="${isCorrect ? 'text-green-800' : 'text-red-800'}">
+                                    <span class="font-semibold">Your Answer:</span> ${userOptIdx !== undefined ? q.options[userOptIdx] : 'No Answer'}
+                                </div>
+                                <div class="text-slate-700">
+                                    <span class="font-semibold">Correct Answer:</span> ${q.options[q.answer]}
+                                </div>
+                             </div>
+
+                             <div class="bg-white p-3 rounded border border-slate-200 text-sm text-slate-600">
+                                <span class="font-bold text-indigo-600"><i class="fa-solid fa-lightbulb"></i> Explanation:</span> ${q.explanation}
+                             </div>
+                        </div>
+                    `;
+                });
+            });
+
+            const scaledScore = calculateScaledScore(rawScore);
+
+            document.getElementById('score-raw').innerText = rawScore;
+            document.getElementById('score-scaled').innerText = scaledScore;
+            document.getElementById('review-container').innerHTML = reviewHTML;
+
+            viewTest.classList.add('hidden');
+            progressDisplay.classList.add('hidden');
+            viewResults.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

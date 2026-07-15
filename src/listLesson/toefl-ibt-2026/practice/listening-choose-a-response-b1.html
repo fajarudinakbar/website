@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>TOEFL iBT Listening Skill-Building Practice</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            
+            /* STRICT ENFORCEMENT: No Word Breaks */
+            word-break: normal !important;
+            overflow-wrap: normal !important;
+            hyphens: none !important;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        @media (min-width: 768px) {
+            ::-webkit-scrollbar { width: 10px; height: 10px; }
+        }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+        }
+        .text-input {
+            width: 100%;
+            max-width: 100%;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+            box-sizing: border-box;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        
+        /* Buttons */
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-align: center;
+            white-space: nowrap !important; 
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Option Labels */
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            font-weight: 700;
+            width: 100%;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        .option-label.correct {
+            background-color: #dcfce7 !important;
+            border-color: #15803d !important;
+            color: #14532d !important;
+        }
+        .option-label.incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #b91c1c !important;
+            color: #7f1d1d !important;
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        .indicator {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 3px solid #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            background-color: #f1f5f9;
+            flex-shrink: 0;
+        }
+
+        .option-label.correct .indicator {
+            border-color: #15803d;
+            background-color: #4ade80;
+            color: #0f172a;
+        }
+        
+        .option-label.incorrect .indicator {
+            border-color: #b91c1c;
+            background-color: #f87171;
+            color: #ffffff;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Audio Playing State */
+        .playing-active {
+            background-color: #facc15 !important;
+            color: #0f172a !important;
+            box-shadow: 2px 2px 0px 0px #0f172a !important;
+            transform: translate(2px, 2px);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-5 md:p-8 text-base md:text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-4 sm:p-6 lg:p-10 border-4 border-dark shadow-neo overflow-hidden">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs sm:text-sm text-dark mb-6 md:mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">TOEFL iBT®</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4 shrink-0"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">Listening Section</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4 shrink-0"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">Choose a Response</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div class="w-full lg:w-auto">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-dark uppercase tracking-tighter mb-2 md:mb-3 leading-tight w-full">
+                    Choose a Response (B1 Level)
+                </h1>
+                <p class="text-sm sm:text-base md:text-lg lg:text-xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-2 border-2 border-dark text-pretty">
+                    Topic: Everyday Campus Life | Skill: Pragmatic Comprehension
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0 w-full lg:w-auto mt-2 lg:mt-0">
+                <button onclick="resetAll()" class="neo-btn w-full flex items-center justify-center gap-2 px-5 py-2 md:py-3 text-sm md:text-base text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4 md:w-5 md:h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#e0e7ff] border-3 border-dark p-4 sm:p-5 md:p-6 mb-8 md:mb-12 shadow-neo-sm flex flex-col sm:flex-row items-start gap-4">
+            <div class="bg-[#818cf8] p-2 border-2 border-dark shrink-0 hidden sm:block">
+                <i data-lucide="headphones" class="w-6 h-6 text-white"></i>
+            </div>
+            <p class="text-sm sm:text-base md:text-lg text-dark font-bold leading-relaxed text-pretty">
+                <span class="uppercase font-black text-base md:text-xl mr-2 block sm:inline-block mb-1 sm:mb-0"><i data-lucide="headphones" class="w-5 h-5 inline sm:hidden mr-2 text-[#818cf8]"></i>Welcome!</span> In the communicative <em>Choose a Response</em> listening task, you will hear a short spoken utterance, such as a question, request, or statement, and you must quickly select the most natural and pragmatically appropriate response. This worksheet focuses on B1 level campus interactions. You have a maximum of <strong>2 attempts</strong> per exercise. <strong>Transcripts are hidden by default</strong> to build true listening skills! Let's begin.
+            </p>
+        </div>
+
+        <!-- Accordion Container -->
+        <div class="space-y-6 md:space-y-8">
+
+            <!-- Step 1: Global Connection (Cyan Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('step1')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            1
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Global Connection: Identifying the "Speech Act"</span>
+                    </div>
+                    <div id="icon-wrapper-step1" class="transition-transform duration-300 transform rotate-180 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step1" class="accordion-content active border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-slate-800 font-bold mb-4 text-sm sm:text-base md:text-lg leading-relaxed text-pretty">
+                            In your native language, if someone says, <em class="bg-[#e0f2fe] px-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">"It's freezing in here,"</em> they aren't usually asking for a weather report. They are making a polite request for you to close the window or turn up the heat. This is called a <strong>Speech Act</strong>, the hidden purpose behind the words. <br><br>
+                            To master the "Choose a Response" task, you cannot just translate words; you must translate the speaker's <strong>intent</strong> (e.g., Are they offering help? Apologizing? Asking for directions?).
+                        </p>
+                        <div class="bg-[#fefce8] border-3 border-dark p-4 md:p-5 rounded-lg flex flex-col sm:flex-row items-start gap-3 md:gap-4 shadow-neo-sm mt-6">
+                            <div class="bg-white p-2 border-2 border-dark shrink-0"><i data-lucide="lightbulb" class="w-4 h-4 md:w-5 md:h-5 text-[#eab308]"></i></div>
+                            <div class="w-full">
+                                <p class="text-sm md:text-base lg:text-lg text-dark font-bold leading-relaxed text-pretty mb-4">
+                                    <strong class="uppercase font-black block mb-1">Metacognitive Question:</strong> 
+                                    Think about your daily interactions. How does your response change if a professor asks "Do you have a minute?" versus if your best friend asks the same question?
+                                </p>
+                                <textarea id="s1-input" class="text-input text-sm md:text-base min-h-[5rem]" placeholder="Reflect on how your tone or vocabulary changes..."></textarea>
+                                <button id="check-s1" class="neo-btn bg-[#38bdf8] text-dark px-6 py-2 mt-4 text-sm md:text-base w-full md:w-auto">Check Answer</button>
+                                <div id="res-s1" class="hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Guided Practice (Emerald Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('step2')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            2
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Guided Example: Think Aloud Logic</span>
+                    </div>
+                    <div id="icon-wrapper-step2" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-slate-800 font-bold mb-6 text-sm sm:text-base md:text-lg text-pretty">
+                            Let's look at one example with "Think Aloud" logic to understand how to eliminate wrong answers.
+                        </p>
+                        
+                        <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-neo-sm">
+                            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5 border-b-2 border-dark pb-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="font-black text-white bg-dark border-2 border-dark shadow-[2px_2px_0_0_#cbd5e1] h-8 w-8 flex items-center justify-center text-sm md:text-base shrink-0">1</span>
+                                    <h4 class="font-black text-dark uppercase tracking-wide text-sm md:text-base lg:text-lg">Audio Prompt</h4>
+                                </div>
+                                <div class="w-full lg:w-auto">
+                                    <button data-transcript="Would you mind keeping the noise down a bit?" data-voice="Matthew" onclick="playNativeAudio(this)" class="neo-btn bg-[#4ade80] hover:bg-[#22c55e] text-dark px-4 py-3 sm:py-2 text-sm md:text-base flex items-center justify-center w-full sm:w-auto transition-all">
+                                        <i data-lucide="volume-2" class="w-5 h-5 sm:w-4 sm:h-4 mr-2"></i> Play Audio
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6 p-4 bg-slate-50 border-3 border-dark shadow-inner">
+                                <p class="text-base md:text-lg font-bold text-slate-800 italic">
+                                    <strong class="uppercase font-black not-italic text-brand-600 mr-2">Transcript:</strong> "Would you mind keeping the noise down a bit?"
+                                </p>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="p-4 border-3 border-dark rounded-lg bg-slate-50">
+                                    <span class="font-bold text-slate-700">(A) Yes, I enjoy loud music.</span>
+                                    <span class="text-[#b91c1c] font-black text-sm block mt-2 pt-2 border-t-2 border-slate-200">✗ Incorrect (Rude/Literal misinterpretation)</span>
+                                </div>
+                                <div class="p-4 border-3 border-[#15803d] rounded-lg bg-[#dcfce7]">
+                                    <span class="font-bold text-[#14532d]">(B) Oh, I'm sorry, I didn't realize I was being loud.</span>
+                                    <span class="text-[#15803d] font-black text-sm block mt-2 pt-2 border-t-2 border-[#15803d]">✓ Correct</span>
+                                </div>
+                                <div class="p-4 border-3 border-dark rounded-lg bg-slate-50">
+                                    <span class="font-bold text-slate-700">(C) No, the noise is over there.</span>
+                                    <span class="text-[#b91c1c] font-black text-sm block mt-2 pt-2 border-t-2 border-slate-200">✗ Incorrect (Irrelevant)</span>
+                                </div>
+                                <div class="p-4 border-3 border-dark rounded-lg bg-slate-50">
+                                    <span class="font-bold text-slate-700">(D) Yes, please turn it up.</span>
+                                    <span class="text-[#b91c1c] font-black text-sm block mt-2 pt-2 border-t-2 border-slate-200">✗ Incorrect (Opposite meaning)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#fefce8] border-3 border-dark shadow-neo-sm p-5 mt-6">
+                            <h4 class="font-black text-dark text-base md:text-lg uppercase tracking-wide mb-2 flex items-center"><i data-lucide="lightbulb" class="w-5 h-5 mr-2 text-[#eab308]"></i>Explanation</h4>
+                            <p class="text-sm md:text-base font-bold text-slate-800 leading-relaxed">
+                                The phrase <em class="bg-white px-1 border-2 border-dark whitespace-nowrap">"Would you mind..."</em> is a polite request to stop doing something. <br><br>
+                                Option A answers "Yes" (meaning "Yes, I mind") but then contradicts it. <br>
+                                Option B apologizes and complies, which is the socially appropriate response to a complaint.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Practice Drills (Teal Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#ccfbf1]">
+                <button onclick="toggleAccordion('step3')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#2dd4bf] hover:bg-[#14b8a6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            3
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Practice Drills: Identify the Best Response</span>
+                    </div>
+                    <div id="icon-wrapper-step3" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-sm sm:text-base md:text-lg text-slate-800 font-bold mb-8 text-pretty">
+                            Listen to the audio prompts. Choose the most natural response. Watch out for sound traps! Transcripts will be revealed if you reach the max attempts. (2 Attempts)
+                        </p>
+                        
+                        <div id="quiz-container" class="space-y-8">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center mb-6">
+            <p class="text-dark text-sm md:text-base font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm text-balance">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- Init Lucide Icons ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderQuiz();
+            toggleAccordion('step1');
+        });
+
+        // --- Data Configuration (B1 Level) ---
+        const questions = [
+            {
+                id: 1,
+                transcript: "I'm afraid I won't be able to make it to the meeting tomorrow.",
+                options: [
+                    "That's a shame, is everything okay?",
+                    "Yes, the meeting is in Room 304.",
+                    "I don't like meetings either.",
+                    "You should make it today."
+                ],
+                correctIndex: 0,
+                explanation: "The speaker is cancelling or declining an attendance. Option A expresses polite concern ('That's a shame') and asks a follow-up question. Option B answers a 'where' question. Option C is too informal/blunt for a professional context.",
+                color: "teal",
+                voice: "Joanna"
+            },
+            {
+                id: 2,
+                transcript: "Could you tell me how often the campus shuttle runs?",
+                options: [
+                    "It runs very fast.",
+                    "Usually every twenty minutes.",
+                    "The campus is quite large.",
+                    "You can catch it at the gate."
+                ],
+                correctIndex: 1,
+                explanation: "The question 'How often' asks for frequency. Only Option B ('every twenty minutes') provides a frequency. Option D answers 'Where', and Option A answers 'How fast'.",
+                color: "teal",
+                voice: "Matthew"
+            },
+            {
+                id: 3,
+                transcript: "Do you have these shoes in a size 10?",
+                options: [
+                    "Yes, I have ten pairs of shoes.",
+                    "No, the shop closes at 10.",
+                    "Let me check the stockroom for you.",
+                    "These shoes are very comfortable."
+                ],
+                correctIndex: 2,
+                explanation: "This is a request for a specific product size. Option C is the standard service response ('Let me check'). Option A confuses the size number with quantity. Option B confuses the size with time.",
+                color: "teal",
+                voice: "Joanna"
+            },
+            {
+                id: 4,
+                transcript: "I've just been assigned to the marketing project.",
+                options: [
+                    "The market is closed today.",
+                    "Oh really? That sounds like a great opportunity.",
+                    "I assigned it to you yesterday.",
+                    "I prefer finance projects."
+                ],
+                correctIndex: 1,
+                explanation: "The speaker is sharing news. Option B offers a polite and enthusiastic reaction. Option A picks up on the word 'market' but is unrelated contextually.",
+                color: "teal",
+                voice: "Matthew"
+            },
+            {
+                id: 5,
+                transcript: "Would you rather study here or go to the library?",
+                options: [
+                    "Yes, I would like to study.",
+                    "The library is open until midnight.",
+                    "Neither, I'm hungry.",
+                    "I think the library might be quieter."
+                ],
+                correctIndex: 3,
+                explanation: "This is a choice question ('Would you rather X or Y?'). Option D selects one option and gives a reason. Option A answers it as a Yes/No question, which is incorrect for 'or' questions.",
+                color: "teal",
+                voice: "Joanna"
+            },
+            {
+                id: 6,
+                transcript: "Don't you think the lecture was a bit confusing?",
+                options: [
+                    "No, I haven't seen him.",
+                    "Yes, it was quite clear.",
+                    "Actually, I found it very informative.",
+                    "The lecture is in the main hall."
+                ],
+                correctIndex: 2,
+                explanation: "This is a negative opinion question. Option C disagrees politely ('Actually...') and offers a counter-opinion. Option B says 'Yes' but then claims it was clear, which is a contradiction.",
+                color: "teal",
+                voice: "Matthew"
+            },
+            {
+                id: 7,
+                transcript: "Make sure you submit your application before the deadline.",
+                options: [
+                    "I applied for the job.",
+                    "Don't worry, I've already sent it in.",
+                    "The deadline is next week.",
+                    "No, I don't have the application."
+                ],
+                correctIndex: 1,
+                explanation: "The prompt is a command/advice ('Make sure...'). Option B confirms compliance ('I've already sent it in') and reassures the speaker.",
+                color: "teal",
+                voice: "Joanna"
+            },
+            {
+                id: 8,
+                transcript: "Whose notebook is this left on the table?",
+                options: [
+                    "It looks like Sarah's.",
+                    "Yes, I took notes.",
+                    "It's a spiral notebook.",
+                    "I left it on the chair."
+                ],
+                correctIndex: 0,
+                explanation: "The question 'Whose' asks for possession. Option A ('It looks like Sarah's') answers this directly. Option B answers a Yes/No question.",
+                color: "teal",
+                voice: "Matthew"
+            },
+            {
+                id: 9,
+                transcript: "I can't believe how much traffic there is today!",
+                options: [
+                    "I know, it's terrible, isn't it?",
+                    "I drive a red car.",
+                    "The traffic light is green.",
+                    "We should buy a new car."
+                ],
+                correctIndex: 0,
+                explanation: "The speaker is complaining. The natural response is to agree or sympathize. Option A ('I know, it's terrible') agrees with the sentiment.",
+                color: "teal",
+                voice: "Joanna"
+            },
+            {
+                id: 10,
+                transcript: "Are you free to grab some lunch later?",
+                options: [
+                    "Lunch is my favorite meal.",
+                    "I'd love to, but I have a meeting at one.",
+                    "It's free of charge.",
+                    "I am very hungry now."
+                ],
+                correctIndex: 1,
+                explanation: "This is an invitation. Option B declines politely ('I'd love to, but...') and gives a reason. Option C misunderstands 'free' (available vs no cost).",
+                color: "teal",
+                voice: "Matthew"
+            }
+        ];
+
+        // --- Render Quiz Function ---
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            
+            questions.forEach((q, index) => {
+                const transcriptId = `transcript-q-${index}`;
+                const safeTranscript = q.transcript.replace(/"/g, '&quot;');
+                
+                // Create Card
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 sm:p-5 md:p-6 border-3 border-dark shadow-neo-sm hover:-translate-y-1 transition-transform mb-6';
+                
+                // Audio Script Box
+                const scriptHTML = `
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5 border-b-2 border-dark pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="font-black text-white bg-dark border-2 border-dark shadow-[2px_2px_0_0_#cbd5e1] h-8 w-8 flex items-center justify-center text-sm md:text-base shrink-0">${index + 1}</span>
+                            <h4 class="font-black text-dark uppercase tracking-wide text-base md:text-lg">Listen & Respond</h4>
+                        </div>
+                        <div class="flex flex-wrap gap-2 w-full lg:w-auto">
+                            <button data-transcript="${safeTranscript}" data-voice="${q.voice}" onclick="playNativeAudio(this)" class="neo-btn bg-${q.color}-500 hover:bg-${q.color}-600 text-white px-4 py-3 sm:py-2 text-sm md:text-base flex items-center justify-center w-full sm:w-auto flex-1 transition-all">
+                                <i data-lucide="volume-2" class="w-5 h-5 sm:w-4 sm:h-4 mr-2"></i> Play Audio
+                            </button>
+                            <button onclick="toggleTranscript('${transcriptId}')" class="neo-btn bg-white text-dark px-4 py-3 sm:py-2 text-sm md:text-base flex items-center justify-center w-full sm:w-auto flex-1 transition-colors">
+                                <i data-lucide="eye" class="w-5 h-5 sm:w-4 sm:h-4 mr-2"></i> Transcript
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="${transcriptId}" class="hidden mb-6 bg-slate-50 border-3 border-dark p-4 shadow-inner">
+                        <p class="text-base md:text-lg font-bold text-slate-800 italic text-pretty">
+                            <strong class="uppercase font-black not-italic mr-2 block sm:inline-block mb-1 sm:mb-0 text-brand-600">Transcript:</strong> "${q.transcript}"
+                        </p>
+                    </div>
+                `;
+
+                // Options
+                let optionsHTML = '<div class="space-y-4">';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHTML += `
+                        <div class="option-label" onclick="handleOptionClick(this, ${index}, ${optIndex})" data-q="${index}" data-opt="${optIndex}">
+                            <div class="indicator">
+                                ${String.fromCharCode(65 + optIndex)}
+                            </div>
+                            <span class="w-full text-pretty leading-relaxed">${opt}</span>
+                        </div>
+                    `;
+                });
+                optionsHTML += '</div>';
+
+                // Feedback Area
+                const feedbackHTML = `
+                    <div id="feedback-${index}" class="hidden mt-6 p-4 border-3 border-dark shadow-neo-sm font-bold text-sm md:text-base leading-relaxed"></div>
+                `;
+
+                card.innerHTML = scriptHTML + optionsHTML + feedbackHTML;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        // --- Interactive Logic ---
+        const attempts = {}; 
+
+        function handleOptionClick(element, qIndex, optIndex) {
+            if (!attempts[qIndex]) attempts[qIndex] = 0;
+            
+            const card = element.closest('.bg-white');
+            const feedbackBox = document.getElementById(`feedback-${qIndex}`);
+            
+            // If already solved correctly, do nothing
+            if (card.querySelector('.correct')) return;
+
+            attempts[qIndex]++;
+            const currentAttempt = attempts[qIndex];
+
+            // Reset visual state for this question
+            card.querySelectorAll('.option-label').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            const correctIndex = questions[qIndex].correctIndex;
+
+            if (optIndex === correctIndex) {
+                // Correct!
+                element.classList.add('correct');
+                feedbackBox.className = 'mt-6 p-4 bg-[#dcfce7] border-3 border-[#15803d] shadow-neo-sm text-[#14532d] font-bold text-sm md:text-base leading-relaxed block';
+                feedbackBox.innerHTML = `<div class="flex items-center mb-2"><i data-lucide="check-circle" class="w-5 h-5 mr-2"></i><strong class="uppercase tracking-wide">Correct!</strong></div> <div class="border-t-2 border-[#15803d] pt-2 mt-2"><strong>Explanation:</strong> ${questions[qIndex].explanation}</div>`;
+            } else {
+                // Incorrect
+                element.classList.add('incorrect');
+                
+                if (currentAttempt >= 2) {
+                    // Reveal answer after 2nd attempt
+                    const allOptions = card.querySelectorAll('.option-label');
+                    allOptions[correctIndex].classList.add('correct');
+                    
+                    feedbackBox.className = 'mt-6 p-4 bg-[#e0e7ff] border-3 border-dark shadow-neo-sm text-dark font-bold text-sm md:text-base leading-relaxed block';
+                    feedbackBox.innerHTML = `<div class="flex items-center mb-2"><i data-lucide="info" class="w-5 h-5 mr-2"></i><strong class="uppercase tracking-wide">Answer Revealed</strong></div> <div class="border-t-2 border-dark pt-2 mt-2">The correct response was option ${String.fromCharCode(65 + correctIndex)}.<br><br><strong>Explanation:</strong> ${questions[qIndex].explanation}</div>`;
+                } else {
+                    feedbackBox.className = 'mt-6 p-4 bg-[#fee2e2] border-3 border-[#b91c1c] shadow-neo-sm text-[#7f1d1d] font-bold text-sm md:text-base leading-relaxed block';
+                    feedbackBox.innerHTML = `<div class="flex items-center"><i data-lucide="x-circle" class="w-5 h-5 mr-2"></i><strong class="uppercase tracking-wide">Incorrect. Try again.</strong></div>`;
+                }
+            }
+
+            // Reveal transcript if correct or max attempts reached
+            if (optIndex === correctIndex || currentAttempt >= 2) {
+                const transcriptEl = document.getElementById(`transcript-q-${qIndex}`);
+                if (transcriptEl) {
+                    transcriptEl.classList.remove('hidden');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function toggleTranscript(id) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        // --- Native Browser TTS Logic ---
+        window._activeUtterance = null; // Prevent Garbage Collection of utterances
+
+        function playNativeAudio(btnElement) {
+            const text = btnElement.dataset.transcript;
+            const requestedVoice = btnElement.dataset.voice; 
+            
+            if (!('speechSynthesis' in window)) {
+                alert("Your browser does not support text-to-speech.");
+                return;
+            }
+
+            // Stop anything currently playing
+            window.speechSynthesis.cancel();
+            
+            // Reset all other active audio buttons
+            document.querySelectorAll('.playing-active').forEach(btn => {
+                resetAudioBtnUI(btn);
+            });
+
+            // Save original HTML if not saved
+            if (!btnElement.dataset.originalHtml) {
+                btnElement.dataset.originalHtml = btnElement.innerHTML;
+            }
+
+            // Set Playing UI
+            btnElement.innerHTML = '<i data-lucide="square" class="w-5 h-5 sm:w-4 sm:h-4 mr-2"></i> Stop Audio';
+            btnElement.classList.add('playing-active');
+            lucide.createIcons();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            window._activeUtterance = utterance;
+            
+            utterance.lang = 'en-US';
+            utterance.rate = 0.95; 
+            
+            const voices = window.speechSynthesis.getVoices();
+            const avoidKeywords = ['kid', 'child', 'girl', 'boy', 'junior', 'baby', 'youth', 'bubbles', 'good news', 'bad news', 'bells', 'cellos', 'pipe organ', 'princess', 'trinoids', 'whisper', 'zarvox', 'ana'];
+            
+            const findVoice = (keywords) => voices.find(v => 
+                keywords.every(kw => v.name.toLowerCase().includes(kw.toLowerCase())) && 
+                !avoidKeywords.some(bad => v.name.toLowerCase().includes(bad))
+            );
+            
+            let selectedVoice = null;
+            if (requestedVoice === "Joanna") {
+                selectedVoice = findVoice(['Microsoft', 'Natural', 'English', 'Aria']) ||
+                                findVoice(['Microsoft', 'Aria']) ||
+                                findVoice(['Google', 'US', 'English']) || 
+                                voices.find(v => v.lang.startsWith('en') && v.name.includes('Female') && !avoidKeywords.some(bad => v.name.toLowerCase().includes(bad))) ||
+                                voices.find(v => v.lang.startsWith('en'));
+            } else if (requestedVoice === "Matthew") {
+                selectedVoice = findVoice(['Microsoft', 'Natural', 'English', 'Guy']) ||
+                                findVoice(['Microsoft', 'Guy']) ||
+                                voices.find(v => v.lang.startsWith('en') && v.name.includes('Male') && !avoidKeywords.some(bad => v.name.toLowerCase().includes(bad))) ||
+                                voices.find(v => v.lang.startsWith('en'));
+            }
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+
+            utterance.onend = () => {
+                resetAudioBtnUI(btnElement);
+            };
+
+            utterance.onerror = (e) => {
+                if (e.error !== 'canceled' && e.error !== 'interrupted') {
+                    console.error("SpeechSynthesis Error:", e.error);
+                }
+                resetAudioBtnUI(btnElement);
+            };
+
+            setTimeout(() => {
+                window.speechSynthesis.speak(utterance);
+            }, 50);
+        }
+
+        function resetAudioBtnUI(btnElement) {
+            if (btnElement.dataset.originalHtml) {
+                btnElement.innerHTML = btnElement.dataset.originalHtml;
+            } else {
+                btnElement.innerHTML = '<i data-lucide="volume-2" class="w-5 h-5 sm:w-4 sm:h-4 mr-2"></i> Play Audio';
+            }
+            btnElement.classList.remove('playing-active');
+            lucide.createIcons();
+        }
+
+        // --- Step 1 Metacognition Check ---
+        function checkStep1() {
+            const input = document.getElementById('s1-input').value.trim();
+            const res = document.getElementById('res-s1');
+            res.classList.remove('hidden');
+            if (input.length > 5) {
+                res.innerHTML = '<i data-lucide="check-circle" class="inline w-6 h-6 mr-2 text-[#15803d]"></i> <span class="text-[#15803d]">Great reflection! We naturally adjust our <strong>register</strong> (level of formality) depending on who we are speaking to.</span>';
+                res.className = "mt-4 p-4 bg-[#dcfce7] border-3 border-dark shadow-neo-sm font-black text-lg flex items-start";
+            } else {
+                res.innerHTML = '<i data-lucide="alert-triangle" class="inline w-6 h-6 mr-2 text-[#b45309]"></i> <span class="text-[#b45309]">Please type a brief answer reflecting on how you change your tone or words.</span>';
+                res.className = "mt-4 p-4 bg-[#ffedd5] border-3 border-dark shadow-neo-sm font-black text-lg flex items-start";
+            }
+            lucide.createIcons();
+        }
+
+        // Reset All
+        function resetAll() {
+            if(confirm("Are you sure you want to clear all your progress?")) {
+                
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                }
+                document.querySelectorAll('.playing-active').forEach(btn => resetAudioBtnUI(btn));
+                
+                document.getElementById('s1-input').value = "";
+                document.getElementById('res-s1').classList.add('hidden');
+                
+                Object.keys(attempts).forEach(k => attempts[k] = 0);
+                
+                // Re-render
+                renderQuiz();
+                
+                showToast("All progress has been reset.");
+            }
+        }
+    </script>
+</body>
+</html>

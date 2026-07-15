@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>B1 (GSE 50) Listening - The Multi-Speaker Seminar</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            overflow-wrap: normal;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 4px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 3px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+        .text-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            margin-top: 0.75rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .text-input:disabled {
+            background-color: #f1f5f9;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            white-space: nowrap;
+        }
+        .neo-btn:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .neo-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Option Labels (Radios) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.6;
+            font-weight: 800;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.35rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            accent-color: #0f172a;
+        }
+        .option-label:hover:not(.locked) {
+            background-color: #f8fafc;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .option-label.locked {
+            cursor: not-allowed;
+        }
+
+        /* 3-State Feedback Styles */
+        .state-amber {
+            background-color: #fef08a; 
+            border-color: #ca8a04;
+            color: #854d0e;
+        }
+        .state-rose {
+            background-color: #fecdd3; 
+            border-color: #e11d48;
+            color: #9f1239;
+        }
+        .state-emerald {
+            background-color: #a7f3d0; 
+            border-color: #059669;
+            color: #065f46;
+        }
+
+        /* AI Prompt Box */
+        .ai-prompt-neo {
+            background-color: #e0f2fe;
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            padding: 1.5rem;
+            position: relative;
+        }
+        .ai-prompt-neo::before {
+            content: "AI ASSISTANT";
+            position: absolute;
+            top: -16px;
+            left: 16px;
+            background: #0ea5e9;
+            color: white;
+            padding: 4px 12px;
+            font-weight: 900;
+            border: 3px solid #0f172a;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Presentation Screen Graphic */
+        .presentation-screen {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 4px solid #0f172a;
+            box-shadow: 8px 8px 0px 0px #0f172a;
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+        }
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Pulsing Audio Animation */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(59, 130, 246, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .audio-playing-icon {
+            animation: pulse-ring 2s infinite;
+        }
+
+        /* Speaker highlight transition */
+        .speaker-card {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .speaker-card.active-speaker {
+            border-color: #facc15 !important;
+            background-color: #1e1b4b !important;
+            transform: scale(1.05);
+            box-shadow: 0px 0px 20px 2px rgba(250, 204, 21, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 sm:p-6 md:p-10">
+
+    <div class="max-w-7xl mx-auto bg-white p-6 sm:p-10 lg:p-12 border-4 border-dark shadow-neo">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base sm:text-xl text-dark mb-10 flex gap-3 font-black uppercase tracking-wider items-center flex-wrap whitespace-nowrap">
+            <span class="bg-[#c4b5fd] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Professional English</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#c4b5fd] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Listening</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#facc15] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">B1 / GSE 50</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#818cf8] text-white px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">The Multi-Speaker Seminar</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-8 mb-10 md:mb-14 border-b-4 border-dark pb-10">
+            <div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-dark uppercase tracking-tight mb-5 leading-tight">
+                    Automated Medical Triage vs. Human Clinical Judgment
+                </h1>
+                <p class="text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-4 py-2 border-3 border-dark">
+                    Skill focus: Multi-Speaker Argument Tracking and Signpost Recognition
+                </p>
+            </div>
+            <div class="flex gap-4 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-3 px-6 py-4 text-xl text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-6 h-6"></i> Reset Progress
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#fefce8] border-4 border-dark p-6 md:p-8 mb-10 md:mb-14 shadow-neo flex items-start gap-5">
+            <div class="bg-[#facc15] p-3 border-3 border-dark shrink-0">
+                <i data-lucide="headphones" class="w-8 h-8 text-dark"></i>
+            </div>
+            <p class="text-xl md:text-2xl text-dark font-bold leading-relaxed">
+                <span class="uppercase font-black text-2xl mr-2">Listening-First Protocol:</span> Complete the <strong>Preparation</strong> tasks to unlock your background vocabulary. Then listen to the interactive seminar debate without looking at the transcript. Use the interactive audio panel below to track speaker stances and practice your comprehension.
+            </p>
+        </div>
+
+        <!-- Accordion Container -->
+        <div class="space-y-10 md:space-y-12">
+
+            <!-- Part 1: Preparation (Cyan Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            1
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Step 1: Listening Preparation</span>
+                    </div>
+                    <div id="icon-wrapper-part1" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part1" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 1 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 1</span> Warm Up Thinking
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t1', this, 'Show Sample Ideas')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Ideas</button>
+                            </div>
+                            <ul class="list-disc pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>What features of a speaker's voice help you understand their point of view? Tone of voice, emphasis on words, or speed?</li>
+                                <li>In a group discussion, how do you notice that a speaker is about to change their mind or agree with an opponent?</li>
+                                <li>Why is it helpful to listen for professional statistics (like percentages) rather than generalizations during scientific debates?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your thoughts here..."></textarea>
+                            
+                            <div id="ans-t1" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="lightbulb" class="w-8 h-8 inline mr-2 text-[#eab308] fill-current"></i>Sample Ideas:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li>Focusing on lexical emphasis helps identify key points. For instance, when speakers put extra stress on words like "concede" or "however," they signaling logical shifts.</li>
+                                    <li>A change in pitch, or phrases such as "I see your point," typically signals that a speaker is preparing to make a logical concession.</li>
+                                    <li>Numerical facts provide an objective baseline, which helps listeners evaluate the strength of an argument rather than relying on subjective vocal confidence.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 1.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-10">
+                                <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 1.1</span> AI Support for Warm Up
+                            </h3>
+                            <div class="ai-prompt-neo mb-8 mt-4">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Act as an academic communications coach. Explain the structural difference between 'conceding a point' and 'refuting a claim' in a professional medical seminar. Provide a B1-level summary with three simple conversational phrases for each concept that an international medical professional can use during a live academic debate."</p>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Draft your expected findings before comparing it to the AI's response.</p>
+                            <textarea class="text-input text-2xl mb-6" placeholder="Your draft..."></textarea>
+                            <button onclick="toggleAnswer('ans-t1-1', this, 'Show AI Sample Response')" class="neo-btn bg-[#0ea5e9] text-white px-5 py-3 text-xl">Show AI Sample Response</button>
+                            
+                            <div id="ans-t1-1" class="answer-box hidden mt-8 p-6 bg-slate-50 border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="bot" class="w-8 h-8 inline mr-2 text-[#0ea5e9]"></i>AI Response:</strong>
+                                <p class="font-bold text-xl md:text-2xl leading-relaxed italic border-l-4 border-[#0ea5e9] pl-4">"Conceding a point means accepting that your opponent has made a logical, true statement. Refuting a claim means actively proving their argument is incorrect using facts. 
+                                <br><br><strong>Conceding Phrases:</strong> 'I concede that...', 'You make a valid point regarding...', 'That is a fair observation.'
+                                <br><br><strong>Refuting Phrases:</strong> 'I must refute the claim that...', 'The data does not support this...', 'On the contrary, our research indicates...'"</p>
+                            </div>
+                        </div>
+
+                        <!-- Task 2 (Interactive Vocab) -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 border-b-4 border-dark pb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 2</span> Listening-Critical Vocabulary Check
+                                </h3>
+                                <button onclick="checkVocab()" class="neo-btn bg-[#38bdf8] text-dark px-8 py-4 text-xl">
+                                    Submit Answers
+                                </button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-8">Match each capitalized word with its exact meaning in academic debates. These words are vital signposts you will hear in the audio.</p>
+                            
+                            <div id="vocab-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Listening Content (Blue Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#eff6ff]">
+                <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black">
+                            <i data-lucide="headphones" class="w-8 h-8 md:w-10 md:h-10"></i>
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Step 2: Active Listening Hub</span>
+                    </div>
+                    <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-10">
+                        
+                        <h3 class="text-2xl md:text-3xl font-black text-dark uppercase tracking-wider mb-2 text-center">Multi-Speaker Triage Seminar</h3>
+                        <p class="text-center text-slate-600 font-bold text-lg mb-6">Observe the interactive screen below: characters light up dynamically when speaking!</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-start">
+                            
+                            <!-- Dynamic Visual Dashboard (Speakers & Graph) -->
+                            <div class="lg:col-span-7 flex flex-col gap-6">
+                                <div class="w-full presentation-screen grid-bg p-6 md:p-8 flex flex-col justify-between">
+                                    <div class="flex justify-between items-center text-slate-400 font-bold border-b-2 border-slate-700 pb-3">
+                                        <span class="uppercase tracking-widest text-sm flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span> Live Session Tracker
+                                        </span>
+                                        <i data-lucide="activity" class="text-blue-400"></i>
+                                    </div>
+                                    
+                                    <!-- Dynamic Speaker Grid -->
+                                    <div class="grid grid-cols-3 gap-3 my-4">
+                                        <div id="speaker-card-Kenji" class="speaker-card bg-slate-900 border-2 border-slate-700 p-3 text-center rounded shadow-inner">
+                                            <div class="w-12 h-12 rounded-full bg-blue-600 text-white font-black flex items-center justify-center mx-auto mb-2 text-lg border-2 border-slate-400">K</div>
+                                            <span class="text-white font-bold block text-sm">Dr. Kenji</span>
+                                            <span class="text-slate-400 text-xs font-medium block">Chairperson</span>
+                                        </div>
+                                        <div id="speaker-card-Sarah" class="speaker-card bg-slate-900 border-2 border-slate-700 p-3 text-center rounded shadow-inner">
+                                            <div class="w-12 h-12 rounded-full bg-purple-600 text-white font-black flex items-center justify-center mx-auto mb-2 text-lg border-2 border-slate-400">S</div>
+                                            <span class="text-white font-bold block text-sm">Dr. Sarah</span>
+                                            <span class="text-slate-400 text-xs font-medium block">Tech Advocate</span>
+                                        </div>
+                                        <div id="speaker-card-Takashi" class="speaker-card bg-slate-900 border-2 border-slate-700 p-3 text-center rounded shadow-inner">
+                                            <div class="w-12 h-12 rounded-full bg-emerald-600 text-white font-black flex items-center justify-center mx-auto mb-2 text-lg border-2 border-slate-400">T</div>
+                                            <span class="text-white font-bold block text-sm">Dr. Takashi</span>
+                                            <span class="text-slate-400 text-xs font-medium block">Clinical Director</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-center gap-6 text-sm font-bold pt-2 border-t border-slate-800">
+                                        <div class="flex items-center gap-2"><div class="w-4 h-4 bg-[#facc15] border border-dark"></div> <span class="text-white">Active Speaker Glow</span></div>
+                                        <div class="flex items-center gap-2"><div class="w-4 h-4 bg-slate-900 border border-slate-700"></div> <span class="text-slate-400">Listening Mode</span></div>
+                                    </div>
+                                </div>
+
+                                <!-- Scaffolded Listening Notes Activity -->
+                                <div class="bg-brand-50 border-4 border-dark p-6 shadow-neo-sm">
+                                    <h4 class="font-black text-xl text-dark uppercase mb-4 flex items-center gap-2">
+                                        <i data-lucide="book-open" class="text-brand-600"></i> Active Listening Organizer
+                                    </h4>
+                                    <p class="font-bold text-slate-700 text-base mb-4 leading-relaxed">
+                                        As you listen, complete these key statements. Notice how the vocal transitions match these critical signposts.
+                                    </p>
+                                    <div class="space-y-4 font-bold text-base text-slate-800">
+                                        <div>
+                                            <label class="block mb-1">1. What reduction value is introduced as a central claim? (Dr. Sarah's metric)</label>
+                                            <input type="text" id="guide-blank-1" class="w-full p-2 border-2 border-dark" placeholder="e.g. 40 percent">
+                                        </div>
+                                        <div>
+                                            <label class="block mb-1">2. Which safety feature does Dr. Sarah mention to protect patients?</label>
+                                            <input type="text" id="guide-blank-2" class="w-full p-2 border-2 border-dark" placeholder="e.g. flag complex cases">
+                                        </div>
+                                    </div>
+                                    <button onclick="checkListeningGuide()" class="neo-btn bg-brand-500 text-white mt-4 py-2 px-4 text-base">Check Notes</button>
+                                    <div id="guide-feedback" class="hidden mt-3 p-3 font-bold text-base border-2 rounded"></div>
+                                </div>
+                            </div>
+
+                            <!-- Audio Playback Control Deck -->
+                            <div class="lg:col-span-5 flex flex-col gap-6 h-full">
+                                <div class="p-6 bg-slate-800 border-4 border-dark shadow-[6px_6px_0_0_#0f172a] text-white flex flex-col gap-6 justify-between">
+                                    <div class="flex items-center gap-4 w-full">
+                                        <div id="audio-icon-wrapper" class="bg-blue-500 p-3 border-2 border-white rounded-full shrink-0">
+                                            <i data-lucide="volume-2" class="w-8 h-8 text-white"></i>
+                                        </div>
+                                        <div>
+                                            <p id="audio-status" class="text-lg md:text-xl font-bold text-blue-200">Audio playback loaded.</p>
+                                            <p class="text-slate-400 text-sm">Web TTS Engine Active</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Speed Rate Toggles -->
+                                    <div class="border-t border-slate-700 pt-4">
+                                        <span class="block text-slate-300 font-bold text-sm mb-2 uppercase tracking-wider">Audio Speed Rate</span>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <button onclick="setSpeed(0.8)" id="rate-08" class="bg-slate-700 py-1.5 font-bold rounded hover:bg-slate-600 transition-colors border border-slate-600">0.8x (Slow)</button>
+                                            <button onclick="setSpeed(1.0)" id="rate-10" class="bg-blue-600 py-1.5 font-bold rounded hover:bg-blue-500 transition-colors border border-slate-600 text-white">1.0x (Normal)</button>
+                                            <button onclick="setSpeed(1.2)" id="rate-12" class="bg-slate-700 py-1.5 font-bold rounded hover:bg-slate-600 transition-colors border border-slate-600">1.2x (Fast)</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-3 shrink-0 w-full">
+                                        <button id="btn-play" onclick="playAudio()" class="neo-btn bg-[#3b82f6] border-white text-white hover:bg-[#2563eb] w-full px-6 py-4 text-xl shadow-[4px_4px_0_0_#ffffff]">
+                                            <i data-lucide="play" class="w-6 h-6"></i> Play Audio
+                                        </button>
+                                        <button id="btn-stop" onclick="stopAudio()" class="neo-btn bg-[#ef4444] border-white text-white hover:bg-[#dc2626] w-full px-6 py-4 text-xl shadow-[4px_4px_0_0_#ffffff] hidden">
+                                            <i data-lucide="square" class="w-6 h-6"></i> Stop Audio
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Dialogue Presentation (Hidden by default to focus on listening) -->
+                                <div class="bg-white p-6 border-4 border-dark shadow-[6px_6px_0_0_#0f172a] flex-grow flex flex-col justify-between">
+                                    <div class="border-b-4 border-dark pb-4 mb-4">
+                                        <h3 class="text-xl font-black text-dark uppercase flex items-center gap-2">
+                                            <i data-lucide="file-text"></i> Interactive Script Support
+                                        </h3>
+                                        <p class="text-sm text-slate-500 mt-1">Try to listen at least twice before looking at the text transcript!</p>
+                                    </div>
+                                    
+                                    <div id="transcript-warning" class="bg-amber-50 border-3 border-amber-500 p-4 font-bold text-amber-900 text-base rounded mb-4">
+                                        ⚠️ Script hidden to protect listening integrity. Click the toggle button below when you are ready to check your spelling or verify words.
+                                    </div>
+                                    
+                                    <div id="transcript-content" class="space-y-4 text-lg text-slate-800 font-medium leading-relaxed hidden h-64 overflow-y-auto pr-2 mb-4">
+                                        <p class="border-l-4 border-blue-500 pl-3"><strong>Dr. Kenji:</strong> "Welcome to the panel seminar on digital health workflows. Today we are discussing whether automated software systems should replace manual patient triage in emergency departments. Dr. Sarah, please share your view."</p>
+                                        <p class="border-l-4 border-purple-500 pl-3"><strong>Dr. Sarah:</strong> "Thank you. Our latest data from the city hospital shows that automated triage algorithms reduce patient waiting times by 40%. Therefore, my <strong class="bg-blue-100 border border-blue-300 px-1 uppercase">CONTENTION</strong> is that digital systems are objectively superior at managing patient flow."</p>
+                                        <p class="border-l-4 border-emerald-500 pl-3"><strong>Dr. Takashi:</strong> "I understand your data, and I <strong class="bg-blue-100 border border-blue-300 px-1 uppercase">CONCEDE</strong> that digital triage speeds up the initial registration process. Your time metrics are clear. However, I must <strong class="bg-blue-100 border border-blue-300 px-1 uppercase">REFUTE</strong> the claim that these systems are completely superior. Software programs often miss subtle physical signs, such as a patient's unique skin tone or slight changes in breathing rhythm, which an experienced nurse notices instantly."</p>
+                                        <p class="border-l-4 border-purple-500 pl-3"><strong>Dr. Sarah:</strong> "I see your point about physical signs. However, the <strong class="bg-blue-100 border border-blue-300 px-1 uppercase">VALIDITY</strong> of our study relies on a large sample size where the rate of critical misdiagnosis was extremely low. The software is programmed to flag complex cases for human review anyway."</p>
+                                        <p class="border-l-4 border-emerald-500 pl-3"><strong>Dr. Takashi:</strong> "That is a fair safety feature. Perhaps we can reach a <strong class="bg-blue-100 border border-blue-300 px-1 uppercase">COMPROMISE</strong>. We should not use technology to replace staff, but rather position the digital system as a supportive tool alongside professional triage nurses."</p>
+                                    </div>
+
+                                    <button id="btn-toggle-transcript" onclick="toggleTranscriptVisibility()" class="neo-btn bg-white text-dark w-full py-3 text-lg">
+                                        Show Reading Transcript
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 3: Understanding (Emerald Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            3
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Step 3: Listen for Meaning and Details</span>
+                    </div>
+                    <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 3 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 3</span> Global Stance Listening (Listening for Gist)
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t3', this, 'Show Sample Answers')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Answers</button>
+                            </div>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>What central technological workflow are the panelists trying to define?</li>
+                                <li>On what specific operational point do Dr. Sarah and Dr. Takashi agree?</li>
+                                <li>What is the final middle ground proposed by the end of the audio discussion?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your answers here..."></textarea>
+                            
+                            <div id="ans-t3" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-square" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Sample Answers:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li><strong>The Core Argument:</strong> The debate explores whether automated software algorithms should replace manual nurse evaluation in triage zones.</li>
+                                    <li><strong>Shared Agreement:</strong> Both speakers agree that automated systems are effective at speeding up the initial administration registration metrics.</li>
+                                    <li><strong>The Compromise:</strong> Dr. Takashi recommends using technology as a supportive digital tool to assist triage nurses, rather than removing human staff.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 4 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 4</span> Deep Listening (Listening for Specific Information)
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t4', this, 'Show Sample Answers')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Answers</button>
+                            </div>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>Listen for the numeric metric. What precise percentage of wait time is saved by automated software?</li>
+                                <li>According to Dr. Takashi, what two visual and physical signs might a program fail to observe?</li>
+                                <li>What software guardrail does Dr. Sarah point to that keeps human professionals involved?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your answers here..."></textarea>
+                            
+                            <div id="ans-t4" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-square" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Sample Answers:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li><strong>Specific Number:</strong> Triage waiting times are reduced by exactly 40%.</li>
+                                    <li><strong>Physical Details missed:</strong> Automated scripts struggle to spot variations in patient skin tone and slight changes in breathing rhythm.</li>
+                                    <li><strong>Built-in Guardrail:</strong> The software automatically highlights or flags complicated conditions to be routed to human staff for priority review.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 5 (Interactive T/F with Enhanced 3-State Logic) -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 border-b-4 border-dark pb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 5</span> Opinion Tracking (True or False)
+                                </h3>
+                                <button onclick="checkTF()" class="neo-btn bg-[#4ade80] text-dark px-8 py-4 text-xl">
+                                    Submit Answers
+                                </button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-8">Analyze the speaker stances. Are these statements True or False based on the audio conversation?</p>
+                            <div id="tf-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 4: Discussion (Orange Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#ffedd5]">
+                <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            4
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Step 4: Strategic Interaction</span>
+                    </div>
+                    <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 6: Cause/Effect -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 6</span> Cause and Effect Thinking
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t6', this, 'Show Sample')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample</button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-6">Identify the logical consequences stemming from the panelists' statements:</p>
+                            
+                            <div class="space-y-6">
+                                <div class="flex flex-col lg:flex-row lg:items-center gap-4 bg-white border-4 border-dark p-6">
+                                    <div class="lg:w-1/2">
+                                        <span class="font-black text-xl text-orange-900 block mb-2">Cause:</span>
+                                        <p class="font-bold text-xl text-dark">Emergency departments integrate computerized algorithms into their initial workflows...</p>
+                                    </div>
+                                    <div class="lg:w-1/2 flex items-center gap-3">
+                                        <span class="font-black text-xl text-dark uppercase"><i data-lucide="arrow-right" class="w-6 h-6 inline"></i> Effect:</span> 
+                                        <input type="text" class="text-input mt-0 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] flex-1 text-xl py-3 px-4" placeholder="Type the effect...">
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col lg:flex-row lg:items-center gap-4 bg-white border-4 border-dark p-6">
+                                    <div class="lg:w-1/2">
+                                        <span class="font-black text-xl text-orange-900 block mb-2">Cause:</span>
+                                        <p class="font-bold text-xl text-dark">Dr. Sarah confirms that triage software automatically flags complex cases for human clinicians...</p>
+                                    </div>
+                                    <div class="lg:w-1/2 flex items-center gap-3">
+                                        <span class="font-black text-xl text-dark uppercase"><i data-lucide="arrow-right" class="w-6 h-6 inline"></i> Effect:</span> 
+                                        <input type="text" class="text-input mt-0 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] flex-1 text-xl py-3 px-4" placeholder="Type the effect...">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="ans-t6" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-circle" class="w-8 h-8 inline mr-2 text-[#eab308]"></i>Logical Effects:</strong>
+                                <ul class="list-disc pl-8 space-y-4 font-bold text-xl md:text-2xl">
+                                    <li><strong>Effect 1:</strong> Patient registration wait times are optimized, dropping by 40% as a direct functional benefit.</li>
+                                    <li><strong>Effect 2:</strong> This provides an administrative safety margin, easing clinical concerns about algorithmic errors and enabling Takashi to propose a compromise.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 6.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 6.1</span> AI Guided Extension
+                            </h3>
+                            <div class="ai-prompt-neo mb-8">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Review the cause and effect relationships from the seminar script on automated medical triage. Evaluate the logic of Dr. Takashi's refutation. Explain in 4 simple sentences tailored for a B1 English learner why processing speed does not automatically equal clinical quality in an emergency room triage environment."</p>
+                            </div>
+                            <textarea class="text-input text-2xl mb-4" placeholder="Your explanation..."></textarea>
+                        </div>
+
+                        <!-- Task 7 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 7</span> Speaking Personal Position
+                            </h3>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>If you were the chairperson of this seminar, which doctor's position would you support more and why?</li>
+                                <li>Do you think automated medical diagnostics make junior clinicians lazy or more efficient?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Jot down your speaking points..."></textarea>
+                        </div>
+
+                        <!-- Task 7.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 7.1</span> AI as Practice Partner
+                            </h3>
+                            <div class="ai-prompt-neo mb-8">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Act as Dr. Takashi from the seminar. I am Dr. Sarah. I just argued that digital triage reduces wait times by 40% and is therefore superior. Challenge my position directly by asking me two polite follow-up questions about patient safety and software system errors. Keep your vocabulary strictly at the B1 level and maintain an academic tone."</p>
+                            </div>
+                            <textarea class="text-input text-2xl mb-4" placeholder="Write your side of the dialogue..."></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 5: Case Studies (Violet Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fae8ff]">
+                <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            5
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Step 5: Post-Listening Application</span>
+                    </div>
+                    <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 8 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 8</span> Discussion Contextual Skills
+                            </h3>
+                            <p class="text-2xl text-slate-800 font-bold mb-6 leading-relaxed"><strong class="text-dark bg-fuchsia-200 px-2 py-1 uppercase mr-2 border-2 border-dark">The Dynamics of Concession:</strong> In global academic settings, admitting your opponent has a valid point can make your own position look more credible. How can a professional doctor concede a minor point gracefully without making their main clinical conclusion appear weak to the audience?</p>
+                            <textarea class="text-input text-2xl" placeholder="Your discussion points..."></textarea>
+                        </div>
+
+                        <!-- Task 9: Roleplay/Dilemma -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-6 border-b-4 border-dark pb-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 9</span> Case Study Decision Making
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t9', this, 'Show Evaluation')" class="neo-btn bg-[#e879f9] text-dark px-5 py-3 text-xl">Show Evaluation</button>
+                            </div>
+                            <div class="bg-[#fdf4ff] p-6 border-4 border-dark mb-8 shadow-[6px_6px_0_0_#0f172a]">
+                                <p class="text-2xl text-dark font-black uppercase mb-4 tracking-wide"><i data-lucide="alert-triangle" class="w-8 h-8 inline mr-2 text-fuchsia-600"></i> Scenario:</p>
+                                <p class="text-2xl text-slate-800 font-bold leading-relaxed mb-6">A hospital board must decide how to spend the remaining annual technology budget.</p>
+                                <div class="space-y-4">
+                                    <div class="p-4 bg-white border-3 border-dark font-bold text-xl flex items-start gap-4">
+                                        <div class="bg-dark text-white p-2 shrink-0 mt-1"><i data-lucide="server"></i></div> Option A: Invest completely in the automated triage software to achieve a guaranteed 40% reduction in entry wait times.
+                                    </div>
+                                    <div class="p-4 bg-white border-3 border-dark font-bold text-xl flex items-start gap-4">
+                                        <div class="bg-dark text-white p-2 shrink-0 mt-1"><i data-lucide="users"></i></div> Option B: Use the budget to hire three seasonal triage nurses to maintain human oversight, touch, and direct patient interaction.
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Debate with your partner which option secures better long-term patient safety and hospital reputation.</p>
+                            <textarea class="text-input text-2xl" placeholder="I would choose Option... because..."></textarea>
+                            
+                            <div id="ans-t9" class="answer-box hidden mt-8 p-6 bg-slate-50 border-4 border-dark text-slate-800 shadow-[6px_6px_0_0_#0f172a]">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-circle" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Analysis:</strong>
+                                <p class="font-bold text-xl md:text-2xl leading-relaxed">A balanced compromise represents the highest level of strategic administrative communication. While Option A optimizes hospital metrics (processing speed), completely excluding nurses creates acute risk when complex clinical exceptions occur. Option B preserves human diagnostic accuracy but lacks structural speed. Combining reduced automation with human supervision yields optimal long-term outcomes.</p>
+                            </div>
+                        </div>
+
+                        <!-- Task 9.1 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 9.1</span> AI Role Play Comparison
+                            </h3>
+                            <div class="ai-prompt-neo mb-8">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Simulate a hospital board debate between an educational technology proponent and a traditional clinical director. AI: Act as the tech proponent pushing for automated software (Option A). Student: I will act as the clinical director defending manual nurse hiring (Option B). Let's exchange two short arguments each using simple, persuasive academic language at the B1 level."</p>
+                            </div>
+                            <textarea class="text-input text-2xl mb-4" placeholder="Your argument..."></textarea>
+                        </div>
+
+                        <!-- Task 10 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 10</span> Summary and Reflection
+                            </h3>
+                            <label class="block font-bold text-slate-800 mb-6 text-2xl leading-relaxed">Write 5 to 6 sentences reflecting on your ability to track academic debates in English. Use at least three CAPITALIZED words from Task 2 (e.g., CONCEDE, REFUTE, CONTENTION). Describe how learning to identify concessions helps you follow professional group discussions more accurately.</label>
+                            <textarea class="text-input h-64 text-2xl" placeholder="Draft your reflection here..."></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t-4 border-dark text-center mb-8">
+            <p class="text-dark text-xl font-black uppercase tracking-wider bg-[#facc15] inline-block px-6 py-3 border-4 border-dark shadow-neo">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">Fajarudin Akbar</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-8 py-5 shadow-neo transition-all duration-300 translate-y-32 opacity-0 z-50 flex items-center gap-4 font-black text-xl uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="info" class="w-8 h-8 shrink-0 text-brand-600"></i> <span id="toast-msg">Notification</span>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- Init Lucide Icons ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderVocab();
+            renderTF();
+        });
+
+        // Track attempts globally
+        const attempts = {};
+
+        // Track Audio Rate Speed
+        let audioSpeedRate = 1.0;
+
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { 
+                id: "v1", 
+                word: "CONTENTION",
+                sentence: "Therefore, my CONTENTION is that digital systems are objectively superior at managing patient flow.", 
+                correct: "a", 
+                options: { 
+                    a: "A strong opinion or argument maintained in a debate.", 
+                    b: "A sudden feeling of anger during a medical meeting.", 
+                    c: "A technical error found inside a database system." 
+                },
+                hint: "Think about an assertive central statement in a discussion."
+            },
+            { 
+                id: "v2", 
+                word: "CONCEDE",
+                sentence: "I understand your data, and I CONCEDE that digital triage speeds up the initial registration process.", 
+                correct: "b", 
+                options: { 
+                    a: "To prove that someone else's argument is completely wrong.", 
+                    b: "To admit that something is true or logical, often unwillingly.", 
+                    c: "To change the subject of a conversation very quickly." 
+                },
+                hint: "Relates to yielding or admitting a specific point made by an opponent."
+            },
+            { 
+                id: "v3", 
+                word: "REFUTE",
+                sentence: "However, I must REFUTE the claim that these systems are completely superior.", 
+                correct: "c", 
+                options: { 
+                    a: "To repeat an opinion multiple times to ensure everyone hears it.", 
+                    b: "To accept a new rule without asking any questions.", 
+                    c: "To prove a statement or claim to be wrong or false by using evidence." 
+                },
+                hint: "Relates to disproving or declaring a claim false using logic."
+            },
+            { 
+                id: "v4", 
+                word: "VALIDITY",
+                sentence: "However, the VALIDITY of our study relies on a large sample size where the rate of misdiagnosis was low.", 
+                correct: "b", 
+                options: { 
+                    a: "The total financial cost of conducting a scientific project.", 
+                    b: "The quality of being logically or factually sound and acceptable.", 
+                    c: "The speed at which a computer program runs a diagnostic test." 
+                },
+                hint: "It represents truth, soundness, and credibility of a study."
+            },
+            { 
+                id: "v5", 
+                word: "COMPROMISE",
+                sentence: "Perhaps we can reach a COMPROMISE to satisfy both departments.", 
+                correct: "a", 
+                options: { 
+                    a: "An agreement reached by each side making concessions or adjustments.", 
+                    b: "A severe argument that results in a project being canceled.", 
+                    c: "A formal presentation given to the head of the hospital." 
+                },
+                hint: "A middle ground where both sides agree by adjusting expectations."
+            }
+        ];
+
+        // 3. TRUE / FALSE DATA
+        const tfData = [
+            { 
+                id: "tf1", 
+                text: "1. Dr. Takashi believes that automated triage technology has absolutely no positive value for hospitals.", 
+                correct: "False", 
+                explanation: "Dr. Takashi explicitly concedes that 'digital triage speeds up the initial registration process.'",
+                hint: "Listen to Dr. Takashi's first response to Dr. Sarah."
+            },
+            { 
+                id: "tf2", 
+                text: "2. Dr. Sarah immediately rejects Dr. Takashi's point about physical signs without acknowledging it.", 
+                correct: "False", 
+                explanation: "She directly validates his concern by saying: 'I see your point about physical signs.'",
+                hint: "Observe Dr. Sarah's response following Dr. Takashi's point."
+            },
+            { 
+                id: "tf3", 
+                text: "3. The data used in Dr. Sarah's study showed that automated triage resulted in a high rate of dangerous mistakes.", 
+                correct: "False", 
+                explanation: "The script specifies that the rate of critical misdiagnosis in the study was extremely low.",
+                hint: "Look closely at the validity statement Dr. Sarah makes."
+            },
+            { 
+                id: "tf4", 
+                text: "4. Dr. Takashi's final goal in the debate is to find a way to combine human skills with digital software tools.", 
+                correct: "True", 
+                explanation: "He actively supports a compromise to position the system as a supportive tool alongside professional nurses.",
+                hint: "What is Dr. Takashi's concluding proposal?"
+            }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            if(vocabData.length === 0) return;
+
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="" disabled selected>Select definition...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${key.toUpperCase()}. ${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col xl:flex-row xl:items-center gap-6 p-6 bg-white border-4 border-dark shadow-neo-sm w-full">
+                    <div class="xl:w-2/5 font-black text-dark text-2xl bg-cyan-100 px-4 py-2 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">${item.word}</div>
+                    <div class="xl:w-3/5 flex flex-col gap-3">
+                        <select id="${item.id}" class="text-input mt-0 py-4 text-xl cursor-pointer w-full" onchange="resetVocabState('${item.id}')">
+                            ${optionsHtml}
+                        </select>
+                        <div id="feedback-${item.id}" class="text-xl font-bold hidden px-4 py-2 border-3 mt-2"></div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function resetVocabState(id) {
+            const select = document.getElementById(id);
+            const feedback = document.getElementById(`feedback-${id}`);
+            select.classList.remove('state-amber', 'state-rose', 'state-emerald');
+            feedback.classList.add('hidden');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="bg-white p-6 md:p-8 border-4 border-dark shadow-neo mb-6 flex flex-col gap-6">
+                    <span class="text-2xl font-black text-dark leading-relaxed">${item.text}</span>
+                    <div class="flex flex-wrap items-center gap-6">
+                        <label class="option-label m-0 flex-1 justify-center py-4 text-2xl group">
+                            <input type="radio" name="${item.id}" value="True" class="mt-1 w-6 h-6 hidden" onchange="resetTFState('${item.id}')">
+                            <div class="w-6 h-6 border-3 border-dark rounded-sm group-[.locked]:bg-slate-200 mt-1 flex items-center justify-center shrink-0 radio-custom"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                            <span class="uppercase tracking-wide">True</span>
+                        </label>
+                        <label class="option-label m-0 flex-1 justify-center py-4 text-2xl group">
+                            <input type="radio" name="${item.id}" value="False" class="mt-1 w-6 h-6 hidden" onchange="resetTFState('${item.id}')">
+                            <div class="w-6 h-6 border-3 border-dark rounded-sm group-[.locked]:bg-slate-200 mt-1 flex items-center justify-center shrink-0 radio-custom"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                            <span class="uppercase tracking-wide">False</span>
+                        </label>
+                    </div>
+                    <div id="feedback-${item.id}" class="text-xl font-bold hidden px-5 py-4 border-3 mt-2 leading-relaxed"></div>
+                </div>
+            `).join('');
+
+            // Add custom radio behavior
+            setTimeout(() => {
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const name = e.target.name;
+                        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                            const dot = r.parentElement.querySelector('.inner-dot');
+                            if(r.checked) dot.classList.remove('hidden');
+                            else dot.classList.add('hidden');
+                        });
+                    });
+                });
+            }, 100);
+        }
+
+        function resetTFState(id) {
+            const feedback = document.getElementById(`feedback-${id}`);
+            const radios = document.getElementsByName(id);
+            radios.forEach(r => {
+                r.closest('.option-label').classList.remove('state-amber', 'state-rose', 'state-emerald');
+            });
+            feedback.classList.add('hidden');
+        }
+
+        // --- 3-State Logic Handlers ---
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3500);
+        }
+
+        function checkVocab() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+                
+                select.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                feedback.classList.remove('state-amber', 'state-rose', 'state-emerald', 'hidden');
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Correct!';
+                    select.classList.add('state-emerald');
+                    feedback.classList.add('state-emerald');
+                    select.disabled = true;
+                    correctCount++;
+                    answeredCount++;
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    answeredCount++;
+                    if (attempts[key] >= 2) {
+                        select.disabled = true;
+                        select.classList.add('state-rose');
+                        feedback.classList.add('state-rose');
+                        feedback.innerHTML = `<i data-lucide="x-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Locked. The correct answer is <strong>${item.correct.toUpperCase()}</strong>.`;
+                    } else {
+                        select.classList.add('state-amber');
+                        feedback.classList.add('state-amber');
+                        feedback.innerHTML = `<i data-lucide="info" class="w-6 h-6 inline mr-2 align-middle"></i> Not quite. Hint: ${item.hint}`;
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                }
+            });
+            lucide.createIcons();
+            
+            if (answeredCount === 0) {
+                showToast("Please select at least one answer.");
+            } else if (correctCount === vocabData.length) {
+                showToast("Perfect! All vocabulary matched.");
+            } else {
+                showToast("Answers checked. Review the feedback.");
+            }
+        }
+
+        function checkTF() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                let userVal = "";
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                radios.forEach(r => {
+                    const label = r.closest('.option-label');
+                    label.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                    if(r.checked) userVal = r.value;
+                });
+
+                feedback.classList.remove('state-amber', 'state-rose', 'state-emerald', 'hidden');
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Correct! Reason: ${item.explanation}`;
+                    feedback.classList.add('state-emerald');
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        const label = r.closest('.option-label');
+                        label.classList.add('locked');
+                        if(r.checked) label.classList.add('state-emerald');
+                    });
+                    correctCount++;
+                    answeredCount++;
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    answeredCount++;
+                    if (attempts[key] >= 2) {
+                        feedback.innerHTML = `<i data-lucide="x-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Locked. The correct answer is <strong>${item.correct}</strong>.<br><span class="mt-2 block">Reason: ${item.explanation}</span>`;
+                        feedback.classList.add('state-rose');
+                        radios.forEach(r => {
+                            r.disabled = true;
+                            const label = r.closest('.option-label');
+                            label.classList.add('locked');
+                            if(r.checked) label.classList.add('state-rose');
+                        });
+                    } else {
+                        feedback.innerHTML = `<i data-lucide="info" class="w-6 h-6 inline mr-2 align-middle"></i> Incorrect. Hint: ${item.hint}`;
+                        feedback.classList.add('state-amber');
+                        radios.forEach(r => {
+                            if(r.checked) r.closest('.option-label').classList.add('state-amber');
+                        });
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                }
+            });
+            lucide.createIcons();
+            
+            if (answeredCount === 0) {
+                showToast("Please answer at least one T/F question.");
+            } else if (correctCount === tfData.length) {
+                showToast("Excellent! All T/F answers correct.");
+            } else {
+                showToast("Answers checked. Review the feedback.");
+            }
+        }
+
+        // --- Listening Notes Check ---
+        function checkListeningGuide() {
+            const val1 = document.getElementById('guide-blank-1').value.trim().toLowerCase();
+            const val2 = document.getElementById('guide-blank-2').value.trim().toLowerCase();
+            const feedback = document.getElementById('guide-feedback');
+
+            let correctCount = 0;
+            let feedbackText = "";
+
+            if (val1 === "40%" || val1 === "40 percent" || val1 === "forty percent") {
+                correctCount++;
+            }
+            if (val2.includes("flag") || val2.includes("complex") || val2.includes("review") || val2.includes("human")) {
+                correctCount++;
+            }
+
+            feedback.classList.remove('hidden', 'state-rose', 'state-emerald', 'state-amber');
+
+            if (correctCount === 2) {
+                feedback.classList.add('state-emerald');
+                feedbackText = "Excellent tracking! You extracted Sarah's 40% wait reduction and noted the safety override feature correctly.";
+            } else if (correctCount === 1) {
+                feedback.classList.add('state-amber');
+                feedbackText = "You are on the right track, but missed one blank. Listen again to verify both Sarah's statistic and clinical guardrails.";
+            } else {
+                feedback.classList.add('state-rose');
+                feedbackText = "Keep listening! Make sure you catch the exact number and the safety feature mentioned by Dr. Sarah.";
+            }
+
+            feedback.innerHTML = feedbackText;
+        }
+
+        // --- UI Interactions ---
+
+        function toggleAnswer(elementId, btn, baseText) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Output";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = baseText;
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Script Visibility Handler
+        function toggleTranscriptVisibility() {
+            const content = document.getElementById('transcript-content');
+            const warning = document.getElementById('transcript-warning');
+            const btn = document.getElementById('btn-toggle-transcript');
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                warning.classList.add('hidden');
+                btn.innerText = "Hide Reading Transcript";
+            } else {
+                content.classList.add('hidden');
+                warning.classList.remove('hidden');
+                btn.innerText = "Show Reading Transcript";
+            }
+        }
+
+        // Set Audio Speed
+        function setSpeed(rate) {
+            audioSpeedRate = rate;
+            
+            // Reset visual states
+            document.getElementById('rate-08').className = "bg-slate-700 py-1.5 font-bold rounded hover:bg-slate-600 transition-colors border border-slate-600 text-slate-300";
+            document.getElementById('rate-10').className = "bg-slate-700 py-1.5 font-bold rounded hover:bg-slate-600 transition-colors border border-slate-600 text-slate-300";
+            document.getElementById('rate-12').className = "bg-slate-700 py-1.5 font-bold rounded hover:bg-slate-600 transition-colors border border-slate-600 text-slate-300";
+
+            if (rate === 0.8) {
+                document.getElementById('rate-08').className = "bg-blue-600 py-1.5 font-bold rounded border border-slate-600 text-white";
+            } else if (rate === 1.0) {
+                document.getElementById('rate-10').className = "bg-blue-600 py-1.5 font-bold rounded border border-slate-600 text-white";
+            } else if (rate === 1.2) {
+                document.getElementById('rate-12').className = "bg-blue-600 py-1.5 font-bold rounded border border-slate-600 text-white";
+            }
+
+            // Apply immediately if active
+            if (isPlaying && 'speechSynthesis' in window) {
+                showToast("Speed updated to " + rate + "x. Restarting audio for changes.");
+                playAudio();
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Are you sure you want to clear all your progress?")) {
+                
+                for (let key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+                
+                document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                    r.checked = false; 
+                    r.disabled = false;
+                    r.parentElement.querySelector('.inner-dot').classList.add('hidden');
+                });
+                document.querySelectorAll('.option-label').forEach(label => {
+                    label.classList.remove('state-amber', 'state-rose', 'state-emerald', 'locked');
+                });
+                
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.classList.remove('state-amber', 'state-rose', 'state-emerald'); 
+                });
+                
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                    f.classList.add('hidden');
+                });
+
+                document.getElementById('guide-feedback').className = "hidden mt-3 p-3 font-bold text-base border-2 rounded";
+                document.getElementById('guide-feedback').innerHTML = "";
+                
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+                
+                document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                    const params = btn.getAttribute('onclick').match(/'([^']+)'/g);
+                    if(params && params.length >= 3) {
+                        btn.innerText = params[2].replace(/'/g, '');
+                    }
+                });
+
+                // Force close transcript to focus on listening
+                document.getElementById('transcript-content').classList.add('hidden');
+                document.getElementById('transcript-warning').classList.remove('hidden');
+                document.getElementById('btn-toggle-transcript').innerText = "Show Reading Transcript";
+
+                stopAudio();
+                
+                showToast("All progress has been reset.");
+            }
+        }
+
+        // --- Audio TTS Engine with dynamic speaker highlighting ---
+        let isPlaying = false;
+        
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        function highlightSpeaker(speakerName) {
+            // Remove active highlighting from all speaker cards
+            document.querySelectorAll('.speaker-card').forEach(card => {
+                card.classList.remove('active-speaker');
+            });
+
+            // Apply highlight to current active speaker
+            if (speakerName) {
+                const activeCard = document.getElementById(`speaker-card-${speakerName}`);
+                if (activeCard) {
+                    activeCard.classList.add('active-speaker');
+                }
+            }
+        }
+
+        function playAudio() {
+            if (!('speechSynthesis' in window)) {
+                showToast("Speech synthesis not supported in this browser.");
+                return;
+            }
+            
+            // Stop existing utterances cleanly
+            window.speechSynthesis.cancel();
+            isPlaying = true;
+
+            // UI Update
+            document.getElementById('btn-play').classList.add('hidden');
+            document.getElementById('btn-stop').classList.remove('hidden');
+            document.getElementById('audio-status').innerText = "Tracking active speakers...";
+            document.getElementById('audio-icon-wrapper').classList.add('audio-playing-icon');
+
+            const dialogueLines = [
+                { speaker: 'Kenji', text: "Welcome to the panel seminar on digital health workflows. Today we are discussing whether automated software systems should replace manual patient triage in emergency departments. Dr. Sarah, please share your view." },
+                { speaker: 'Sarah', text: "Thank you. Our latest data from the city hospital shows that automated triage algorithms reduce patient waiting times by 40 percent. Therefore, my contention is that digital systems are objectively superior at managing patient flow." },
+                { speaker: 'Takashi', text: "I understand your data, and I concede that digital triage speeds up the initial registration process. Your time metrics are clear. However, I must refute the claim that these systems are completely superior. Software programs often miss subtle physical signs, such as a patient's unique skin tone or slight changes in breathing rhythm, which an experienced nurse notices instantly." },
+                { speaker: 'Sarah', text: "I see your point about physical signs. However, the validity of our study relies on a large sample size where the rate of critical misdiagnosis was extremely low. The software is programmed to flag complex cases for human review anyway." },
+                { speaker: 'Takashi', text: "That is a fair safety feature. Perhaps we can reach a compromise. We should not use technology to replace staff, but rather position the digital system as a supportive tool alongside professional triage nurses." }
+            ];
+            
+            // Audio setup for voices
+            const voices = window.speechSynthesis.getVoices();
+            const engVoices = voices.filter(v => v.lang.startsWith('en'));
+            const naturalVoices = engVoices.filter(v => v.name.includes('Natural') || v.name.includes('Online'));
+            
+            let voiceM1 = naturalVoices.find(v => v.name.includes('Guy') || v.name.includes('Male')) || engVoices.find(v => v.name.includes('Male')) || voices[0];
+            let voiceF1 = naturalVoices.find(v => v.name.includes('Aria') || v.name.includes('Female')) || engVoices.find(v => v.name.includes('Female')) || voices[1] || voices[0];
+            let voiceM2 = naturalVoices.find(v => v.name.includes('Ryan') || v.name.includes('Male') && v.name !== voiceM1.name) || engVoices.find(v => v.name !== voiceM1.name) || voiceM1;
+
+            // Recursively chain utterances to fix sync issues
+            function speakLine(index) {
+                if (!isPlaying) {
+                    highlightSpeaker(null);
+                    return; 
+                }
+                if (index >= dialogueLines.length) {
+                    stopAudio();
+                    return;
+                }
+
+                const line = dialogueLines[index];
+                const utterance = new SpeechSynthesisUtterance(line.text);
+                
+                // Track dynamic voice changes
+                if (line.speaker === 'Kenji' && voiceM1) utterance.voice = voiceM1;
+                else if (line.speaker === 'Sarah' && voiceF1) utterance.voice = voiceF1;
+                else if (line.speaker === 'Takashi' && voiceM2) utterance.voice = voiceM2;
+
+                utterance.rate = audioSpeedRate; // Dynamic rate selected by the student
+
+                // Highlight correct speaker immediately upon speech starts
+                utterance.onstart = () => {
+                    highlightSpeaker(line.speaker);
+                };
+
+                utterance.onend = () => {
+                    // Slight break between speaker turns
+                    setTimeout(() => speakLine(index + 1), 400);
+                };
+                
+                utterance.onerror = (e) => {
+                    console.warn("Speech Synthesis Queue Error:", e);
+                    stopAudio();
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+
+            // Start dialogue sequence
+            speakLine(0);
+        }
+
+        function stopAudio() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            isPlaying = false;
+            highlightSpeaker(null);
+            
+            const btnPlay = document.getElementById('btn-play');
+            const btnStop = document.getElementById('btn-stop');
+            if(btnPlay && btnStop) {
+                btnPlay.classList.remove('hidden');
+                btnStop.classList.add('hidden');
+                document.getElementById('audio-status').innerText = "Audio playback stopped.";
+                document.getElementById('audio-icon-wrapper').classList.remove('audio-playing-icon');
+            }
+        }
+    </script>
+</body>
+</html>

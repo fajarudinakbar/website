@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Practice Test 3: Listening Section</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #7dd3fc;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #38bdf8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <div id="app"></div>
+
+    <script>
+        // --- NATIVE BROWSER VOICE SETUP ---
+        let femaleVoice = null;
+        let maleVoice = null;
+
+        function assignVoices() {
+            const voices = window.speechSynthesis.getVoices();
+            if (voices.length === 0) return;
+
+            const enVoices = voices.filter(v => v.lang.startsWith('en'));
+            const femaleKeywords = ['female', 'aria', 'jenny', 'zira', 'samantha', 'victoria', 'karen', 'susan', 'ava', 'allison'];
+            const maleKeywords = ['male', 'guy', 'david', 'christopher', 'daniel', 'alex', 'george', 'matthew', 'mark', 'brian'];
+
+            femaleVoice = enVoices.find(v => (v.name.includes('Natural') || v.name.includes('Online')) && femaleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+                          enVoices.find(v => femaleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+                          enVoices[0];
+
+            maleVoice = enVoices.find(v => (v.name.includes('Natural') || v.name.includes('Online')) && maleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+                        enVoices.find(v => maleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+                        enVoices.find(v => v.name !== femaleVoice.name) || 
+                        enVoices[1] || enVoices[0];
+        }
+
+        window.speechSynthesis.onvoiceschanged = assignVoices;
+
+        // --- DATA STRUCTURE ---
+        const testData = {
+            module1: {
+                title: "Module 1",
+                sections: [
+                    {
+                        id: "m1_short",
+                        type: "listening",
+                        title: "Listen and Choose a Response",
+                        audioTitle: "Short Dialogues",
+                        questions: [
+                            { id: 1, transcript: "Woman: Have you looked over the three-month financial reports yet?", text: "Choose the best response.", options: ["I wrote a review for a movie last night.", "I'm currently still balancing the ledgers.", "The statements were extremely brief.", "Yes, this quarter is almost finished."], correctAnswer: 1, explanation: "The woman asks about the status of reviewing financial reports. The correct response directly addresses the ongoing financial task." },
+                            { id: 2, transcript: "Man: The server upgrade is planned for midnight, correct?", text: "Choose the best response.", options: ["Yes, to reduce any offline time for our users.", "The local birds fly south during the winter.", "I have scheduled an appointment for noon.", "Those servers are incredibly costly."], correctAnswer: 0, explanation: "The man asks for confirmation on a scheduled IT task. The correct response confirms ('Yes') and provides a logical reason for the timing." },
+                            { id: 3, transcript: "Woman: Do we have to attend the visiting speaker's talk on artificial intelligence?", text: "Choose the best response.", options: ["The main topic of the talk is robotics.", "He is known to be a very demanding speaker.", "Only if you are looking for bonus points.", "I was at the mandatory staff meeting."], correctAnswer: 2, explanation: "The woman asks if attendance is mandatory. The correct response explains the condition under which attendance is necessary." },
+                            { id: 4, transcript: "Man: I'm stuck on how to properly set up the reference list.", text: "Choose the best response.", options: ["The textbook is quite extensive.", "Look at the college's online writing guide.", "I finally solved that complex math issue.", "The formatting looked absolutely fantastic."], correctAnswer: 1, explanation: "The man expresses difficulty with an academic formatting task. The correct response offers a practical resource to help solve the problem." },
+                            { id: 5, transcript: "Woman: Did they announce who the new head of marketing is?", text: "Choose the best response.", options: ["An email will be distributed about it later today.", "The recent promotional campaign went really well.", "I showed the new staff where the kitchen is.", "Yes, her pronunciation was very easy to understand."], correctAnswer: 0, explanation: "The woman asks if a specific announcement has been made. The correct response provides an update on when that information will be shared." },
+                            { id: 6, transcript: "Man: Are we required to hand in a printed version of our final paper?", text: "Choose the best response.", options: ["That subject is quite difficult to grasp.", "No, uploading an electronic document is enough.", "I handed in my resignation letter yesterday.", "There are several copies sitting on the desk."], correctAnswer: 1, explanation: "The man asks about the submission format. The correct response directly answers the question ('No') and clarifies the accepted format." },
+                            { id: 7, transcript: "Woman: The display screen in lecture hall 4B is just showing a blue background.", text: "Choose the best response.", options: ["The walls in that room are painted blue.", "I'll grab a spare connector cable and bring it over.", "My projections indicated that sales would double.", "That is an exceptionally large monitor."], correctAnswer: 1, explanation: "The woman reports a technical issue in a room. The most practical response is to offer an immediate troubleshooting action." },
+                            { id: 8, transcript: "Man: Will you submit an application for the summer work program?", text: "Choose the best response.", options: ["The application form is three pages in length.", "Summer happens to be my favorite season.", "I actually passed the deadline a few days ago.", "That program is known to be very competitive."], correctAnswer: 2, explanation: "The man asks about the woman's intent to apply. The correct response explains why she will not be applying." }
+                        ]
+                    },
+                    {
+                        id: "m1_conv1",
+                        type: "listening",
+                        title: "Listen to a Conversation",
+                        audioTitle: "Conversation: Internship Application",
+                        transcript: `Man: Professor Davis, do you have a minute? I'd like to discuss the finance trainee position at Deloitte.\nWoman: Sure, Michael. The application window is closing soon. Is your CV ready?\nMan: It is, but I'm having a hard time with the motivation letter. I lack real-world experience in this industry.\nWoman: You should highlight the practical audit assignment we completed in my course last term. That demonstrates how you apply theories in real situations.`,
+                        questions: [
+                            { id: 9, text: "What is the male student's primary worry?", options: ["He was too late for the trainee deadline.", "He doesn't have enough practical background for his letter.", "He did not pass his recent finance test.", "He is unable to locate the instructor's office."], correctAnswer: 1, explanation: "The student explicitly states his problem: 'I'm having a hard time with the motivation letter. I lack real-world experience in this industry.'" },
+                            { id: 10, text: "What is the professor's recommendation?", options: ["Apply to a different financial institution", "Enroll in an advanced auditing seminar next term", "Emphasize a particular class assignment in his letter", "Completely rewrite his current CV"], correctAnswer: 2, explanation: "The professor advises him to 'highlight the practical audit assignment we completed in my course last term' to compensate for his lack of experience." }
+                        ]
+                    },
+                    {
+                        id: "m1_conv2",
+                        type: "listening",
+                        title: "Listen to a Conversation",
+                        audioTitle: "Conversation: IT Support",
+                        transcript: `Woman: Hello, campus IT support. How can I help?\nMan: Hi there, I'm attempting to upload my software project for my final grade, but the university system keeps refusing my security key.\nWoman: Oh, we upgraded our firewall standards over the weekend. You'll have to create a fresh authentication key using the updated security method.\nMan: Ah, I must have missed that email. Is there a guide available on the tech website?\nWoman: Yes, you'll find it under the 'Web Hosting' section. It should only take a few minutes to complete.`,
+                        questions: [
+                            { id: 11, text: "For what reason is the student contacting tech support?", options: ["He cannot remember his university portal login.", "His software assignment was accidentally erased.", "He was denied access to the university servers.", "He needs an extension for his programming final."], correctAnswer: 2, explanation: "The student states that the 'university system keeps refusing my security key', meaning he is currently denied access to upload his project." },
+                            { id: 12, text: "What is the root of the student's issue?", options: ["A recent update to the university's security standards", "A severe hardware malfunction on the main server", "Attempting to use an obsolete internet browser", "A coding error in his computer science project"], correctAnswer: 0, explanation: "The IT support worker explains that the problem is because 'we upgraded our firewall standards over the weekend'." }
+                        ]
+                    },
+                    {
+                        id: "m1_announce1",
+                        type: "listening",
+                        title: "Listen to an Announcement",
+                        audioTitle: "Announcement: Library Updates",
+                        transcript: `Man: May I have your attention, library visitors. Beginning next Tuesday, the quiet reading zone on the second floor will shut down for remodeling. We're putting in modern power outlets and adding more comfortable chairs. While this is happening, you are welcome to study in the makeshift quiet areas located in the west wing. Furthermore, our updated digital catalog for scholarly articles is now accessible on the homepage. Speak with a staff member if you require assistance using this fresh database.`,
+                        questions: [
+                            { id: 13, text: "What is the main reason for the remodeling?", options: ["To make the campus coffee shop bigger", "To improve the amenities in the reading zone", "To build more shelves for physical textbooks", "To implement a modern climate control system"], correctAnswer: 1, explanation: "The announcement states the remodeling involves 'putting in modern power outlets and adding more comfortable chairs,' which are improvements to the amenities." },
+                            { id: 14, text: "What additional news is shared in the broadcast?", options: ["Longer operating hours during exam periods", "A stricter policy for overdue borrowed items", "The introduction of a fresh digital academic tool", "The recruitment of extra library personnel"], correctAnswer: 2, explanation: "The speaker adds, 'Furthermore, our updated digital catalog for scholarly articles is now accessible', introducing a new academic tool." }
+                        ]
+                    },
+                    {
+                        id: "m1_talk1",
+                        type: "listening",
+                        title: "Listen to a Talk",
+                        audioTitle: "Lecture: Remote Work Communication",
+                        transcript: `Woman: Today we will examine how communication happens in virtual work settings. Before remote jobs became common, the majority of workplace interactions were synchronous. This implies they occurred immediately, such as in-person chats or voice calls. However, current scattered teams depend much more on asynchronous methods. This involves sharing details without demanding a fast reply, utilizing platforms like email or task-tracking applications. Asynchronous messaging lets staff members in varying time zones collaborate smoothly without breaking their concentration. Still, this needs a change in company culture. Supervisors have to rely on their staff and judge them by the work they produce, rather than the amount of time they sit at their computers. Organizations that do not adjust frequently see severe staff exhaustion caused by non-stop alerts and video-call fatigue.`,
+                        questions: [
+                            { id: 15, text: "What is the central subject of the presentation?", options: ["The development of modern task-tracking applications", "The transition from immediate to delayed workplace communication", "Techniques for coordinating meetings across global time zones", "The equipment challenges of outfitting home offices"], correctAnswer: 1, explanation: "The lecture focuses on the shift from synchronous ('occurred immediately') to asynchronous ('without demanding a fast reply') communication in remote work." },
+                            { id: 16, text: "How is asynchronous communication described by the lecturer?", options: ["In-person discussions taking place in a corporate office", "Direct messaging apps that expect instant answers", "Sharing details without the expectation of an instant answer", "Digital conferencing software utilized for morning updates"], correctAnswer: 2, explanation: "The lecturer defines it directly: 'This involves sharing details without demanding a fast reply...'" },
+                            { id: 17, text: "What significant advantage of this communication style is highlighted?", options: ["It drastically lowers the amount of required internet data.", "It ensures collaborative assignments are finished much quicker.", "It preserves the staff's ability to maintain deep concentration.", "It removes the necessity for formal written records."], correctAnswer: 2, explanation: "The speaker mentions it lets staff collaborate 'without breaking their concentration.'" },
+                            { id: 18, text: "What difficulty do supervisors encounter regarding this transition?", options: ["They are forced to master complicated new computer software.", "They have to assess staff based on outcomes, not hours logged.", "They lose the ability to converse with international team members.", "They must persistently observe their staff through digital cameras."], correctAnswer: 1, explanation: "The lecturer points out that supervisors must 'judge them by the work they produce, rather than the amount of time they sit at their computers.'" }
+                        ]
+                    }
+                ]
+            },
+            module2: {
+                title: "Module 2",
+                sections: [
+                    {
+                        id: "m2_short",
+                        type: "listening",
+                        title: "Listen and Choose a Response",
+                        audioTitle: "Short Dialogues",
+                        questions: [
+                            { id: 19, transcript: "Woman: Is there a strict dress code for the networking dinner?", text: "Choose the best response.", options: ["The computer network is currently offline.", "Professional casual attire is perfectly acceptable.", "She put her clothes on extremely fast.", "The gathering turned out to be highly successful."], correctAnswer: 1, explanation: "The woman asks about clothing requirements for an event. The correct response provides the specific attire expectations." },
+                            { id: 20, transcript: "Man: Has the vendor transmitted the billing statement yet?", text: "Choose the best response.", options: ["You'll find it in your email, flagged as high priority.", "The sound was incredibly loud.", "We specialize in paper goods.", "I shipped that parcel out yesterday."], correctAnswer: 0, explanation: "The man is asking about the status of a document (a bill). The correct response confirms its arrival and location." },
+                            { id: 21, transcript: "Woman: I'm really struggling to grasp this advanced math concept.", text: "Choose the best response.", options: ["Advanced math is taught during the spring semester.", "The difficulties began sometime last week.", "You're welcome to attend my review session this evening.", "He comprehended the task flawlessly."], correctAnswer: 2, explanation: "The woman expresses academic difficulty. The best response offers practical, immediate support." },
+                            { id: 22, transcript: "Man: Did the committee sign off on the technology budget?", text: "Choose the best response.", options: ["They are currently still evaluating the estimated expenses.", "I purchased a brand new laptop.", "The committee table is crafted from oak wood.", "Yes, the financial allocation was quite small."], correctAnswer: 0, explanation: "The man asks if an approval has happened. The correct response provides an update on the ongoing evaluation process." },
+                            { id: 23, transcript: "Woman: My computer's power is completely drained.", text: "Choose the best response.", options: ["The power source is inside the clicker.", "There is a wall plug situated right behind that cabinet.", "I got my computer at a discounted price.", "The background audio has stopped entirely."], correctAnswer: 1, explanation: "The woman states a practical problem (dead battery). The best response provides a solution to charge the device." },
+                            { id: 24, transcript: "Man: Could you point me to the location of the artificial intelligence symposium?", text: "Choose the best response.", options: ["Artificial intelligence is a fast-expanding industry.", "It was relocated to the primary lecture hall because so many people signed up.", "Understanding ethics is crucial in today's world.", "I kept the entryway open for her to pass."], correctAnswer: 1, explanation: "The man asks for directions. The correct response provides the new location and context for why it changed." },
+                            { id: 25, transcript: "Woman: Would you mind looking over my slideshow before the conference?", text: "Choose the best response.", options: ["I should have some free time immediately following my meal break.", "That particular slide was positioned very steeply.", "The overall conference presentation was superb.", "I already looked over that novel last month."], correctAnswer: 0, explanation: "The woman makes a request for review. The correct response accepts and proposes a specific timeframe." },
+                            { id: 26, transcript: "Man: The highway congestion was absolutely awful today.", text: "Choose the best response.", options: ["That is exactly the reason I began riding the local train.", "I always enjoy this time of day the most.", "I took the vehicle out for a drive yesterday.", "The intersection signal was malfunctioning."], correctAnswer: 0, explanation: "The man complains about traffic. The best response is a conversational agreement that offers an alternative solution." }
+                        ]
+                    },
+                    {
+                        id: "m2_conv1",
+                        type: "listening",
+                        title: "Listen to a Conversation",
+                        audioTitle: "Conversation: Academic Project",
+                        transcript: `Man: Hey Sarah, regarding our team assignment on artificial intelligence in schooling... I feel we ought to center it on student honesty.\nWoman: That is a massive subject, David. It might be too expansive for a brief speech. How about we restrict it specifically to how AI influences essay grading?\nMan: That's a logical approach. We could evaluate old-fashioned plagiarism checkers against the latest AI-spotting software.\nWoman: Precisely. I will begin collecting academic journals regarding the accuracy of these recent software programs right away.`,
+                        questions: [
+                            { id: 27, text: "What do the classmates decide to do about their assignment?", options: ["Increase the length of their speech to twenty minutes", "Restrict their focus specifically to essay grading", "Conduct interviews with faculty about student honesty", "Select a completely different research theme"], correctAnswer: 1, explanation: "They agree the original topic is too broad, and the man agrees with the woman's suggestion to 'restrict it specifically to how AI influences essay grading.'" },
+                            { id: 28, text: "What is the female student's next step?", options: ["Draft the opening remarks for their speech", "Design visual aids illustrating traditional checkers", "Look up data on how well AI-spotting programs function", "Request a deadline extension from their instructor"], correctAnswer: 2, explanation: "The woman concludes by saying, 'I will begin collecting academic journals regarding the accuracy of these recent software programs right away.'" }
+                        ]
+                    },
+                    {
+                        id: "m2_announce1",
+                        type: "listening",
+                        title: "Listen to an Announcement",
+                        audioTitle: "Announcement: Career Fair",
+                        transcript: `Woman: Good morning, everyone. The yearly tech employment expo will occur tomorrow inside the campus hub from ten in the morning until four in the afternoon. More than fifty enterprises, encompassing major tech corporations and regional new businesses, will be present to hire for summer trainee roles and junior jobs. Kindly carry several printouts of your CV and wear business-appropriate clothing. Additionally, the student guidance department is providing a complimentary CV critique workshop today at two o'clock in Room 304 for anyone seeking a final review.`,
+                        questions: [
+                            { id: 29, text: "Who is this message primarily intended for?", options: ["Creators of regional new businesses", "Faculty and staff of the university", "University attendees searching for job openings", "Campus technical support workers"], correctAnswer: 2, explanation: "The announcement is advertising an 'employment expo' where enterprises will 'hire for summer trainee roles and junior jobs,' aimed at students." },
+                            { id: 30, text: "What assistance is provided today to aid attendees?", options: ["A price reduction on professional workplace clothing", "A workshop to receive constructive comments on their CVs", "Early entry into the campus hub building", "A printed collection of common interview inquiries"], correctAnswer: 1, explanation: "The speaker notes that 'the student guidance department is providing a complimentary CV critique workshop today at two o'clock.'" }
+                        ]
+                    },
+                    {
+                        id: "m2_talk1",
+                        type: "listening",
+                        title: "Listen to a Talk",
+                        audioTitle: "Lecture: Cybersecurity Fundamentals",
+                        transcript: `Man: Let's shift our focus to the psychological side of digital security. We pour vast resources into protective barriers and data scrambling, yet the most vulnerable point is almost always the human user. This introduces the concept of 'social engineering.' Social engineering leverages mental tricks rather than software vulnerabilities to breach networks. A textbook illustration is phishing. A hacker transmits a fake message pretending to be a reliable source, such as a financial institution or the tech team, pressuring the recipient to click a harmful URL or hand over their login details. Why is this effective? Because scammers generate an artificial feeling of panic or necessity. They might claim your profile will be locked unless you respond instantly. To protect against this, institutions have to enforce mandatory threat recognition workshops. Staff must be taught how to authenticate a sender's true identity and spot the red flags of mental manipulation.`,
+                        questions: [
+                            { id: 31, text: "What is the core message of the presentation?", options: ["Protective barriers are useless against modern malware.", "Digital attacks frequently take advantage of human psychology.", "Electronic mail is the safest method for corporate messaging.", "Enterprises waste too many resources on tech support teams."], correctAnswer: 1, explanation: "The lecture's premise is that despite technology, the 'vulnerable point is almost always the human user' through 'social engineering' and 'mental tricks.'" },
+                            { id: 32, text: "How does the lecturer explain social engineering?", options: ["Enhancing the physical safety measures for data servers", "Programming advanced scripts to defeat data scrambling", "Breaching networks via mental tricks and manipulation", "Utilizing digital networking platforms to boost digital security"], correctAnswer: 2, explanation: "The lecturer explicitly defines it: 'Social engineering leverages mental tricks rather than software vulnerabilities to breach networks.'" },
+                            { id: 33, text: "Based on the talk, why are phishing schemes usually effective?", options: ["They rely on highly complex scrambling methods.", "They focus on individuals who lack internet connections.", "They look identical to regular promotional emails.", "They generate an artificial feeling of panic or necessity."], correctAnswer: 3, explanation: "The speaker asks 'Why is this effective?' and answers, 'Because scammers generate an artificial feeling of panic or necessity.'" },
+                            { id: 34, text: "What protective measure does the lecturer recommend for institutions?", options: ["Prohibiting the utilization of personal email addresses", "Offering workshops to help staff spot deceptive techniques", "Investing in far more costly security barrier programs", "Employing extra physical security personnel for the facility"], correctAnswer: 1, explanation: "The lecturer recommends that 'institutions have to enforce mandatory threat recognition workshops' to teach staff how to 'spot the red flags of mental manipulation.'" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            currentModule: null,
+            flatSteps: [],
+            currentStepIndex: 0,
+            answers: {},
+            showResults: false,
+            showInstructions: false,
+            isReviewMode: false,
+            
+            // Per-question timer
+            questionTimeLeft: 0,
+            timerInterval: null,
+            
+            // Audio System States
+            isPlaying: false,
+            passageAudioPlayed: {}, 
+            passageAudioFinished: {} 
+        };
+
+        // --- LOGIC FUNCTIONS ---
+
+        function startTest() {
+            state.answers = {};
+            state.passageAudioPlayed = {};
+            state.passageAudioFinished = {};
+            loadModule('module1');
+        }
+
+        function loadModule(moduleId) {
+            state.currentModule = moduleId;
+            state.showResults = false;
+            state.showInstructions = true; 
+            state.isReviewMode = false;
+            state.currentStepIndex = 0;
+
+            // Flatten steps
+            const steps = [];
+            testData[moduleId].sections.forEach(section => {
+                if (section.type === 'listening') {
+                    section.questions.forEach((q, idx) => {
+                        steps.push({
+                            type: 'listening',
+                            data: section,
+                            question: q,
+                            questionIndex: idx + 1,
+                            totalQuestions: section.questions.length,
+                            passageId: (section.id.includes("short")) ? `short_${q.id}` : section.id 
+                        });
+                    });
+                }
+            });
+            state.flatSteps = steps;
+            
+            assignVoices();
+            render();
+        }
+
+        function setupCurrentStep() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+
+            if (state.isReviewMode) {
+                return; // No timer needed in review mode
+            }
+
+            const step = state.flatSteps[state.currentStepIndex];
+            const isTalk = step.data.id.includes('talk') || step.data.audioTitle.toLowerCase().includes('lecture');
+            
+            // Initialize new question time
+            state.questionTimeLeft = isTalk ? 30 : 20;
+
+            // If audio was already completed previously for this passage, start timer immediately
+            if (state.passageAudioFinished[step.passageId]) {
+                startQuestionTimer();
+            } else {
+                updateTimerDisplay(); // Render the initial static time
+            }
+        }
+
+        function startQuestionTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            
+            state.timerInterval = setInterval(() => {
+                if (state.questionTimeLeft > 0) {
+                    state.questionTimeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(state.timerInterval);
+                    handleNext(); // Auto-advance when time runs out
+                }
+            }, 1000);
+        }
+
+        function stopAudio() {
+            state.isPlaying = false;
+            window.speechSynthesis.cancel();
+        }
+
+        async function playPreparedAudio() {
+            const step = state.flatSteps[state.currentStepIndex];
+            const passageId = step.passageId;
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+
+            if (playCount >= 2) return;
+            
+            state.passageAudioPlayed[passageId] = playCount + 1;
+            state.isPlaying = true;
+            
+            // Pause timer if it was running (e.g., user is using their 2nd replay)
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+            
+            updateAudioUI(); 
+
+            if (!femaleVoice || !maleVoice) assignVoices();
+
+            const transcriptText = step.question.transcript || step.data.transcript;
+            const lines = transcriptText.split('\n').filter(l => l.trim().length > 0);
+
+            for (let line of lines) {
+                if (!state.isPlaying) break;
+                
+                let spokenText = line;
+                let currentGender = 'male'; 
+
+                const match = line.match(/^([A-Za-z\s]+):\s*(.*)/);
+                if (match) {
+                    const speaker = match[1].toLowerCase().trim();
+                    spokenText = match[2]; 
+                    
+                    if (speaker === 'woman') {
+                        currentGender = 'female'; 
+                    } else if (speaker === 'man' || speaker === 'professor') {
+                        currentGender = 'male';
+                    }
+                }
+
+                const sentences = spokenText.match(/[^.!?]+[.!?]+/g) || [spokenText];
+
+                for (let sentence of sentences) {
+                    if (!state.isPlaying) break;
+
+                    await new Promise((resolve) => {
+                        const utterance = new SpeechSynthesisUtterance(sentence.trim());
+                        
+                        if (currentGender === 'female') {
+                            if (femaleVoice) utterance.voice = femaleVoice;
+                        } else {
+                            if (maleVoice) utterance.voice = maleVoice;
+                        }
+                        
+                        utterance.rate = 0.95; 
+                        utterance.onend = resolve;
+                        utterance.onerror = resolve; 
+                        window.speechSynthesis.speak(utterance);
+                    });
+                }
+                
+                if (state.isPlaying && lines.length > 1) {
+                    await new Promise(r => setTimeout(r, 400));
+                }
+            }
+
+            state.isPlaying = false;
+            state.passageAudioFinished[passageId] = true;
+            
+            // Resume/Start timer after playback concludes
+            startQuestionTimer();
+            updateAudioUI(); 
+        }
+
+        // Targeted DOM updates to prevent flickering
+        function updateAudioUI() {
+            if (state.isReviewMode) return;
+
+            const step = state.flatSteps[state.currentStepIndex];
+            const passageId = step?.passageId;
+            const isAudioFinished = state.passageAudioFinished[passageId];
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+            
+            const btnContainer = document.getElementById('audio-btn-container');
+            const iconContainer = document.getElementById('audio-icon-container');
+            const overlay = document.getElementById('question-overlay');
+            const nextBtn = document.getElementById('next-btn');
+            const warning = document.getElementById('audio-warning');
+
+            // Update Audio Button
+            if (btnContainer) {
+                if (state.isPlaying) {
+                    btnContainer.innerHTML = `<button disabled class="flex items-center px-10 py-4 bg-sky-50 text-sky-600 font-bold rounded-full shadow-md border border-sky-200 cursor-not-allowed">
+                                                  <i data-lucide="volume-2" class="w-6 h-6 mr-3 animate-pulse"></i> Playing Audio...
+                                               </button>`;
+                } else if (playCount >= 2) {
+                    btnContainer.innerHTML = `<button disabled class="flex items-center px-10 py-4 bg-slate-100 text-slate-400 font-bold rounded-full shadow-inner border border-slate-200 cursor-not-allowed">
+                                                  <i data-lucide="check-circle" class="w-6 h-6 mr-3"></i> Audio Completed
+                                               </button>`;
+                } else {
+                    let playText = playCount === 1 ? 'Play Audio Segment (1 play left)' : 'Play Audio Segment';
+                    btnContainer.innerHTML = `<button onclick="playPreparedAudio()" class="flex items-center px-10 py-4 bg-white text-sky-600 font-bold rounded-full shadow-lg hover:shadow-xl hover:bg-slate-50 transition-all border border-sky-600 text-lg">
+                                                  <i data-lucide="play-circle" class="w-8 h-8 mr-3"></i> ${playText}
+                                               </button>`;
+                }
+                lucide.createIcons();
+            }
+
+            // Update Visual Pulse
+            if (iconContainer) {
+                if (state.isPlaying) {
+                    iconContainer.classList.add('scale-105', 'animate-pulse', 'duration-1000');
+                    iconContainer.innerHTML = `<i data-lucide="volume-2" class="w-24 h-24 text-white opacity-90"></i>`;
+                } else {
+                    iconContainer.classList.remove('scale-105', 'animate-pulse', 'duration-1000');
+                    iconContainer.innerHTML = `<i data-lucide="headphones" class="w-24 h-24 text-white opacity-90"></i>`;
+                }
+                lucide.createIcons();
+            }
+
+            // Smoothly hide overlay when audio finishes its FIRST play
+            if (overlay && isAudioFinished) {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => { overlay.classList.add('hidden'); }, 500);
+            }
+            
+            if (warning && playCount >= 2) {
+                warning.style.display = 'none';
+            }
+            
+            // Enable radio buttons dynamically without a full render to preserve animations
+            const radioLabels = document.querySelectorAll('label.group');
+            if (isAudioFinished) {
+                radioLabels.forEach(label => {
+                    label.classList.remove('opacity-50', 'cursor-not-allowed');
+                    label.classList.add('cursor-pointer', 'hover:bg-slate-100', 'hover:border-slate-200');
+                    
+                    const radio = label.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.disabled = false;
+                        radio.classList.remove('cursor-not-allowed');
+                        radio.classList.add('cursor-pointer');
+                    }
+                    
+                    const span = label.querySelector('span');
+                    if (span) {
+                        span.classList.add('group-hover:text-black');
+                    }
+                });
+            }
+
+            // Update Next button enablement based on audio finish AND answer presence
+            if (nextBtn) {
+                const hasAnswered = state.answers[step?.question?.id] !== undefined;
+                if (isAudioFinished && hasAnswered) {
+                    nextBtn.disabled = false;
+                    nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    nextBtn.title = "";
+                } else if (!isAudioFinished) {
+                    nextBtn.disabled = true;
+                    nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    nextBtn.title = "Listen to the audio completely before moving on";
+                } else if (!hasAnswered) {
+                    nextBtn.disabled = true;
+                    nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    nextBtn.title = "Please choose an answer before moving on";
+                }
+            }
+        }
+
+        function autoPlayCheck() {
+            if (state.showInstructions || state.showResults || state.isReviewMode || state.isPlaying) return;
+            const step = state.flatSteps[state.currentStepIndex];
+            if (!step) return;
+            
+            const passageId = step.passageId;
+            if (!state.passageAudioPlayed[passageId]) {
+                // Short delay ensures interface is fully loaded before the audio begins
+                setTimeout(() => {
+                    if (!state.passageAudioPlayed[passageId] && !state.isPlaying && !state.showInstructions && !state.isReviewMode) {
+                        playPreparedAudio();
+                    }
+                }, 1000);
+            }
+        }
+
+        function handleNext() {
+            stopAudio();
+            if (state.currentStepIndex < state.flatSteps.length - 1) {
+                state.currentStepIndex++;
+                setupCurrentStep();
+                render(); 
+            } else {
+                if (state.isReviewMode) {
+                    endReview();
+                } else {
+                    handleModuleComplete();
+                }
+            }
+        }
+        
+        function handleModuleComplete() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            stopAudio();
+            if (state.currentModule === 'module1') {
+                loadModule('module2');
+            } else {
+                finishTest();
+            }
+        }
+
+        function handleBack() {
+            stopAudio();
+            if (state.currentStepIndex > 0) {
+                state.currentStepIndex--;
+                setupCurrentStep();
+                render(); 
+            }
+        }
+
+        function handleBeginTest() {
+            assignVoices();
+            state.showInstructions = false;
+            setupCurrentStep();
+            render();
+        }
+
+        function finishTest() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            stopAudio();
+            state.showResults = true;
+            render();
+        }
+
+        function startReview() {
+            state.isReviewMode = true;
+            state.showResults = false;
+            state.currentStepIndex = 0;
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            
+            // Flatten ALL steps from both modules for the review phase
+            const steps = [];
+            Object.values(testData).forEach(moduleData => {
+                moduleData.sections.forEach(section => {
+                    if (section.type === 'listening') {
+                        section.questions.forEach((q, idx) => {
+                            steps.push({
+                                type: 'listening',
+                                data: section,
+                                question: q,
+                                questionIndex: idx + 1,
+                                totalQuestions: section.questions.length,
+                                passageId: (section.id.includes("short")) ? `short_${q.id}` : section.id 
+                            });
+                        });
+                    }
+                });
+            });
+            state.flatSteps = steps;
+            render();
+        }
+
+        function endReview() {
+            state.isReviewMode = false;
+            state.showResults = true;
+            render();
+        }
+
+        function handleRadioInput(qId, value) {
+            if (state.isReviewMode) return;
+            state.answers[qId] = value;
+            render(); 
+        }
+
+        function resetApp() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.currentModule = null;
+            state.flatSteps = [];
+            state.answers = {};
+            state.passageAudioPlayed = {};
+            state.passageAudioFinished = {};
+            state.showResults = false;
+            state.showInstructions = false;
+            state.isReviewMode = false;
+            stopAudio();
+            render();
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            let total = 0;
+
+            Object.values(testData).forEach(moduleData => {
+                moduleData.sections.forEach(sec => {
+                    if (sec.type === 'listening') {
+                        sec.questions.forEach(q => {
+                            total++;
+                            if (state.answers[q.id] === q.correctAnswer) {
+                                correct++;
+                            }
+                        });
+                    }
+                });
+            });
+            return { correct, total };
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('timer-display');
+            const container = document.getElementById('timer-container');
+            
+            if (el) el.innerText = formatTime(state.questionTimeLeft);
+            
+            if (container && !state.isReviewMode) {
+                // Pulse logic for low time
+                if (state.questionTimeLeft <= 5 && state.questionTimeLeft > 0) {
+                    container.classList.add('text-red-500', 'font-bold', 'animate-pulse');
+                    container.classList.remove('text-slate-500');
+                } else {
+                    container.classList.remove('text-red-500', 'font-bold', 'animate-pulse');
+                    container.classList.add('text-slate-500');
+                }
+            }
+        }
+
+        function downloadPDF() {
+            const nameInput = document.getElementById('learner-name').value.trim();
+            const studentName = nameInput || "Learner";
+            
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : (correct/total);
+            const rawBand = (Math.round(percent * 10) / 2) + 1;
+            const bandScore = Math.min(6.0, Math.max(1.0, rawBand)).toFixed(1);
+            
+            let cefr = "";
+            if (bandScore >= 6.0) cefr = "CEFR C2";
+            else if (bandScore >= 5.0) cefr = "CEFR C1";
+            else if (bandScore >= 4.0) cefr = "CEFR B2";
+            else if (bandScore >= 3.0) cefr = "CEFR B1";
+            else if (bandScore >= 2.0) cefr = "CEFR A2";
+            else cefr = "CEFR A1";
+
+            let feedback = "";
+            if (bandScore >= 5.0) {
+                feedback = "Excellent work! Your ability to comprehend complex academic lectures and practical conversations is highly commendable. Keep engaging with authentic English audio materials to sustain this exceptional proficiency.";
+            } else if (bandScore >= 3.5) {
+                feedback = "Good job! You have demonstrated a solid grasp of listening strategies. To further refine your skills, practice deriving meaning from context clues and explore a wider variety of real-world audio texts.";
+            } else {
+                feedback = "Keep practicing! Developing listening fluency is a steady process. Focus on integrating English podcasts and lectures into your daily routine and building your vocabulary to boost your comprehension.";
+            }
+
+            const dateStr = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Professional Visual Header
+            doc.setFillColor(2, 132, 199); // Tailwind Sky-600
+            doc.rect(0, 0, 210, 45, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(24);
+            doc.text("TOEFL iBT Practice Test Score", 105, 22, { align: "center" });
+            
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text("Listening Section Performance Report", 105, 32, { align: "center" });
+
+            // Test Taker Info Section
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.text("Test Taker Information", 20, 65);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Name: ${studentName}`, 20, 75);
+            doc.text(`Date: ${dateStr}`, 20, 85);
+
+            // Score Box Design
+            doc.setFillColor(240, 249, 255); // Sky 50
+            doc.setDrawColor(186, 230, 253); // Sky 200
+            doc.setLineWidth(0.5);
+            doc.roundedRect(20, 100, 170, 40, 3, 3, 'FD');
+
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(2, 132, 199); // Sky 600
+            doc.text("Total Correct Answers:", 30, 115);
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.text(`${correct} / ${total}`, 90, 115);
+
+            doc.setTextColor(2, 132, 199); // Sky 600
+            doc.text("Predicted Band Score:", 30, 130);
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.text(`${bandScore}/6.0 (${cefr})`, 90, 130);
+
+            // Instructor Feedback
+            doc.setFont("helvetica", "bold");
+            doc.text("Instructor Feedback", 20, 160);
+            doc.setFont("helvetica", "normal");
+            const splitFeedback = doc.splitTextToSize(feedback, 170);
+            doc.text(splitFeedback, 20, 170);
+
+            // Footer branding
+            doc.setFontSize(10);
+            doc.setTextColor(148, 163, 184); // Slate 400
+            doc.text("Generated by EnglishTech Solutions", 105, 280, { align: "center" });
+
+            // Save the PDF file
+            const safeFileName = studentName.replace(/\s+/g, '_');
+            doc.save(`TOEFL_Listening_Score_${safeFileName}.pdf`);
+        }
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderWelcome() {
+            return `
+            <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+                <div class="bg-white max-w-4xl w-full shadow-lg rounded-lg overflow-hidden border-t-8 border-sky-600">
+                    <div class="bg-sky-600 p-6 text-white text-center">
+                        <i data-lucide="headphones" class="w-12 h-12 mx-auto mb-4 opacity-90"></i>
+                        <h1 class="text-3xl font-bold font-sans">TOEFL iBT® Practice Test 3: Listening Section</h1>
+                        <p class="opacity-90 mt-2">Listening Section</p>
+                    </div>
+                    
+                    <div class="p-8 text-center">
+                        <p class="text-slate-600 mb-6 text-lg">
+                            This practice test simulates the digital interface of the listening section of the TOEFL iBT test. 
+                            Listen to the audio segments carefully and answer the comprehension questions.
+                        </p>
+
+                        <div class="bg-sky-50 border-l-4 border-sky-500 p-5 mb-8 text-left text-sm text-slate-700 space-y-3 rounded-r shadow-sm">
+                            <h3 class="font-bold text-sky-900 text-base flex items-center">
+                                <i data-lucide="info" class="w-5 h-5 mr-2"></i> Important Notes
+                            </h3>
+                            <p>
+                                <strong>This is a guided practice lesson focused on listening strategy,</strong> not a full simulation test. For a full simulation to see exactly how the real test looks and operates, please visit the <a href="https://www.ets.org/toefl/test-takers/ibt/prepare/sample-test-jan-2026-1.html" target="_blank" class="text-sky-600 font-semibold hover:underline">official TOEFL sample test</a>.
+                            </p>
+                            <p>
+                                <strong>Structure:</strong> This practice test consists of two sequential modules. Once you finish all questions in Module 1, you will automatically proceed to Module 2. Your final predicted band score will be calculated at the very end.
+                            </p>
+                        </div>
+
+                        <div class="bg-amber-50 border border-amber-200 text-amber-800 px-6 py-4 rounded-lg text-sm mb-6 flex flex-col items-center shadow-sm">
+                            <p class="mb-2 text-center flex flex-col items-center">
+                                <span class="flex items-center mb-1 text-amber-900"><i data-lucide="info" class="w-5 h-5 mr-2 inline-block"></i><strong>Browser Recommendation</strong></span> 
+                                <span>For the most natural, human-like audio experience, we highly recommend using Microsoft Edge. Edge provides high-quality "Neural" voices built-in for free that sound significantly better than standard browser voices.</span>
+                            </p>
+                        </div>
+                        
+                        <div class="flex justify-center mt-8">
+                            <button onclick="startTest()" class="px-8 py-4 bg-sky-600 text-white font-bold text-lg rounded-xl shadow-md hover:bg-sky-700 transition-colors flex items-center">
+                                Begin Practice Test <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-slate-100 p-4 text-center text-xs text-slate-400">
+                        Simulated interface crafted for educational usage.
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderResults() {
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : (correct/total);
+            
+            // Calculate Predicted Score (1.0 to 6.0 scale, 0.5 increments)
+            const rawBand = (Math.round(percent * 10) / 2) + 1;
+            const bandScore = Math.min(6.0, Math.max(1.0, rawBand)).toFixed(1);
+            
+            // Map to CEFR Level based on TOEFL iBT technical manual mapping
+            let cefr = "";
+            if (bandScore >= 6.0) cefr = "CEFR C2";
+            else if (bandScore >= 5.0) cefr = "CEFR C1";
+            else if (bandScore >= 4.0) cefr = "CEFR B2";
+            else if (bandScore >= 3.0) cefr = "CEFR B1";
+            else if (bandScore >= 2.0) cefr = "CEFR A2";
+            else cefr = "CEFR A1";
+
+            const scoreColor = bandScore >= 4.0 ? 'text-green-600' : 'text-orange-500';
+
+            return `
+            <div class="min-h-screen bg-slate-50 pt-24 pb-12 px-4 overflow-y-auto custom-scroll">
+                <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                    <div class="bg-sky-600 p-8 text-white text-center">
+                        <h2 class="text-3xl font-bold mb-2">Test Completed</h2>
+                        <p class="text-sky-100">Here is your performance report</p>
+                    </div>
+                    
+                    <div class="p-8">
+                        <div class="flex flex-col md:flex-row justify-center items-center gap-12 mb-8">
+                            <div class="text-center">
+                                <div class="text-6xl font-bold text-sky-600 mb-2">${correct}</div>
+                                <div class="text-slate-500 uppercase tracking-widest text-sm font-semibold">Correct Answers</div>
+                            </div>
+                            <div class="w-px h-24 bg-slate-200 hidden md:block"></div>
+                            <div class="text-center">
+                                <div class="text-6xl font-bold mb-2 ${scoreColor}">${bandScore}<span class="text-3xl text-slate-400 font-medium">/6.0</span></div>
+                                <div class="text-slate-500 uppercase tracking-widest text-sm font-semibold mb-2">Predicted Band Score</div>
+                                <div class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-600 rounded-full inline-block">${cefr}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 mb-8 bg-sky-50 p-6 rounded-lg border border-sky-100 flex flex-col items-center">
+                            <h3 class="text-lg font-bold text-sky-900 mb-3">Download Your Score Report</h3>
+                            <input type="text" id="learner-name" placeholder="Enter your full name" class="px-4 py-2 border border-slate-300 rounded mb-4 w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                            <button onclick="downloadPDF()" class="px-6 py-3 bg-green-600 text-white font-bold rounded shadow hover:bg-green-700 transition-colors flex items-center justify-center">
+                                <i data-lucide="download" class="w-5 h-5 mr-2"></i> Save as PDF
+                            </button>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row justify-center border-t border-slate-100 pt-8 gap-4">
+                            <button onclick="startReview()" class="px-8 py-3 bg-white text-sky-700 border-2 border-sky-700 font-bold rounded shadow hover:bg-sky-50 transition-colors flex items-center justify-center">
+                                <i data-lucide="search" class="w-4 h-4 mr-2"></i> Review Answers
+                            </button>
+                            <button onclick="resetApp()" class="px-8 py-3 bg-sky-700 text-white font-bold rounded shadow hover:bg-sky-800 transition-colors flex items-center justify-center">
+                                <i data-lucide="home" class="w-4 h-4 mr-2"></i> Return to Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderHeader() {
+            const isInstructionPhase = state.showInstructions;
+            let navButtons = '';
+
+            if (isInstructionPhase) {
+                navButtons = `
+                    <button onclick="handleBeginTest()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors">
+                        Begin
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            } else {
+                const backBtn = state.currentStepIndex > 0 
+                    ? `<button onclick="handleBack()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors mr-2">
+                        <i data-lucide="chevron-left" class="mr-1 w-5 h-5"></i> Back
+                       </button>` 
+                    : '';
+                
+                const nextText = state.currentStepIndex === state.flatSteps.length - 1 ? (state.isReviewMode ? 'Return to Results' : 'Finish') : 'Next';
+                
+                const step = state.flatSteps[state.currentStepIndex];
+                const isAudioFinished = state.passageAudioFinished[step?.passageId] || false;
+                const hasAnswered = state.answers[step?.question?.id] !== undefined;
+                
+                let canMoveNext = true; 
+                let disabledReason = "";
+
+                if (!state.isReviewMode) {
+                    canMoveNext = isAudioFinished && hasAnswered;
+                    if (!isAudioFinished) disabledReason = "Listen to the audio completely before moving on";
+                    else if (!hasAnswered) disabledReason = "Please choose an answer before moving on";
+                }
+
+                navButtons = `
+                    ${backBtn}
+                    <button id="next-btn" onclick="handleNext()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" ${!canMoveNext ? `disabled title="${disabledReason}"` : ''}>
+                        ${nextText}
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            }
+
+            return `
+            <header class="bg-sky-600 h-16 flex items-center justify-between px-6 shadow-md z-50 fixed w-full top-0">
+                <div class="flex items-center space-x-4">
+                    ${isInstructionPhase ? '<span class="text-white text-lg font-sans font-semibold">Listening Section</span>' : '<div class="text-sky-100 opacity-90"></div>'}
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="flex space-x-2">
+                        ${navButtons}
+                    </div>
+                </div>
+            </header>
+            `;
+        }
+
+        function renderSubHeader() {
+            if (state.showInstructions) return '';
+            
+            const totalSteps = state.flatSteps.length;
+            const moduleName = state.isReviewMode ? 'Full Review' : (state.currentModule === 'module1' ? 'Module 1' : 'Module 2');
+            const displayText = `Listening | ${moduleName} | Question ${state.currentStepIndex + 1} of ${totalSteps}`;
+
+            let rightSide = '';
+            if (state.isReviewMode) {
+                rightSide = `<div class="text-sky-700 font-bold bg-sky-100 px-3 py-1 rounded flex items-center"><i data-lucide="search" class="w-4 h-4 mr-2"></i> Review Mode</div>`;
+            } else {
+                const isLowTime = state.questionTimeLeft <= 5 && state.questionTimeLeft > 0;
+                const timerColorClass = isLowTime ? 'text-red-500 font-bold animate-pulse' : 'text-slate-500';
+                
+                rightSide = `<div id="timer-container" class="flex items-center ${timerColorClass} font-mono transition-colors bg-slate-100 px-3 py-1 rounded">
+                    <i data-lucide="clock" class="mr-2 w-4 h-4 text-sky-600"></i>
+                    <span id="timer-display" class="font-bold">${formatTime(state.questionTimeLeft)}</span>
+                </div>`;
+            }
+
+            return `
+            <div class="fixed top-16 w-full bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center text-slate-700 text-sm font-sans z-40 shadow-sm">
+                <span class="font-semibold text-lg">${displayText}</span>
+                ${rightSide}
+            </div>
+            `;
+        }
+
+        function renderInstructions() {
+            const title = state.currentModule === 'module1' ? 'Listening Section - Module 1' : 'Listening Section - Module 2';
+            const intro = state.currentModule === 'module1' 
+                ? "You are about to begin Module 1. Once you finish all questions in this module, you will automatically proceed to Module 2."
+                : "You are about to begin Module 2. Your final predicted score will be calculated after completing this module.";
+
+            return `
+            <div class="pt-24 px-8 max-w-5xl mx-auto h-screen overflow-y-auto custom-scroll pb-10">
+                <h1 class="text-3xl text-slate-800 mb-6 font-sans font-bold">${title}</h1>
+                
+                <p class="text-sky-900 font-semibold bg-sky-100 border-l-4 border-sky-600 p-4 rounded mb-8 text-lg leading-relaxed shadow-sm">
+                    ${intro}
+                </p>
+
+                <p class="text-slate-700 text-lg mb-4 leading-relaxed">
+                    In an actual test, you will answer up to 47 questions to demonstrate how well you understand spoken English. 
+                    There are three types of tasks in the listening section of the test.
+                </p>
+
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 shadow-sm">
+                    <p class="text-sm text-slate-800">
+                        <strong>Practice Mode Note:</strong> To help you prepare, this interface allows you to play the audio up to <strong>two times</strong> per passage. Audio transcripts remain hidden during the test but will become available for review at the end.
+                    </p>
+                    <p class="text-sm text-slate-800 mt-2">
+                        <strong>Test Mechanics:</strong> You have 20 seconds to answer most questions, and 30 seconds for Academic Talks. The timer starts <strong>after</strong> the audio finishes playing. You must choose an answer before the Next button is enabled.
+                    </p>
+                </div>
+
+                <div class="border border-slate-300 rounded overflow-hidden shadow-sm">
+                    <div class="grid grid-cols-[30%_70%] bg-sky-200 border-b border-slate-300 text-sky-900">
+                        <div class="p-4 font-bold border-r border-slate-300">Type of Task</div>
+                        <div class="p-4 font-bold">Description</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-[30%_70%] border-b border-slate-300 bg-white">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Listen and Choose a Response</div>
+                        <div class="p-4 text-slate-600">Select the best response based on short simulated interactions.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] border-b border-slate-300 bg-slate-50">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Listen to a Conversation</div>
+                        <div class="p-4 text-slate-600">Answer questions about short, practical discussions.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] bg-white">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Listen to Announcements and Academic Talks</div>
+                        <div class="p-4 text-slate-600">Address queries to identify main ideas from lectures and campus bulletins.</div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderListening(step) {
+            const { data, question, passageId } = step;
+            
+            const isShortDialogue = data.id.includes("short");
+            const isAudioFinished = state.passageAudioFinished[passageId];
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+            const showQuestion = state.isReviewMode || isShortDialogue || isAudioFinished;
+
+            const disabledLabelClass = (!state.isReviewMode && !isAudioFinished) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-100 hover:border-slate-200';
+            const disabledInputClass = (!state.isReviewMode && !isAudioFinished) ? 'cursor-not-allowed' : 'cursor-pointer';
+            const disabledSpanClass = (!state.isReviewMode && !isAudioFinished) ? '' : 'group-hover:text-black';
+            const isDisabledAttribute = (!state.isReviewMode && !isAudioFinished) ? 'disabled' : '';
+
+            const options = question.options.map((opt, idx) => {
+                const isChecked = state.answers[question.id] === idx ? 'checked' : '';
+                
+                if (state.isReviewMode) {
+                    const isUserAns = state.answers[question.id] === idx;
+                    const isCorrectAns = question.correctAnswer === idx;
+                    let optionClass = "p-3 rounded border border-slate-200 text-slate-700";
+                    let icon = "";
+                    
+                    if (isCorrectAns) {
+                        optionClass = "p-3 rounded border-2 border-green-500 bg-green-50 text-green-800 font-bold shadow-sm";
+                        icon = '<i data-lucide="check-circle" class="w-5 h-5 ml-auto text-green-600 flex-shrink-0"></i>';
+                    } else if (isUserAns && !isCorrectAns) {
+                        optionClass = "p-3 rounded border-2 border-red-300 bg-red-50 text-red-800";
+                        icon = '<i data-lucide="x-circle" class="w-5 h-5 ml-auto text-red-500 flex-shrink-0"></i>';
+                    } else {
+                        optionClass = "p-3 rounded border border-slate-100 bg-white opacity-60";
+                    }
+                    
+                    return `
+                    <label class="flex items-start cursor-default bg-white p-4 rounded-lg mb-3 shadow-sm ${optionClass}">
+                        <div class="relative flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <input 
+                                type="radio" 
+                                disabled
+                                ${isChecked}
+                                class="peer appearance-none w-5 h-5 border-2 border-slate-400 rounded-full checked:border-sky-600 checked:border-4 transition-all opacity-60 mr-4"
+                            />
+                        </div>
+                        <span class="text-slate-700 font-sans text-lg flex-grow pr-2">${opt}</span>
+                        ${icon}
+                    </label>
+                    `;
+                } else {
+                    return `
+                    <label class="flex items-start group p-4 rounded-lg transition-colors border border-slate-200 bg-white shadow-sm ${disabledLabelClass}">
+                        <div class="relative flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <input 
+                                type="radio" 
+                                name="q-${question.id}" 
+                                ${isChecked}
+                                ${isDisabledAttribute}
+                                onchange="handleRadioInput(${question.id}, ${idx})"
+                                class="peer appearance-none w-5 h-5 border-2 border-slate-400 rounded-full checked:border-sky-600 checked:border-4 transition-all ${disabledInputClass}"
+                            />
+                        </div>
+                        <span class="ml-4 text-slate-700 font-sans text-lg transition-colors ${disabledSpanClass}">
+                            ${opt}
+                        </span>
+                    </label>
+                    `;
+                }
+            }).join('');
+
+            let audioButtonHTML = '';
+            
+            if (state.isReviewMode) {
+                audioButtonHTML = `<button disabled class="flex items-center px-10 py-4 bg-slate-100 text-slate-400 font-bold rounded-full shadow-inner border border-slate-200 cursor-not-allowed">
+                                      <i data-lucide="check-circle" class="w-6 h-6 mr-3"></i> Review Mode
+                                   </button>`;
+            } else if (state.isPlaying) {
+                audioButtonHTML = `<button disabled class="flex items-center px-10 py-4 bg-sky-50 text-sky-600 font-bold rounded-full shadow-md border border-sky-200 cursor-not-allowed">
+                                      <i data-lucide="volume-2" class="w-6 h-6 mr-3 animate-pulse"></i> Playing Audio...
+                                   </button>`;
+            } else if (playCount >= 2) {
+                audioButtonHTML = `<button disabled class="flex items-center px-10 py-4 bg-slate-100 text-slate-400 font-bold rounded-full shadow-inner border border-slate-200 cursor-not-allowed">
+                                      <i data-lucide="check-circle" class="w-6 h-6 mr-3"></i> Audio Completed
+                                   </button>`;
+            } else {
+                let playText = playCount === 1 ? 'Play Audio Segment (1 play left)' : 'Play Audio Segment';
+                audioButtonHTML = `<button onclick="playPreparedAudio()" class="flex items-center px-10 py-4 bg-white text-sky-600 font-bold rounded-full shadow-lg hover:shadow-xl hover:bg-slate-50 transition-all border border-sky-600 text-lg">
+                                      <i data-lucide="play-circle" class="w-8 h-8 mr-3"></i> ${playText}
+                                   </button>`;
+            }
+
+            let reviewBlock = '';
+            if (state.isReviewMode) {
+                const isUserAnsCorrect = state.answers[question.id] === question.correctAnswer;
+                const correctnessBadge = isUserAnsCorrect 
+                    ? '<span class="text-green-600 font-bold text-sm flex items-center bg-green-50 px-2 py-1 rounded mb-3 w-max border border-green-200"><i data-lucide="check" class="w-4 h-4 mr-1"></i> Correct</span>' 
+                    : '<span class="text-red-500 font-bold text-sm flex items-center bg-red-50 px-2 py-1 rounded mb-3 w-max border border-red-200"><i data-lucide="x" class="w-4 h-4 mr-1"></i> Incorrect</span>';
+                
+                const transcriptText = (question.transcript || data.transcript).replace(/\n/g, '<br/>');
+
+                reviewBlock = `
+                <div class="mt-6 space-y-4 pb-8">
+                    <div class="p-5 bg-sky-50 rounded-lg border border-sky-100 text-slate-700 shadow-sm">
+                        ${correctnessBadge}
+                        <div class="flex items-start">
+                            <i data-lucide="lightbulb" class="w-5 h-5 mr-3 text-sky-600 flex-shrink-0 mt-0.5"></i>
+                            <div>
+                                <strong class="text-sky-900 block mb-1">Strategy & Context:</strong>
+                                ${question.explanation}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-lg border border-slate-200 text-sm text-slate-700 shadow-sm">
+                        <strong class="text-slate-800 block mb-3 font-sans flex items-center border-b border-slate-200 pb-2">
+                            <i data-lucide="file-text" class="w-4 h-4 mr-2 text-slate-500"></i> Audio Transcript
+                        </strong>
+                        <div class="leading-relaxed italic text-base">${transcriptText}</div>
+                    </div>
+                </div>`;
+            }
+
+            const overlayClass = showQuestion ? 'hidden opacity-0' : 'opacity-95';
+
+            return `
+            <div class="pt-28 h-screen flex flex-col md:flex-row overflow-hidden bg-white">
+                
+                <div class="w-full md:w-1/2 h-full border-r border-slate-300 bg-slate-50 flex flex-col items-center justify-center p-8 relative shadow-inner">
+                    <div class="absolute top-8 left-8 text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center">
+                        <i data-lucide="ear" class="w-4 h-4 mr-2"></i> Audio Environment
+                    </div>
+                    
+                    <div id="audio-icon-container" class="w-56 h-56 rounded-full bg-gradient-to-tr from-sky-700 to-sky-400 shadow-2xl flex items-center justify-center mb-10 transition-transform ${state.isPlaying ? 'scale-105 animate-pulse duration-1000' : ''}">
+                        <i data-lucide="${state.isPlaying ? 'volume-2' : 'headphones'}" class="w-24 h-24 text-white opacity-90"></i>
+                    </div>
+                    
+                    <div class="mb-2 flex flex-col items-center">
+                        <div id="audio-btn-container">
+                            ${audioButtonHTML}
+                        </div>
+                        ${!state.isReviewMode && playCount < 2 ? '<p id="audio-warning" class="text-xs text-red-500 mt-4 font-bold uppercase tracking-wide"><i data-lucide="alert-triangle" class="w-3 h-3 inline mr-1"></i> Audio can be played up to 2 times</p>' : ''}
+                    </div>
+                </div>
+                
+                <div class="w-full md:w-1/2 h-full overflow-y-auto p-10 bg-slate-50 custom-scroll relative">
+                    
+                    <div class="max-w-xl mx-auto">
+                        <div class="mb-6 text-sm font-bold text-sky-700 uppercase tracking-widest border-b border-slate-200 pb-2">${data.title}</div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+                            <h3 class="text-xl font-bold text-slate-800 font-sans leading-snug">${question.text}</h3>
+                        </div>
+                        <div class="space-y-4">
+                            ${options}
+                        </div>
+                        ${reviewBlock}
+                    </div>
+
+                    <div id="question-overlay" class="absolute inset-0 bg-slate-50 z-10 flex flex-col items-center justify-center text-center px-8 transition-opacity duration-500 ${overlayClass}">
+                        <i data-lucide="lock" class="w-16 h-16 text-slate-400 mb-6"></i>
+                        <h3 class="text-2xl font-bold text-slate-700 mb-4">Question Hidden</h3>
+                        <p class="text-slate-500 max-w-sm text-lg leading-relaxed">
+                            Please listen to the audio segment completely. The question and options will appear automatically once the playback finishes.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+            `;
+        }
+
+        // --- MAIN RENDER LOOP ---
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!state.currentModule) {
+                app.innerHTML = renderWelcome();
+            } else if (state.showResults) {
+                app.innerHTML = renderResults();
+            } else {
+                let mainContent = '';
+                if (state.showInstructions) {
+                    mainContent = renderInstructions();
+                } else {
+                    const step = state.flatSteps[state.currentStepIndex];
+                    if (step.type === 'listening') {
+                        mainContent = renderListening(step);
+                    }
+                }
+                
+                app.innerHTML = renderHeader() + renderSubHeader() + mainContent;
+            }
+
+            lucide.createIcons();
+            
+            // Check to auto-play after rendering
+            autoPlayCheck();
+        }
+
+        // Initialize App
+        render();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Listening: Lesson 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Base font settings and transition for the whole page */
+        html {
+            font-family: 'Inter', sans-serif;
+            transition: font-size 0.2s ease-in-out;
+            scroll-behavior: smooth;
+        }
+        /* Make the layout full height */
+        body {
+            height: 100vh;
+            overflow: hidden; /* Prevent body scrollbars */
+        }
+        .main-container {
+            height: 100%; /* Full viewport height */
+        }
+        /* Allow main content to scroll */
+        #app-content {
+            overflow-y: auto;
+            flex-grow: 1; /* Ensure it takes available space */
+        }
+        /* Hide sections by default */
+        .section {
+            display: none;
+        }
+        /* Show the active section */
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Style for the active navigation button */
+        .nav-btn.active-nav {
+            background-color: #2563eb; /* Tailwind's bg-blue-600 */
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Custom radio button styles (For Parts 2 & 3) */
+        .mc-option:checked + label {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+            box-shadow: 0 0 0 2px #dbeafe;
+        }
+        .mc-option:checked + label .mc-circle {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+        .mc-option:checked + label .mc-circle-dot {
+            transform: scale(1);
+        }
+
+        /* Feedback Styles (For Part 4) */
+        .feedback {
+            display: none;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .feedback.correct {
+            display: block;
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+        .feedback.incorrect {
+            display: block;
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        /* Disabled button style */
+        .disabled-btn {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        /* Helper for hiding elements */
+        .hidden-content {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="main-container w-full flex flex-col">
+        
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200 z-20 px-6 py-4 flex justify-between items-center flex-shrink-0">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-blue-700">TOEFL iBT® Listening: Lesson 1</h1>
+                <p class="text-sm text-gray-600 hidden sm:block">An interactive guide to the Listening section: Conversations & Academic Talks.</p>
+            </div>
+            <!-- Font Size Controller -->
+            <div class="flex items-center gap-2 flex-shrink-0 ml-4">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:inline">Font Size</span>
+                <button id="decrease-font" title="Decrease font size" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-lg font-bold flex items-center justify-center text-gray-600 transition-colors">-</button>
+                <button id="increase-font" title="Increase font size" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-lg font-bold flex items-center justify-center text-gray-600 transition-colors">+</button>
+            </div>
+        </header>
+
+        <!-- Main Layout: Sidebar + Content -->
+        <div class="flex flex-1 overflow-hidden flex-col md:flex-row">
+            
+            <!-- Sidebar Navigation -->
+            <nav id="main-nav" class="bg-white border-b md:border-b-0 md:border-r border-gray-200 p-4 flex flex-col gap-2 md:w-64 flex-shrink-0 overflow-y-auto z-10 shadow-sm md:shadow-none">
+                <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-2 hidden md:block">Navigation</div>
+                <!-- Data attributes are used to link buttons to sections -->
+                <button data-section="intro" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Introduction</button>
+                <button data-section="part1" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Part 1: Task Types</button>
+                <button data-section="part2" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Part 2: Conversation</button>
+                <button data-section="part3" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Part 3: Academic Talk</button>
+                <button data-section="part4" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Part 4: Final Quiz</button>
+            </nav>
+
+            <!-- Main Content Area -->
+            <main id="app-content" class="flex-1 bg-gray-50 overflow-y-auto p-6 sm:p-8 md:p-10 scroll-smooth">
+                
+                <!-- Introduction Section -->
+                <section id="intro" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Welcome!</h2>
+                    <p class="mb-4">This interactive lesson will help you master the updated TOEFL iBT® Listening section. You will explore different task types, practice with real-world examples, and test your understanding with a final quiz.</p>
+                    <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md shadow-sm">
+                        <p><strong class="font-semibold">Learning Objectives:</strong></p>
+                        <ul class="list-disc list-inside mt-2">
+                            <li>Identify the different listening task types.</li>
+                            <li>Practice identifying implied meaning in conversations.</li>
+                            <li>Practice capturing main ideas and details in academic talks.</li>
+                            <li>Review key facts about the Listening section.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Part 1: Task Types -->
+                <section id="part1" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 1: Listening Section Tasks</h2>
+                    <p class="mb-6 text-gray-600">Review the four main task types you will encounter in the Listening section.</p>
+                    
+                     <div class="mb-6">
+                        <a href="https://drive.google.com/file/d/11qEHMbGEURFs813r-fB2c-yAG4rCqiRZ/view" target="_blank" class="inline-flex items-center px-5 py-2 font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                            Listen to Task Explanations
+                        </a>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <h3 class="font-bold text-blue-700 text-lg">1. Listen and Choose a Response</h3>
+                            <p class="text-gray-600 mt-2 text-sm">Hear a short, everyday dialogue. You'll choose the most appropriate response from four options. The question is only heard, not read.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <h3 class="font-bold text-blue-700 text-lg">2. Listen to a Conversation</h3>
+                            <p class="text-gray-600 mt-2 text-sm">Listen to a short conversation between two people. You'll answer two questions about the content and implied meaning.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <h3 class="font-bold text-blue-700 text-lg">3. Listen to an Announcement</h3>
+                            <p class="text-gray-600 mt-2 text-sm">Hear an announcement from an academic context (like a classroom). You'll answer two questions about the details.</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <h3 class="font-bold text-blue-700 text-lg">4. Listen to an Academic Talk</h3>
+                            <p class="text-gray-600 mt-2 text-sm">A short academic talk (100-250 words) from various fields. You'll answer four questions on the main ideas and details.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 2: Practice Conversation -->
+                <section id="part2" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 2: Practice Conversation</h2>
+                    <p class="mb-4 text-gray-600">Listen to the conversation, then answer the questions below.</p>
+                    
+                    <div class="flex flex-wrap items-center gap-4 mb-6">
+                        <a href="https://drive.google.com/file/d/1ynE7_Fzxedg2yMRKrxU6RkvUy2UeSwBJ/view" target="_blank" class="inline-flex items-center px-5 py-2 font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                            Play Audio
+                        </a>
+                        <button onclick="toggleScript('conv')" class="px-5 py-2 font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            Show Script
+                        </button>
+                    </div>
+
+                    <div id="script-conv" class="hidden-content bg-white p-5 rounded-lg border border-gray-200 mb-6 shadow-sm">
+                        <h4 class="font-bold text-gray-800 mb-2">Conversation Script:</h4>
+                        <pre class="whitespace-pre-wrap font-sans text-gray-700 text-sm leading-relaxed"></pre>
+                    </div>
+
+                    <div id="questions_conversation" class="space-y-8">
+                        <!-- Questions injected by JS -->
+                    </div>
+                    
+                    <div class="mt-8 pt-4 border-t border-gray-200">
+                         <button onclick="checkAnswers('conversation')" class="px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">Check Answers</button>
+                    </div>
+                </section>
+
+                <!-- Part 3: Practice Academic Talk -->
+                <section id="part3" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 3: Practice Academic Talk</h2>
+                    <p class="mb-4 text-gray-600">Listen to the academic talk, then answer the questions below.</p>
+                    
+                    <div class="flex flex-wrap items-center gap-4 mb-6">
+                        <a href="https://drive.google.com/file/d/1Kt2EgweBD5MpipDSsMN8JFcjkwupBJ8n/view" target="_blank" class="inline-flex items-center px-5 py-2 font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                            Play Audio
+                        </a>
+                        <button onclick="toggleScript('talk')" class="px-5 py-2 font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            Show Script
+                        </button>
+                    </div>
+
+                    <div id="script-talk" class="hidden-content bg-white p-5 rounded-lg border border-gray-200 mb-6 shadow-sm">
+                        <h4 class="font-bold text-gray-800 mb-2">Talk Script:</h4>
+                        <pre class="whitespace-pre-wrap font-sans text-gray-700 text-sm leading-relaxed"></pre>
+                    </div>
+
+                    <div id="questions_talk" class="space-y-8">
+                        <!-- Questions injected by JS -->
+                    </div>
+                    
+                    <div class="mt-8 pt-4 border-t border-gray-200">
+                         <button onclick="checkAnswers('talk')" class="px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">Check Answers</button>
+                    </div>
+                </section>
+
+                <!-- Part 4: Final Quiz -->
+                <section id="part4" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 4: Final Quiz</h2>
+                    <p class="mb-6 text-gray-600">Test your knowledge. Mark True or False for each statement.</p>
+
+                    <div id="quiz_questions" class="space-y-6">
+                        <!-- Quiz Items injected by JS -->
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="mt-12 mb-6 text-center text-sm text-gray-400">
+                    Designed by <a href="https://linkedin.com/in/fajarudinakbar" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-600 hover:underline">Fajarudin Akbar</a>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const practiceData = {
+            conversation: {
+                script: `(F) Need anything from the supermarket?\n(M) Huh? Aren't we getting ready to go see that play in a few minutes?\n(F) That's tomorrow, silly.\n(M) Oh. Wow, I'd forget my head if it wasn't screwed on.... Guess I don't need to change my clothes after all.\n(F) So you weren't planning to make dinner?\n(M) No, but I can. What do you want?\n(F) Just something light and healthy. So can you go shopping instead?\n(M) Yeah, sure. How about salmon and salad? Want anything else?\n(F) No, that's good. Thanks!`,
+                questions: [
+                    { q: "1. What does the woman imply that she was about to do?", options: ["See a play", "Change her clothes", "Go shopping", "Eat dinner"], answer: "Go shopping", explanation: "The woman begins by asking the man if he needs anything from the supermarket, and later asks him to go shopping for her, which implies this was her original intention." },
+                    { q: "2. Why does the man say, \"I'd forget my head if it wasn't screwed on\"?", options: ["He forgot what the woman wanted him to buy.", "He forgot about the timing of their plans.", "He forgot what they were going to eat for dinner.", "He forgot to buy salmon and salad at the supermarket."], answer: "He forgot about the timing of their plans.", explanation: "This is a common English idiom used to say someone is very forgetful. The man says this right after he realizes he was mistaken about which day they were going to see the play." }
+                ]
+            },
+            talk: {
+                script: `Did you see that new thriller movie that came out last week? I did and loved it. The action, the plot twists... I was totally captivated. Time just flew by. Not a single thought occurred to me that was unrelated to the movie. What I experienced is what psychologists call hard fascination. Hard fascination means intense focus and concentration. Whether it's TV programs, video games... hard fascination is all too easy to come by in this modern world.\n\nThere's another type of fascination-soft fascination. There's still effortless attention, meaning that no special effort is required for you to stay focused, but there's still room for other thoughts. When I take a walk in the park and look at the flowers and trees, for example, I might be thinking in the back of my mind about my dinner plans.\n\nNow, one thing to know is hard fascination causes mental fatigue. The mind is so intensely focused that it gets tired fast. What follows mental fatigue? You might find yourself easily distracted, irritable, and stressed. Soft fascination, in contrast, engages a different part of the brain-the DMN, or Default Mode Network, which soothes the mind and help combat mental fatigue. So next time you feel like your mind is on overload, turn off the TV, put down your phone. Take a walk, or simply sit and stare at the clouds.`,
+                questions: [
+                    { q: "1. What is the topic of the talk?", options: ["How psychologists study attention", "How to keep the mind focused", "Two types of fascination", "The benefits of hard fascination"], answer: "Two types of fascination", explanation: "The speaker's main purpose is to introduce and contrast two distinct concepts mentioned in the talk: 'hard fascination' and 'soft fascination'." },
+                    { q: "2. Why does the speaker mention a movie?", options: ["To compare different types of movies", "To introduce a concept in psychology", "To explain how movies affect emotions", "To encourage listeners to watch more movies"], answer: "To introduce a concept in psychology", explanation: "The speaker uses the personal experience of watching a captivating thriller movie as a clear, relatable example to define and illustrate the concept of 'hard fascination'." },
+                    { q: "3. What does the speaker say about his walk in the park?", options: ["It is similar to his experience watching a good movie.", "His mind has space for thoughts unrelated to nature.", "He needs to put in special effort to stay focused on flowers and trees.", "He gets mental fatigue from his mind engaging in hard fascination."], answer: "His mind has space for thoughts unrelated to nature.", explanation: "The speaker uses the walk in the park as an example of 'soft fascination,' where attention is effortless but the mind still has 'room for other thoughts,' like his dinner plans." },
+                    { q: "4. What does the speaker say about Default Mode Network?", options: ["It is involved in soft fascination.", "It leads to irritability and stress.", "It is easily tired from overuse.", "Its effect is unknown to psychologists."], answer: "It is involved in soft fascination.", explanation: "The speaker explicitly states that 'soft fascination, in contrast, engages a different part of the brain—the DMN, or Default Mode Network.'" }
+                ]
+            }
+        };
+
+        // QUIZ DATA - Added attempts counter for logic
+        const quizData = [
+            { q: "1. For the Listen and Choose a Response task, you will be able to read a question or statement on your screen as you listen to it.", answer: false, explanation: "The question or statement is only heard and will not appear on your screen.", attempts: 0 },
+            { q: "2. The Listen and Choose a Response task requires that you record your voice as you reply to a question or statement.", answer: false, explanation: "You will not record your voice. You will select the best response from four written options.", attempts: 0 },
+            { q: "3. Each conversation in the Listen to a Conversation task is followed by two questions.", answer: true, explanation: "Correct. You will hear a short conversation and answer two questions about it.", attempts: 0 },
+            { q: "4. The questions asked about Listen to a Conversations might ask you to figure out what a speaker means, even though the meaning might be unstated.", answer: true, explanation: "Correct. These questions test your ability to understand implications and speaker tone.", attempts: 0 },
+            { q: "5. The Listen to an Announcement task simulates what you would hear in a social context, for example, in a train station.", answer: false, explanation: "Announcements are always set in an academic context, such as a classroom or a school event.", attempts: 0 },
+            { q: "6. Each announcement in the Listen to an Announcement task is followed by four questions.", answer: false, explanation: "You will hear an announcement and answer two questions about it.", attempts: 0 },
+            { q: "7. You can listen to each Academic Talk two times.", answer: false, explanation: "You can only listen to each talk once.", attempts: 0 },
+            { q: "8. Except for the first question, the order of the questions about Academic Talks follows the order of information presented in the talk.", answer: true, explanation: "Correct. This is why organized note-taking can be helpful.", attempts: 0 },
+            { q: "9. The Listening section avoids (does not use) idiomatic language.", answer: false, explanation: "Idiomatic language can be used, like in the sample conversation: \"I'd forget my head if it wasn't screwed on.\"", attempts: 0 },
+            { q: "10. You do not need any specialized academic knowledge to answer questions in the Listening section.", answer: true, explanation: "Correct. All information needed to answer the questions is provided in the listening passage itself.", attempts: 0 }
+        ];
+        
+        // --- LOGIC ---
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            const activeSection = document.getElementById(sectionId);
+            if (activeSection) activeSection.classList.add('active');
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.dataset.section === sectionId) {
+                    btn.classList.add('active-nav');
+                    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    btn.classList.remove('active-nav');
+                }
+            });
+
+            document.getElementById('app-content').scrollTop = 0;
+        }
+
+        function adjustFontSize(amount) {
+            const root = document.documentElement;
+            const computedStyle = window.getComputedStyle(root);
+            let currentSize = parseFloat(computedStyle.fontSize);
+            let newSize = Math.max(14, Math.min(24, currentSize + amount));
+            root.style.fontSize = `${newSize}px`;
+        }
+
+        window.toggleScript = function(type) {
+            const el = document.getElementById(`script-${type}`);
+            const btn = document.querySelector(`button[onclick="toggleScript('${type}')"]`);
+            if (el.classList.contains('hidden-content')) {
+                el.classList.remove('hidden-content');
+                btn.textContent = "Hide Script";
+            } else {
+                el.classList.add('hidden-content');
+                btn.textContent = "Show Script";
+            }
+        };
+
+        function renderPracticeQuestions(type) {
+            const container = document.getElementById(`questions_${type}`);
+            if (!container) return;
+            const data = practiceData[type];
+            
+            // Fill script content
+            const scriptEl = document.querySelector(`#script-${type} pre`);
+            if(scriptEl) scriptEl.textContent = data.script;
+
+            container.innerHTML = data.questions.map((item, index) => `
+                <div class="question-block bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                    <p class="font-bold mb-4 text-gray-800">${item.q}</p>
+                    <div class="space-y-3">
+                        ${item.options.map((opt, optIndex) => `
+                            <div>
+                                <input type="radio" id="${type}_q${index}_opt${optIndex}" name="${type}_q${index}" value="${opt}" class="hidden mc-option">
+                                <label for="${type}_q${index}_opt${optIndex}" class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-all duration-200">
+                                    <span class="mc-circle w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center mr-3 transition-colors duration-200">
+                                        <span class="mc-circle-dot w-2.5 h-2.5 bg-white rounded-full transform scale-0 transition-transform duration-200"></span>
+                                    </span>
+                                    <span class="flex-grow font-medium text-gray-700 text-sm">${opt}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="hidden status-icon text-green-500 ml-3 h-5 w-5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="hidden status-icon text-red-500 ml-3 h-5 w-5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6"x2="18" y2="18"></line></svg>
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="feedback mt-4 text-sm font-medium"></div>
+                </div>
+            `).join('');
+        }
+
+        function checkAnswers(type) {
+            const data = practiceData[type];
+            data.questions.forEach((item, index) => {
+                const selected = document.querySelector(`input[name="${type}_q${index}"]:checked`);
+                const block = document.querySelector(`input[name="${type}_q${index}"]`).closest('.question-block');
+                const feedbackEl = block.querySelector('.feedback');
+                const labels = block.querySelectorAll('label');
+                
+                feedbackEl.innerHTML = '';
+
+                labels.forEach(label => {
+                    const radio = document.getElementById(label.htmlFor);
+                    const correctTick = label.querySelector('svg.text-green-500');
+                    const incorrectCross = label.querySelector('svg.text-red-500');
+                    
+                    correctTick.classList.add('hidden');
+                    incorrectCross.classList.add('hidden');
+                    label.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                    label.querySelector('.mc-circle').classList.remove('hidden');
+
+                    if (radio.value === item.answer) {
+                        label.classList.add('border-green-500', 'bg-green-50');
+                        correctTick.classList.remove('hidden');
+                        label.querySelector('.mc-circle').classList.add('hidden');
+                        if (selected && radio.checked) {
+                            feedbackEl.innerHTML = `<div class="p-3 mt-2 rounded-lg bg-green-100 text-green-800 flex items-start space-x-3"><span class="font-bold mr-2">Correct!</span><span>${item.explanation}</span></div>`;
+                        }
+                    } else if (selected && radio.checked) {
+                        label.classList.add('border-red-500', 'bg-red-50');
+                        incorrectCross.classList.remove('hidden');
+                        label.querySelector('.mc-circle').classList.add('hidden');
+                        feedbackEl.innerHTML = `<div class="p-3 mt-2 rounded-lg bg-red-100 text-red-800 flex items-start space-x-3"><span class="font-bold mr-2">Not quite.</span><span>The correct answer is highlighted in green.</span></div>`;
+                    }
+                });
+            });
+        }
+
+        /**
+         * UPDATED renderQuiz: Generates interactive Buttons (True/False)
+         * Matches logic from Writing Lesson 1
+         */
+        function renderQuiz() {
+            const container = document.getElementById('quiz_questions');
+            if (!container) return;
+            container.innerHTML = quizData.map((item, index) => `
+                <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
+                    <p class="mb-4 font-medium text-gray-800">${item.q}</p>
+                    <div class="flex space-x-4">
+                         <button data-quiz-index="${index}" data-answer="true" class="quiz-btn flex-1 px-6 py-3 font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">True</button>
+                         <button data-quiz-index="${index}" data-answer="false" class="quiz-btn flex-1 px-6 py-3 font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">False</button>
+                    </div>
+                     <div id="q-feedback-${index}" class="feedback"></div>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * NEW checkQuizAnswer: Handles interactive coloring
+         * True -> Green/Red immediately
+         */
+        function checkQuizAnswer(index, userAnswer, clickedButton) {
+            const question = quizData[index];
+            question.attempts++;
+            const isCorrect = userAnswer === question.answer;
+            const feedbackEl = document.getElementById(`q-feedback-${index}`);
+            const buttons = clickedButton.parentElement.querySelectorAll('.quiz-btn');
+
+            // Clear previous formatting
+            buttons.forEach(btn => {
+                if (btn !== clickedButton) {
+                    btn.classList.remove('bg-green-600', 'bg-red-600', 'text-white', 'hover:bg-gray-200');
+                    if (!btn.disabled) btn.classList.add('hover:bg-gray-200'); 
+                }
+            });
+            
+            if (isCorrect) {
+                feedbackEl.className = 'feedback correct';
+                feedbackEl.innerHTML = `<strong>Correct!</strong> ${question.explanation}`;
+                
+                // Disable all buttons in this question group
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.add('disabled-btn');
+                    btn.classList.remove('hover:bg-gray-200');
+                });
+                
+                // Highlight the clicked button as GREEN (Correct)
+                clickedButton.classList.remove('bg-gray-100', 'text-gray-700');
+                clickedButton.classList.add('bg-green-600', 'text-white');
+                
+            } else { // Incorrect answer
+                // Highlight the clicked button as RED (Incorrect)
+                clickedButton.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+                clickedButton.classList.add('bg-red-600', 'text-white');
+
+                if (question.attempts < 2) {
+                    feedbackEl.className = 'feedback incorrect';
+                    feedbackEl.innerHTML = `<strong>Incorrect.</strong> Please try again.`;
+                } else { // 2nd incorrect attempt
+                    feedbackEl.className = 'feedback incorrect';
+                    feedbackEl.innerHTML = `<strong>Incorrect.</strong> ${question.explanation}`;
+                    
+                    buttons.forEach(btn => {
+                        btn.disabled = true;
+                        btn.classList.add('disabled-btn');
+                        btn.classList.remove('hover:bg-gray-200');
+                        
+                        // Highlight the correct answer if the user failed twice
+                        const isTrueButton = btn.dataset.answer === 'true';
+                        if (isTrueButton === question.answer) {
+                            btn.classList.remove('bg-gray-100', 'text-gray-700');
+                            btn.classList.add('bg-green-600', 'text-white');
+                        }
+                    });
+                }
+            }
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPracticeQuestions('conversation');
+            renderPracticeQuestions('talk');
+            renderQuiz(); // Updated call
+            
+            document.getElementById('increase-font').addEventListener('click', () => adjustFontSize(1));
+            document.getElementById('decrease-font').addEventListener('click', () => adjustFontSize(-1));
+            
+            document.getElementById('main-nav').addEventListener('click', (e) => {
+                if (e.target.matches('.nav-btn')) {
+                    showSection(e.target.dataset.section);
+                }
+            });
+
+            // NEW: Event listener for Quiz Buttons
+            document.getElementById('quiz_questions').addEventListener('click', (e) => {
+                if(e.target.matches('.quiz-btn')) {
+                    const index = parseInt(e.target.dataset.quizIndex, 10);
+                    const answer = e.target.dataset.answer === 'true';
+                    checkQuizAnswer(index, answer, e.target);
+                }
+            });
+
+            showSection('intro'); 
+        });
+
+    </script>
+</body>
+</html>

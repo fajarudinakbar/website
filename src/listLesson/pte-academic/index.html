@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTE Academic: Test Format and Overview</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            margin: 0;
+            /* Use dvh to prevent mobile browser navigation bars from hiding content */
+            height: 100dvh; 
+            overflow: hidden; 
+            text-wrap: pretty;
+        }
+
+        /* Custom scrollbar for content areas to look modern */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        @media (min-width: 768px) {
+            .custom-scroll::-webkit-scrollbar { width: 10px; height: 10px; }
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f2f3ff; 
+            border-left: 3px solid #0f172a;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #0f172a; 
+            border: 2px solid #f2f3ff;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #373a99; 
+        }
+
+        /* Neo-Brutalist Tabs - Refactored for Fluid Wrapping */
+        .tab-btn {
+            transition: all 0.2s ease-in-out;
+            border: 3px solid #0f172a;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+        }
+        .tab-btn.active {
+            background-color: #facc15; 
+            color: #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            transform: translate(-2px, -2px);
+            z-index: 10;
+        }
+        .tab-btn.inactive {
+            background-color: #ffffff;
+            color: #0f172a;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+            opacity: 0.9;
+        }
+        .tab-btn.inactive:hover {
+            opacity: 1;
+            background-color: #e7e9ff;
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0px 0px #0f172a;
+        }
+
+        /* Neo-Brutalist Question Items */
+        .question-item {
+            transition: all 0.1s ease-in-out;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            font-weight: 800;
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+        .question-item:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+            background-color: #e7e9ff;
+        }
+        .question-item.active {
+            background-color: #545be0; 
+            color: #ffffff;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 250px;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Neo Tables */
+        .score-table {
+            width: 100%;
+            min-width: max-content;
+            border-collapse: collapse;
+            border: 3px solid #0f172a;
+            background-color: #ffffff;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        .score-table th {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 0.5rem 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 3px solid #0f172a;
+            border-right: 3px solid #0f172a;
+        }
+        .score-table td {
+            padding: 0.5rem 0.75rem;
+            border-bottom: 2px solid #0f172a;
+            border-right: 2px solid #0f172a;
+            font-weight: 700;
+        }
+        .score-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .score-table tr:hover {
+            background-color: #e7e9ff;
+        }
+        /* Remove inner borders to prevent doubling */
+        .score-table th:last-child, .score-table td:last-child {
+            border-right: none;
+        }
+        .score-table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="text-slate-800 w-screen flex flex-col">
+
+    <!-- App Container -->
+    <div id="app-container" class="w-full h-full max-w-[1400px] mx-auto flex flex-col p-2 sm:p-4 lg:p-6 overflow-hidden">
+        
+        <!-- Navigation Tabs (Fluid Wrapping Grid) -->
+        <nav id="tab-nav" class="flex flex-wrap shrink-0 z-10 pt-2 pb-4 gap-2 md:gap-3 px-1 w-full justify-center">
+            <button id="tab-welcome" class="tab-btn flex-grow sm:flex-grow-0 py-2 px-3 sm:px-4 md:py-3 md:px-6 text-xs sm:text-sm md:text-base text-center" data-tab="welcome">
+                Overview
+            </button>
+            <button id="tab-part1" class="tab-btn flex-grow sm:flex-grow-0 py-2 px-3 sm:px-4 md:py-3 md:px-6 text-xs sm:text-sm md:text-base text-center" data-tab="part1">
+                Part 1: Speak & Write
+            </button>
+            <button id="tab-part2" class="tab-btn flex-grow sm:flex-grow-0 py-2 px-3 sm:px-4 md:py-3 md:px-6 text-xs sm:text-sm md:text-base text-center" data-tab="part2">
+                Part 2: Reading
+            </button>
+            <button id="tab-part3" class="tab-btn flex-grow sm:flex-grow-0 py-2 px-3 sm:px-4 md:py-3 md:px-6 text-xs sm:text-sm md:text-base text-center" data-tab="part3">
+                Part 3: Listening
+            </button>
+            <button id="tab-scoring" class="tab-btn flex-grow sm:flex-grow-0 py-2 px-3 sm:px-4 md:py-3 md:px-6 text-xs sm:text-sm md:text-base text-center" data-tab="scoring">
+                Scoring
+            </button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-hidden relative z-0 border-4 border-dark shadow-neo bg-white">
+            
+            <!-- Welcome Tab Content -->
+            <div id="content-welcome" class="tab-content custom-scroll overflow-y-auto p-4 md:p-6 lg:p-10 w-full h-full flex flex-col hidden" data-tab-content="welcome">
+                <div class="max-w-4xl mx-auto w-full">
+                    <header class="mb-8 text-center md:text-left">
+                        <div class="inline-block bg-brand-500 text-white px-3 py-1 border-3 border-dark font-black uppercase text-xs md:text-sm mb-4 shadow-[2px_2px_0_0_#0f172a]">
+                            Educational Resource
+                        </div>
+                        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-dark mb-4 tracking-tight uppercase text-balance" style="text-shadow: 3px 3px 0px #cbd5e1;">
+                            PTE Academic: <br class="hidden sm:block"><span class="bg-[#4ade80] px-2 border-3 border-dark inline-block mt-2 shadow-neo-sm text-white" style="text-shadow: 2px 2px 0px #0f172a;">Format Overview</span>
+                        </h1>
+                        <p class="text-base sm:text-lg md:text-xl text-slate-800 font-bold leading-relaxed mt-6 bg-[#f8fafc] p-4 border-3 border-dark shadow-neo-sm text-pretty">
+                            Welcome! This application provides an interactive, visual breakdown of the latest 2-hour PTE Academic test. Use the tabs above to navigate between sections and click on any question type to see a detailed explanation.
+                        </p>
+                    </header>
+
+                    <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-10">
+                        <div class="bg-[#eff6ff] border-3 border-dark shadow-neo p-4 md:p-6 flex flex-col items-center text-center">
+                            <div class="w-12 h-12 md:w-14 md:h-14 bg-white border-2 border-dark text-brand-600 rounded-full flex items-center justify-center shadow-[2px_2px_0_0_#0f172a] mb-3 md:mb-4">
+                                <i data-lucide="timer" class="w-6 h-6 md:w-7 md:h-7"></i>
+                            </div>
+                            <p class="text-xs md:text-sm font-black text-dark uppercase tracking-wide mb-1">Total Test Time</p>
+                            <p class="text-xl md:text-2xl font-black text-brand-600">~2 Hours</p>
+                        </div>
+                        <div class="bg-[#fdf4ff] border-3 border-dark shadow-neo p-4 md:p-6 flex flex-col items-center text-center">
+                            <div class="w-12 h-12 md:w-14 md:h-14 bg-white border-2 border-dark text-[#c084fc] rounded-full flex items-center justify-center shadow-[2px_2px_0_0_#0f172a] mb-3 md:mb-4">
+                                <i data-lucide="layers" class="w-6 h-6 md:w-7 md:h-7"></i>
+                            </div>
+                            <p class="text-xs md:text-sm font-black text-dark uppercase tracking-wide mb-1">Test Parts</p>
+                            <p class="text-xl md:text-2xl font-black text-[#c084fc]">3 Parts</p>
+                        </div>
+                        <div class="bg-[#ecfdf5] border-3 border-dark shadow-neo p-4 md:p-6 flex flex-col items-center text-center">
+                            <div class="w-12 h-12 md:w-14 md:h-14 bg-white border-2 border-dark text-[#10b981] rounded-full flex items-center justify-center shadow-[2px_2px_0_0_#0f172a] mb-3 md:mb-4">
+                                <i data-lucide="help-circle" class="w-6 h-6 md:w-7 md:h-7"></i>
+                            </div>
+                            <p class="text-xs md:text-sm font-black text-dark uppercase tracking-wide mb-1">Question Types</p>
+                            <p class="text-xl md:text-2xl font-black text-[#10b981]">20 Types</p>
+                        </div>
+                    </section>
+
+                    <div class="space-y-8 text-slate-800">
+                        <div class="bg-white border-3 border-dark p-5 md:p-8 shadow-neo-sm">
+                            <h2 class="text-xl md:text-3xl font-black text-dark mb-4 uppercase border-b-4 border-dark pb-2 inline-block text-balance">What is PTE Academic?</h2>
+                            <p class="text-sm sm:text-base md:text-lg font-medium leading-relaxed text-pretty mt-2">
+                                The PTE Academic (Pearson Test of English Academic) is a computer-based English language proficiency test designed for non-native speakers who wish to study or work in an English-speaking environment. It is widely accepted by universities, colleges, and governments worldwide for student and migration visa applications.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-[#fefce8] border-3 border-dark p-5 md:p-8 shadow-neo">
+                            <h3 class="text-lg md:text-2xl font-black text-dark mb-5 md:mb-6 flex items-center gap-3 uppercase">
+                                <i data-lucide="sparkles" class="w-5 h-5 md:w-6 md:h-6 text-[#eab308]"></i> Key Features
+                            </h3>
+                            <ul class="list-none space-y-4 text-sm sm:text-base md:text-lg font-medium">
+                                <li class="flex items-start gap-3 bg-white p-3 md:p-4 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">
+                                    <i data-lucide="cpu" class="w-5 h-5 md:w-6 md:h-6 shrink-0 mt-0.5 text-brand-600"></i>
+                                    <div class="text-pretty"><strong class="font-black uppercase text-dark">AI-Powered Scoring:</strong> The test uses sophisticated artificial intelligence to score all sections, ensuring objective and consistent results. This technology analyzes your speaking and writing, providing a fair assessment of your abilities.</div>
+                                </li>
+                                <li class="flex items-start gap-3 bg-white p-3 md:p-4 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">
+                                    <i data-lucide="zap" class="w-5 h-5 md:w-6 md:h-6 shrink-0 mt-0.5 text-brand-600"></i>
+                                    <div class="text-pretty"><strong class="font-black uppercase text-dark">Fast Results:</strong> One of the main benefits of PTE Academic is the speed of results, which are typically available within 48 hours.</div>
+                                </li>
+                                <li class="flex items-start gap-3 bg-white p-3 md:p-4 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">
+                                    <i data-lucide="git-merge" class="w-5 h-5 md:w-6 md:h-6 shrink-0 mt-0.5 text-brand-600"></i>
+                                    <div class="text-pretty"><strong class="font-black uppercase text-dark">Integrated Skills:</strong> Many question types (like "Read aloud" or "Summarize spoken text") test multiple skills at once (e.g., reading and speaking, or listening and writing), exactly as you would use them in an academic setting.</div>
+                                </li>
+                                <li class="flex items-start gap-3 bg-white p-3 md:p-4 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">
+                                    <i data-lucide="clock" class="w-5 h-5 md:w-6 md:h-6 shrink-0 mt-0.5 text-brand-600"></i>
+                                    <div class="text-pretty"><strong class="font-black uppercase text-dark">Single 2-Hour Session:</strong> The entire test is completed in one focused session, making it highly convenient and efficient.</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Part 1 Tab Content -->
+            <div id="content-part1" class="tab-content custom-scroll overflow-y-auto p-4 md:p-6 lg:p-8 w-full h-full hidden bg-white" data-tab-content="part1">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 min-h-full">
+                    <!-- Left Column: Chart Area -->
+                    <div class="flex flex-col space-y-4 md:space-y-6 lg:h-full">
+                        <div class="shrink-0 bg-[#eff6ff] p-4 md:p-5 border-3 border-dark shadow-neo-sm">
+                            <h2 id="title-part1" class="text-xl sm:text-2xl md:text-3xl font-black text-dark mb-2 uppercase text-balance"></h2>
+                            <p id="intro-part1" class="text-xs sm:text-sm md:text-base font-bold text-slate-700 text-pretty"></p>
+                        </div>
+                        <div class="chart-container flex-1 bg-white rounded-xl border-4 border-dark p-2 md:p-4 shadow-neo min-h-[250px] md:min-h-[300px] lg:min-h-0">
+                            <canvas id="chart-part1"></canvas>
+                        </div>
+                    </div>
+                    <!-- Right Column: Interactive Questions -->
+                    <div class="flex flex-col space-y-4 lg:h-full">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-black text-dark uppercase tracking-wide shrink-0 bg-[#facc15] px-3 py-1 border-3 border-dark w-fit shadow-[2px_2px_0_0_#0f172a]">Question Types</h3>
+                        <div id="grid-part1" class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 shrink-0"></div>
+                        
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-black text-dark uppercase tracking-wide shrink-0 pt-2 border-b-4 border-dark pb-1 w-fit">Task Details</h3>
+                        <div id="detail-part1" class="bg-slate-50 border-4 border-dark p-4 md:p-6 flex-1 overflow-y-auto custom-scroll shadow-inner min-h-[250px] md:min-h-[300px] lg:min-h-0"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Part 2 Tab Content -->
+            <div id="content-part2" class="tab-content custom-scroll overflow-y-auto p-4 md:p-6 lg:p-8 w-full h-full hidden bg-white" data-tab-content="part2">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 min-h-full">
+                    <div class="flex flex-col space-y-4 md:space-y-6 lg:h-full">
+                        <div class="shrink-0 bg-[#fdf4ff] p-4 md:p-5 border-3 border-dark shadow-neo-sm">
+                            <h2 id="title-part2" class="text-xl sm:text-2xl md:text-3xl font-black text-dark mb-2 uppercase text-balance"></h2>
+                            <p id="intro-part2" class="text-xs sm:text-sm md:text-base font-bold text-slate-700 text-pretty"></p>
+                        </div>
+                        <div class="chart-container flex-1 bg-white rounded-xl border-4 border-dark p-2 md:p-4 shadow-neo min-h-[250px] md:min-h-[300px] lg:min-h-0">
+                            <canvas id="chart-part2"></canvas>
+                        </div>
+                    </div>
+                    <div class="flex flex-col space-y-4 lg:h-full">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-black text-dark uppercase tracking-wide shrink-0 bg-[#facc15] px-3 py-1 border-3 border-dark w-fit shadow-[2px_2px_0_0_#0f172a]">Question Types</h3>
+                        <div id="grid-part2" class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 shrink-0"></div>
+                        
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-black text-dark uppercase tracking-wide shrink-0 pt-2 border-b-4 border-dark pb-1 w-fit">Task Details</h3>
+                        <div id="detail-part2" class="bg-slate-50 border-4 border-dark p-4 md:p-6 flex-1 overflow-y-auto custom-scroll shadow-inner min-h-[250px] md:min-h-[300px] lg:min-h-0"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Part 3 Tab Content -->
+            <div id="content-part3" class="tab-content custom-scroll overflow-y-auto p-4 md:p-6 lg:p-8 w-full h-full hidden bg-white" data-tab-content="part3">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 min-h-full">
+                    <div class="flex flex-col space-y-4 md:space-y-6 lg:h-full">
+                        <div class="shrink-0 bg-[#ecfdf5] p-4 md:p-5 border-3 border-dark shadow-neo-sm">
+                            <h2 id="title-part3" class="text-xl sm:text-2xl md:text-3xl font-black text-dark mb-2 uppercase text-balance"></h2>
+                            <p id="intro-part3" class="text-xs sm:text-sm md:text-base font-bold text-slate-700 text-pretty"></p>
+                        </div>
+                        <div class="chart-container flex-1 bg-white rounded-xl border-4 border-dark p-2 md:p-4 shadow-neo min-h-[250px] md:min-h-[300px] lg:min-h-0">
+                            <canvas id="chart-part3"></canvas>
+                        </div>
+                    </div>
+                    <div class="flex flex-col space-y-4 lg:h-full">
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-black text-dark uppercase tracking-wide shrink-0 bg-[#facc15] px-3 py-1 border-3 border-dark w-fit shadow-[2px_2px_0_0_#0f172a]">Question Types</h3>
+                        <div id="grid-part3" class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 shrink-0"></div>
+                        
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-black text-dark uppercase tracking-wide shrink-0 pt-2 border-b-4 border-dark pb-1 w-fit">Task Details</h3>
+                        <div id="detail-part3" class="bg-slate-50 border-4 border-dark p-4 md:p-6 flex-1 overflow-y-auto custom-scroll shadow-inner min-h-[250px] md:min-h-[300px] lg:min-h-0"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scoring Tab Content -->
+            <div id="content-scoring" class="tab-content custom-scroll overflow-y-auto p-4 md:p-8 lg:p-10 w-full h-full flex flex-col hidden bg-white" data-tab-content="scoring">
+                <div class="max-w-4xl mx-auto w-full">
+                    <h2 id="title-scoring" class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase mb-4 border-b-4 border-dark pb-2 inline-block text-balance">Understanding Your PTE Score Report</h2>
+                    <p id="intro-scoring" class="text-sm md:text-base lg:text-lg text-slate-800 font-bold mb-8 md:mb-10 leading-relaxed text-pretty bg-brand-100 p-4 border-3 border-dark shadow-neo-sm">
+                        This section explains the overall scoring format based on the official Score Guide. The test uses a sophisticated automated scoring system to provide a detailed and accurate measure of your English proficiency.
+                    </p>
+
+                    <div class="space-y-8 md:space-y-10">
+                        <!-- Score Section 1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-5 md:p-8">
+                            <h3 class="text-xl md:text-2xl font-black text-dark uppercase mb-4 md:mb-6 flex items-center gap-2 md:gap-3 text-balance">
+                                <i data-lucide="target" class="w-6 h-6 md:w-8 md:h-8 text-brand-600 shrink-0"></i> 1. Overall Score
+                            </h3>
+                            <div class="bg-slate-50 border-3 border-dark shadow-inner p-4 md:p-6">
+                                <p class="text-base md:text-lg lg:text-xl font-black text-dark uppercase mb-3 bg-[#facc15] px-2 py-1 inline-block border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-balance">10 to 90 Scale (Global Scale of English)</p>
+                                <p class="text-slate-800 font-medium text-sm md:text-base lg:text-lg text-pretty leading-relaxed">You receive one overall score on a scale from 10 to 90. This score is based on your combined performance across all 20 question types in the test, providing a comprehensive view of your abilities.</p>
+                            </div>
+                        </div>
+
+                        <!-- Score Section 2 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-5 md:p-8">
+                            <h3 class="text-xl md:text-2xl font-black text-dark uppercase mb-4 text-balance">2. How Scores Are Calculated</h3>
+                            <p class="text-slate-800 font-bold text-sm md:text-base lg:text-lg mb-6 text-pretty">Your Communicative Skills scores are calculated from your performance on tasks, which are scored using two main methods and a set of "Scoring Traits."</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
+                                <div class="bg-[#eff6ff] border-3 border-dark shadow-[4px_4px_0_0_#0f172a] p-4 md:p-6">
+                                    <p class="font-black text-base md:text-lg lg:text-xl text-dark uppercase mb-3 flex items-center gap-2 text-balance"><i data-lucide="check-square" class="w-5 h-5 md:w-6 md:h-6 text-brand-600 shrink-0"></i> Correct or Incorrect</p>
+                                    <p class="text-slate-800 font-medium text-sm md:text-base text-pretty">Some questions are scored rigidly as either correct (1 point) or incorrect (0 points). (e.g., Multiple Choice, Single Answer).</p>
+                                </div>
+                                <div class="bg-[#f0fdf4] border-3 border-dark shadow-[4px_4px_0_0_#0f172a] p-4 md:p-6">
+                                    <p class="font-black text-base md:text-lg lg:text-xl text-dark uppercase mb-3 flex items-center gap-2 text-balance"><i data-lucide="scale" class="w-5 h-5 md:w-6 md:h-6 text-[#22c55e] shrink-0"></i> Partial Credit</p>
+                                    <p class="text-slate-800 font-medium text-sm md:text-base text-pretty">Other questions allow for nuance, scoring as correct, partially correct, or incorrect. (e.g., Writing, Speaking, Fill in the Blanks).</p>
+                                </div>
+                            </div>
+
+                            <h4 class="text-lg md:text-xl font-black text-dark uppercase mb-4 bg-slate-200 px-3 py-1 inline-block border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Scoring Traits</h4>
+                            <p class="text-slate-800 font-bold mb-4 md:mb-5 text-sm md:text-base lg:text-lg text-pretty">For complex integrated tasks (especially Speaking and Writing), the AI grades you on specific traits:</p>
+                            
+                            <!-- Responsive grid for traits -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 mb-8">
+                                <div class="bg-white border-3 border-dark shadow-neo-sm p-3 md:p-4 text-center"><span class="font-black text-xs md:text-sm lg:text-base text-dark uppercase tracking-wide">Content</span></div>
+                                <div class="bg-white border-3 border-dark shadow-neo-sm p-3 md:p-4 text-center"><span class="font-black text-xs md:text-sm lg:text-base text-dark uppercase tracking-wide">Form</span></div>
+                                <div class="bg-white border-3 border-dark shadow-neo-sm p-3 md:p-4 text-center"><span class="font-black text-xs md:text-sm lg:text-base text-dark uppercase tracking-wide">Oral Fluency</span></div>
+                                <div class="bg-white border-3 border-dark shadow-neo-sm p-3 md:p-4 text-center"><span class="font-black text-xs md:text-sm lg:text-base text-dark uppercase tracking-wide">Pronunciation</span></div>
+                                <div class="bg-white border-3 border-dark shadow-neo-sm p-3 md:p-4 text-center"><span class="font-black text-xs md:text-sm lg:text-base text-dark uppercase tracking-wide">Grammar</span></div>
+                                <div class="bg-white border-3 border-dark shadow-neo-sm p-3 md:p-4 text-center"><span class="font-black text-xs md:text-sm lg:text-base text-dark uppercase tracking-wide">Vocabulary</span></div>
+                            </div>
+
+                            <div class="bg-[#fefce8] border-3 border-dark shadow-neo p-4 md:p-6">
+                                <h4 class="text-lg md:text-xl font-black text-dark uppercase mb-4 flex items-center gap-2 text-balance"><i data-lucide="search" class="w-5 h-5 md:w-6 md:h-6 text-[#eab308] shrink-0"></i> Example: Scoring 'Describe Image'</h4>
+                                <p class="text-slate-800 font-bold mb-4 text-sm md:text-base text-pretty">Scoring is often a multi-step process. Here is how the AI processes a single task:</p>
+                                <ol class="list-decimal list-inside space-y-3 text-slate-800 font-medium text-sm md:text-base">
+                                    <li class="bg-white p-3 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-pretty"><strong>Step 1:</strong> The system scores your 'Content'. If your response is completely irrelevant (0 score for Content), no further scoring happens.</li>
+                                    <li class="bg-white p-3 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-pretty"><strong>Step 2:</strong> If 'Content' is scored > 0, the system then evaluates your 'Pronunciation' and 'Oral Fluency'.</li>
+                                    <li class="bg-white p-3 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-pretty"><strong>Step 3:</strong> The total score for the question is aggregated and contributes to your 'Speaking' Communicative Skill score and your Overall Score.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    const pteData = {
+      part1: {
+        id: 'part1',
+        title: 'Part 1: Speaking & Writing',
+        duration: 'Approx. 54 to 67 minutes', // Maintained ranges with "to" instead of dash
+        intro: 'This is the longest part of the test, assessing your speaking and writing skills. It contains 7 different question types, many of which use integrated scoring.',
+        chartData: {
+          labels: ['Read aloud', 'Repeat sentence', 'Describe image', 'Re-tell lecture', 'Answer short question', 'Summarize written text', 'Write essay'],
+          data: [6.5, 11, 3.5, 1.5, 5.5, 1.5, 1] 
+        },
+        questions: [
+          { id: 'p1q1', title: 'Personal Introduction', count: '1', explanation: 'This part is not scored. You have 25 seconds to read a prompt and 30 seconds to record an introduction about yourself. This is sent to institutions along with your score.', scoring: 'This section is <strong>not scored</strong>. It is for identification purposes and sent to institutions.' },
+          { id: 'p1q2', title: 'Read aloud', count: '6 to 7', explanation: 'You will be given a short text (up to 60 words). You have 30 to 40 seconds to prepare, then you must read the text aloud clearly. This tests both reading and speaking.', scoring: '<strong>Integrated Scoring:</strong> Scores <strong>Speaking & Reading</strong>. Uses <strong>Partial Credit</strong>. Graded on: Content, Pronunciation, Oral Fluency.' },
+          { id: 'p1q3', title: 'Repeat sentence', count: '10 to 12', explanation: 'You will hear a short sentence (3 to 9 seconds). You must repeat it exactly as you hear it. This tests listening and speaking.', scoring: '<strong>Integrated Scoring:</strong> Scores <strong>Listening & Speaking</strong>. Uses <strong>Partial Credit</strong>. Graded on: Content, Pronunciation, Oral Fluency.' },
+          { id: 'p1q4', title: 'Describe image', count: '3 to 4', explanation: 'You will see an image (graph, chart, map, or picture). You have 25 seconds to study it, then 40 seconds to describe the image in detail, including key information and trends.', scoring: 'Scores <strong>Speaking</strong>. Uses <strong>Partial Credit</strong>. Graded on: Content, Pronunciation, Oral Fluency. Content is scored first; if 0, no other traits are scored.' },
+          { id: 'p1q5', title: 'Re-tell lecture', count: '1 to 2', explanation: 'You will listen to a short lecture (up to 90 seconds). After listening, you have 10 seconds to prepare and then 40 seconds to re-tell the lecture in your own words, covering the main points.', scoring: '<strong>Integrated Scoring:</strong> Scores <strong>Listening & Speaking</strong>. Uses <strong>Partial Credit</strong>. Graded on: Content, Pronunciation, Oral Fluency.' },
+          { id: 'p1q6', title: 'Answer short question', count: '5 to 6', explanation: 'You will hear a short, simple question. You must answer with a single word or a few words. This tests listening and vocabulary.', scoring: 'Scores <strong>Listening</strong>. Scored as <strong>Correct/Incorrect</strong>. Graded on: Vocabulary (1 point for appropriate word choice).' },
+          { id: 'p1q9', title: 'Summarize written text', count: '1 to 2', explanation: 'You will read a passage (up to 300 words). You must write a one-sentence summary (between 5 and 75 words) in 10 minutes. This tests reading and writing skills.', scoring: '<strong>Integrated Scoring:</strong> Scores <strong>Reading & Writing</strong>. Uses <strong>Partial Credit</strong>. Graded on: Content, Form (1 point for one sentence, 5 to 75 words), Grammar, Vocabulary.' },
+          { id: 'p1q10', title: 'Write essay', count: '1 to 2', explanation: 'You will be given a short essay prompt on a familiar topic. You must write a 200 to 300 word argumentative essay in 20 minutes. This tests writing skills.', scoring: 'Scores <strong>Writing</strong>. Uses <strong>Partial Credit</strong>. Graded on: Content, Form (word count), Development/Structure/Coherence, Grammar, General Linguistic Range, Vocabulary, Spelling.' }
+        ]
+      },
+      part2: {
+        id: 'part2',
+        title: 'Part 2: Reading',
+        duration: 'Approx. 29 to 30 minutes',
+        intro: 'This part assesses your reading skills with 5 different question types. Time management is key in this section, as it is timed as a single block.',
+        chartData: {
+          labels: ['Fill in the Blanks (RW)', 'Multiple choice (M)', 'Re-order paragraphs', 'Fill in the Blanks (R)', 'Multiple choice (S)'],
+          data: [5.5, 1.5, 2.5, 4.5, 1.5]
+        },
+        questions: [
+          { id: 'p2q1', title: 'Reading & Writing: Fill in blanks', count: '5 to 6', explanation: 'A text appears with several gaps. For each gap, you click a dropdown menu and select the most appropriate word from a list of options.', scoring: '<strong>Integrated Scoring:</strong> Scores <strong>Reading & Writing</strong>. <strong>Partial Credit</strong>: 1 point for each correctly completed blank.' },
+          { id: 'p2q2', title: 'Multiple choice, multiple answer', count: '1 to 2', explanation: 'You will read a passage. You must answer a multiple-choice question about the text by selecting MORE than one correct answer from the options provided.', scoring: 'Scores <strong>Reading</strong>. <strong>Partial Credit</strong>: 1 point for each correct answer, minus 1 point for each incorrect answer. Minimum score is 0.' },
+          { id: 'p2q3', title: 'Re-order paragraphs', count: '2 to 3', explanation: 'Several text boxes appear on the screen in a random order. You must drag and drop them into the correct sequence to form a coherent paragraph. This tests reading comprehension of organization.', scoring: 'Scores <strong>Reading</strong>. <strong>Partial Credit</strong>: 1 point for each pair of correct adjacent textboxes. Minimum score is 0.' },
+          { id: 'p2q4', title: 'Reading: Fill in the blanks', count: '4 to 5', explanation: 'A text appears with several gaps. You drag and drop words from a box at the bottom of the screen to fill the gaps. There are more words than gaps.', scoring: 'Scores <strong>Reading</strong>. <strong>Partial Credit</strong>: 1 point for each correctly completed blank. Minimum score is 0.' },
+          { id: 'p2q5', title: 'Multiple choice, single answer', count: '1 to 2', explanation: 'You will read a passage. You must answer a multiple-choice question about the text by selecting only ONE correct answer from the options provided.', scoring: 'Scores <strong>Reading</strong>. Scored as <strong>Correct/Incorrect</strong> (1 or 0).' }
+        ]
+      },
+      part3: {
+        id: 'part3',
+        title: 'Part 3: Listening',
+        duration: 'Approx. 30 to 43 minutes',
+        intro: 'This part assesses your listening skills, often integrated with writing. You will hear each audio or video clip only once.',
+        chartData: {
+          labels: ['Summarize spoken text', 'Multiple choice (M)', 'Fill in the blanks', 'Highlight correct summary', 'Multiple choice (S)', 'Select missing word', 'Highlight incorrect words', 'Write from dictation'],
+          data: [1.5, 1.5, 2.5, 1.5, 1.5, 1.5, 2.5, 3.5]
+        },
+        questions: [
+          { id: 'p3q1', title: 'Summarize spoken text', count: '1 to 2', explanation: 'You will listen to a short lecture (60 to 90 seconds). You must write a 50 to 70 word summary of the main points in 10 minutes. This tests listening and writing.', scoring: '<strong>Integrated Scoring:</strong> Scores <strong>Listening & Writing</strong>. Uses <strong>Partial Credit</strong>. Graded on: Content, Form (word count), Grammar, Vocabulary, Spelling.' },
+          { id: 'p3q2', title: 'Multiple choice, multiple answer', count: '1 to 2', explanation: 'You will listen to an audio clip. You must answer a multiple-choice question by selecting MORE than one correct answer.', scoring: 'Scores <strong>Listening</strong>. <strong>Partial Credit</strong>: 1 point for each correct answer, minus 1 point for each incorrect answer. Minimum score is 0.' },
+          { id: 'p3q3', title: 'Fill in the blanks', count: '2 to 3', explanation: 'You will listen to an audio clip while reading a transcript that has several gaps. You must type the missing words into the gaps as you listen.', scoring: '<strong>Integrated Scoring:</strong> Scores <strong>Listening & Writing</strong>. <strong>Partial Credit</strong>: 1 point for each correct word spelled correctly. Minimum score is 0.' },
+          { id: 'p3q4', title: 'Highlight correct summary', count: '1 to 2', explanation: 'You will listen to an audio clip. You will then be shown several possible summaries and must select the one that best matches the clip.', scoring: '<strong>Integrated Scoring:</strong> Scores <strong>Listening & Reading</strong>. Scored as <strong>Correct/Incorrect</strong> (1 or 0).' },
+          { id: 'p3q5', title: 'Multiple choice, single answer', count: '1 to 2', explanation: 'You will listen to an audio clip. You must answer a multiple-choice question by selecting only ONE correct answer.', scoring: 'Scores <strong>Listening</strong>. Scored as <strong>Correct/Incorrect</strong> (1 or 0).' },
+          { id: 'p3q6', title: 'Select missing word', count: '1 to 2', explanation: 'You will listen to an audio clip that is cut off at the end. You must select the correct word or phrase from a list that completes the sentence.', scoring: 'Scores <strong>Listening</strong>. Scored as <strong>Correct/Incorrect</strong> (1 or 0).' },
+          { id: 'p3q7', title: 'Highlight incorrect words', count: '2 to 3', explanation: 'You will listen to an audio clip while reading a transcript. The transcript contains some errors. You must click on the words in the transcript that are different from what you hear.', scoring: '<strong>Integrated Scoring:</strong> Scores <strong>Listening & Reading</strong>. <strong>Partial Credit</strong>: 1 point for each correct word, minus 1 point for each incorrect word. Minimum score is 0.' },
+          { id: 'p3q8', title: 'Write from dictation', count: '3 to 4', explanation: 'You will hear a short sentence. You must type the sentence exactly as you hear it, with correct spelling and punctuation. This tests listening and writing.', scoring: '<strong>Integrated Scoring:</strong> Scores <strong>Listening & Writing</strong>. <strong>Partial Credit</strong>: 1 point for each correct word spelled correctly. 0 for incorrect/misspelled.' }
+        ]
+      }
+    };
+
+    let currentChart = null;
+    let activePart = 'welcome';
+    let activeQuestion = null;
+
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contentPanels = document.querySelectorAll('.tab-content');
+    const appContainer = document.getElementById('app-container');
+
+    function renderChart(partId) {
+        if (currentChart) {
+            currentChart.destroy();
+        }
+
+        const partData = pteData[partId];
+        const ctx = document.getElementById(`chart-${partId}`).getContext('2d');
+        
+        currentChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: partData.chartData.labels,
+                datasets: [{
+                    label: 'Avg. Number of Questions',
+                    data: partData.chartData.data,
+                    backgroundColor: '#737df5', // brand-500
+                    borderColor: '#0f172a', // Brutalist dark border
+                    borderWidth: 3,
+                    borderRadius: 0, // Brutalist sharp corners
+                    barPercentage: 0.8
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 14, weight: 'bold' },
+                        bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 14, weight: 'bold' },
+                        padding: 12,
+                        cornerRadius: 0,
+                        displayColors: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Average Question Frequency',
+                        font: {
+                            family: "'Plus Jakarta Sans', sans-serif",
+                            size: 14,
+                            weight: '900'
+                        },
+                        color: '#0f172a',
+                        padding: {
+                            bottom: 16
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#cbd5e1',
+                            lineWidth: 2
+                        },
+                        ticks: {
+                            color: '#0f172a',
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 10, weight: 'bold' }
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#0f172a',
+                            font: {
+                                family: "'Plus Jakarta Sans', sans-serif",
+                                size: 10,
+                                weight: '800'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function renderQuestionGrid(partId) {
+        const partData = pteData[partId];
+        const gridContainer = document.getElementById(`grid-${partId}`);
+        let gridHtml = '';
+        
+        partData.questions.forEach(q => {
+            gridHtml += `
+                <button 
+                    class="question-item p-2 md:p-3 text-center text-xs md:text-sm font-black focus:outline-none transition-all duration-100"
+                    data-part-id="${partId}" 
+                    data-q-id="${q.id}">
+                    ${q.title}
+                </button>
+            `;
+        });
+        
+        gridContainer.innerHTML = gridHtml;
+        
+        const detailBox = document.getElementById(`detail-${partId}`);
+        detailBox.innerHTML = `
+            <div class="h-full flex flex-col items-center justify-center text-center p-4 sm:p-6 md:p-8 text-slate-400">
+                <i data-lucide="mouse-pointer-click" class="w-10 h-10 md:w-12 md:h-12 mb-3 md:mb-4 text-slate-300"></i>
+                <p class="text-base md:text-lg font-black uppercase tracking-wide text-dark">Select a Question Type</p>
+                <p class="text-xs md:text-sm font-bold mt-2 text-pretty">Click any button above to see detailed explanations and scoring criteria.</p>
+            </div>
+        `;
+        lucide.createIcons(); // Initialize icons inside the empty state
+    }
+
+    function showQuestionDetail(partId, qId, clickedButton) {
+        const question = pteData[partId].questions.find(q => q.id === qId);
+        if (!question) return;
+
+        activeQuestion = qId;
+        
+        document.querySelectorAll(`#grid-${partId} .question-item`).forEach(btn => {
+            btn.classList.remove('active');
+        });
+        clickedButton.classList.add('active');
+
+        const detailBox = document.getElementById(`detail-${partId}`);
+        detailBox.innerHTML = `
+            <div class="animate-fade-in bg-white border-3 border-dark shadow-neo-sm p-4 md:p-6">
+                <h4 class="text-lg md:text-xl font-black text-dark mb-3 md:mb-4 uppercase text-balance">${question.title}</h4>
+                <div class="inline-flex items-center gap-2 bg-[#facc15] border-2 border-dark px-2 md:px-3 py-1 mb-4 shadow-[2px_2px_0_0_#0f172a]">
+                    <i data-lucide="hash" class="w-3 h-3 md:w-4 md:h-4 text-dark"></i>
+                    <p class="text-xs md:text-sm font-black text-dark uppercase tracking-wide">Expected items: ${question.count}</p>
+                </div>
+                <p class="text-sm md:text-base text-slate-800 leading-relaxed mb-5 md:mb-6 font-medium text-pretty">${question.explanation}</p>
+                
+                <div class="bg-slate-50 border-3 border-dark p-3 md:p-5 shadow-inner">
+                    <h5 class="text-base md:text-lg font-black text-dark mb-2 md:mb-3 uppercase flex items-center gap-2 border-b-2 border-dark pb-2 text-balance">
+                        <i data-lucide="clipboard-list" class="w-4 h-4 md:w-5 md:h-5 text-brand-600"></i> Scoring Guidance
+                    </h5>
+                    <p class="text-xs sm:text-sm md:text-base text-slate-800 leading-relaxed font-medium text-pretty">${question.scoring}</p>
+                </div>
+            </div>
+        `;
+        lucide.createIcons(); // Initialize icons inside the dynamic detail view
+    }
+
+    function showPart(partId) {
+        activePart = partId;
+        activeQuestion = null;
+
+        // Manage tab button states
+        tabs.forEach(tab => {
+            if (tab.dataset.tab === partId) {
+                tab.classList.add('active');
+                tab.classList.remove('inactive');
+            } else {
+                tab.classList.add('inactive');
+                tab.classList.remove('active');
+            }
+        });
+
+        // Manage panel visibility
+        contentPanels.forEach(panel => {
+            if (panel.dataset.tabContent === partId) {
+                panel.classList.remove('hidden');
+                panel.classList.add('flex');
+            } else {
+                panel.classList.add('hidden');
+                panel.classList.remove('flex');
+            }
+        });
+
+        // Load specific part logic
+        if (partId === 'part1' || partId === 'part2' || partId === 'part3') {
+            const partData = pteData[partId];
+            document.getElementById(`title-${partId}`).textContent = `${partData.title}`;
+            
+            // Format duration as a brutalist badge
+            document.getElementById(`intro-${partId}`).innerHTML = `
+                <span class="inline-block bg-[#f87171] text-white border-2 border-dark px-2 py-1 uppercase tracking-wider font-black shadow-[2px_2px_0_0_#0f172a] mb-2 md:mb-3">${partData.duration}</span><br>
+                ${partData.intro}
+            `;
+            
+            renderChart(partId);
+            renderQuestionGrid(partId);
+        } else if (partId === 'scoring' || partId === 'welcome') {
+            if (currentChart) {
+                currentChart.destroy();
+                currentChart = null;
+            }
+        }
+    }
+
+    appContainer.addEventListener('click', (e) => {
+        const tab = e.target.closest('.tab-btn');
+        if (tab && tab.dataset.tab !== activePart) {
+            showPart(tab.dataset.tab);
+            return;
+        }
+        
+        const questionButton = e.target.closest('.question-item');
+        if (questionButton && questionButton.dataset.qId !== activeQuestion) {
+            showQuestionDetail(questionButton.dataset.partId, questionButton.dataset.qId, questionButton);
+            return;
+        }
+    });
+
+    // Initialize the app on the 'welcome' tab
+    showPart('welcome');
+});
+</script>
+</body>
+</html>

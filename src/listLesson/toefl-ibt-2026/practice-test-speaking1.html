@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT Practice Test - Speaking Section</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .recording-pulse {
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <div id="app"></div>
+
+    <script>
+        // --- DATA STRUCTURE ---
+        const testData = {
+            module1: {
+                title: "Speaking Section",
+                sections: [
+                    {
+                        id: "sec_repeat",
+                        type: "listen_and_repeat",
+                        title: "Listen and Repeat",
+                        description: "You will hear a series of sentences. After each sentence, there is a pause. Repeat exactly what was said. Sentences get progressively longer and more complex.",
+                        scenario: "You are learning to welcome visitors to the zoo. Listen to your manager and repeat what she says. Repeat only once.",
+                        questions: [
+                            { id: "r1", prompt: "We have a variety of wildlife.", timeLimit: 8 },
+                            { id: "r2", prompt: "Bears, wolves, and large cats are to the right.", timeLimit: 8 },
+                            { id: "r3", prompt: "You can find sea lions and elephants further down the path.", timeLimit: 10 },
+                            { id: "r4", prompt: "Please, no outside food or drinks, and do not feed the animals.", timeLimit: 10 },
+                            { id: "r5", prompt: "Avoid banging or tapping on the displays and enclosures.", timeLimit: 10 },
+                            { id: "r6", prompt: "For those with children, we offer summer camps and educational opportunities.", timeLimit: 12 },
+                            { id: "r7", prompt: "The visitor's center, located near the front entrance, can give you more information.", timeLimit: 12 }
+                        ]
+                    },
+                    {
+                        id: "sec_interview",
+                        type: "interview",
+                        title: "Take an Interview",
+                        description: "You will participate in a simulated conversation with a prerecorded interviewer. You will have 45 seconds to answer each question.",
+                        scenario: "You have agreed to take part in a research study about urban life. You will have a short online interview with a researcher. The researcher will ask you some questions.",
+                        questions: [
+                            { 
+                                id: "i1", 
+                                prompt: "Thank you for speaking with me today. Now, I'd like you to think back to the last time you visited a city in your country, a city that you did not live in. Why did you travel to that city? What did you like about that city?", 
+                                timeLimit: 45 
+                            },
+                            { 
+                                id: "i2", 
+                                prompt: "Great. Cities affect people in different ways. Some people find cities dynamic and exciting. Others find that cities are overwhelming and drain them of energy. What kind of reaction do you have to cities? Why do you think you react in this way?", 
+                                timeLimit: 45 
+                            },
+                            { 
+                                id: "i3", 
+                                prompt: "OK. Next, I'd like to ask your opinion. Some people believe that those who live in cities lead more interesting lives. They would argue, for example, that people who live in cities have more access to professional opportunities and interesting leisure activities. Do you agree that people who live in cities lead more interesting lives? Why or why not?", 
+                                timeLimit: 45 
+                            },
+                            { 
+                                id: "i4", 
+                                prompt: "Good points. Let me ask you one final question. For some time now, researchers have been interested in whether green spaces, such as parks, make people who live in cities happier. Do you think that city governments should create more parks in urban areas to promote a general sense of happiness and life satisfaction? Why or why not?", 
+                                timeLimit: 45 
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            currentModule: null,
+            flatSteps: [],
+            currentStepIndex: 0,
+            answers: {},          // Stores transcribed text for each question
+            hasRecorded: {},      // Tracks if a specific question has finished recording
+            audioCompleted: {},   // Tracks if audio has finished playing for a specific step index
+            showResults: false,
+            showInstructions: false,
+            
+            // Audio & Recording States
+            isPlaying: false,
+            isAudioReady: true,
+            
+            isRecording: false,
+            recognition: null,    // Web Speech API instance
+            recordingTimeLeft: 0,
+            recordingInterval: null
+        };
+
+        // --- UTILITY FUNCTIONS ---
+        window.showToast = function(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 right-6 bg-green-600 text-white px-6 py-3 rounded shadow-xl z-50 transition-opacity duration-300 font-sans flex items-center';
+            toast.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5 mr-2"></i> ${message}`;
+            document.body.appendChild(toast);
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        };
+
+        window.copyToClipboard = function(elementId) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            const textToCopy = el.innerText || el.textContent;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            // Prevent scrolling to bottom
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                window.showToast('Copied to clipboard successfully!');
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+                alert('Failed to copy text. Please copy manually.');
+            }
+            document.body.removeChild(textArea);
+        };
+
+        // --- BROWSER STT INITIALIZATION ---
+        function initSpeechRecognition() {
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (window.SpeechRecognition) {
+                state.recognition = new window.SpeechRecognition();
+                state.recognition.continuous = true;
+                state.recognition.interimResults = true;
+                
+                state.recognition.onresult = (event) => {
+                    let finalTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        }
+                    }
+                    
+                    const step = state.flatSteps[state.currentStepIndex];
+                    if (step && step.type !== 'scenario') {
+                        const qId = step.question.id;
+                        if (finalTranscript) {
+                            state.answers[qId] = (state.answers[qId] || '') + ' ' + finalTranscript;
+                            render(); 
+                        }
+                    }
+                };
+
+                state.recognition.onerror = (event) => {
+                    console.error("Speech Recognition Error", event.error);
+                };
+            } else {
+                console.warn("Speech Recognition API not supported in this browser.");
+            }
+        }
+
+        // --- TTS INITIALIZATION ---
+        let availableVoices = [];
+        function loadVoices() {
+            availableVoices = window.speechSynthesis.getVoices();
+        }
+        if (window.speechSynthesis) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+            loadVoices();
+        }
+
+        function getEdgeVoice(gender) {
+            let selectedVoice = null;
+            if (gender === 'male') {
+                selectedVoice = availableVoices.find(v => v.name.includes('Microsoft') && v.name.includes('Natural') && (v.name.includes('Christopher') || v.name.includes('Guy') || v.name.includes('Ryan')));
+                if (!selectedVoice) selectedVoice = availableVoices.find(v => v.name.includes('Male') || v.name.includes('David') || v.name.includes('Mark'));
+            } else {
+                selectedVoice = availableVoices.find(v => v.name.includes('Microsoft') && v.name.includes('Natural') && (v.name.includes('Aria') || v.name.includes('Jenny') || v.name.includes('Sonia')));
+                if (!selectedVoice) selectedVoice = availableVoices.find(v => v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha'));
+            }
+            return selectedVoice || availableVoices.find(v => v.lang.startsWith('en')) || availableVoices[0];
+        }
+
+        // --- LOGIC FUNCTIONS ---
+        function initModule(moduleId) {
+            initSpeechRecognition();
+            state.currentModule = moduleId;
+            state.answers = {};
+            state.hasRecorded = {};
+            state.audioCompleted = {};
+            state.showResults = false;
+            state.showInstructions = true;
+            state.currentStepIndex = 0;
+
+            const steps = [];
+            testData[moduleId].sections.forEach(section => {
+                
+                if (section.scenario) {
+                    steps.push({
+                        type: 'scenario',
+                        data: section,
+                        scenarioText: section.scenario
+                    });
+                }
+
+                section.questions.forEach((q, idx) => {
+                    state.answers[q.id] = ""; 
+                    steps.push({
+                        type: section.type,
+                        data: section,
+                        question: q,
+                        questionIndex: idx + 1,
+                        totalQuestions: section.questions.length
+                    });
+                });
+            });
+            state.flatSteps = steps;
+            render();
+        }
+
+        function stopAudio() {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            state.isPlaying = false;
+        }
+
+        function playPromptAudio() {
+            if (state.isRecording) return; 
+            
+            const step = state.flatSteps[state.currentStepIndex];
+            stopAudio();
+            state.isAudioReady = false;
+            render();
+
+            try {
+                let textToSpeak = "";
+                let genderToUse = "";
+
+                if (step.type === 'scenario') {
+                    textToSpeak = step.scenarioText;
+                    genderToUse = 'male'; 
+                } else {
+                    textToSpeak = step.question.prompt;
+                    genderToUse = 'female'; 
+                }
+
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                const voice = getEdgeVoice(genderToUse);
+                if (voice) utterance.voice = voice;
+                
+                utterance.onstart = () => {
+                    state.isPlaying = true;
+                    state.isAudioReady = true;
+                    render();
+                };
+
+                utterance.onend = () => {
+                    state.isPlaying = false;
+                    state.audioCompleted[state.currentStepIndex] = true;
+                    render();
+
+                    // Automatically start recording 1 second after prompt audio finishes
+                    const currentStep = state.flatSteps[state.currentStepIndex];
+                    if (currentStep && currentStep.type !== 'scenario' && !state.hasRecorded[currentStep.question.id]) {
+                        setTimeout(() => {
+                            // Ensure the user hasn't quickly navigated away or already started
+                            if (!state.isRecording && state.currentStepIndex === state.flatSteps.indexOf(currentStep)) {
+                                startRecording();
+                            }
+                        }, 1000); 
+                    }
+                };
+
+                utterance.onerror = (e) => {
+                    console.error("TTS Error:", e);
+                    state.isAudioReady = true;
+                    state.isPlaying = false;
+                    render();
+                };
+
+                window.speechSynthesis.speak(utterance);
+
+            } catch (error) {
+                console.error("TTS Output Error:", error);
+                state.isAudioReady = true;
+                state.isPlaying = false;
+                render();
+            }
+        }
+
+        function startRecording() {
+            if (state.isPlaying) stopAudio();
+            if (!state.recognition) {
+                window.showToast("Speech recognition is not supported in your browser.");
+                return;
+            }
+
+            const step = state.flatSteps[state.currentStepIndex];
+            if (step.type === 'scenario') return; 
+
+            state.recordingTimeLeft = step.question.timeLimit;
+            state.isRecording = true;
+            state.answers[step.question.id] = ""; 
+            
+            try {
+                state.recognition.start();
+            } catch (e) {
+                // Might already be started
+            }
+
+            render();
+
+            state.recordingInterval = setInterval(() => {
+                if (state.recordingTimeLeft > 0) {
+                    state.recordingTimeLeft--;
+                    render();
+                } else {
+                    stopRecording();
+                }
+            }, 1000);
+        }
+
+        function stopRecording() {
+            if (state.recordingInterval) {
+                clearInterval(state.recordingInterval);
+                state.recordingInterval = null;
+            }
+            if (state.recognition && state.isRecording) {
+                state.recognition.stop();
+            }
+            state.isRecording = false;
+
+            const step = state.flatSteps[state.currentStepIndex];
+            if (step && step.question) {
+                state.hasRecorded[step.question.id] = true;
+            }
+
+            render();
+        }
+
+        function handleNext() {
+            stopAudio();
+            stopRecording();
+            if (state.currentStepIndex < state.flatSteps.length - 1) {
+                state.currentStepIndex++;
+                render();
+                // Auto-play the audio on the new step after UI renders
+                setTimeout(playPromptAudio, 500);
+            } else {
+                finishTest();
+            }
+        }
+
+        function handleBeginTest() {
+            state.showInstructions = false;
+            render();
+            // Auto-play the first audio prompt after entering the test
+            setTimeout(playPromptAudio, 500);
+        }
+
+        function finishTest() {
+            stopAudio();
+            stopRecording();
+            state.showResults = true;
+            render();
+        }
+
+        function resetApp() {
+            state.currentModule = null;
+            state.flatSteps = [];
+            state.answers = {};
+            state.hasRecorded = {};
+            state.audioCompleted = {};
+            state.showResults = false;
+            state.showInstructions = false;
+            stopAudio();
+            stopRecording();
+            render();
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        function getAIPrompt(type, prompt, userText) {
+            const text = userText.trim() || "[No response recorded]";
+            if (type === 'listen_and_repeat') {
+                return `Act as an English evaluator. I am practicing the TOEFL iBT Listen and Repeat task.\n\nThe target sentence is: "${prompt}"\nMy transcribed response is: "${text}"\n\nPlease evaluate my accuracy on a 0 to 5 scale, where 5 is an exact repetition, 4 has minor changes that do not change meaning, 3 has multiple missing words but retains original meaning, 2 is missing a significant part, and 1 captures very little. Highlight any discrepancies between the target and my response.`;
+            } else {
+                return `Act as a TOEFL iBT speaking evaluator. I am practicing the Take an Interview task.\n\nThe interviewer asked: "${prompt}"\nMy transcribed response is: "${text}"\n\nPlease evaluate my response on a 0 to 5 scale. A score of 5 means fully successful, well elaborated, and clear. A score of 4 means generally successful and elaborated. A score of 3 means partially successful with limited elaboration. A score of 2 means mostly unsuccessful and minimally connected. A score of 1 means unsuccessful and vaguely connected. Provide my estimated score, highlight my strengths, and give specific suggestions to improve my vocabulary, grammar, and elaboration.`;
+            }
+        }
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderWelcome() {
+            return `
+            <div class="min-h-screen bg-[#f0f0f0] flex items-center justify-center p-4">
+                <div class="bg-white max-w-3xl w-full shadow-lg rounded-lg overflow-hidden border-t-8 border-[#0ea5e9]">
+                    <div class="bg-[#0ea5e9] p-6 text-white text-center">
+                        <i data-lucide="mic" class="w-12 h-12 mx-auto mb-4 opacity-90"></i>
+                        <h1 class="text-3xl font-bold font-sans">TOEFL iBT Practice Test</h1>
+                        <p class="opacity-90 mt-2">Speaking Section</p>
+                    </div>
+                    
+                    <div class="p-10 text-center">
+                        <p class="text-gray-600 mb-6 text-lg">
+                            This practice test simulates the digital interface of the new TOEFL iBT Speaking section. 
+                            You will use your microphone to complete "Listen and Repeat" and "Take an Interview" tasks.
+                        </p>
+
+                        <div class="bg-sky-50 border border-sky-200 text-sky-800 px-6 py-4 rounded-lg text-sm mb-6 flex flex-col items-center">
+                            <p class="text-center"><strong>Browser Recommendation:</strong> For the best audio experience and high-quality Natural TTS voices, please use <strong>Microsoft Edge</strong>.</p>
+                        </div>
+                        
+                        <div class="flex justify-center">
+                            <button onclick="initModule('module1')" class="hover:border-[#0ea5e9] group relative p-6 border-2 border-gray-200 rounded-xl transition-all text-left max-w-md w-full">
+                                <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center justify-center">
+                                    <i data-lucide="play-circle" class="w-5 h-5 mr-2 text-[#0ea5e9]"></i> Start Speaking Practice
+                                </h3>
+                                <p class="text-sm text-gray-500 text-center">7 Repetition Tasks • 4 Interview Questions</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderReview() {
+            let html = '<div class="max-w-4xl mx-auto mt-12 space-y-8 pb-16">';
+            html += '<h2 class="text-2xl font-bold text-center text-gray-800 mb-6 border-b pb-4">Detailed Performance Review</h2>';
+
+            state.flatSteps.forEach(step => {
+                if (step.type === 'scenario') return; 
+                
+                const qId = step.question.id;
+                const userText = state.answers[qId] || "";
+                const aiPromptText = getAIPrompt(step.type, step.question.prompt, userText);
+                
+                html += `
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
+                        <h3 class="font-bold text-[#0ea5e9] flex items-center">
+                            <i data-lucide="${step.type === 'listen_and_repeat' ? 'repeat' : 'user-circle'}" class="w-5 h-5 mr-2"></i>
+                            ${step.data.title} (${step.questionIndex}/${step.totalQuestions})
+                        </h3>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 mb-4 rounded border border-gray-100 text-sm">
+                        <strong class="text-gray-600 block mb-1">Target Audio / Prompt:</strong>
+                        <p class="text-gray-800 italic">"${step.question.prompt}"</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <strong class="text-gray-600 block mb-1 text-sm">Your Transcribed Response:</strong>
+                        <div id="usertext-${qId}" class="p-4 border border-gray-200 rounded ${userText ? 'text-gray-900 bg-white' : 'text-gray-400 bg-gray-50 italic'}">
+                            ${userText || "No response recorded."}
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <h4 class="font-semibold text-gray-700 mb-2 flex items-center">
+                            <i data-lucide="bot" class="w-4 h-4 mr-2 text-indigo-500"></i> Evaluate with AI
+                        </h4>
+                        <p class="text-sm text-gray-500 mb-3">Copy the prompt below and paste it into an AI chatbot (like ChatGPT, Claude, or Gemini) to get instant pedagogical feedback on your response based on standard rubrics.</p>
+                        
+                        <div class="bg-indigo-50 border border-indigo-100 rounded p-4 text-sm text-gray-700 mb-4 font-mono overflow-x-auto whitespace-pre-wrap" id="prompt-${qId}">
+${aiPromptText}
+                        </div>
+                        
+                        <div class="flex space-x-3">
+                            <button onclick="copyToClipboard('prompt-${qId}')" class="flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700 transition-colors shadow-sm">
+                                <i data-lucide="copy" class="w-4 h-4 mr-2"></i> Copy AI Prompt
+                            </button>
+                            <button onclick="copyToClipboard('usertext-${qId}')" class="flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors shadow-sm">
+                                <i data-lucide="clipboard-copy" class="w-4 h-4 mr-2"></i> Copy Response Only
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderResults() {
+            return `
+            <div class="min-h-screen bg-[#f0f0f0] pt-24 pb-12 px-4 overflow-y-auto custom-scroll">
+                <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                    <div class="bg-[#0ea5e9] p-8 text-white text-center">
+                        <h2 class="text-3xl font-bold mb-2">Speaking Practice Completed</h2>
+                        <p>Review your transcriptions and leverage AI for personalized feedback.</p>
+                    </div>
+                    <div class="p-6 flex justify-center">
+                        <button onclick="resetApp()" class="px-6 py-2 bg-gray-800 text-white font-bold rounded shadow hover:bg-gray-700 flex items-center transition-colors">
+                            <i data-lucide="home" class="w-4 h-4 mr-2"></i> Return Home
+                        </button>
+                    </div>
+                </div>
+                ${renderReview()}
+            </div>`;
+        }
+
+        function renderHeader() {
+            const isInstructionPhase = state.showInstructions;
+            let navButtons = '';
+
+            // Strictly removing back and next buttons. Next button is managed locally within tasks.
+            if (isInstructionPhase) {
+                navButtons = `<button onclick="handleBeginTest()" class="flex items-center px-6 py-2 bg-white text-[#0ea5e9] font-bold rounded shadow hover:bg-gray-100 transition-colors">Begin <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i></button>`;
+            } 
+
+            return `
+            <header class="bg-[#0ea5e9] h-16 flex items-center justify-between px-6 shadow-md z-50 fixed w-full top-0">
+                <div class="flex items-center space-x-4">
+                    <span class="text-white text-lg font-sans font-bold flex items-center">
+                        <i data-lucide="mic" class="w-5 h-5 mr-2"></i> Speaking Section
+                    </span>
+                </div>
+                <div class="flex space-x-2">${navButtons}</div>
+            </header>
+            `;
+        }
+
+        function renderSubHeader() {
+            if (state.showInstructions) return '';
+            const step = state.flatSteps[state.currentStepIndex];
+            
+            let displayTitle = '';
+            if (step.type === 'scenario') {
+                displayTitle = `${step.data.title}: Directions`;
+            } else {
+                displayTitle = `${step.data.title} (${step.questionIndex}/${step.totalQuestions})`;
+            }
+
+            return `
+            <div class="fixed top-16 w-full bg-white border-b border-gray-300 px-6 py-3 flex justify-between items-center text-gray-700 text-sm font-sans z-40 shadow-sm">
+                <span class="font-semibold text-lg text-[#0ea5e9]">${displayTitle}</span>
+            </div>
+            `;
+        }
+
+        function renderInstructions() {
+            return `
+            <div class="pt-24 px-8 max-w-5xl mx-auto h-screen overflow-y-auto custom-scroll pb-10">
+                <h1 class="text-3xl text-gray-700 mb-6 font-sans">Speaking Section</h1>
+                <p class="text-gray-800 text-lg mb-4 leading-relaxed">
+                    In the speaking section, you will demonstrate your ability to communicate in English. Ensure your microphone is enabled.
+                </p>
+                <div class="bg-blue-50 border-l-4 border-[#0ea5e9] p-4 mb-8">
+                    <p class="text-sm text-gray-700">
+                        <strong>EdTech Note:</strong> To simulate the testing environment, audio transcripts are hidden. The browser's Speech to Text API will transcribe your answers in real-time. Once complete, you will be able to review your transcriptions and prompt an AI tutor for feedback.
+                    </p>
+                </div>
+                <div class="border border-black max-w-3xl">
+                    <div class="grid grid-cols-[30%_70%] bg-[#7dd3fc] border-b border-black">
+                        <div class="p-3 font-bold border-r border-black">Type of Task</div>
+                        <div class="p-3 font-bold">Description</div>
+                    </div>
+                    <div class="grid grid-cols-[30%_70%] border-b border-black bg-white">
+                        <div class="p-3 border-r border-black">Listen and Repeat</div>
+                        <div class="p-3">Repeat a series of sentences accurately and intelligibly. Time limits range from 8 to 12 seconds.</div>
+                    </div>
+                    <div class="grid grid-cols-[30%_70%] bg-white">
+                        <div class="p-3 border-r border-black">Take an Interview</div>
+                        <div class="p-3">Answer questions in a simulated conversation. You have 45 seconds per response.</div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderScenario(step) {
+            const { data } = step;
+            
+            let audioBtn = '';
+            if (!state.isAudioReady) {
+                audioBtn = `<button disabled class="flex items-center px-6 py-3 bg-gray-200 text-gray-500 font-bold rounded-full shadow-inner"><i data-lucide="loader" class="w-5 h-5 mr-2 animate-spin"></i> Loading...</button>`;
+            } else if (state.isPlaying) {
+                audioBtn = `<button disabled class="flex items-center px-6 py-3 bg-sky-100 text-sky-700 font-bold rounded-full shadow-inner"><i data-lucide="volume-2" class="w-5 h-5 mr-2 animate-pulse"></i> Playing Audio...</button>`;
+            } else if (state.audioCompleted[state.currentStepIndex]) {
+                audioBtn = `<button disabled class="flex items-center px-6 py-3 bg-gray-100 text-gray-500 font-bold rounded-full"><i data-lucide="check" class="w-5 h-5 mr-2"></i> Directions Finished</button>`;
+            } else {
+                audioBtn = `<button onclick="playPromptAudio()" class="flex items-center px-6 py-3 bg-white border-2 border-[#0ea5e9] text-[#0ea5e9] font-bold rounded-full shadow hover:bg-gray-50 transition-colors"><i data-lucide="play" class="w-5 h-5 mr-2"></i> Play Directions</button>`;
+            }
+
+            let nextActionBtn = '';
+            if (state.audioCompleted[state.currentStepIndex]) {
+                nextActionBtn = `<div class="mt-8 flex justify-center">
+                    <button onclick="handleNext()" class="flex items-center px-8 py-4 bg-green-500 text-white font-bold rounded-full shadow-lg hover:bg-green-600 transition-colors">
+                        Continue to Questions <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                    </button>
+                </div>`;
+            }
+
+            return `
+            <div class="pt-32 h-screen overflow-y-auto bg-white custom-scroll pb-12">
+                <div class="max-w-3xl mx-auto text-center">
+                    
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-8 mb-8 shadow-sm">
+                        <div class="w-16 h-16 bg-[#0ea5e9] rounded-full flex items-center justify-center mx-auto mb-4 text-white shadow-md">
+                            <i data-lucide="info" class="w-8 h-8"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">${data.title}: Directions</h2>
+                        <p class="text-gray-700 text-lg max-w-xl mx-auto leading-relaxed">${step.scenarioText}</p>
+                        
+                        <div class="mt-8 flex justify-center">
+                            ${audioBtn}
+                        </div>
+                    </div>
+                    
+                    ${state.audioCompleted[state.currentStepIndex] ? '' : `<p class="text-gray-500 italic text-sm">Listen to the directions to proceed.</p>`}
+                    ${nextActionBtn}
+
+                </div>
+            </div>
+            `;
+        }
+
+        function renderActiveTask(step) {
+            const { data, question } = step;
+            const isInterview = step.type === 'interview';
+            
+            let audioBtn = '';
+            if (!state.isAudioReady) {
+                audioBtn = `<button disabled class="flex items-center px-6 py-3 bg-gray-200 text-gray-500 font-bold rounded-full shadow-inner"><i data-lucide="loader" class="w-5 h-5 mr-2 animate-spin"></i> Loading...</button>`;
+            } else if (state.isPlaying) {
+                audioBtn = `<button disabled class="flex items-center px-6 py-3 bg-sky-100 text-sky-700 font-bold rounded-full shadow-inner"><i data-lucide="volume-2" class="w-5 h-5 mr-2 animate-pulse"></i> Playing Audio...</button>`;
+            } else if (state.audioCompleted[state.currentStepIndex]) {
+                audioBtn = `<button disabled class="flex items-center px-6 py-3 bg-gray-100 text-gray-500 font-bold rounded-full"><i data-lucide="check" class="w-5 h-5 mr-2"></i> Prompt Finished</button>`;
+            } else {
+                audioBtn = `<button onclick="playPromptAudio()" class="flex items-center px-6 py-3 bg-white border-2 border-[#0ea5e9] text-[#0ea5e9] font-bold rounded-full shadow hover:bg-gray-50 transition-colors"><i data-lucide="play" class="w-5 h-5 mr-2"></i> Play Prompt</button>`;
+            }
+
+            let recBtn = '';
+            const isFinished = state.hasRecorded[question.id];
+
+            // Next button logic tied explicitly to timer finishing
+            if (isFinished) {
+                const isLastQuestion = state.currentStepIndex === state.flatSteps.length - 1;
+                recBtn = `
+                    <button onclick="handleNext()" class="flex items-center px-8 py-4 bg-green-500 text-white font-bold rounded-full shadow-lg hover:bg-green-600 transition-colors">
+                        <i data-lucide="${isLastQuestion ? 'check-circle' : 'arrow-right'}" class="w-6 h-6 mr-2"></i> ${isLastQuestion ? 'Finish Test' : 'Next Task'}
+                    </button>`;
+            } else if (state.isRecording) {
+                recBtn = `
+                    <button disabled class="flex items-center px-8 py-4 bg-red-500 text-white font-bold rounded-full shadow-lg recording-pulse cursor-not-allowed">
+                        <i data-lucide="mic" class="w-6 h-6 mr-2"></i> Recording (${formatTime(state.recordingTimeLeft)})
+                    </button>`;
+            } else {
+                // Shown briefly as a buffer before recording auto-starts
+                recBtn = `
+                    <button onclick="startRecording()" class="flex items-center px-8 py-4 bg-gray-800 text-white font-bold rounded-full shadow-lg hover:bg-gray-700 transition-colors" ${state.isPlaying ? 'disabled opacity-50 cursor-not-allowed' : ''}>
+                        <i data-lucide="mic" class="w-6 h-6 mr-2"></i> Start Recording (${question.timeLimit}s)
+                    </button>`;
+            }
+
+            return `
+            <div class="pt-32 h-screen overflow-y-auto bg-white custom-scroll pb-12">
+                <div class="max-w-3xl mx-auto">
+                    
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-8 text-center shadow-sm">
+                        <div class="w-16 h-16 bg-[#0ea5e9] rounded-full flex items-center justify-center mx-auto mb-4 text-white shadow-md">
+                            <i data-lucide="${isInterview ? 'user' : 'ear'}" class="w-8 h-8"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">${data.title}</h2>
+                        
+                        <div class="mt-6 flex justify-center">
+                            ${audioBtn}
+                        </div>
+                    </div>
+
+                    <div class="bg-white border-2 ${state.isRecording ? 'border-red-400' : 'border-gray-200'} rounded-xl p-8 text-center shadow-md transition-colors relative">
+                        <h3 class="font-bold text-gray-700 mb-6 uppercase tracking-widest text-sm">Your Response</h3>
+                        
+                        <div class="flex justify-center">
+                            ${recBtn}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            `;
+        }
+
+        // --- MAIN RENDER LOOP ---
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!state.currentModule) {
+                app.innerHTML = renderWelcome();
+            } else if (state.showResults) {
+                app.innerHTML = renderResults();
+            } else {
+                let mainContent = '';
+                if (state.showInstructions) {
+                    mainContent = renderInstructions();
+                } else {
+                    const step = state.flatSteps[state.currentStepIndex];
+                    if (step.type === 'scenario') {
+                        mainContent = renderScenario(step);
+                    } else {
+                        mainContent = renderActiveTask(step);
+                    }
+                }
+                app.innerHTML = renderHeader() + renderSubHeader() + mainContent;
+            }
+            lucide.createIcons();
+        }
+
+        // Initialize App
+        render();
+
+    </script>
+</body>
+</html>

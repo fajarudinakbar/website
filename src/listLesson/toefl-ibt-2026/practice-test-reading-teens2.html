@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Practice Test for Teens - Reading Section</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* Custom scrollbar for reading pane */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- App Container -->
+    <div id="app"></div>
+
+    <script>
+        // --- DATA STRUCTURE ---
+        // Practice Set 3: Authentic High School Contexts
+        const testData = {
+            module1: {
+                title: "Module 1",
+                sections: [
+                    {
+                        id: "m1_cloze",
+                        type: "cloze",
+                        title: "Fill in the missing letters (second half of the word).",
+                        text: "Every year, high school students organize elections for the student %1%. Candidates must %2% a speech and share their ideas with the student %3%. The process helps teens develop %4% skills and learn about civic %5%. During campaign week, the hallways are covered in colorful %6%, and students eagerly %7% the issues. Ultimately, the elected officials will %8% student concerns to the school administration.",
+                        blanks: [
+                            // council
+                            { id: 1, prefix: "coun", suffix: "", answer: "council" },
+                            // prepare
+                            { id: 2, prefix: "prep", suffix: "", answer: "prepare" },
+                            // body
+                            { id: 3, prefix: "bo", suffix: "", answer: "body" },
+                            // leadership
+                            { id: 4, prefix: "leader", suffix: "", answer: "leadership" },
+                            // responsibility
+                            { id: 5, prefix: "responsi", suffix: "", answer: "responsibility" },
+                            // posters
+                            { id: 6, prefix: "pos", suffix: "", answer: "posters" },
+                            // discuss
+                            { id: 7, prefix: "dis", suffix: "", answer: "discuss" },
+                            // voice
+                            { id: 8, prefix: "vo", suffix: "", answer: "voice" }
+                        ]
+                    },
+                    {
+                        id: "m1_email1",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Track Practice Update",
+                        passageContent: `To: track.team@oakhigh.edu\nFrom: coach.miller@oakhigh.edu\nDate: 09/12/2026\nSubject: Change in Tuesday Practice Schedule\n\nHi Team,\n\nDue to a mandatory faculty meeting this Tuesday afternoon, our track and field practice will start an hour later than usual. We will begin at 4:30 PM instead of 3:30 PM on the main field. Please use the extra hour to catch up on homework in the library or the cafeteria.\n\nAlso, it is expected to be very hot on Tuesday, so do not forget to bring extra water bottles.\n\nSee you on the track,\n\nCoach Miller`,
+                        questions: [
+                            {
+                                id: 11,
+                                text: "What is the main purpose of this email?",
+                                options: [
+                                    "To announce a new track coach",
+                                    "To change the time of a sports practice",
+                                    "To cancel a track and field competition",
+                                    "To invite students to a faculty meeting"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                id: 12,
+                                text: "Why is the practice starting later?",
+                                options: [
+                                    "The weather will be too hot earlier in the day.",
+                                    "The main field is being used by another team.",
+                                    "The coach has to attend a meeting.",
+                                    "The students need time to do homework."
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                id: 13,
+                                text: "What are the students reminded to bring?",
+                                options: [
+                                    "Their track uniforms",
+                                    "Extra water bottles",
+                                    "Their homework",
+                                    "A note from their parents"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    },
+                    {
+                        id: "m1_email2",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Overdue Book Notice",
+                        passageContent: `To: samuel.smith@school.edu\nFrom: library@school.edu\nDate: 10/05/2026\nSubject: Overdue Library Book Notice\n\nDear Samuel,\n\nOur records show that the book "The History of Ancient Rome" was due three days ago. Please return the book to the front desk of the library as soon as possible so other students can borrow it.\n\nIf you return the book by this Friday, your late fees will be waived. However, if the book is not returned by Friday afternoon, a $2.00 fine will be added to your student account.\n\nThank you,\n\nMs. Green\nSchool Librarian`,
+                        questions: [
+                            {
+                                id: 14,
+                                text: "Who sent the email?",
+                                options: [
+                                    "A history teacher",
+                                    "The school librarian",
+                                    "Another student",
+                                    "The school principal"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                id: 15,
+                                text: "What happens if Samuel returns the book on Thursday?",
+                                options: [
+                                    "He will not have to pay a late fee.",
+                                    "He will be charged two dollars.",
+                                    "He will receive a new history book.",
+                                    "He will lose his library privileges."
+                                ],
+                                correctAnswer: 0
+                            },
+                            {
+                                id: 16,
+                                text: "Why does the library want the book back quickly?",
+                                options: [
+                                    "So the librarian can read it",
+                                    "Because it is a very expensive book",
+                                    "So that other students have a chance to read it",
+                                    "Because the library is closing for the summer"
+                                ],
+                                correctAnswer: 2
+                            }
+                        ]
+                    },
+                    {
+                        id: "m1_academic",
+                        type: "reading",
+                        title: "Read an Academic Passage",
+                        passageTitle: "The Evolution of Video Games",
+                        passageContent: `Video games have come a long way since their creation in the mid-20th century. The earliest games, such as Pong and Pac-Man, were played on large arcade machines. These games featured very simple pixel graphics and basic mechanics, usually involving moving a shape to hit a ball or eat dots. Despite their simplicity, they captured the public's imagination and sparked a massive new entertainment industry.\n\nIn the 1980s and 1990s, the focus shifted from public arcades to home living rooms. Companies developed home consoles that connected directly to television sets. This era introduced iconic characters and allowed for longer, more complex storytelling. Eventually, the transition from 2D pixel art to 3D polygons completely changed the landscape, giving players immersive virtual worlds to explore.\n\nToday, modern gaming is heavily defined by internet connectivity. Multiplayer online games allow teenagers and adults to collaborate or compete with millions of players globally. While this fosters a strong sense of global community and teamwork, researchers often express concern over excessive screen time and the potential for reduced physical activity. Despite these concerns, gaming remains a significant part of modern youth culture and digital socialization.`,
+                        questions: [
+                            {
+                                id: 17,
+                                text: "What is the passage mainly about?",
+                                options: [
+                                    "The dangers of excessive screen time for teens",
+                                    "The history and development of video games",
+                                    "How to create 3D graphics for computers",
+                                    "The financial success of arcade machines"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                id: 18,
+                                text: "According to paragraph 2, how did home consoles change the gaming experience?",
+                                options: [
+                                    "They allowed people to play games on their televisions at home.",
+                                    "They forced players to go to arcades more often.",
+                                    "They removed all storytelling from video games.",
+                                    "They made games much simpler and shorter."
+                                ],
+                                correctAnswer: 0
+                            },
+                            {
+                                id: 19,
+                                text: "What is mentioned as a social benefit of modern online gaming?",
+                                options: [
+                                    "It improves a player's physical health.",
+                                    "It lowers the cost of buying video games.",
+                                    "It allows players to connect and team up with people worldwide.",
+                                    "It encourages teenagers to spend less time on the internet."
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                id: 20,
+                                text: "What is one concern researchers have about modern video games?",
+                                options: [
+                                    "The graphics are too complicated to understand.",
+                                    "They might lead to too much screen time and less physical activity.",
+                                    "They do not have enough multiplayer options.",
+                                    "The stories in the games are not educational enough."
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    }
+                ]
+            },
+            module2: {
+                title: "Module 2",
+                sections: [
+                    {
+                        id: "m2_cloze",
+                        type: "cloze",
+                        title: "Fill in the missing letters (second half of the word).",
+                        text: "Many teenagers decide to find a part-time %1% during the summer or after school. Working helps students earn their own %2% and gain valuable real-world %3%. For example, working in a cafe or retail store teaches %4% service and time %5%. However, it is important for working teens to %6% their shifts with their homework and extracurricular %7%. Having a supportive schedule ensures that their academic %8% does not suffer.",
+                        blanks: [
+                            // job
+                            { id: 21, prefix: "jo", suffix: "", answer: "job" },
+                            // money
+                            { id: 22, prefix: "mon", suffix: "", answer: "money" },
+                            // experience
+                            { id: 23, prefix: "experi", suffix: "", answer: "experience" },
+                            // customer
+                            { id: 24, prefix: "custo", suffix: "", answer: "customer" },
+                            // management
+                            { id: 25, prefix: "manage", suffix: "", answer: "management" },
+                            // balance
+                            { id: 26, prefix: "bal", suffix: "", answer: "balance" },
+                            // activities
+                            { id: 27, prefix: "activi", suffix: "", answer: "activities" },
+                            // performance
+                            { id: 28, prefix: "perfor", suffix: "", answer: "performance" }
+                        ]
+                    },
+                    {
+                        id: "m2_email1",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Auditions for Spring Musical",
+                        passageContent: `To: all.students@cityhigh.edu\nFrom: drama.club@cityhigh.edu\nDate: 02/20/2026\nSubject: Auditions for the Spring Musical!\n\nHello City High Students,\n\nThe Drama Club is thrilled to announce that this year's spring musical will be "The Lion King"! Auditions will be held next Thursday at 3:15 PM in the school auditorium.\n\nNo prior acting experience is required to audition. If you want to try out for a singing role, please prepare a short, one-minute song to sing without background music. If you only want to act or dance, just show up and we will give you a script to read.\n\nBreak a leg!\n\nThe Drama Club Team`,
+                        questions: [
+                            {
+                                id: 31,
+                                text: "What is the main purpose of the email?",
+                                options: [
+                                    "To announce auditions for a school play",
+                                    "To sell tickets for a movie",
+                                    "To invite students to a choir concert",
+                                    "To cancel the Drama Club meeting"
+                                ],
+                                correctAnswer: 0
+                            },
+                            {
+                                id: 32,
+                                text: "What must students do if they want a singing role?",
+                                options: [
+                                    "Bring their own background music",
+                                    "Have prior acting experience",
+                                    "Prepare a one-minute song to sing",
+                                    "Write their own script"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                id: 33,
+                                text: "Where will the auditions take place?",
+                                options: [
+                                    "In the school cafeteria",
+                                    "In the school auditorium",
+                                    "In the music room",
+                                    "On the sports field"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    },
+                    {
+                        id: "m2_email2",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Lost and Found Reminder",
+                        passageContent: `To: students@baysideschool.edu\nFrom: front.office@baysideschool.edu\nDate: 11/15/2026\nSubject: Claim Your Items from Lost and Found!\n\nAttention Students,\n\nThe Lost and Found bins in the front office are completely full. We have dozens of jackets, water bottles, notebooks, and even a few calculators. \n\nPlease stop by the front office during your lunch break to check if any of your missing items are here. You have until the end of the month to claim your belongings. Any items left unclaimed after November 30th will be washed and donated to a local charity.\n\nThank you,\n\nFront Office Staff`,
+                        questions: [
+                            {
+                                id: 34,
+                                text: "Why is the front office sending this email?",
+                                options: [
+                                    "To ask for clothing donations",
+                                    "To remind students to claim their lost items",
+                                    "To announce a new lunch schedule",
+                                    "To sell school supplies like water bottles"
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                id: 35,
+                                text: "What will happen to the items after November 30th?",
+                                options: [
+                                    "They will be thrown in the trash.",
+                                    "They will be sold to students.",
+                                    "They will be given to a local charity.",
+                                    "They will be moved to the library."
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                id: 36,
+                                text: "When should students go to the front office?",
+                                options: [
+                                    "Before school starts",
+                                    "During their lunch break",
+                                    "During their math class",
+                                    "After school on Friday"
+                                ],
+                                correctAnswer: 1
+                            }
+                        ]
+                    },
+                    {
+                        id: "m2_academic",
+                        type: "reading",
+                        title: "Read an Academic Passage",
+                        passageTitle: "The Basics of Renewable Energy",
+                        passageContent: `As the world's population grows, the demand for energy increases. For a long time, humanity has relied heavily on fossil fuels, such as coal and oil, to power homes and vehicles. However, burning these fuels releases harmful pollution and carbon dioxide into the atmosphere. To combat climate change, many countries are shifting their focus to renewable energy sources.\n\nRenewable energy comes from natural sources that constantly replenish themselves. Solar power is one of the most popular forms. Solar panels capture energy from the sun's rays and convert it directly into electricity. Similarly, wind power uses giant turbines to generate electricity; when the wind blows, it spins the turbine's blades, which powers a generator inside.\n\nWhile renewable energy is incredibly beneficial for the environment, it does face some challenges. The most significant drawback is weather dependency. Solar panels cannot generate electricity at night or during heavy rain, and wind turbines rely on steady breezes to function. To solve this, scientists are currently developing advanced, large-scale batteries to store extra energy on sunny or windy days, ensuring a steady power supply regardless of the weather.`,
+                        questions: [
+                            {
+                                id: 37,
+                                text: "What is the passage mainly about?",
+                                options: [
+                                    "How to build a solar panel",
+                                    "The history of coal and oil mining",
+                                    "The shift toward and mechanics of renewable energy",
+                                    "Why electricity is becoming more expensive"
+                                ],
+                                correctAnswer: 2
+                            },
+                            {
+                                id: 38,
+                                text: "According to paragraph 2, how do solar panels work?",
+                                options: [
+                                    "They use wind to spin a generator.",
+                                    "They capture sunlight and turn it into electricity.",
+                                    "They burn fossil fuels without causing pollution.",
+                                    "They pull electricity from the ground."
+                                ],
+                                correctAnswer: 1
+                            },
+                            {
+                                id: 39,
+                                text: "Why are many countries trying to stop using fossil fuels?",
+                                options: [
+                                    "Because they release harmful pollution into the air",
+                                    "Because they are easily destroyed by rain",
+                                    "Because they do not produce enough energy for cars",
+                                    "Because they are a form of renewable energy"
+                                ],
+                                correctAnswer: 0
+                            },
+                            {
+                                id: 40,
+                                text: "What is one major disadvantage of solar and wind energy mentioned in the text?",
+                                options: [
+                                    "They produce too much carbon dioxide.",
+                                    "They are too small to power modern homes.",
+                                    "They rely on specific weather conditions to work.",
+                                    "They require too much coal to operate efficiently."
+                                ],
+                                correctAnswer: 2
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            currentModule: null,
+            flatSteps: [],
+            currentStepIndex: 0,
+            answers: {},
+            showResults: false,
+            showInstructions: false,
+            timeLeft: 1200,
+            timerInterval: null
+        };
+
+        // --- LOGIC FUNCTIONS ---
+
+        function initModule(moduleId) {
+            state.currentModule = moduleId;
+            state.answers = {};
+            state.showResults = false;
+            state.showInstructions = true;
+            state.timeLeft = 1200;
+            state.currentStepIndex = 0;
+
+            // Flatten steps
+            const steps = [];
+            testData[moduleId].sections.forEach(section => {
+                if (section.type === 'cloze') {
+                    steps.push({
+                        type: 'cloze',
+                        data: section,
+                        sectionId: section.id
+                    });
+                } else if (section.type === 'reading') {
+                    section.questions.forEach((q, idx) => {
+                        steps.push({
+                            type: 'reading',
+                            data: section,
+                            question: q,
+                            questionIndex: idx + 1,
+                            totalQuestions: section.questions.length,
+                            sectionId: section.id
+                        });
+                    });
+                }
+            });
+            state.flatSteps = steps;
+            
+            render();
+            // Timer starts after instructions are dismissed
+        }
+
+        function startTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                if (state.timeLeft > 0) {
+                    state.timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(state.timerInterval);
+                    finishTest();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function handleNext() {
+            if (state.currentStepIndex < state.flatSteps.length - 1) {
+                state.currentStepIndex++;
+                render();
+            } else {
+                finishTest();
+            }
+        }
+
+        function handleBack() {
+            if (state.currentStepIndex > 0) {
+                state.currentStepIndex--;
+                render();
+            }
+        }
+
+        function handleBeginTest() {
+            state.showInstructions = false;
+            render();
+            startTimer();
+        }
+
+        function finishTest() {
+            stopTimer();
+            state.showResults = true;
+            render();
+        }
+
+        function handleClozeInput(id, value) {
+            state.answers[id] = value;
+            // No full re-render needed for text input to keep focus
+        }
+
+        function handleRadioInput(qId, value) {
+            state.answers[qId] = value;
+            // Re-render to show selection state visually if needed, 
+            // but native radio behavior handles the UI check.
+        }
+
+        function resetApp() {
+            state.currentModule = null;
+            state.flatSteps = [];
+            state.answers = {};
+            state.showResults = false;
+            state.showInstructions = false;
+            stopTimer();
+            render();
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            let total = 0;
+
+            if (!state.currentModule) return { correct: 0, total: 0 };
+
+            testData[state.currentModule].sections.forEach(sec => {
+                if (sec.type === 'cloze') {
+                    sec.blanks.forEach(b => {
+                        total++;
+                        // VALIDATION LOGIC: Check Prefix + Input + Suffix (Prefix contains first half)
+                        const userInput = state.answers[b.id] ? state.answers[b.id].trim() : "";
+                        // Construct the full word to check against answer
+                        const fullWord = (b.prefix || "") + userInput + (b.suffix || "");
+                        if (fullWord.toLowerCase() === b.answer.toLowerCase()) {
+                            correct++;
+                        }
+                    });
+                } else {
+                    sec.questions.forEach(q => {
+                        total++;
+                        if (state.answers[q.id] === q.correctAnswer) {
+                            correct++;
+                        }
+                    });
+                }
+            });
+            return { correct, total };
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('timer-display');
+            if (el) el.innerText = formatTime(state.timeLeft);
+        }
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderWelcome() {
+            return `
+            <div class="min-h-screen bg-[#f0f0f0] flex items-center justify-center p-4">
+                <div class="bg-white max-w-3xl w-full shadow-lg rounded-lg overflow-hidden border-t-8 border-[#007777]">
+                    <div class="bg-[#007777] p-6 text-white text-center">
+                        <i data-lucide="book-open-check" class="w-12 h-12 mx-auto mb-4 opacity-90"></i>
+                        <h1 class="text-3xl font-bold font-sans">Reading Practice for Teens (Set 3)</h1>
+                        <p class="opacity-90 mt-2">TOEFL® Style Exercises</p>
+                    </div>
+                    
+                    <div class="p-10 text-center">
+                        <p class="text-gray-600 mb-8 text-lg">
+                            This practice test simulates the digital interface of an English reading exam.
+                            Select a module to begin your practice.
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <button onclick="initModule('module1')" class="group relative p-6 border-2 border-gray-200 rounded-xl hover:border-[#007777] transition-all text-left w-full">
+                                <div class="absolute top-0 right-0 bg-[#007777] text-white text-xs px-2 py-1 rounded-bl-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Questions 1-20
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Module 1</h3>
+                                <p class="text-sm text-gray-500">Cloze test + 2 School Emails + 1 Academic Passage</p>
+                            </button>
+
+                            <button onclick="initModule('module2')" class="group relative p-6 border-2 border-gray-200 rounded-xl hover:border-[#007777] transition-all text-left w-full">
+                                <div class="absolute top-0 right-0 bg-[#007777] text-white text-xs px-2 py-1 rounded-bl-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Questions 21-40
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Module 2</h3>
+                                <p class="text-sm text-gray-500">Cloze test + 2 School Emails + 1 Academic Passage</p>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 text-center text-xs text-gray-400">
+                        Simulated interface for educational purposes. Content designed for high school context.
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // Function to render the detailed review of answers
+        function renderReview() {
+            const moduleData = testData[state.currentModule];
+            let html = '<div class="max-w-4xl mx-auto mt-12 space-y-8 pb-16">';
+            
+            html += '<h2 class="text-2xl font-bold text-center text-gray-800 mb-6 border-b pb-4">Detailed Answer Review</h2>';
+
+            moduleData.sections.forEach(section => {
+                if (section.type === 'cloze') {
+                    html += `<div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="font-bold text-lg mb-4 text-[#007777] flex items-center">
+                            <i data-lucide="edit-3" class="w-5 h-5 mr-2"></i> ${section.title}
+                        </h3>
+                        <div class="leading-loose text-lg text-gray-800">`;
+                    
+                    const parts = section.text.split(/%\d+%/);
+                    parts.forEach((part, idx) => {
+                        html += part;
+                        const blank = section.blanks[idx];
+                        if (blank) {
+                            const userVal = state.answers[blank.id] ? state.answers[blank.id].trim() : "";
+                            const fullUserWord = (blank.prefix || "") + userVal + (blank.suffix || "");
+                            const isCorrect = fullUserWord.toLowerCase() === blank.answer.toLowerCase();
+                            
+                            if (isCorrect) {
+                                html += `<span class="inline-block px-1 mx-1 bg-green-100 text-green-700 font-bold border border-green-300 rounded">${fullUserWord}</span>`;
+                            } else {
+                                html += `<span class="inline-block px-1 mx-1 bg-red-50 text-red-500 line-through decoration-2 decoration-red-500 border border-red-200 rounded">${fullUserWord || "(empty)"}</span>
+                                         <span class="inline-block px-1 mx-1 bg-green-100 text-green-700 font-bold border border-green-300 rounded shadow-sm">${blank.answer}</span>`;
+                            }
+                        }
+                    });
+                    html += `</div></div>`;
+                } else if (section.type === 'reading') {
+                    // Group reading questions by passage title for clarity in review
+                    html += `<div class="space-y-6">`;
+                    html += `<div class="bg-gray-100 p-4 rounded-t-lg border-b border-gray-300 font-bold text-gray-700 mt-8 flex items-center">
+                                <i data-lucide="book-open" class="w-5 h-5 mr-2"></i> Passage: ${section.passageTitle}
+                             </div>`;
+                    
+                    section.questions.forEach((q, qIdx) => {
+                        const userAnsIdx = state.answers[q.id];
+                        const correctAnsIdx = q.correctAnswer;
+                        const isCorrect = userAnsIdx === correctAnsIdx;
+                        
+                        // Card styling based on correctness
+                        const borderColor = isCorrect ? 'border-l-green-500' : 'border-l-red-500';
+                        
+                        html += `<div class="bg-white p-6 rounded-b-lg shadow-sm border border-gray-200 border-l-4 ${borderColor} mb-4">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Question ${q.id}</span>
+                                ${isCorrect 
+                                    ? '<span class="text-green-600 font-bold text-sm flex items-center bg-green-50 px-2 py-1 rounded"><i data-lucide="check" class="w-4 h-4 mr-1"></i> Correct</span>' 
+                                    : '<span class="text-red-500 font-bold text-sm flex items-center bg-red-50 px-2 py-1 rounded"><i data-lucide="x" class="w-4 h-4 mr-1"></i> Incorrect</span>'}
+                            </div>
+                            <p class="font-semibold text-lg mb-4 text-gray-900">${q.text}</p>
+                            
+                            <div class="space-y-2">`;
+                            
+                        q.options.forEach((opt, optIdx) => {
+                            let optionClass = "p-3 rounded border border-gray-200 text-gray-700";
+                            let icon = "";
+                            
+                            if (optIdx === correctAnsIdx) {
+                                // Always highlight the correct answer in green
+                                optionClass = "p-3 rounded border-2 border-green-500 bg-green-50 text-green-800 font-bold shadow-sm";
+                                icon = '<i data-lucide="check-circle" class="w-5 h-5 ml-auto text-green-600"></i>';
+                            } else if (optIdx === userAnsIdx && !isCorrect) {
+                                // Highlight wrong user selection in red
+                                optionClass = "p-3 rounded border-2 border-red-300 bg-red-50 text-red-800";
+                                icon = '<i data-lucide="x-circle" class="w-5 h-5 ml-auto text-red-500"></i>';
+                            } else if (optIdx === userAnsIdx && isCorrect) {
+                                // Logic already handled by correctAnsIdx block, but ensuring consistent valid state
+                                optionClass = "p-3 rounded border-2 border-green-500 bg-green-50 text-green-800 font-bold shadow-sm";
+                            } else {
+                                // Unselected, incorrect options
+                                optionClass = "p-3 rounded border border-gray-100 bg-white opacity-60";
+                            }
+                            
+                            html += `<div class="${optionClass} flex items-center transition-all">
+                                            <span>${opt}</span>
+                                            ${icon}
+                                        </div>`;
+                        });
+                        
+                        html += `</div></div>`;
+                    });
+                    html += `</div>`;
+                }
+            });
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderResults() {
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : Math.round((correct/total)*100);
+            const scoreColor = percent >= 70 ? 'text-green-600' : 'text-orange-500';
+            
+            const reviewHtml = renderReview();
+
+            return `
+            <div class="min-h-screen bg-[#f0f0f0] pt-24 pb-12 px-4 overflow-y-auto custom-scroll">
+                <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                    <div class="bg-[#007777] p-8 text-white text-center">
+                        <h2 class="text-3xl font-bold mb-2">Test Completed</h2>
+                        <p>Here is your performance report</p>
+                    </div>
+                    
+                    <div class="p-8">
+                        <div class="flex flex-col md:flex-row justify-center items-center gap-12 mb-8">
+                            <div class="text-center">
+                                <div class="text-6xl font-bold text-[#007777] mb-2">${correct}</div>
+                                <div class="text-gray-500 uppercase tracking-widest text-sm">Correct Answers</div>
+                            </div>
+                            <div class="w-px h-24 bg-gray-200 hidden md:block"></div>
+                            <div class="text-center">
+                                <div class="text-6xl font-bold mb-2 ${scoreColor}">${percent}%</div>
+                                <div class="text-gray-500 uppercase tracking-widest text-sm">Score Percentage</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center border-t pt-8">
+                            <button onclick="resetApp()" class="px-8 py-3 bg-gray-800 text-white font-bold rounded shadow hover:bg-gray-700 transition-colors flex items-center">
+                                <i data-lucide="home" class="w-4 h-4 mr-2"></i> Return to Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Review Section -->
+                ${reviewHtml}
+                
+                <div class="flex justify-center pb-12">
+                     <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-full shadow hover:bg-gray-400 transition-colors text-sm font-bold flex items-center">
+                        <i data-lucide="arrow-up" class="w-4 h-4 mr-2"></i> Back to Top
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        function renderHeader() {
+            const isInstructionPhase = state.showInstructions;
+            let navButtons = '';
+
+            if (isInstructionPhase) {
+                navButtons = `
+                    <button onclick="handleBeginTest()" class="flex items-center px-6 py-2 bg-white text-[#007777] font-bold rounded shadow hover:bg-gray-100 transition-colors">
+                        Begin
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            } else {
+                const backBtn = state.currentStepIndex > 0 
+                    ? `<button onclick="handleBack()" class="flex items-center px-6 py-2 bg-white text-[#007777] font-bold rounded shadow hover:bg-gray-100 transition-colors mr-2">
+                        <i data-lucide="chevron-left" class="mr-1 w-5 h-5"></i> Back
+                       </button>` 
+                    : '';
+                
+                const nextText = state.currentStepIndex === state.flatSteps.length - 1 ? 'Finish' : 'Next';
+                
+                navButtons = `
+                    ${backBtn}
+                    <button onclick="handleNext()" class="flex items-center px-6 py-2 bg-white text-[#007777] font-bold rounded shadow hover:bg-gray-100 transition-colors">
+                        ${nextText}
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            }
+
+            return `
+            <header class="bg-[#007777] h-16 flex items-center justify-between px-6 shadow-md z-50 fixed w-full top-0">
+                <div class="flex items-center space-x-4">
+                    ${isInstructionPhase ? '<span class="text-white text-lg font-sans font-bold">Reading Section</span>' : '<span class="text-white text-lg font-sans font-bold">Reading Section</span>'}
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="flex items-center space-x-2 text-white bg-[#006666] px-4 py-2 rounded border border-[#008888] hover:bg-[#005555]">
+                        <i data-lucide="volume-2" class="w-5 h-5"></i>
+                        <span class="font-sans font-semibold">Volume</span>
+                    </button>
+                    
+                    <div class="flex space-x-2">
+                        ${navButtons}
+                    </div>
+                </div>
+            </header>
+            `;
+        }
+
+        function renderSubHeader() {
+            if (state.showInstructions) return '';
+            
+            const totalSteps = state.flatSteps.length;
+            const displayText = `Reading | Question ${state.currentStepIndex + 1} of ${totalSteps}`;
+
+            return `
+            <div class="fixed top-16 w-full bg-white border-b border-gray-300 px-6 py-3 flex justify-between items-center text-gray-700 text-sm font-sans z-40 shadow-sm">
+                <span class="font-semibold text-lg">${displayText}</span>
+                <div class="flex items-center text-gray-500 font-mono">
+                    <i data-lucide="clock" class="mr-2 w-4 h-4"></i>
+                    <span id="timer-display">${formatTime(state.timeLeft)}</span>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderInstructions() {
+            return `
+            <div class="pt-24 px-8 max-w-5xl mx-auto h-screen overflow-y-auto custom-scroll pb-10">
+                <h1 class="text-3xl text-gray-700 mb-6 font-sans">Reading Section - Practice Set 3</h1>
+                
+                <p class="text-gray-800 text-lg mb-8 leading-relaxed">
+                    In an actual test, you will answer 35–48 reading questions to demonstrate how well you 
+                    understand academic and non-academic texts in English. There are three types of tasks in the reading 
+                    section of the test.
+                </p>
+
+                <div class="border border-black max-w-3xl shadow-sm">
+                    <div class="grid grid-cols-[30%_70%] bg-[#00d2be] border-b border-black">
+                        <div class="p-3 font-bold border-r border-black">Type of Task</div>
+                        <div class="p-3 font-bold">Description</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-[30%_70%] border-b border-black bg-white">
+                        <div class="p-3 border-r border-black">Complete the Words</div>
+                        <div class="p-3">Fill in the missing letters in a paragraph about school activities.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] border-b border-black bg-white">
+                        <div class="p-3 border-r border-black">Read in Daily Life</div>
+                        <div class="p-3">Answer questions about everyday reading material like school emails.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] bg-white">
+                        <div class="p-3 border-r border-black">Read an Academic Passage</div>
+                        <div class="p-3">Answer questions about engaging academic passages for teens.</div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderCloze(step) {
+            const { data } = step;
+            const parts = data.text.split(/%\d+%/);
+            
+            let content = '';
+            parts.forEach((part, idx) => {
+                content += part;
+                const blank = data.blanks[idx];
+                if (blank) {
+                    const val = state.answers[blank.id] || '';
+                    
+                    // Dynamic Placeholder Logic
+                    // Calculate how many letters are missing (Answer Length - Prefix Length)
+                    const missingLength = blank.answer.length - (blank.prefix ? blank.prefix.length : 0);
+                    const placeholderText = '-'.repeat(missingLength);
+                    
+                    content += `
+                    <span class="inline-flex items-center mx-1 font-bold">
+                        ${blank.prefix ? `<span class="mr-0.5 text-gray-900">${blank.prefix}</span>` : ''}
+                        <input 
+                            type="text" 
+                            value="${val}" 
+                            placeholder="${placeholderText}"
+                            maxlength="${missingLength}"
+                            oninput="handleClozeInput(${blank.id}, this.value)"
+                            class="bg-white border-b-2 border-gray-400 w-24 h-8 px-1 text-left placeholder-gray-400 focus:border-[#007777] focus:outline-none transition-colors font-mono tracking-widest text-blue-800"
+                            aria-label="Blank ${blank.id}"
+                        />
+                        ${blank.suffix ? `<span class="ml-0.5 text-gray-900">${blank.suffix}</span>` : ''}
+                    </span>`;
+                }
+            });
+
+            return `
+            <div class="pt-32 px-4 md:px-12 max-w-5xl mx-auto pb-12">
+                <h2 class="text-center text-2xl font-sans font-bold text-black mb-12">
+                    ${data.title}
+                </h2>
+                
+                <div class="bg-white p-8 leading-loose text-lg text-gray-800 font-sans text-justify shadow-sm border border-gray-200">
+                    ${content}
+                </div>
+            </div>
+            `;
+        }
+
+        function renderReading(step) {
+            const { data, question } = step;
+            
+            const paragraphs = data.passageContent.split('\n').map(line => `<p class="mb-4">${line}</p>`).join('');
+            
+            const options = question.options.map((opt, idx) => {
+                const isChecked = state.answers[question.id] === idx ? 'checked' : '';
+                return `
+                <label class="flex items-start cursor-pointer group">
+                    <div class="relative flex items-center justify-center flex-shrink-0 mt-1">
+                        <input 
+                            type="radio" 
+                            name="q-${question.id}" 
+                            ${isChecked}
+                            onchange="handleRadioInput(${question.id}, ${idx})"
+                            class="peer appearance-none w-5 h-5 border-2 border-gray-600 rounded-full checked:border-[#007777] checked:border-4 transition-all"
+                        />
+                    </div>
+                    <span class="ml-3 text-gray-800 font-sans text-lg group-hover:text-black">
+                        ${opt}
+                    </span>
+                </label>
+                `;
+            }).join('');
+
+            return `
+            <div class="pt-28 h-screen flex flex-col md:flex-row overflow-hidden bg-white">
+                <!-- Left Pane: Passage -->
+                <div class="w-full md:w-1/2 h-full overflow-y-auto border-r border-gray-300 p-8 bg-white custom-scroll">
+                    <h2 class="text-xl font-bold mb-4 font-sans text-black">${data.passageTitle}</h2>
+                    <div class="prose max-w-none text-black font-sans leading-relaxed text-lg">
+                        ${paragraphs}
+                    </div>
+                </div>
+                
+                <!-- Right Pane: Question -->
+                <div class="w-full md:w-1/2 h-full overflow-y-auto p-8 bg-gray-50 custom-scroll">
+                    <div class="max-w-xl">
+                        <h3 class="text-lg font-bold text-black mb-6 font-sans">${question.text}</h3>
+                        <div class="space-y-4">
+                            ${options}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // --- MAIN RENDER LOOP ---
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!state.currentModule) {
+                app.innerHTML = renderWelcome();
+            } else if (state.showResults) {
+                app.innerHTML = renderResults();
+            } else {
+                let mainContent = '';
+                if (state.showInstructions) {
+                    mainContent = renderInstructions();
+                } else {
+                    const step = state.flatSteps[state.currentStepIndex];
+                    if (step.type === 'cloze') {
+                        mainContent = renderCloze(step);
+                    } else if (step.type === 'reading') {
+                        mainContent = renderReading(step);
+                    }
+                }
+                
+                app.innerHTML = renderHeader() + renderSubHeader() + mainContent;
+            }
+
+            // Re-initialize icons after DOM update
+            lucide.createIcons();
+        }
+
+        // Initialize App
+        render();
+
+    </script>
+</body>
+</html>

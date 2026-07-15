@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTE Academic Reading: Fill in the Blanks (Drag & Drop)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box { transition: all 0.3s ease; }
+        .answer-box.hidden { display: none; opacity: 0; }
+        .answer-box.visible {
+            display: block; opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea, input[type="text"] { resize: vertical; }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+        
+        /* Drag and Drop specific styles */
+        .drag-word {
+            display: inline-block;
+            cursor: grab;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .drag-word:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+        .drop-zone {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+            height: 32px;
+            vertical-align: middle;
+            border-bottom: 2px dashed #94a3b8;
+            background-color: #f1f5f9;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .drop-zone.drag-over {
+            background-color: #e0e7ff;
+            border-color: #6366f1;
+            border-bottom-style: solid;
+        }
+        .drop-zone .drag-word {
+            margin: 0;
+            padding: 2px 8px;
+            font-size: 0.875rem;
+            border: none;
+            box-shadow: none;
+            background: transparent;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs text-slate-400 mb-6 flex gap-2 font-medium uppercase tracking-wider">
+            <span>PTE Academic</span> <span>&gt;</span> 
+            <span>Reading Section</span> <span>&gt;</span> 
+            <span class="text-indigo-600 font-bold">B2 Fill in the Blanks (Drag & Drop)</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-slate-800 tracking-tight mb-2">
+                    Reading: Drag & Drop Mastery
+                </h1>
+                <p class="text-slate-500 font-medium">Target: GSE 59-75 | Skills: Grammar Context & Vocabulary Selection</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-red-500 transition-colors font-medium hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-rotate-right"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-4 border-indigo-500 p-4 mb-8 rounded-r-lg">
+            <p class="text-sm text-slate-700">
+                <i class="fas fa-bolt mr-2 text-indigo-500"></i> 
+                <strong>Action-First Learning:</strong> This worksheet uses a high-density drill format. We prioritize immediate output over long reading theory. Prepare to interact.
+            </p>
+        </div>
+
+        <!-- Part 1: Preparation (Cyan Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-cyan-100 shadow-sm">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 bg-cyan-50 hover:bg-cyan-100 border-l-4 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-cyan-200 text-cyan-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-lg font-bold text-cyan-900">Step 1 & 2: Context & Vocabulary Drill</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 8000px; opacity: 1;">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 1 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-cyan-800"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Step 1</span> Contextual Warm-up</h3>
+                            <button onclick="toggleAnswer('ans-t1', this, 'input-t1')" class="text-xs font-bold text-cyan-600 border border-cyan-200 bg-white px-3 py-1 rounded hover:bg-cyan-50 transition-colors">Verify Answer</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2"><em>"Mahasiswa di Indonesia sering menerjemahkan teks bahasa Inggris kata demi kata."</em> <br><br><strong>Why is this word-for-word translation habit fatal for the PTE Drag & Drop task?</strong></p>
+                        <textarea id="input-t1" placeholder="State your reason regarding time management or context..." class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all"></textarea>
+                        <div id="ans-t1" class="answer-box hidden mt-3 p-4 bg-cyan-50 rounded-lg border border-cyan-100 text-sm text-slate-700">
+                            <strong>Correction:</strong> It destroys time management. You only have ~2 minutes per Drag & Drop passage. You must scan the grammar surrounding the blank (e.g., is it followed by a noun? preceded by 'to'?) rather than translating the entire paragraph.
+                        </div>
+                    </div>
+
+                    <!-- Task 2 (Interactive Vocab) -->
+                    <div>
+                        <h3 class="font-bold text-cyan-800 mb-3"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Step 2</span> Rapid Vocab Drill (B2 Collocations)</h3>
+                        <p class="text-sm text-slate-500 mb-3">Complete the sentence with the correct B2 academic term.</p>
+                        <div id="vocab-container" class="space-y-3">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="checkVocab()" class="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check Vocabulary
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: Input & Strategy (Blue Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-blue-100 shadow-sm">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-200 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-lg font-bold text-blue-900">Step 3, 4 & 5: Strategy & Core Input</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 3 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-blue-800"><span class="bg-blue-100 px-2 py-0.5 rounded text-sm mr-2">Step 3</span> Strategy-in-Motion: The "Grammar Gap"</h3>
+                            <button onclick="toggleAnswer('ans-t3', this, 'input-t3')" class="text-xs font-bold text-blue-600 border border-blue-200 bg-white px-3 py-1 rounded hover:bg-blue-50 transition-colors">Show Logic</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Determine the grammatical class needed for this blank: <em>"The government decided to ____ the new policy immediately."</em></p>
+                        <input id="input-t3" type="text" placeholder="Noun, Verb, Adjective, or Adverb?" class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                        <div id="ans-t3" class="answer-box hidden mt-3 p-4 bg-blue-50 rounded-lg border border-blue-100 text-sm text-slate-700">
+                            <strong>Strategy:</strong> You need a <strong>Base Verb</strong> (e.g., implement, enforce). The preposition "to" before the blank indicates an infinitive verb phrase. You can instantly eliminate any nouns or adjectives in the Drag & Drop options box.
+                        </div>
+                    </div>
+
+                    <!-- Task 4 & 5 -->
+                    <div class="bg-slate-50 p-5 border border-slate-200 rounded-lg">
+                        <h3 class="font-bold text-blue-800 mb-2"><span class="bg-blue-100 px-2 py-0.5 rounded text-sm mr-2">Step 4 & 5</span> Core Input & Concept Check</h3>
+                        <p class="text-sm text-slate-700 italic border-l-2 border-blue-400 pl-3 mb-4 leading-relaxed">
+                            "The transition to renewable energy in Southeast Asia has encountered substantial logistical hurdles. While solar power potential is vast, the regional grid infrastructure requires massive modernization to accommodate decentralized power generation. Consequently, foreign investment has become critical."
+                        </p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-sm font-semibold text-slate-700">1. What is the main hurdle mentioned?</label>
+                                <input id="cc1" type="text" class="w-full mt-1 p-2 border border-slate-300 rounded text-sm" placeholder="Your answer...">
+                            </div>
+                            <div>
+                                <label class="text-sm font-semibold text-slate-700">2. What kind of power generation does solar provide?</label>
+                                <input id="cc2" type="text" class="w-full mt-1 p-2 border border-slate-300 rounded text-sm" placeholder="Your answer...">
+                            </div>
+                            <div>
+                                <label class="text-sm font-semibold text-slate-700">3. What transition word shows cause and effect here?</label>
+                                <input id="cc3" type="text" class="w-full mt-1 p-2 border border-slate-300 rounded text-sm" placeholder="Your answer...">
+                            </div>
+                            <button onclick="checkConcept()" class="mt-2 text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded transition">Evaluate</button>
+                            <p id="cc-feedback" class="text-sm font-semibold mt-2 hidden"></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: Drilling (Emerald Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-emerald-100 shadow-sm">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 bg-emerald-50 hover:bg-emerald-100 border-l-4 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-emerald-200 text-emerald-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-lg font-bold text-emerald-900">Step 6: High-Density Mechanics</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-6 bg-white space-y-6">
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Step 6</span> PTE Rule & Grammar Check (10 Items)</h3>
+                        <p class="text-sm text-slate-500 mb-4">Master the mechanics of PTE Reading and essential grammar collocations.</p>
+                        <div id="mcq-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-6 flex justify-end">
+                            <button onclick="checkMCQ()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Grade Quiz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: Synthesis (Orange Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-orange-100 shadow-sm">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 bg-orange-50 hover:bg-orange-100 border-l-4 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-orange-200 text-orange-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-lg font-bold text-orange-900">Step 7, 8 & 9: Cohesion & Application</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 7/8 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-orange-800"><span class="bg-orange-100 px-2 py-0.5 rounded text-sm mr-2">Step 8</span> Re-order Logic Drill</h3>
+                            <button onclick="toggleAnswer('ans-t8', this, 'input-t8')" class="text-xs font-bold text-orange-600 border border-orange-200 bg-white px-3 py-1 rounded hover:bg-orange-50 transition-colors">Show Order</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Sequence these paragraphs to form a cohesive text about agricultural policy.</p>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200 text-sm space-y-2 mb-3">
+                            <p><strong>A.</strong> These subsidies, however, were criticized for favoring large corporations.</p>
+                            <p><strong>B.</strong> In 2010, the government launched a national farming initiative.</p>
+                            <p><strong>C.</strong> As a result, smallholder farmers struggled to compete in the market.</p>
+                            <p><strong>D.</strong> The primary goal was to provide financial subsidies to rural producers.</p>
+                        </div>
+                        <input id="input-t8" type="text" placeholder="Format: B-D-A-C" class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 outline-none transition-all uppercase">
+                        <div id="ans-t8" class="answer-box hidden mt-3 p-4 bg-orange-50 rounded-lg border border-orange-100 text-sm text-slate-700">
+                            <strong>Correct Order: B - D - A - C</strong><br>
+                            <em>Logic:</em> 'B' is the independent topic sentence. 'D' expands on the "initiative" mentioned in B. 'A' contrasts the "subsidies" mentioned in D. 'C' is the outcome ("As a result") of the criticism in A.
+                        </div>
+                    </div>
+
+                    <!-- Task 9 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-orange-800"><span class="bg-orange-100 px-2 py-0.5 rounded text-sm mr-2">Step 9</span> Scenario Application</h3>
+                            <button onclick="toggleAnswer('ans-t9', this, 'input-t9')" class="text-xs font-bold text-orange-600 border border-orange-200 bg-white px-3 py-1 rounded hover:bg-orange-50 transition-colors">Check Sample</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Draft a 1-sentence email to a university admissions office asking to <em>defer</em> your enrollment. You must use the words: <strong>circumstances</strong>, <strong>request</strong>, and <strong>subsequent</strong>.</p>
+                        <textarea id="input-t9" placeholder="Dear Admissions, ..." class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 outline-none h-20 transition-all"></textarea>
+                        <div id="ans-t9" class="answer-box hidden mt-3 p-4 bg-orange-50 rounded-lg border border-orange-100 text-sm text-slate-700">
+                            <strong>Sample Output:</strong> "Due to unforeseen <strong>circumstances</strong>, I would like to formally <strong>request</strong> a deferral of my enrollment to the <strong>subsequent</strong> academic semester."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: Production (Violet Theme) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-violet-100 shadow-sm">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 bg-violet-50 hover:bg-violet-100 border-l-4 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-violet-200 text-violet-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-lg font-bold text-violet-900">Step 10: Task Mastery (Interactive Drag & Drop)</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-6 bg-white space-y-6">
+                    
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-bold text-violet-800"><span class="bg-violet-100 px-2 py-0.5 rounded text-sm mr-2">Step 10</span> Reading: Fill in the Blanks</h3>
+                        <div class="text-sm font-mono bg-slate-800 text-white px-3 py-1 rounded flex items-center gap-2">
+                            <i class="fas fa-clock"></i> <span id="timer">02:00</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-slate-600 mb-4"><strong>Instructions:</strong> Drag words from the box below and drop them into the correct blanks in the text. There are more words than blanks. (1 point per correct blank, no negative marking).</p>
+
+                    <!-- The Word Bank -->
+                    <div class="bg-slate-100 border-2 border-slate-200 rounded-lg p-4 mb-6 min-h-[80px]" id="word-bank" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                        <div class="flex flex-wrap gap-3" id="draggables-container">
+                            <!-- Draggables populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- The Text -->
+                    <div class="bg-white border border-slate-200 rounded-lg p-6 text-slate-800 leading-loose shadow-sm text-[15px]">
+                        The emergence of artificial intelligence in higher education has created a 
+                        <div class="drop-zone mx-1 rounded" id="blank1" data-answer="paradigm" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)"></div> 
+                        shift in how assessments are designed. Rather than relying on traditional essays, which are increasingly 
+                        <div class="drop-zone mx-1 rounded" id="blank2" data-answer="susceptible" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)"></div> 
+                        to automated generation, universities are pivoting towards oral examinations and live problem-solving tasks. This approach not only ensures academic 
+                        <div class="drop-zone mx-1 rounded" id="blank3" data-answer="integrity" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)"></div> 
+                        but also forces students to demonstrate their reasoning in real-time. Consequently, educators must now 
+                        <div class="drop-zone mx-1 rounded" id="blank4" data-answer="devise" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)"></div> 
+                        new rubrics that accurately capture critical thinking over mere information retrieval.
+                    </div>
+
+                    <div class="mt-6 flex justify-between items-center">
+                        <button onclick="startTimer()" class="text-xs text-slate-500 hover:text-indigo-600 underline">Start Timer</button>
+                        <button onclick="checkDragDrop()" class="bg-violet-600 hover:bg-violet-700 text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-colors flex items-center gap-2">
+                            <i class="fas fa-paper-plane"></i> Submit & Score
+                        </button>
+                    </div>
+
+                    <div id="dd-feedback" class="hidden mt-4 p-4 rounded-lg text-sm text-center font-medium border"></div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-sm font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="custom-toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white px-6 py-3 rounded-full shadow-xl transition-all duration-300 translate-y-20 opacity-0 z-50 flex items-center gap-2 font-medium text-sm"></div>
+
+    <script>
+        // --- 1. DATA CONFIGURATION ---
+        
+        const vocabData = [
+            { id: "v1", word: "1. Subsequent", correct: "c", options: { a: "Happening before", b: "Very significant", c: "Coming after something in time", d: "Underneath the surface" } },
+            { id: "v2", word: "2. Implement", correct: "a", options: { a: "To put a plan into effect", b: "A type of tool", c: "To guess the meaning", d: "To cancel an action" } },
+            { id: "v3", word: "3. Derive", correct: "d", options: { a: "To drive away", b: "To multiply", c: "To fail to understand", d: "To obtain something from a specific source" } },
+            { id: "v4", word: "4. Empirical", correct: "b", options: { a: "Relating to an empire", b: "Based on observation or experience rather than theory", c: "Subjective feelings", d: "Complicated" } },
+            { id: "v5", word: "5. Paradigm", correct: "a", options: { a: "A typical example or pattern of something; a model", b: "A measure of weight", c: "A confusing situation", d: "A shape with four sides" } }
+        ];
+
+        const mcqData = [
+            { id: "m1", q: "In 'Reading: Drag & Drop', what is the penalty for dragging the wrong word into a blank?", correct: "b", opts: ["a. -1 point (Negative Marking)", "b. 0 points (No Negative Marking)", "c. You fail the section", "d. -0.5 points"] },
+            { id: "m2", q: "Are there usually the same number of words in the word bank as there are blanks?", correct: "c", opts: ["a. Yes, it's a 1:1 ratio", "b. No, there are fewer words", "c. No, there are always extra words in the bank", "d. Depends on the difficulty"] },
+            { id: "m3", q: "Grammar Gap Strategy: What usually follows an article like 'The' or 'A'?", correct: "a", opts: ["a. A Noun or Adjective+Noun", "b. A Verb", "c. An Adverb", "d. A Preposition"] },
+            { id: "m4", q: "Grammar Gap Strategy: If the blank is between 'has' and a past participle (e.g., 'has _____ changed'), what fits?", correct: "c", opts: ["a. A Noun", "b. A Pronoun", "c. An Adverb (e.g., significantly)", "d. An Adjective"] },
+            { id: "m5", q: "Collocation: 'The data provides a unique _____ into consumer behavior.'", correct: "b", opts: ["a. sight", "b. insight", "c. look", "d. view"] },
+            { id: "m6", q: "Collocation: 'Researchers must _____ a comprehensive study.'", correct: "d", opts: ["a. make", "b. do", "c. build", "d. conduct"] },
+            { id: "m7", q: "How much time should you spend on ONE Drag & Drop passage?", correct: "b", opts: ["a. 3-4 minutes", "b. 1.5 - 2 minutes max", "c. 5 minutes", "d. Take as long as you need"] },
+            { id: "m8", q: "What should you do if you are unsure about one blank?", correct: "c", opts: ["a. Stare at it until you know", "b. Leave it empty", "c. Fill the easier blanks first, then guess the remaining using process of elimination", "d. Skip the whole passage"] },
+            { id: "m9", q: "Cohesion: Which word signals an addition to the previous point?", correct: "a", opts: ["a. Furthermore", "b. Conversely", "c. Nevertheless", "d. Despite"] },
+            { id: "m10", q: "According to the Score Guide, does the Drag & Drop task affect your Writing score?", correct: "b", opts: ["a. Yes", "b. No, it only affects the Reading score", "c. It affects both", "d. It affects Speaking"] }
+        ];
+
+        const dragWords = ["integrity", "susceptible", "devise", "paradigm", "obsolete", "implement", "capacity"];
+
+        // --- 2. RENDER FUNCTIONS ---
+
+        function initVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => {
+                let opts = '<option value="">Select synonym...</option>';
+                for (let [k, v] of Object.entries(item.options)) {
+                    opts += `<option value="${k}">${v}</option>`;
+                }
+                return `
+                <div class="flex flex-col md:flex-row md:items-center gap-3 p-3 bg-white rounded-lg border border-cyan-100">
+                    <div class="md:w-1/3 font-bold text-cyan-900">${item.word}</div>
+                    <div class="md:w-2/3 flex items-center gap-2">
+                        <select id="${item.id}" class="flex-1 p-2 text-sm border border-slate-200 rounded bg-cyan-50 focus:ring-1 focus:ring-cyan-500 outline-none">
+                            ${opts}
+                        </select>
+                        <span id="fb-${item.id}" class="w-6 text-center"></span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function initMCQ() {
+            const container = document.getElementById('mcq-container');
+            container.innerHTML = mcqData.map((item, i) => `
+                <div class="p-4 border border-slate-100 rounded-lg bg-slate-50 flex flex-col justify-between">
+                    <div>
+                        <div class="flex gap-2 mb-3">
+                            <span class="font-bold text-emerald-600 bg-emerald-100 h-5 w-5 flex items-center justify-center rounded text-xs flex-shrink-0">${i+1}</span>
+                            <div class="font-medium text-slate-800 text-sm">${item.q}</div>
+                        </div>
+                        <div class="space-y-1 ml-7">
+                            ${item.opts.map((opt, idx) => {
+                                const val = ['a','b','c','d'][idx];
+                                return `
+                                <label class="flex items-center gap-2 p-1.5 rounded hover:bg-emerald-100 cursor-pointer text-sm transition-colors">
+                                    <input type="radio" name="${item.id}" value="${val}" class="accent-emerald-600">
+                                    <span class="text-slate-700">${opt}</span>
+                                </label>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                    <div id="fb-${item.id}" class="text-sm font-bold h-5 mt-2 ml-7"></div>
+                </div>
+            `).join('');
+        }
+
+        function initDragDrop() {
+            const container = document.getElementById('draggables-container');
+            // Shuffle words slightly
+            const shuffled = [...dragWords].sort(() => 0.5 - Math.random());
+            container.innerHTML = shuffled.map(w => 
+                `<div class="drag-word bg-white border border-slate-300 shadow-sm rounded px-3 py-1.5 text-sm font-semibold text-slate-700 hover:border-indigo-400 hover:text-indigo-600" draggable="true" ondragstart="drag(event)" id="word-${w}">${w}</div>`
+            ).join('');
+        }
+
+        // --- 3. DRAG AND DROP LOGIC ---
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+            if(ev.target.classList.contains('drop-zone')) {
+                ev.target.classList.add('drag-over');
+            }
+        }
+
+        function dragLeave(ev) {
+            if(ev.target.classList.contains('drop-zone')) {
+                ev.target.classList.remove('drag-over');
+            }
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+            ev.target.classList.add('opacity-50');
+            setTimeout(() => ev.target.classList.remove('opacity-50'), 100);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            
+            if(ev.target.classList.contains('drop-zone')) {
+                ev.target.classList.remove('drag-over');
+            }
+
+            var data = ev.dataTransfer.getData("text");
+            var draggedEl = document.getElementById(data);
+            if(!draggedEl) return;
+
+            // If dropped into a blank
+            if(ev.target.classList.contains('drop-zone')) {
+                // If zone already has a word, move it back to bank
+                if(ev.target.children.length > 0) {
+                    document.getElementById('draggables-container').appendChild(ev.target.children[0]);
+                }
+                ev.target.appendChild(draggedEl);
+            } 
+            // If dropped back into the word bank area
+            else if (ev.target.id === 'word-bank' || ev.target.closest('#word-bank')) {
+                document.getElementById('draggables-container').appendChild(draggedEl);
+            }
+        }
+
+        // --- 4. CHECKING FUNCTIONS ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const sel = document.getElementById(item.id);
+                const fb = document.getElementById(`fb-${item.id}`);
+                if (sel.value === item.correct) {
+                    fb.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    sel.className = "flex-1 p-2 text-sm border-2 border-green-400 rounded bg-green-50 text-green-700 outline-none";
+                } else if (sel.value !== "") {
+                    fb.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                    sel.className = "flex-1 p-2 text-sm border-2 border-red-300 rounded bg-red-50 text-red-700 outline-none";
+                }
+            });
+            showToast("Vocabulary Evaluated!");
+        }
+
+        function checkConcept() {
+            const a1 = document.getElementById('cc1').value.toLowerCase();
+            const a2 = document.getElementById('cc2').value.toLowerCase();
+            const a3 = document.getElementById('cc3').value.toLowerCase();
+            const fb = document.getElementById('cc-feedback');
+            
+            let score = 0;
+            if(a1.includes('infrastructure') || a1.includes('grid') || a1.includes('logistical')) score++;
+            if(a2.includes('decentralized')) score++;
+            if(a3.includes('consequently')) score++;
+
+            fb.classList.remove('hidden');
+            fb.className = `text-sm font-bold mt-3 ${score === 3 ? 'text-green-600' : 'text-orange-600'}`;
+            fb.innerHTML = `Score: ${score}/3. Keys: 1. infrastructure/grid, 2. decentralized, 3. consequently.`;
+        }
+
+        function checkMCQ() {
+            let score = 0;
+            mcqData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const fb = document.getElementById(`fb-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    fb.innerHTML = '<span class="text-green-600"><i class="fas fa-check"></i> Correct</span>';
+                    score++;
+                } else if (userVal !== "") {
+                    fb.innerHTML = `<span class="text-red-500"><i class="fas fa-times"></i> Answer: ${item.correct}</span>`;
+                } else {
+                    fb.innerHTML = '<span class="text-orange-500 text-xs">Unanswered</span>';
+                }
+            });
+            showToast(`Mechanics Quiz: ${score}/10`);
+        }
+
+        function checkDragDrop() {
+            const blanks = document.querySelectorAll('.drop-zone');
+            let correct = 0;
+            
+            blanks.forEach(blank => {
+                const expected = blank.getAttribute('data-answer');
+                // Check if a word is inside
+                if (blank.children.length > 0) {
+                    const userWord = blank.children[0].innerText.trim();
+                    if (userWord === expected) {
+                        correct++;
+                        blank.classList.remove('border-slate-400', 'border-red-400');
+                        blank.classList.add('border-green-500', 'bg-green-50');
+                        blank.children[0].classList.add('text-green-700');
+                    } else {
+                        blank.classList.remove('border-slate-400', 'border-green-500');
+                        blank.classList.add('border-red-400', 'bg-red-50');
+                        blank.children[0].classList.add('text-red-700');
+                    }
+                } else {
+                    blank.classList.add('border-red-400', 'bg-red-50');
+                }
+            });
+
+            // GSE Mapping Logic (Rough approximation for practice)
+            let pteEst = 10;
+            if(correct === 4) pteEst = 90;
+            else if(correct === 3) pteEst = 65;
+            else if(correct === 2) pteEst = 50;
+            else if(correct === 1) pteEst = 30;
+
+            const fb = document.getElementById('dd-feedback');
+            fb.classList.remove('hidden');
+            fb.classList.add(correct === 4 ? 'bg-green-100' : 'bg-orange-100', correct === 4 ? 'text-green-800' : 'text-orange-800', correct === 4 ? 'border-green-300' : 'border-orange-300');
+            
+            fb.innerHTML = `
+                <div class="text-lg font-bold mb-1">Score: ${correct} / 4</div>
+                <div class="text-sm">Estimated Task PTE Contribution: <strong>${pteEst} pts</strong> scale.</div>
+                ${correct < 4 ? `<div class="mt-2 text-xs opacity-80">Correct sequence: paradigm -> susceptible -> integrity -> devise</div>` : ''}
+            `;
+            
+            clearInterval(timerInterval);
+        }
+
+        // --- 5. UTILITIES ---
+
+        function toggleAnswer(elementId, btn, inputId) {
+            const el = document.getElementById(elementId);
+            const inputEl = document.getElementById(inputId);
+
+            if (inputEl) {
+                if (inputEl.value.trim().length < 3) {
+                    showToast("Attempt the task first! Focus on active recall.");
+                    inputEl.focus();
+                    return;
+                }
+            }
+
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                if (!btn.dataset.orig) btn.dataset.orig = btn.innerHTML;
+                btn.innerHTML = 'Hide';
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerHTML = btn.dataset.orig || 'Show';
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '8000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your hard work?")) {
+                location.reload();
+            }
+        }
+
+        function showToast(message) {
+            let toast = document.getElementById('custom-toast');
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${message}</span>`;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        let timerInterval;
+        function startTimer() {
+            clearInterval(timerInterval);
+            let time = 120; // 2 minutes
+            const display = document.getElementById('timer');
+            timerInterval = setInterval(() => {
+                time--;
+                let m = Math.floor(time / 60);
+                let s = time % 60;
+                display.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                if(time <= 0) {
+                    clearInterval(timerInterval);
+                    display.innerText = "00:00";
+                    display.classList.add('text-red-500');
+                    showToast("Time's up! In the real exam, you must move on.");
+                }
+            }, 1000);
+            showToast("Timer started. You have 2 minutes.");
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initVocab();
+            initMCQ();
+            initDragDrop();
+        });
+    </script>
+</body>
+</html>

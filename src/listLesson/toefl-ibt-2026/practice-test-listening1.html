@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Practice Test 1 - Listening Section</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #7dd3fc;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #38bdf8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <div id="app"></div>
+
+    <script>
+        // --- NATIVE BROWSER VOICE SETUP ---
+        let femaleVoice = null;
+        let maleVoice = null;
+
+        function assignVoices() {
+            const voices = window.speechSynthesis.getVoices();
+            if (voices.length === 0) return;
+
+            const enVoices = voices.filter(v => v.lang.startsWith('en'));
+            const femaleKeywords = ['female', 'aria', 'jenny', 'zira', 'samantha', 'victoria', 'karen', 'susan', 'ava', 'allison'];
+            const maleKeywords = ['male', 'guy', 'david', 'christopher', 'daniel', 'alex', 'george', 'matthew', 'mark', 'brian'];
+
+            femaleVoice = enVoices.find(v => (v.name.includes('Natural') || v.name.includes('Online')) && femaleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+                          enVoices.find(v => femaleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+                          enVoices[0];
+
+            maleVoice = enVoices.find(v => (v.name.includes('Natural') || v.name.includes('Online')) && maleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+                        enVoices.find(v => maleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+                        enVoices.find(v => v.name !== femaleVoice.name) || 
+                        enVoices[1] || enVoices[0];
+        }
+
+        window.speechSynthesis.onvoiceschanged = assignVoices;
+
+        // --- DATA STRUCTURE ---
+        const testData = {
+            module1: {
+                title: "Module 1",
+                sections: [
+                    {
+                        id: "m1_short",
+                        type: "listening",
+                        title: "Listen and Choose a Response",
+                        audioTitle: "Short Dialogues",
+                        questions: [
+                            {
+                                id: 1,
+                                transcript: "Woman: Weren't you at the bookstore a little while ago?",
+                                text: "Choose the best response.",
+                                options: [
+                                    "I was looking for a new novel.",
+                                    "Yes, it's on the second floor.",
+                                    "I doubt I'll have time for that.",
+                                    "I might arrive a bit sooner."
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The woman asks if the man was at the bookstore, and the best logical response confirms this implicitly by providing a reason for being there (\"I was looking for a new novel\")."
+                            },
+                            {
+                                id: 2,
+                                transcript: "Man: Could you tell me where the closest subway station is?",
+                                text: "Choose the best response.",
+                                options: [
+                                    "I almost missed the train.",
+                                    "Every fifteen minutes.",
+                                    "I can point you in the right direction.",
+                                    "I'll just walk there instead."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The man is asking for directions to a location. The most appropriate and helpful response is offering to guide him (\"I can point you in the right direction.\")."
+                            },
+                            {
+                                id: 3,
+                                transcript: "Woman: What's the best way to reach tech support?",
+                                text: "Choose the best response.",
+                                options: [
+                                    "Sure, you are permitted to do so.",
+                                    "You can use the online help portal.",
+                                    "No, I really don't mind.",
+                                    "Their service is highly rated."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The woman is asking for a method or channel to contact a department. Responding with \"You can use the online help portal\" directly answers her \"how-to\" question."
+                            },
+                            {
+                                id: 4,
+                                transcript: "Woman: I'm sorry, but I'm busy tonight.",
+                                text: "Choose the best response.",
+                                options: [
+                                    "Oh, that is way too early.",
+                                    "Would tomorrow evening work instead?",
+                                    "He got here this morning.",
+                                    "No, you really don't have to."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The woman states she is unavailable for a current plan. The logical and polite follow-up is to suggest an alternative time, such as \"Would tomorrow evening work instead?\"."
+                            },
+                            {
+                                id: 5,
+                                transcript: "Man: Is the bank closed this afternoon?",
+                                text: "Choose the best response.",
+                                options: [
+                                    "No, it belongs to me.",
+                                    "It's right down the street.",
+                                    "I believe she left already.",
+                                    "Let's look up their hours online."
+                                ],
+                                correctAnswer: 3,
+                                explanation: "The man asks a factual question about a business's operating hours. Suggesting to \"look up their hours online\" is the most practical and relevant response to resolve his uncertainty."
+                            },
+                            {
+                                id: 6,
+                                transcript: "Woman: Send me a message if you require assistance.",
+                                text: "Choose the best response.",
+                                options: [
+                                    "I can handle that for you.",
+                                    "You already have enough details.",
+                                    "You ask too many questions, don't you?",
+                                    "You haven't shared your contact info yet."
+                                ],
+                                correctAnswer: 3,
+                                explanation: "The woman offers help via a message. The responder cannot send a message without her details, making \"You haven't shared your contact info yet\" the most logical reply."
+                            },
+                            {
+                                id: 7,
+                                transcript: "Woman: So the museum is accepting visitors all weekend?",
+                                text: "Choose the best response.",
+                                options: [
+                                    "Yes, the power went out.",
+                                    "Yes, they are painting it.",
+                                    "Yes, tickets are nonrefundable.",
+                                    "Yes, they are hosting a special exhibit."
+                                ],
+                                correctAnswer: 3,
+                                explanation: "The woman asks for confirmation about the museum's weekend availability. The correct response confirms this (\"Yes\") and provides an inviting, relevant detail about what visitors can expect to see there."
+                            },
+                            {
+                                id: 8,
+                                transcript: "Man: Did you make it to the workshop?",
+                                text: "Choose the best response.",
+                                options: [
+                                    "I completely slept through my alarm.",
+                                    "No, not particularly well.",
+                                    "Did you ask the instructor?",
+                                    "I didn't remember to check."
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The man asks if the other person attended an event. Replying \"I completely slept through my alarm\" gives a clear and natural reason for why they missed it."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m1_conv1",
+                        type: "listening",
+                        title: "Listen to a Conversation",
+                        audioTitle: "Conversation: Dinner Plans",
+                        transcript: `Woman: Do you need me to grab anything from the grocery store?\nMan: Wait, aren't we leaving for the concert right now?\nWoman: The concert is tomorrow night.\nMan: Oh, my mistake. My mind is all over the place lately... I suppose I don't need to dress up just yet.\nWoman: So, you weren't going to cook for us?\nMan: No, but I certainly can. What are you in the mood for?\nWoman: Just something quick and light. Could you handle the shopping then?\nMan: Absolutely. How does grilled chicken and vegetables sound? Need anything else?\nWoman: No, that sounds perfect. I appreciate it!`,
+                        questions: [
+                            {
+                                id: 9,
+                                text: "What does the woman imply she was about to do?",
+                                options: [
+                                    "Attend a concert",
+                                    "Change her outfit",
+                                    "Go grocery shopping",
+                                    "Eat dinner"
+                                ],
+                                correctAnswer: 2,
+                                explanation: "At the beginning of the conversation, the woman asks, \"Do you need me to grab anything from the grocery store?\", which implies she was preparing to go grocery shopping."
+                            },
+                            {
+                                id: 10,
+                                text: "Why does the man say \"My mind is all over the place lately\"?",
+                                options: [
+                                    "He forgot what the woman asked him to buy.",
+                                    "He was confused about the date of their event.",
+                                    "He forgot the dinner menu.",
+                                    "He forgot to buy chicken and vegetables."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The man says this right after the woman corrects him, stating, \"The concert is tomorrow night,\" exposing that he had the dates confused and thought it was happening right then."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m1_conv2",
+                        type: "listening",
+                        title: "Listen to a Conversation",
+                        audioTitle: "Conversation: Office Maintenance",
+                        transcript: `Man: Did you catch that memo about the heating system repairs?\nWoman: Yeah, I contacted the building manager earlier. They mentioned a repairman is on the way.\nMan: Thank goodness. It's getting freezing in this office.\nWoman: I agree, I reached out as soon as I felt the chill. Hopefully, it's just a quick fix and they restore the heat promptly. Why don't you take your lunch break now? It might be warmer when you return.`,
+                        questions: [
+                            {
+                                id: 11,
+                                text: "Why did the woman contact the building manager?",
+                                options: [
+                                    "A heater is leaking water.",
+                                    "An office is too cold.",
+                                    "An elevator is broken.",
+                                    "A window is stuck open."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The man notes it is \"getting freezing in this office,\" and the woman agrees, confirming she reached out to management \"as soon as I felt the chill.\""
+                            },
+                            {
+                                id: 12,
+                                text: "What does the woman suggest the man do?",
+                                options: [
+                                    "Submit a report early",
+                                    "Wait for the repairman",
+                                    "Put on a sweater",
+                                    "Leave for a meal break"
+                                ],
+                                correctAnswer: 3,
+                                explanation: "The woman explicitly advises him to leave for a bit, saying, \"Why don't you take your lunch break now? It might be warmer when you return.\""
+                            }
+                        ]
+                    },
+                    {
+                        id: "m1_announce1",
+                        type: "listening",
+                        title: "Listen to an Announcement",
+                        audioTitle: "Announcement: Guest Presentation",
+                        transcript: `Man: Good morning, everyone. I am thrilled to announce that Dr. Alan Grant, a leading specialist in urban architecture, will deliver a special presentation next Thursday at 3 PM in the central hall. Dr. Grant will talk about the latest trends in green building materials and how they improve city living. Because he is very famous and his topic is quite popular, I strongly advise getting there early to grab a good spot.`,
+                        questions: [
+                            {
+                                id: 13,
+                                text: "What is the announcement about?",
+                                options: [
+                                    "A special presentation",
+                                    "A changed classroom",
+                                    "A new grading policy",
+                                    "A new university architecture class"
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The speaker explicitly states at the beginning of the announcement that \"Dr. Alan Grant... will deliver a special presentation next Thursday...\""
+                            },
+                            {
+                                id: 14,
+                                text: "Why does the speaker mention Dr. Grant's fame?",
+                                options: [
+                                    "To persuade students to buy his book",
+                                    "To explain why he was selected to speak",
+                                    "To contrast him with other visiting experts",
+                                    "To emphasize the need to arrive ahead of time"
+                                ],
+                                correctAnswer: 3,
+                                explanation: "The speaker directly links Dr. Grant's fame to crowd size, stating: \"Because he is very famous... I strongly advise getting there early to grab a good spot.\""
+                            }
+                        ]
+                    },
+                    {
+                        id: "m1_talk1",
+                        type: "listening",
+                        title: "Listen to a Talk",
+                        audioTitle: "Podcast: Cognitive Attention",
+                        transcript: `Podcast Host: Have you read that new mystery novel that launched last month? I read it and was completely hooked. The suspense, the interesting characters... I was entirely absorbed. The hours just vanished. I didn't think about anything else while reading it. This experience is described by experts as 'directed attention'. Directed attention involves deep concentration on a single task. Whether it's reading a gripping book or playing a challenging game, directed attention is very common nowadays.\n\nThere is another category called 'undirected attention'. This also involves focusing without struggling, but it leaves mental space for wandering thoughts. For instance, when I stroll along the beach and watch the waves, my mind might subtly wander to my weekend plans.\n\nThe important thing to realize is that directed attention leads to cognitive exhaustion. The brain works so intensely that it tires out quickly. And what happens when your brain is exhausted? You may feel easily annoyed, distracted, and overwhelmed. Undirected attention, however, activates a different neural pathway, the restoration network, which calms our thoughts and reverses cognitive exhaustion. So the next time your brain feels completely drained, close the book, shut your laptop. Go outside for a walk, or just sit quietly and watch the birds.`,
+                        questions: [
+                            {
+                                id: 15,
+                                text: "What is the main subject of the podcast?",
+                                options: [
+                                    "How experts measure brain waves",
+                                    "How to maintain strong focus",
+                                    "Two categories of attention",
+                                    "The advantages of directed attention"
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The host structures the entire talk around defining and contrasting two specific concepts: \"directed attention\" and \"undirected attention.\""
+                            },
+                            {
+                                id: 16,
+                                text: "Why does the host talk about a novel?",
+                                options: [
+                                    "To compare various book genres",
+                                    "To present a psychological idea",
+                                    "To describe how reading impacts mood",
+                                    "To urge the audience to read more frequently"
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The host uses the relatable experience of being absorbed in a mystery novel to introduce and define the psychological concept of \"directed attention.\""
+                            },
+                            {
+                                id: 17,
+                                text: "What does the host note about walking along the beach?",
+                                options: [
+                                    "It mirrors her feelings while reading a thrilling book.",
+                                    "It allows her brain to process unrelated ideas.",
+                                    "She has to concentrate heavily on the ocean waves.",
+                                    "It causes her to experience cognitive exhaustion rapidly."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The host uses walking along the beach as an example of \"undirected attention,\" stating that it \"leaves mental space for wandering thoughts\" like weekend plans (unrelated ideas)."
+                            },
+                            {
+                                id: 18,
+                                text: "What is stated regarding the restoration network?",
+                                options: [
+                                    "It is linked to undirected attention.",
+                                    "It produces feelings of annoyance and overwhelm.",
+                                    "It wears out quickly from constant use.",
+                                    "Its true function is a mystery to experts."
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The host explicitly connects the two, stating that \"Undirected attention, however, activates a different neural pathway, the restoration network...\""
+                            }
+                        ]
+                    }
+                ]
+            },
+            module2: {
+                title: "Module 2",
+                sections: [
+                    {
+                        id: "m2_short",
+                        type: "listening",
+                        title: "Listen and Choose a Response",
+                        audioTitle: "Short Dialogues",
+                        questions: [
+                            {
+                                id: 19,
+                                transcript: "Woman: Who is the head of the marketing team?",
+                                text: "Choose the best response.",
+                                options: [
+                                    "She joined the company last month.",
+                                    "I'm not certain, but I will check for you.",
+                                    "Let's introduce ourselves to the team.",
+                                    "The vacancy has already been closed."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The speaker is asking for a specific person's identity. If the responder doesn't know, offering to find out (\"I'm not certain, but I will check for you\") is the most natural and helpful response."
+                            },
+                            {
+                                id: 20,
+                                transcript: "Man: What is the deadline for the project proposal?",
+                                text: "Choose the best response.",
+                                options: [
+                                    "Give me a moment to look that up.",
+                                    "Provide me with a few dates.",
+                                    "No, I have a different deadline.",
+                                    "Yes, you are absolutely right."
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The man is asking for a specific date or time. \"Give me a moment to look that up\" is a completely natural response when someone needs to check their calendar or notes."
+                            },
+                            {
+                                id: 21,
+                                transcript: "Man: I need to pick up some office supplies.",
+                                text: "Choose the best response.",
+                                options: [
+                                    "Every Tuesday afternoon.",
+                                    "Down the hall in room 3.",
+                                    "The supply closet is locked today.",
+                                    "I'll come with you."
+                                ],
+                                correctAnswer: 3,
+                                explanation: "The man makes a statement about a task he needs to do. Offering companionship or help (\"I'll come with you\") is a very common conversational follow-up."
+                            },
+                            {
+                                id: 22,
+                                transcript: "Woman: Do you want me to print out the meeting minutes?",
+                                text: "Choose the best response.",
+                                options: [
+                                    "The conference room.",
+                                    "I would really appreciate that.",
+                                    "Lunch is in half an hour.",
+                                    "Three quick questions."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The woman is making an offer to help. The most logical response is to politely accept the offer (\"I would really appreciate that.\")."
+                            },
+                            {
+                                id: 23,
+                                transcript: "Man: David and Sarah are heading to the cafeteria.",
+                                text: "Choose the best response.",
+                                options: [
+                                    "Do you want to go with them?",
+                                    "Did you enjoy the food?",
+                                    "Yesterday at noon.",
+                                    "The cheapest meal."
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The man provides a status update about coworkers. Asking \"Do you want to go with them?\" is a highly relevant and natural follow-up question in a workplace setting."
+                            },
+                            {
+                                id: 24,
+                                transcript: "Woman: I really want to get your opinion on the new software.",
+                                text: "Choose the best response.",
+                                options: [
+                                    "I'm updating my computer now.",
+                                    "Let's arrange a time to discuss it.",
+                                    "He just got hired.",
+                                    "Yes, the installation is done."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The woman expresses a desire to have a discussion. Suggesting to schedule a meeting (\"Let's arrange a time to discuss it\") is the most appropriate professional response."
+                            },
+                            {
+                                id: 25,
+                                transcript: "Woman: What is the fee for overnight delivery?",
+                                text: "Choose the best response.",
+                                options: [
+                                    "It is one among several.",
+                                    "Three times this month.",
+                                    "We do not provide that service.",
+                                    "Please hand me the receipt."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The woman asks for the pricing of a specific service. If the business doesn't offer it, stating \"We do not provide that service\" directly and logically answers the inquiry."
+                            },
+                            {
+                                id: 26,
+                                transcript: "Man: If you require extra details, reach out to Mr. Gomez.",
+                                text: "Choose the best response.",
+                                options: [
+                                    "I can take care of that.",
+                                    "What is his position in the department?",
+                                    "You demand too much information.",
+                                    "And who should I speak with?"
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The man advises contacting a specific person (Mr. Gomez). Asking \"What is his position in the department?\" is a natural follow-up to establish context on who that person is."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m2_conv1",
+                        type: "listening",
+                        title: "Listen to a Conversation",
+                        audioTitle: "Conversation: Choosing a Device",
+                        transcript: `Man: I'm debating whether to buy a digital camera or just use my phone. Any thoughts?\nWoman: It really depends on your goals. If you just want something light to snap quick pictures, your phone is perfectly fine.\nMan: That makes sense. However, I prefer the advanced features on a real camera for taking high-quality portraits.\nWoman: If that's the case....\nMan: I suppose I need to weigh my options a bit longer.`,
+                        questions: [
+                            {
+                                id: 27,
+                                text: "What two items is the man trying to choose between?",
+                                options: [
+                                    "A digital camera and a smartphone",
+                                    "A laptop computer and a phone",
+                                    "A tablet and a desktop PC",
+                                    "A smartphone and a tablet device"
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The man explicitly states in his opening line, \"I'm debating whether to buy a digital camera or just use my phone.\""
+                            },
+                            {
+                                id: 28,
+                                text: "What reason does the woman provide for recommending the phone?",
+                                options: [
+                                    "It is the more affordable option.",
+                                    "It is easier to carry around.",
+                                    "It takes better portraits.",
+                                    "It has a superior battery."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The woman notes that a phone is fine \"If you just want something light to snap quick pictures,\" highlighting its portability (easier to carry around)."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m2_announce1",
+                        type: "listening",
+                        title: "Listen to an Announcement",
+                        audioTitle: "Announcement: Library Closure",
+                        transcript: `Man: May I have your attention, please! The campus library's second floor will be inaccessible tomorrow from 9 AM to 11 AM for repairs. Our crew will be fixing a faulty electrical panel in the hallway. We are sorry for any trouble this might create. Please adjust your plans and feel free to use the ground floor study rooms or the computer lab during this period.`,
+                        questions: [
+                            {
+                                id: 29,
+                                text: "What is the primary focus of the announcement?",
+                                options: [
+                                    "To alert students about a temporary closure",
+                                    "To reveal new library computers",
+                                    "To announce the opening of a study room",
+                                    "To persuade students to read more books"
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The speaker's main point is that the library's \"second floor will be inaccessible tomorrow... for repairs,\" alerting students to a temporary closure."
+                            },
+                            {
+                                id: 30,
+                                text: "What are students advised to do during the repairs?",
+                                options: [
+                                    "Wait in the hallway",
+                                    "Help the repair crew",
+                                    "Utilize other campus areas",
+                                    "Check the library schedule online"
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The speaker explicitly advises students to \"feel free to use the ground floor study rooms or the computer lab\" (which are other campus areas) while the second floor is closed."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m2_talk1",
+                        type: "listening",
+                        title: "Listen to a Talk",
+                        audioTitle: "Lecture: Water Conservation",
+                        transcript: `Professor: A 'water footprint' is an indicator of fresh water use by a person, business, or nation. It measures the volume of water consumed and polluted by human actions, generally calculated in cubic meters. By analyzing water footprints, we can grasp how distinct habits and industries lead to water scarcity and environmental stress.\n\nFor example, the water footprint of a citizen in a highly industrialized country is usually much greater than that of someone in an emerging nation, primarily because of massive industrial consumption and meat-heavy diets. Elements like agriculture, manufacturing, domestic usage, and power generation strongly influence the total water footprint. Comprehending these footprints is essential for advancing water conservation. It highlights specific sectors where habits can shift to lower water waste. For instance, if you purchase clothing made from recycled materials, you'll likely shrink your water footprint since less fresh water is required for production. Local authorities and environmental groups rely on this data to draft rules focused on sustainable water management. I will cover a few instances of this shortly.`,
+                        questions: [
+                            {
+                                id: 31,
+                                text: "What is the main subject of the lecture?",
+                                options: [
+                                    "Historical changes in farming techniques",
+                                    "A metric for fresh water usage",
+                                    "Activities that pollute the ocean",
+                                    "The government's role in building dams"
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The professor dedicates the lecture to defining and exploring a \"water footprint,\" which is explicitly introduced as an \"indicator of fresh water use\" (a metric)."
+                            },
+                            {
+                                id: 32,
+                                text: "Why does the professor bring up industrialized and emerging nations?",
+                                options: [
+                                    "To refute a common belief about water footprints",
+                                    "To prove that water waste is identical everywhere",
+                                    "To demonstrate the value of comparing usage data",
+                                    "To argue that factories use the least amount of water"
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The professor compares the two to show how different lifestyles and industries affect consumption, proving that analyzing this data helps \"grasp how distinct habits and industries lead to water scarcity.\""
+                            },
+                            {
+                                id: 33,
+                                text: "What action does the professor note as a way individuals can lower their footprint?",
+                                options: [
+                                    "By fixing leaky pipes at home",
+                                    "By joining a water conservation group",
+                                    "By using public transportation systems",
+                                    "By buying clothes made of recycled fabric"
+                                ],
+                                correctAnswer: 3,
+                                explanation: "The professor gives a specific example: \"if you purchase clothing made from recycled materials, you'll likely shrink your water footprint...\""
+                            },
+                            {
+                                id: 34,
+                                text: "What topic will the professor probably address next?",
+                                options: [
+                                    "How water footprint metrics inform government rules",
+                                    "The techniques used to measure river pollution",
+                                    "Why the concept of water conservation is flawed",
+                                    "Why sustainable agriculture is nearly impossible"
+                                ],
+                                correctAnswer: 0,
+                                explanation: "At the very end of the lecture, the professor states that local authorities use this data \"to draft rules focused on sustainable water management\" and then immediately adds, \"I will cover a few instances of this shortly.\""
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            currentModule: null,
+            flatSteps: [],
+            currentStepIndex: 0,
+            answers: {},
+            showResults: false,
+            showInstructions: false,
+            isReviewMode: false,
+            
+            // Per-question timer
+            questionTimeLeft: 0,
+            timerInterval: null,
+            
+            // Audio System States
+            isPlaying: false,
+            passageAudioPlayed: {}, 
+            passageAudioFinished: {} 
+        };
+
+        // --- LOGIC FUNCTIONS ---
+
+        function startTest() {
+            state.answers = {};
+            state.passageAudioPlayed = {};
+            state.passageAudioFinished = {};
+            loadModule('module1');
+        }
+
+        function loadModule(moduleId) {
+            state.currentModule = moduleId;
+            state.showResults = false;
+            state.showInstructions = true; 
+            state.isReviewMode = false;
+            state.currentStepIndex = 0;
+
+            // Flatten steps
+            const steps = [];
+            testData[moduleId].sections.forEach(section => {
+                if (section.type === 'listening') {
+                    section.questions.forEach((q, idx) => {
+                        steps.push({
+                            type: 'listening',
+                            data: section,
+                            question: q,
+                            questionIndex: idx + 1,
+                            totalQuestions: section.questions.length,
+                            passageId: (section.id.includes("short")) ? `short_${q.id}` : section.id 
+                        });
+                    });
+                }
+            });
+            state.flatSteps = steps;
+            
+            assignVoices();
+            render();
+        }
+
+        function setupCurrentStep() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+
+            if (state.isReviewMode) {
+                return; // No timer needed in review mode
+            }
+
+            const step = state.flatSteps[state.currentStepIndex];
+            const isTalk = step.data.id.includes('talk') || step.data.audioTitle.toLowerCase().includes('lecture') || step.data.audioTitle.toLowerCase().includes('podcast');
+            
+            // Initialize new question time
+            state.questionTimeLeft = isTalk ? 30 : 20;
+
+            // If audio was already completed previously for this passage, start timer immediately
+            if (state.passageAudioFinished[step.passageId]) {
+                startQuestionTimer();
+            } else {
+                updateTimerDisplay(); // Render the initial static time
+            }
+        }
+
+        function startQuestionTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            
+            state.timerInterval = setInterval(() => {
+                if (state.questionTimeLeft > 0) {
+                    state.questionTimeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(state.timerInterval);
+                    handleNext(); // Auto-advance when time runs out
+                }
+            }, 1000);
+        }
+
+        function stopAudio() {
+            state.isPlaying = false;
+            window.speechSynthesis.cancel();
+        }
+
+        async function playPreparedAudio() {
+            const step = state.flatSteps[state.currentStepIndex];
+            const passageId = step.passageId;
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+
+            if (playCount >= 2) return;
+            
+            state.passageAudioPlayed[passageId] = playCount + 1;
+            state.isPlaying = true;
+            
+            // Pause timer if it was running (e.g., user is using their 2nd replay)
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+            
+            updateAudioUI(); 
+
+            if (!femaleVoice || !maleVoice) assignVoices();
+
+            const transcriptText = step.question.transcript || step.data.transcript;
+            const lines = transcriptText.split('\n').filter(l => l.trim().length > 0);
+
+            for (let line of lines) {
+                if (!state.isPlaying) break;
+                
+                let spokenText = line;
+                let currentGender = 'male'; 
+
+                const match = line.match(/^([A-Za-z\s]+):\s*(.*)/);
+                if (match) {
+                    const speaker = match[1].toLowerCase().trim();
+                    spokenText = match[2]; 
+                    
+                    if (speaker.includes('woman') || speaker.includes('host') || speaker.includes('layla')) {
+                        currentGender = 'female'; 
+                    } else if (speaker.includes('man') || speaker.includes('professor') || speaker.includes('sami')) {
+                        currentGender = 'male';
+                    }
+                }
+
+                const sentences = spokenText.match(/[^.!?]+[.!?]+/g) || [spokenText];
+
+                for (let sentence of sentences) {
+                    if (!state.isPlaying) break;
+
+                    await new Promise((resolve) => {
+                        const utterance = new SpeechSynthesisUtterance(sentence.trim());
+                        
+                        if (currentGender === 'female') {
+                            if (femaleVoice) utterance.voice = femaleVoice;
+                        } else {
+                            if (maleVoice) utterance.voice = maleVoice;
+                        }
+                        
+                        utterance.rate = 0.95; 
+                        utterance.onend = resolve;
+                        utterance.onerror = resolve; 
+                        window.speechSynthesis.speak(utterance);
+                    });
+                }
+                
+                if (state.isPlaying && lines.length > 1) {
+                    await new Promise(r => setTimeout(r, 400));
+                }
+            }
+
+            state.isPlaying = false;
+            state.passageAudioFinished[passageId] = true;
+            
+            // Resume/Start timer after playback concludes
+            startQuestionTimer();
+            updateAudioUI(); 
+        }
+
+        // Targeted DOM updates to prevent flickering
+        function updateAudioUI() {
+            if (state.isReviewMode) return;
+
+            const step = state.flatSteps[state.currentStepIndex];
+            const passageId = step?.passageId;
+            const isAudioFinished = state.passageAudioFinished[passageId];
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+            
+            const btnContainer = document.getElementById('audio-btn-container');
+            const iconContainer = document.getElementById('audio-icon-container');
+            const overlay = document.getElementById('question-overlay');
+            const nextBtn = document.getElementById('next-btn');
+            const warning = document.getElementById('audio-warning');
+
+            // Update Audio Button
+            if (btnContainer) {
+                if (state.isPlaying) {
+                    btnContainer.innerHTML = `<button disabled class="flex items-center px-10 py-4 bg-sky-50 text-sky-600 font-bold rounded-full shadow-md border border-sky-200 cursor-not-allowed">
+                                                  <i data-lucide="volume-2" class="w-6 h-6 mr-3 animate-pulse"></i> Playing Audio...
+                                               </button>`;
+                } else if (playCount >= 2) {
+                    btnContainer.innerHTML = `<button disabled class="flex items-center px-10 py-4 bg-slate-100 text-slate-400 font-bold rounded-full shadow-inner border border-slate-200 cursor-not-allowed">
+                                                  <i data-lucide="check-circle" class="w-6 h-6 mr-3"></i> Audio Completed
+                                               </button>`;
+                } else {
+                    let playText = playCount === 1 ? 'Play Audio Segment (1 play left)' : 'Play Audio Segment';
+                    btnContainer.innerHTML = `<button onclick="playPreparedAudio()" class="flex items-center px-10 py-4 bg-white text-sky-600 font-bold rounded-full shadow-lg hover:shadow-xl hover:bg-slate-50 transition-all border border-sky-600 text-lg">
+                                                  <i data-lucide="play-circle" class="w-8 h-8 mr-3"></i> ${playText}
+                                               </button>`;
+                }
+                lucide.createIcons();
+            }
+
+            // Update Visual Pulse
+            if (iconContainer) {
+                if (state.isPlaying) {
+                    iconContainer.classList.add('scale-105', 'animate-pulse', 'duration-1000');
+                    iconContainer.innerHTML = `<i data-lucide="volume-2" class="w-24 h-24 text-white opacity-90"></i>`;
+                } else {
+                    iconContainer.classList.remove('scale-105', 'animate-pulse', 'duration-1000');
+                    iconContainer.innerHTML = `<i data-lucide="headphones" class="w-24 h-24 text-white opacity-90"></i>`;
+                }
+                lucide.createIcons();
+            }
+
+            // Smoothly hide overlay when audio finishes its FIRST play
+            if (overlay && isAudioFinished) {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => { overlay.classList.add('hidden'); }, 500);
+            }
+            
+            if (warning && playCount >= 2) {
+                warning.style.display = 'none';
+            }
+            
+            // Enable radio buttons dynamically without a full render to preserve animations
+            const radioLabels = document.querySelectorAll('label.group');
+            if (isAudioFinished) {
+                radioLabels.forEach(label => {
+                    label.classList.remove('opacity-50', 'cursor-not-allowed');
+                    label.classList.add('cursor-pointer', 'hover:bg-slate-100', 'hover:border-slate-200');
+                    
+                    const radio = label.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.disabled = false;
+                        radio.classList.remove('cursor-not-allowed');
+                        radio.classList.add('cursor-pointer');
+                    }
+                    
+                    const span = label.querySelector('span');
+                    if (span) {
+                        span.classList.add('group-hover:text-black');
+                    }
+                });
+            }
+
+            // Update Next button enablement based on audio finish AND answer presence
+            if (nextBtn) {
+                const hasAnswered = state.answers[step?.question?.id] !== undefined;
+                if (isAudioFinished && hasAnswered) {
+                    nextBtn.disabled = false;
+                    nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    nextBtn.title = "";
+                } else if (!isAudioFinished) {
+                    nextBtn.disabled = true;
+                    nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    nextBtn.title = "Listen to the audio completely before moving on";
+                } else if (!hasAnswered) {
+                    nextBtn.disabled = true;
+                    nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    nextBtn.title = "Please choose an answer before moving on";
+                }
+            }
+        }
+
+        function autoPlayCheck() {
+            if (state.showInstructions || state.showResults || state.isReviewMode || state.isPlaying) return;
+            const step = state.flatSteps[state.currentStepIndex];
+            if (!step) return;
+            
+            const passageId = step.passageId;
+            if (!state.passageAudioPlayed[passageId]) {
+                // Short delay ensures interface is fully loaded before the audio begins
+                setTimeout(() => {
+                    if (!state.passageAudioPlayed[passageId] && !state.isPlaying && !state.showInstructions && !state.isReviewMode) {
+                        playPreparedAudio();
+                    }
+                }, 1000);
+            }
+        }
+
+        function handleNext() {
+            stopAudio();
+            if (state.currentStepIndex < state.flatSteps.length - 1) {
+                state.currentStepIndex++;
+                setupCurrentStep();
+                render(); 
+            } else {
+                if (state.isReviewMode) {
+                    endReview();
+                } else {
+                    handleModuleComplete();
+                }
+            }
+        }
+        
+        function handleModuleComplete() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            stopAudio();
+            if (state.currentModule === 'module1') {
+                loadModule('module2');
+            } else {
+                finishTest();
+            }
+        }
+
+        function handleBack() {
+            stopAudio();
+            if (state.currentStepIndex > 0) {
+                state.currentStepIndex--;
+                setupCurrentStep();
+                render(); 
+            }
+        }
+
+        function handleBeginTest() {
+            assignVoices();
+            state.showInstructions = false;
+            setupCurrentStep();
+            render();
+        }
+
+        function finishTest() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            stopAudio();
+            state.showResults = true;
+            render();
+        }
+
+        function startReview() {
+            state.isReviewMode = true;
+            state.showResults = false;
+            state.currentStepIndex = 0;
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            
+            // Flatten ALL steps from both modules for the review phase
+            const steps = [];
+            Object.values(testData).forEach(moduleData => {
+                moduleData.sections.forEach(section => {
+                    if (section.type === 'listening') {
+                        section.questions.forEach((q, idx) => {
+                            steps.push({
+                                type: 'listening',
+                                data: section,
+                                question: q,
+                                questionIndex: idx + 1,
+                                totalQuestions: section.questions.length,
+                                passageId: (section.id.includes("short")) ? `short_${q.id}` : section.id 
+                            });
+                        });
+                    }
+                });
+            });
+            state.flatSteps = steps;
+            render();
+        }
+
+        function endReview() {
+            state.isReviewMode = false;
+            state.showResults = true;
+            render();
+        }
+
+        function handleRadioInput(qId, value) {
+            if (state.isReviewMode) return;
+            state.answers[qId] = value;
+            render(); 
+        }
+
+        function resetApp() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.currentModule = null;
+            state.flatSteps = [];
+            state.answers = {};
+            state.passageAudioPlayed = {};
+            state.passageAudioFinished = {};
+            state.showResults = false;
+            state.showInstructions = false;
+            state.isReviewMode = false;
+            stopAudio();
+            render();
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            let total = 0;
+
+            Object.values(testData).forEach(moduleData => {
+                moduleData.sections.forEach(sec => {
+                    if (sec.type === 'listening') {
+                        sec.questions.forEach(q => {
+                            total++;
+                            if (state.answers[q.id] === q.correctAnswer) {
+                                correct++;
+                            }
+                        });
+                    }
+                });
+            });
+            return { correct, total };
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('timer-display');
+            const container = document.getElementById('timer-container');
+            
+            if (el) el.innerText = formatTime(state.questionTimeLeft);
+            
+            if (container && !state.isReviewMode) {
+                // Pulse logic for low time
+                if (state.questionTimeLeft <= 5 && state.questionTimeLeft > 0) {
+                    container.classList.add('text-red-500', 'font-bold', 'animate-pulse');
+                    container.classList.remove('text-slate-500');
+                } else {
+                    container.classList.remove('text-red-500', 'font-bold', 'animate-pulse');
+                    container.classList.add('text-slate-500');
+                }
+            }
+        }
+
+        function downloadPDF() {
+            const nameInput = document.getElementById('learner-name').value.trim();
+            const studentName = nameInput || "Learner";
+            
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : (correct/total);
+            const rawBand = (Math.round(percent * 10) / 2) + 1;
+            const bandScore = Math.min(6.0, Math.max(1.0, rawBand)).toFixed(1);
+            
+            let cefr = "";
+            if (bandScore >= 6.0) cefr = "CEFR C2";
+            else if (bandScore >= 5.0) cefr = "CEFR C1";
+            else if (bandScore >= 4.0) cefr = "CEFR B2";
+            else if (bandScore >= 3.0) cefr = "CEFR B1";
+            else if (bandScore >= 2.0) cefr = "CEFR A2";
+            else cefr = "CEFR A1";
+
+            let feedback = "";
+            if (bandScore >= 5.0) {
+                feedback = "Excellent work! Your ability to comprehend complex academic lectures and practical conversations is highly commendable. Keep engaging with authentic English audio materials to sustain this exceptional proficiency.";
+            } else if (bandScore >= 3.5) {
+                feedback = "Good job! You have demonstrated a solid grasp of listening strategies. To further refine your skills, practice deriving meaning from context clues and explore a wider variety of real-world audio texts.";
+            } else {
+                feedback = "Keep practicing! Developing listening fluency is a steady process. Focus on integrating English podcasts and lectures into your daily routine and building your vocabulary to boost your comprehension.";
+            }
+
+            const dateStr = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Professional Visual Header
+            doc.setFillColor(2, 132, 199); // Tailwind Sky-600
+            doc.rect(0, 0, 210, 45, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(24);
+            doc.text("TOEFL iBT Practice Test Score", 105, 22, { align: "center" });
+            
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text("Listening Section Performance Report", 105, 32, { align: "center" });
+
+            // Test Taker Info Section
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.text("Test Taker Information", 20, 65);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Name: ${studentName}`, 20, 75);
+            doc.text(`Date: ${dateStr}`, 20, 85);
+
+            // Score Box Design
+            doc.setFillColor(240, 249, 255); // Sky 50
+            doc.setDrawColor(186, 230, 253); // Sky 200
+            doc.setLineWidth(0.5);
+            doc.roundedRect(20, 100, 170, 40, 3, 3, 'FD');
+
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(2, 132, 199); // Sky 600
+            doc.text("Total Correct Answers:", 30, 115);
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.text(`${correct} / ${total}`, 90, 115);
+
+            doc.setTextColor(2, 132, 199); // Sky 600
+            doc.text("Predicted Band Score:", 30, 130);
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.text(`${bandScore}/6.0 (${cefr})`, 90, 130);
+
+            // Instructor Feedback
+            doc.setFont("helvetica", "bold");
+            doc.text("Instructor Feedback", 20, 160);
+            doc.setFont("helvetica", "normal");
+            const splitFeedback = doc.splitTextToSize(feedback, 170);
+            doc.text(splitFeedback, 20, 170);
+
+            // Footer branding
+            doc.setFontSize(10);
+            doc.setTextColor(148, 163, 184); // Slate 400
+            doc.text("Generated by EnglishTech Solutions", 105, 280, { align: "center" });
+
+            // Save the PDF file
+            const safeFileName = studentName.replace(/\s+/g, '_');
+            doc.save(`TOEFL_Listening_Score_${safeFileName}.pdf`);
+        }
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderWelcome() {
+            return `
+            <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+                <div class="bg-white max-w-4xl w-full shadow-lg rounded-lg overflow-hidden border-t-8 border-sky-600">
+                    <div class="bg-sky-600 p-6 text-white text-center">
+                        <i data-lucide="headphones" class="w-12 h-12 mx-auto mb-4 opacity-90"></i>
+                        <h1 class="text-3xl font-bold font-sans">TOEFL iBT® Practice Test 1</h1>
+                        <p class="opacity-90 mt-2">Listening Section</p>
+                    </div>
+                    
+                    <div class="p-8 text-center">
+                        <p class="text-slate-600 mb-6 text-lg">
+                            This practice test simulates the digital interface of the listening section of the TOEFL iBT test. 
+                            Listen to the audio segments carefully and answer the comprehension questions.
+                        </p>
+
+                        <div class="bg-sky-50 border-l-4 border-sky-500 p-5 mb-8 text-left text-sm text-slate-700 space-y-3 rounded-r shadow-sm">
+                            <h3 class="font-bold text-sky-900 text-base flex items-center">
+                                <i data-lucide="info" class="w-5 h-5 mr-2"></i> Important Notes
+                            </h3>
+                            <p>
+                                <strong>This is a guided practice lesson focused on listening strategy,</strong> not a full simulation test. For a full simulation to see exactly how the real test looks and operates, please visit the <a href="https://www.ets.org/toefl/test-takers/ibt/prepare/sample-test-jan-2026-1.html" target="_blank" class="text-sky-600 font-semibold hover:underline">official TOEFL sample test</a>.
+                            </p>
+                            <p>
+                                <strong>Structure:</strong> This practice test consists of two sequential modules. Once you finish all questions in Module 1, you will automatically proceed to Module 2. Your final predicted band score will be calculated at the very end.
+                            </p>
+                        </div>
+
+                        <div class="bg-amber-50 border border-amber-200 text-amber-800 px-6 py-4 rounded-lg text-sm mb-6 flex flex-col items-center shadow-sm">
+                            <p class="mb-2 text-center flex flex-col items-center">
+                                <span class="flex items-center mb-1 text-amber-900"><i data-lucide="info" class="w-5 h-5 mr-2 inline-block"></i><strong>Browser Recommendation</strong></span> 
+                                <span>For the most natural, human-like audio experience, we highly recommend using Microsoft Edge. Edge provides high-quality "Neural" voices built-in for free that sound significantly better than standard browser voices.</span>
+                            </p>
+                        </div>
+                        
+                        <div class="flex justify-center mt-8">
+                            <button onclick="startTest()" class="px-8 py-4 bg-sky-600 text-white font-bold text-lg rounded-xl shadow-md hover:bg-sky-700 transition-colors flex items-center">
+                                Begin Practice Test <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-slate-100 p-4 text-center text-xs text-slate-400">
+                        Simulated interface crafted for educational usage.
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderResults() {
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : (correct/total);
+            
+            // Calculate Predicted Score (1.0 to 6.0 scale, 0.5 increments)
+            const rawBand = (Math.round(percent * 10) / 2) + 1;
+            const bandScore = Math.min(6.0, Math.max(1.0, rawBand)).toFixed(1);
+            
+            // Map to CEFR Level based on TOEFL iBT technical manual mapping
+            let cefr = "";
+            if (bandScore >= 6.0) cefr = "CEFR C2";
+            else if (bandScore >= 5.0) cefr = "CEFR C1";
+            else if (bandScore >= 4.0) cefr = "CEFR B2";
+            else if (bandScore >= 3.0) cefr = "CEFR B1";
+            else if (bandScore >= 2.0) cefr = "CEFR A2";
+            else cefr = "CEFR A1";
+
+            const scoreColor = bandScore >= 4.0 ? 'text-green-600' : 'text-orange-500';
+
+            return `
+            <div class="min-h-screen bg-slate-50 pt-24 pb-12 px-4 overflow-y-auto custom-scroll">
+                <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                    <div class="bg-sky-600 p-8 text-white text-center">
+                        <h2 class="text-3xl font-bold mb-2">Test Completed</h2>
+                        <p class="text-sky-100">Here is your performance report</p>
+                    </div>
+                    
+                    <div class="p-8">
+                        <div class="flex flex-col md:flex-row justify-center items-center gap-12 mb-8">
+                            <div class="text-center">
+                                <div class="text-6xl font-bold text-sky-600 mb-2">${correct}</div>
+                                <div class="text-slate-500 uppercase tracking-widest text-sm font-semibold">Correct Answers</div>
+                            </div>
+                            <div class="w-px h-24 bg-slate-200 hidden md:block"></div>
+                            <div class="text-center">
+                                <div class="text-6xl font-bold mb-2 ${scoreColor}">${bandScore}<span class="text-3xl text-slate-400 font-medium">/6.0</span></div>
+                                <div class="text-slate-500 uppercase tracking-widest text-sm font-semibold mb-2">Predicted Band Score</div>
+                                <div class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-600 rounded-full inline-block">${cefr}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 mb-8 bg-sky-50 p-6 rounded-lg border border-sky-100 flex flex-col items-center">
+                            <h3 class="text-lg font-bold text-sky-900 mb-3">Download Your Score Report</h3>
+                            <input type="text" id="learner-name" placeholder="Enter your full name" class="px-4 py-2 border border-slate-300 rounded mb-4 w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                            <button onclick="downloadPDF()" class="px-6 py-3 bg-green-600 text-white font-bold rounded shadow hover:bg-green-700 transition-colors flex items-center justify-center">
+                                <i data-lucide="download" class="w-5 h-5 mr-2"></i> Save as PDF
+                            </button>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row justify-center border-t border-slate-100 pt-8 gap-4">
+                            <button onclick="startReview()" class="px-8 py-3 bg-white text-sky-700 border-2 border-sky-700 font-bold rounded shadow hover:bg-sky-50 transition-colors flex items-center justify-center">
+                                <i data-lucide="search" class="w-4 h-4 mr-2"></i> Review Answers
+                            </button>
+                            <button onclick="resetApp()" class="px-8 py-3 bg-sky-700 text-white font-bold rounded shadow hover:bg-sky-800 transition-colors flex items-center justify-center">
+                                <i data-lucide="home" class="w-4 h-4 mr-2"></i> Return to Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderHeader() {
+            const isInstructionPhase = state.showInstructions;
+            let navButtons = '';
+
+            if (isInstructionPhase) {
+                navButtons = `
+                    <button onclick="handleBeginTest()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors">
+                        Begin
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            } else {
+                const backBtn = state.currentStepIndex > 0 
+                    ? `<button onclick="handleBack()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors mr-2">
+                        <i data-lucide="chevron-left" class="mr-1 w-5 h-5"></i> Back
+                       </button>` 
+                    : '';
+                
+                const nextText = state.currentStepIndex === state.flatSteps.length - 1 ? (state.isReviewMode ? 'Return to Results' : 'Finish') : 'Next';
+                
+                const step = state.flatSteps[state.currentStepIndex];
+                const isAudioFinished = state.passageAudioFinished[step?.passageId] || false;
+                const hasAnswered = state.answers[step?.question?.id] !== undefined;
+                
+                let canMoveNext = true; 
+                let disabledReason = "";
+
+                if (!state.isReviewMode) {
+                    canMoveNext = isAudioFinished && hasAnswered;
+                    if (!isAudioFinished) disabledReason = "Listen to the audio completely before moving on";
+                    else if (!hasAnswered) disabledReason = "Please choose an answer before moving on";
+                }
+
+                navButtons = `
+                    ${backBtn}
+                    <button id="next-btn" onclick="handleNext()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" ${!canMoveNext ? `disabled title="${disabledReason}"` : ''}>
+                        ${nextText}
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            }
+
+            return `
+            <header class="bg-sky-600 h-16 flex items-center justify-between px-6 shadow-md z-50 fixed w-full top-0">
+                <div class="flex items-center space-x-4">
+                    ${isInstructionPhase ? '<span class="text-white text-lg font-sans font-semibold">Listening Section</span>' : '<div class="text-sky-100 opacity-90"></div>'}
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="flex space-x-2">
+                        ${navButtons}
+                    </div>
+                </div>
+            </header>
+            `;
+        }
+
+        function renderSubHeader() {
+            if (state.showInstructions) return '';
+            
+            const totalSteps = state.flatSteps.length;
+            const moduleName = state.isReviewMode ? 'Full Review' : (state.currentModule === 'module1' ? 'Module 1' : 'Module 2');
+            const displayText = `Listening | ${moduleName} | Question ${state.currentStepIndex + 1} of ${totalSteps}`;
+
+            let rightSide = '';
+            if (state.isReviewMode) {
+                rightSide = `<div class="text-sky-700 font-bold bg-sky-100 px-3 py-1 rounded flex items-center"><i data-lucide="search" class="w-4 h-4 mr-2"></i> Review Mode</div>`;
+            } else {
+                const isLowTime = state.questionTimeLeft <= 5 && state.questionTimeLeft > 0;
+                const timerColorClass = isLowTime ? 'text-red-500 font-bold animate-pulse' : 'text-slate-500';
+                
+                rightSide = `<div id="timer-container" class="flex items-center ${timerColorClass} font-mono transition-colors bg-slate-100 px-3 py-1 rounded">
+                    <i data-lucide="clock" class="mr-2 w-4 h-4 text-sky-600"></i>
+                    <span id="timer-display" class="font-bold">${formatTime(state.questionTimeLeft)}</span>
+                </div>`;
+            }
+
+            return `
+            <div class="fixed top-16 w-full bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center text-slate-700 text-sm font-sans z-40 shadow-sm">
+                <span class="font-semibold text-lg">${displayText}</span>
+                ${rightSide}
+            </div>
+            `;
+        }
+
+        function renderInstructions() {
+            const title = state.currentModule === 'module1' ? 'Listening Section - Module 1' : 'Listening Section - Module 2';
+            const intro = state.currentModule === 'module1' 
+                ? "You are about to begin Module 1. Once you finish all questions in this module, you will automatically proceed to Module 2."
+                : "You are about to begin Module 2. Your final predicted score will be calculated after completing this module.";
+
+            return `
+            <div class="pt-24 px-8 max-w-5xl mx-auto h-screen overflow-y-auto custom-scroll pb-10">
+                <h1 class="text-3xl text-slate-800 mb-6 font-sans font-bold">${title}</h1>
+                
+                <p class="text-sky-900 font-semibold bg-sky-100 border-l-4 border-sky-600 p-4 rounded mb-8 text-lg leading-relaxed shadow-sm">
+                    ${intro}
+                </p>
+
+                <p class="text-slate-700 text-lg mb-4 leading-relaxed">
+                    In an actual test, you will answer up to 47 questions to demonstrate how well you understand spoken English. 
+                    There are three types of tasks in the listening section of the test.
+                </p>
+
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 shadow-sm">
+                    <p class="text-sm text-slate-800">
+                        <strong>Practice Mode Note:</strong> To help you prepare, this interface automatically triggers the audio but allows you to replay the segment up to <strong>two times</strong> per passage. Audio transcripts remain hidden during the test but will become available for review at the end.
+                    </p>
+                    <p class="text-sm text-slate-800 mt-2">
+                        <strong>Test Mechanics:</strong> You have 20 seconds to answer most questions, and 30 seconds for Academic Talks. The timer starts <strong>after</strong> the audio finishes playing. You must choose an answer before the Next button is enabled.
+                    </p>
+                </div>
+
+                <div class="border border-slate-300 rounded overflow-hidden shadow-sm">
+                    <div class="grid grid-cols-[30%_70%] bg-sky-200 border-b border-slate-300 text-sky-900">
+                        <div class="p-4 font-bold border-r border-slate-300">Type of Task</div>
+                        <div class="p-4 font-bold">Description</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-[30%_70%] border-b border-slate-300 bg-white">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Listen and Choose a Response</div>
+                        <div class="p-4 text-slate-600">Select the best response to the question or statement based on short simulated interactions.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] border-b border-slate-300 bg-slate-50">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Conversations</div>
+                        <div class="p-4 text-slate-600">Answer questions about short, practical discussions.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] bg-white">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Listen to Announcements and Academic Talks</div>
+                        <div class="p-4 text-slate-600">Answer questions about announcements and academic talks.</div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderListening(step) {
+            const { data, question, passageId } = step;
+            
+            const isShortDialogue = data.id.includes("short");
+            const isAudioFinished = state.passageAudioFinished[passageId];
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+            const showQuestion = state.isReviewMode || isShortDialogue || isAudioFinished;
+
+            const disabledLabelClass = (!state.isReviewMode && !isAudioFinished) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-100 hover:border-slate-200';
+            const disabledInputClass = (!state.isReviewMode && !isAudioFinished) ? 'cursor-not-allowed' : 'cursor-pointer';
+            const disabledSpanClass = (!state.isReviewMode && !isAudioFinished) ? '' : 'group-hover:text-black';
+            const isDisabledAttribute = (!state.isReviewMode && !isAudioFinished) ? 'disabled' : '';
+
+            const options = question.options.map((opt, idx) => {
+                const isChecked = state.answers[question.id] === idx ? 'checked' : '';
+                
+                if (state.isReviewMode) {
+                    const isUserAns = state.answers[question.id] === idx;
+                    const isCorrectAns = question.correctAnswer === idx;
+                    let optionClass = "p-3 rounded border border-slate-200 text-slate-700";
+                    let icon = "";
+                    
+                    if (isCorrectAns) {
+                        optionClass = "p-3 rounded border-2 border-green-500 bg-green-50 text-green-800 font-bold shadow-sm";
+                        icon = '<i data-lucide="check-circle" class="w-5 h-5 ml-auto text-green-600 flex-shrink-0"></i>';
+                    } else if (isUserAns && !isCorrectAns) {
+                        optionClass = "p-3 rounded border-2 border-red-300 bg-red-50 text-red-800";
+                        icon = '<i data-lucide="x-circle" class="w-5 h-5 ml-auto text-red-500 flex-shrink-0"></i>';
+                    } else {
+                        optionClass = "p-3 rounded border border-slate-100 bg-white opacity-60";
+                    }
+                    
+                    return `
+                    <label class="flex items-start cursor-default bg-white p-4 rounded-lg mb-3 shadow-sm ${optionClass}">
+                        <div class="relative flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <input 
+                                type="radio" 
+                                disabled
+                                ${isChecked}
+                                class="peer appearance-none w-5 h-5 border-2 border-slate-400 rounded-full checked:border-sky-600 checked:border-4 transition-all opacity-60 mr-4"
+                            />
+                        </div>
+                        <span class="text-slate-700 font-sans text-lg flex-grow pr-2">${opt}</span>
+                        ${icon}
+                    </label>
+                    `;
+                } else {
+                    return `
+                    <label class="flex items-start group p-4 rounded-lg transition-colors border border-slate-200 bg-white shadow-sm ${disabledLabelClass}">
+                        <div class="relative flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <input 
+                                type="radio" 
+                                name="q-${question.id}" 
+                                ${isChecked}
+                                ${isDisabledAttribute}
+                                onchange="handleRadioInput(${question.id}, ${idx})"
+                                class="peer appearance-none w-5 h-5 border-2 border-slate-400 rounded-full checked:border-sky-600 checked:border-4 transition-all ${disabledInputClass}"
+                            />
+                        </div>
+                        <span class="ml-4 text-slate-700 font-sans text-lg transition-colors ${disabledSpanClass}">
+                            ${opt}
+                        </span>
+                    </label>
+                    `;
+                }
+            }).join('');
+
+            let audioButtonHTML = '';
+            
+            if (state.isReviewMode) {
+                audioButtonHTML = `<button disabled class="flex items-center px-10 py-4 bg-slate-100 text-slate-400 font-bold rounded-full shadow-inner border border-slate-200 cursor-not-allowed">
+                                      <i data-lucide="check-circle" class="w-6 h-6 mr-3"></i> Review Mode
+                                   </button>`;
+            } else if (state.isPlaying) {
+                audioButtonHTML = `<button disabled class="flex items-center px-10 py-4 bg-sky-50 text-sky-600 font-bold rounded-full shadow-md border border-sky-200 cursor-not-allowed">
+                                      <i data-lucide="volume-2" class="w-6 h-6 mr-3 animate-pulse"></i> Playing Audio...
+                                   </button>`;
+            } else if (playCount >= 2) {
+                audioButtonHTML = `<button disabled class="flex items-center px-10 py-4 bg-slate-100 text-slate-400 font-bold rounded-full shadow-inner border border-slate-200 cursor-not-allowed">
+                                      <i data-lucide="check-circle" class="w-6 h-6 mr-3"></i> Audio Completed
+                                   </button>`;
+            } else {
+                let playText = playCount === 1 ? 'Play Audio Segment (1 play left)' : 'Play Audio Segment';
+                audioButtonHTML = `<button onclick="playPreparedAudio()" class="flex items-center px-10 py-4 bg-white text-sky-600 font-bold rounded-full shadow-lg hover:shadow-xl hover:bg-slate-50 transition-all border border-sky-600 text-lg">
+                                      <i data-lucide="play-circle" class="w-8 h-8 mr-3"></i> ${playText}
+                                   </button>`;
+            }
+
+            let reviewBlock = '';
+            if (state.isReviewMode) {
+                const isUserAnsCorrect = state.answers[question.id] === question.correctAnswer;
+                const correctnessBadge = isUserAnsCorrect 
+                    ? '<span class="text-green-600 font-bold text-sm flex items-center bg-green-50 px-2 py-1 rounded mb-3 w-max border border-green-200"><i data-lucide="check" class="w-4 h-4 mr-1"></i> Correct</span>' 
+                    : '<span class="text-red-500 font-bold text-sm flex items-center bg-red-50 px-2 py-1 rounded mb-3 w-max border border-red-200"><i data-lucide="x" class="w-4 h-4 mr-1"></i> Incorrect</span>';
+                
+                const transcriptText = (question.transcript || data.transcript).replace(/\n/g, '<br/>');
+
+                reviewBlock = `
+                <div class="mt-6 space-y-4 pb-8">
+                    <div class="p-5 bg-sky-50 rounded-lg border border-sky-100 text-slate-700 shadow-sm">
+                        ${correctnessBadge}
+                        <div class="flex items-start">
+                            <i data-lucide="lightbulb" class="w-5 h-5 mr-3 text-sky-600 flex-shrink-0 mt-0.5"></i>
+                            <div>
+                                <strong class="text-sky-900 block mb-1">Strategy & Context:</strong>
+                                ${question.explanation}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-lg border border-slate-200 text-sm text-slate-700 shadow-sm">
+                        <strong class="text-slate-800 block mb-3 font-sans flex items-center border-b border-slate-200 pb-2">
+                            <i data-lucide="file-text" class="w-4 h-4 mr-2 text-slate-500"></i> Audio Transcript
+                        </strong>
+                        <div class="leading-relaxed italic text-base">${transcriptText}</div>
+                    </div>
+                </div>`;
+            }
+
+            const overlayClass = showQuestion ? 'hidden opacity-0' : 'opacity-95';
+
+            return `
+            <div class="pt-28 h-screen flex flex-col md:flex-row overflow-hidden bg-white">
+                
+                <div class="w-full md:w-1/2 h-full border-r border-slate-300 bg-slate-50 flex flex-col items-center justify-center p-8 relative shadow-inner">
+                    <div class="absolute top-8 left-8 text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center">
+                        <i data-lucide="ear" class="w-4 h-4 mr-2"></i> Audio Environment
+                    </div>
+                    
+                    <div id="audio-icon-container" class="w-56 h-56 rounded-full bg-gradient-to-tr from-sky-700 to-sky-400 shadow-2xl flex items-center justify-center mb-10 transition-transform ${state.isPlaying ? 'scale-105 animate-pulse duration-1000' : ''}">
+                        <i data-lucide="${state.isPlaying ? 'volume-2' : 'headphones'}" class="w-24 h-24 text-white opacity-90"></i>
+                    </div>
+                    
+                    <div class="mb-2 flex flex-col items-center">
+                        <div id="audio-btn-container">
+                            ${audioButtonHTML}
+                        </div>
+                        ${!state.isReviewMode && playCount < 2 ? '<p id="audio-warning" class="text-xs text-red-500 mt-4 font-bold uppercase tracking-wide"><i data-lucide="alert-triangle" class="w-3 h-3 inline mr-1"></i> Audio can be played up to 2 times</p>' : ''}
+                    </div>
+                </div>
+                
+                <div class="w-full md:w-1/2 h-full overflow-y-auto p-10 bg-slate-50 custom-scroll relative">
+                    
+                    <div class="max-w-xl mx-auto">
+                        <div class="mb-6 text-sm font-bold text-sky-700 uppercase tracking-widest border-b border-slate-200 pb-2">${data.title}</div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+                            <h3 class="text-xl font-bold text-slate-800 font-sans leading-snug">${question.text}</h3>
+                        </div>
+                        <div class="space-y-4">
+                            ${options}
+                        </div>
+                        ${reviewBlock}
+                    </div>
+
+                    <div id="question-overlay" class="absolute inset-0 bg-slate-50 z-10 flex flex-col items-center justify-center text-center px-8 transition-opacity duration-500 ${overlayClass}">
+                        <i data-lucide="lock" class="w-16 h-16 text-slate-400 mb-6"></i>
+                        <h3 class="text-2xl font-bold text-slate-700 mb-4">Question Hidden</h3>
+                        <p class="text-slate-500 max-w-sm text-lg leading-relaxed">
+                            Please listen to the audio segment completely. The question and options will appear automatically once the playback finishes.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+            `;
+        }
+
+        // --- MAIN RENDER LOOP ---
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!state.currentModule) {
+                app.innerHTML = renderWelcome();
+            } else if (state.showResults) {
+                app.innerHTML = renderResults();
+            } else {
+                let mainContent = '';
+                if (state.showInstructions) {
+                    mainContent = renderInstructions();
+                } else {
+                    const step = state.flatSteps[state.currentStepIndex];
+                    if (step.type === 'listening') {
+                        mainContent = renderListening(step);
+                    }
+                }
+                
+                app.innerHTML = renderHeader() + renderSubHeader() + mainContent;
+            }
+
+            lucide.createIcons();
+            
+            // Check to auto-play after rendering
+            autoPlayCheck();
+        }
+
+        // Initialize App
+        render();
+
+    </script>
+</body>
+</html>

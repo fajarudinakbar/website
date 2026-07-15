@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Skill Building: Interactive Speaking | CEFR C1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Animation for Recording */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .recording-active {
+            animation: pulse-red 1.5s infinite;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-sm md:text-base text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Conversation</span> <span>&gt;</span> 
+            <span>Speaking</span> <span>&gt;</span> 
+            <span>CEFR C1</span> <span>&gt;</span> 
+            <span class="text-fuchsia-700 font-bold">Interactive Speaking</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-700 to-purple-600 tracking-tight mb-3">
+                    Interactive Speaking
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-500 font-medium">Score Range: 120–135 | Focus: Dialogue & Summary</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-lg text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-fuchsia-600 p-6 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-xl text-slate-700 leading-relaxed">
+                <i class="fas fa-comments mr-3 text-fuchsia-600"></i> 
+                <strong>Instructions:</strong> Master the two-part speaking task: engage in a simulated academic dialogue, then summarize the interaction in 90 seconds.
+            </p>
+        </div>
+
+        <!-- Section 1: Concept & Recognition (Cyan Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-2xl font-bold text-cyan-900">Steps 1-3: Concept & Strategy</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-2xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-10 bg-white space-y-12">
+                    
+                    <!-- Step 1: Concept -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-cyan-800"><span class="bg-cyan-100 px-3 py-1 rounded text-lg mr-3">Step 1</span> The Concept Breakdown</h3>
+                        </div>
+                        <div class="bg-cyan-50/50 p-6 rounded-xl border border-cyan-100 mb-4 text-lg leading-relaxed text-slate-700">
+                            <p class="mb-4"><strong>Part 1 (Listen & Respond):</strong> Select the best written response in a 5-6 turn dialogue.</p>
+                            <p class="mb-4"><strong>Part 2 (Summarize):</strong> Speak for 75-90 seconds summarizing the problem, discussion, and resolution.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Recognition Drill -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-cyan-800 mb-6"><span class="bg-cyan-100 px-3 py-1 rounded text-lg mr-3">Step 2</span> Recognition Drill</h3>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="p-6 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-cyan-800 mb-2"><i class="fas fa-user-graduate mr-2"></i>Student-to-Student</h4>
+                                <p class="text-slate-600">Discussing a group project on marine biology. Partner suggests a broad topic.</p>
+                            </div>
+                            <div class="p-6 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-cyan-800 mb-2"><i class="fas fa-chalkboard-teacher mr-2"></i>Student-to-Professor</h4>
+                                <p class="text-slate-600">Visiting office hours to ask for a deadline extension due to an emergency.</p>
+                            </div>
+                            <div class="p-6 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-cyan-800 mb-2"><i class="fas fa-search mr-2"></i>Information Seeking</h4>
+                                <p class="text-slate-600">Asking a librarian how to access restricted digital archives for a thesis.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Strategy -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-cyan-800 mb-6"><span class="bg-cyan-100 px-3 py-1 rounded text-lg mr-3">Step 3</span> Strategic Roadmap</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 border-l-4 border-cyan-400 bg-cyan-50">
+                                <span class="font-bold text-cyan-900">1. Anchor to Scenario:</span> The first correct response mirrors keywords in the opening prompt.
+                            </div>
+                            <div class="p-4 border-l-4 border-cyan-400 bg-cyan-50">
+                                <span class="font-bold text-cyan-900">2. Active Listening:</span> Focus on the <em>last</em> thing said to maintain flow. No replays allowed.
+                            </div>
+                            <div class="p-4 border-l-4 border-cyan-400 bg-cyan-50">
+                                <span class="font-bold text-cyan-900">3. "Who, What, Outcome":</span> Your summary must cover: Who you spoke to, the Problem, and the Resolution.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Warm-up & Guided Practice (Blue Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-2xl font-bold text-blue-900">Steps 4-5: Warm-up & Guide</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white border-t border-blue-50 space-y-12">
+                    
+                    <!-- Step 4: Warm-up -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-blue-800"><span class="bg-blue-100 px-3 py-1 rounded text-lg mr-3">Step 4</span> Foundation Warm-up</h3>
+                            <button onclick="checkMatching()" class="text-base font-bold text-blue-700 border-2 border-blue-200 bg-white px-5 py-2.5 rounded-lg hover:bg-blue-50 transition-colors shadow-sm">Check Matches</button>
+                        </div>
+                        <p class="text-xl text-slate-600 mb-6">Match the phrase to its conversational purpose.</p>
+                        
+                        <div id="matching-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Guided Practice -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-blue-800 mb-6"><span class="bg-blue-100 px-3 py-1 rounded text-lg mr-3">Step 5</span> Guided Practice (Scaffolded)</h3>
+                        
+                        <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 mb-6">
+                            <p class="font-bold text-blue-900 mb-2"><i class="fas fa-chalkboard-teacher mr-2"></i>Scenario:</p>
+                            <p class="text-slate-700 mb-4">You are talking to your professor about a low grade on your recent essay. Your goal is to be polite but firm about wanting to improve.</p>
+                            
+                            <hr class="border-blue-200 my-4">
+                            
+                            <p class="font-bold text-slate-800 mb-2">Professor:</p>
+                            <p class="text-slate-700 italic text-lg mb-4">"I've reviewed your paper. While your arguments were strong, the formatting didn't meet the rubric's requirements."</p>
+                            
+                            <button onclick="toggleAnswer('guided-model', this)" class="text-base font-bold text-white bg-blue-600 px-5 py-2.5 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">Show Best Response</button>
+                            
+                            <div id="guided-model" class="hidden mt-4 p-4 bg-white border-l-4 border-green-500 rounded shadow-sm">
+                                <p class="text-lg text-slate-800 font-medium">"I see. I apologize for the oversight. Could you point out the specific sections where the formatting was incorrect so I can fix it next time?"</p>
+                                <p class="text-sm text-slate-500 mt-2"><strong>Why:</strong> Acknowledges feedback (Politeness) + asks specific follow-up (Academic Goal).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Independent Challenge (Violet Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-2xl font-bold text-violet-900">Step 6-8: Simulation & Challenge</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-violet-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white space-y-10">
+                    
+                    <!-- Simulation Setup -->
+                    <div class="bg-violet-50 p-6 rounded-xl border border-violet-200">
+                        <h3 class="font-bold text-violet-900 text-xl mb-3">Step 6: Technical Simulation</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-lg text-slate-700">
+                            <li><strong>Timer:</strong> 4 minutes (Conversation) + 90 seconds (Summary).</li>
+                            <li><strong>Flow:</strong> Read scenario -> Speak summary immediately.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Independent Challenge -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-violet-800"><span class="bg-violet-100 px-3 py-1 rounded text-lg mr-3">Step 7</span> Independent Challenge</h3>
+                        </div>
+                        
+                        <!-- Scenario Card -->
+                        <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 mb-8">
+                            <h4 class="font-bold text-slate-800 text-lg mb-2"><i class="fas fa-file-alt mr-2 text-violet-600"></i>Scenario:</h4>
+                            <p class="text-slate-700 text-lg leading-relaxed">
+                                You are meeting a classmate at the campus café to plan a presentation on renewable energy. You want to focus on <strong>solar power</strong>, but they want to talk about <strong>wind energy</strong>.
+                            </p>
+                            <p class="text-sm text-slate-500 mt-4 font-bold uppercase">Task: Imagine 3 turns of dialogue, then record a summary (90s).</p>
+                        </div>
+
+                        <!-- Recording UI -->
+                        <div class="flex flex-col items-center justify-center gap-6 p-8 bg-white border-2 border-dashed border-violet-200 rounded-2xl">
+                            <div id="timer-display" class="text-5xl font-mono font-bold text-slate-700">01:30</div>
+                            
+                            <div class="flex gap-4">
+                                <button id="record-btn" onclick="toggleRecording()" class="flex items-center gap-3 px-8 py-4 bg-violet-600 hover:bg-violet-700 text-white rounded-full font-bold text-xl shadow-lg transition-all transform hover:scale-105">
+                                    <i class="fas fa-microphone"></i> <span id="record-text">Start Summary</span>
+                                </button>
+                                <button onclick="resetTimer()" class="px-4 py-4 bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full font-bold shadow transition-colors">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </div>
+                            <p id="recording-status" class="text-red-500 font-bold hidden animate-pulse">Recording...</p>
+                        </div>
+
+                        <!-- Transcript Area -->
+                        <div class="mt-8">
+                            <label class="block text-lg font-bold text-violet-800 mb-2">Transcript (for AI Analysis):</label>
+                            <textarea id="summary-transcript" placeholder="Type what you said here to analyze later..." class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-40"></textarea>
+                        </div>
+
+                        <!-- Model Summary -->
+                        <div class="mt-8">
+                            <button onclick="toggleAnswer('model-summary', this)" class="text-base font-bold text-violet-600 underline">Show Model Summary</button>
+                            <div id="model-summary" class="hidden mt-4 p-6 bg-violet-100 border border-violet-200 rounded-xl">
+                                <h4 class="font-bold text-violet-900 mb-2">C1 Model Summary:</h4>
+                                <p class="text-lg text-violet-900 leading-relaxed">
+                                    "I met with my classmate today to coordinate our renewable energy presentation. We initially disagreed on the focus, as I preferred solar power while they were interested in wind energy. After discussing the available data, we decided to compare both to show a more comprehensive view. We ended the meeting by assigning research roles to each other."
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Checklist -->
+                        <div class="mt-8 pt-8 border-t border-slate-100">
+                            <h4 class="font-bold text-violet-800 mb-4 text-xl">Step 8: Performance Checklist</h4>
+                            <div class="space-y-3 text-lg">
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span><strong>Goal Alignment:</strong> Did I address the solar vs. wind conflict?</span>
+                                </label>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span><strong>Coherence:</strong> Used words like "Initially", "However", "Consequently"?</span>
+                                </label>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span><strong>Complexity:</strong> Used phrases like "comprehensive view"?</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Reflection (Rose Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-2xl font-bold text-rose-900">Step 9-10: Feedback & Reflection</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-rose-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white space-y-8">
+                    
+                    <!-- AI Prompting -->
+                    <div class="bg-rose-50 p-6 rounded-xl border-l-4 border-rose-500 shadow-sm">
+                        <h3 class="text-xl font-bold text-rose-900 mb-2"><i class="fas fa-robot mr-2"></i>Step 9: AI Prompting Lab</h3>
+                        <p class="text-base text-slate-600 mb-3">Copy this into ChatGPT/Claude to score your transcript:</p>
+                        <div class="bg-white p-4 rounded border border-rose-200 font-mono text-sm text-slate-600 select-all">
+                            "Act as a DET Speaking Coach. I will provide a transcript of my 90-second summary for an Interactive Speaking task. Evaluate my response based on the Duolingo subscores: Production and Conversation. Check for: 1. Grammatical complexity. 2. Use of academic transitions. 3. Accuracy to the scenario. [Insert your transcript here]"
+                        </div>
+                    </div>
+
+                    <!-- Reflection -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-rose-800 mb-4">Step 10: Reflective Feedback Loop</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-xl text-slate-700 font-medium mb-2">1. One "Aha!" Moment:</label>
+                                <textarea placeholder="e.g., I realized the first answer is always in the scenario text..." class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xl text-slate-700 font-medium mb-2">2. One "Roadblock":</label>
+                                <textarea placeholder="e.g., I struggle to remember specific advice for the summary..." class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-lg font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-fuchsia-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data Configuration ---
+        const attempts = {};
+
+        const matchingData = [
+            { id: "m1", phrase: "\"I was wondering if you could clarify...\"", correct: "B", options: { A: "Proposing a solution", B: "Seeking information", C: "Expressing a limitation" } },
+            { id: "m2", phrase: "\"That makes sense, but I’m concerned about...\"", correct: "C", options: { A: "Proposing a solution", B: "Seeking information", C: "Expressing a limitation" } },
+            { id: "m3", phrase: "\"Maybe we could split the tasks?\"", correct: "A", options: { A: "Proposing a solution", B: "Seeking information", C: "Expressing a limitation" } }
+        ];
+
+        // --- Speech Recognition Setup ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let finalText = '';
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US'; // Standardized to US English for DET prep
+
+            recognition.onresult = (event) => {
+                let interimText = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalText += event.results[i][0].transcript + ' ';
+                    } else {
+                        interimText += event.results[i][0].transcript;
+                    }
+                }
+                document.getElementById('summary-transcript').value = finalText + interimText;
+            };
+
+            recognition.onend = () => {
+                // Keep listening if timer is still running (Web Speech API occasionally pauses)
+                if (isRecording && timeLeft > 0) {
+                    try { recognition.start(); } catch(e) {}
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+                if (event.error === 'not-allowed') {
+                    document.getElementById('summary-transcript').placeholder = "Microphone access blocked. Please type your summary manually.";
+                }
+            };
+        }
+
+        // --- Render Functions ---
+        function renderMatching() {
+            const container = document.getElementById('matching-container');
+            container.innerHTML = matchingData.map(item => `
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                    <div class="font-bold text-blue-900 md:w-1/2">${item.phrase}</div>
+                    <div class="flex items-center gap-3 md:w-1/2">
+                        <select id="${item.id}" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-colors">
+                            <option value="">Select Purpose...</option>
+                            <option value="A">${item.options.A}</option>
+                            <option value="B">${item.options.B}</option>
+                            <option value="C">${item.options.C}</option>
+                        </select>
+                        <span id="feedback-${item.id}" class="w-auto flex justify-center text-xl min-w-[32px]"></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkMatching() {
+            matchingData.forEach(item => {
+                const select = document.getElementById(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (select.disabled) return; // Skip if already solved/locked
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    select.classList.remove('border-red-300', 'border-slate-300');
+                    select.classList.add('border-green-500', 'bg-green-50');
+                    select.disabled = true;
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    
+                    if (attempts[key] >= 2) {
+                        // Reveal correct answer after 2 failed attempts
+                        select.value = item.correct;
+                        feedback.innerHTML = '<span class="text-xs font-bold text-blue-500 uppercase tracking-wide mr-2 mt-1">Revealed</span><i class="fas fa-check text-blue-500 mt-1"></i>';
+                        select.classList.remove('border-red-300', 'border-slate-300');
+                        select.classList.add('border-blue-400', 'bg-blue-50');
+                        select.disabled = true;
+                    } else {
+                        // First failed attempt
+                        feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                        select.classList.remove('border-slate-300');
+                        select.classList.add('border-red-300');
+                    }
+                }
+            });
+        }
+
+        // Recording Timer Logic
+        let timerInterval;
+        let isRecording = false;
+        let timeLeft = 90;
+
+        function toggleRecording() {
+            const btn = document.getElementById('record-btn');
+            const text = document.getElementById('record-text');
+            const status = document.getElementById('recording-status');
+            const display = document.getElementById('timer-display');
+            const transcriptArea = document.getElementById('summary-transcript');
+
+            if (!isRecording) {
+                // Start
+                isRecording = true;
+                btn.classList.remove('bg-violet-600', 'hover:bg-violet-700');
+                btn.classList.add('bg-red-600', 'hover:bg-red-700', 'recording-active');
+                text.innerText = "Stop Summary";
+                status.classList.remove('hidden');
+                
+                // Transcription setup
+                finalText = '';
+                transcriptArea.value = '';
+                transcriptArea.placeholder = "Listening... Speak clearly to transcribe.";
+                if (recognition) {
+                    try { recognition.start(); } catch(e) {}
+                }
+                
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    const mins = Math.floor(timeLeft / 60);
+                    const secs = timeLeft % 60;
+                    display.textContent = `0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+                    if (timeLeft <= 0) {
+                        toggleRecording(); // Stop automatically
+                    }
+                }, 1000);
+
+            } else {
+                // Stop
+                isRecording = false;
+                clearInterval(timerInterval);
+                btn.classList.add('bg-violet-600', 'hover:bg-violet-700');
+                btn.classList.remove('bg-red-600', 'hover:bg-red-700', 'recording-active');
+                text.innerText = "Start Summary";
+                status.classList.add('hidden');
+                
+                // Transcription stop
+                if (recognition) recognition.stop();
+                transcriptArea.placeholder = "Type what you said here to analyze later...";
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRecording = false;
+            timeLeft = 90;
+            document.getElementById('timer-display').textContent = "01:30";
+            document.getElementById('recording-status').classList.add('hidden');
+            
+            const btn = document.getElementById('record-btn');
+            const text = document.getElementById('record-text');
+            btn.classList.add('bg-violet-600', 'hover:bg-violet-700');
+            btn.classList.remove('bg-red-600', 'hover:bg-red-700', 'recording-active');
+            text.innerText = "Start Summary";
+            
+            // Transcription Reset
+            if (recognition) recognition.stop();
+            document.getElementById('summary-transcript').placeholder = "Type what you said here to analyze later...";
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Model";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Model";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '4000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers?")) {
+                for (const key in attempts) delete attempts[key];
+                
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                
+                // Reset Selects
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.classList.remove('border-green-500', 'bg-green-50', 'border-red-300', 'border-blue-400', 'bg-blue-50'); 
+                    s.classList.add('border-slate-300');
+                });
+                
+                document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                
+                // Reset Recording and Transcription
+                resetTimer();
+                finalText = '';
+                
+                // Hide Models
+                document.getElementById('guided-model').classList.add('hidden');
+                document.getElementById('model-summary').classList.add('hidden');
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMatching();
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developing Main Ideas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Print Styling */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; font-size: 12pt; }
+            .shadow-md { box-shadow: none; border: 1px solid #ccc; }
+            input, textarea, select { border: none; border-bottom: 1px solid #000; background: transparent; }
+        }
+        
+        /* Feedback State Classes */
+        .correct-answer { border-color: #22c55e !important; background-color: #f0fdf4 !important; }
+        .incorrect-answer { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .feedback-text { display: none; margin-top: 1rem; font-size: 1rem; font-weight: 500; }
+        
+        /* Custom larger checkbox/radio */
+        input[type=checkbox], input[type=radio] {
+            transform: scale(1.5);
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 text-lg">
+
+    <!-- Header -->
+    <header class="bg-indigo-700 text-white p-8 shadow-lg">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-3xl md:text-5xl font-bold mb-3"><i class="fas fa-bullseye mr-3"></i>Developing Main Ideas</h1>
+            <p class="text-indigo-100 text-xl">Level B2 | Lesson 3: Developing Clear Main Ideas and Purpose Statements</p>
+        </div>
+    </header>
+
+    <!-- Student Info -->
+    <div class="max-w-5xl mx-auto mt-8 px-4">
+        <div class="bg-white p-8 rounded-xl shadow-md border-l-8 border-indigo-500">
+            <label class="block text-lg font-bold text-gray-800 mb-2">Student Name:</label>
+            <input type="text" id="studentName" placeholder="Enter your full name" class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-indigo-500 outline-none">
+        </div>
+    </div>
+
+    <main class="max-w-5xl mx-auto p-4 space-y-10">
+
+        <!-- Part 1: Review -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-6 border-b-2 border-indigo-100 pb-3">Part 1: Reviewing the Role of the Main Idea</h2>
+            <p class="mb-4 text-lg text-gray-700">In academic writing, the main idea tells the reader what the discussion focuses on. It limits the topic and guides the development of body paragraphs.</p>
+            
+            <h3 class="font-bold text-2xl mb-4">Task 1. Choose the best description of a main idea.</h3>
+            <div class="space-y-4">
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t1" value="a" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">a. A sentence that gives every detail of the essay</span>
+                </label>
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t1" value="b" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">b. A sentence that controls the focus of the essay</span>
+                </label>
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t1" value="c" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">c. A sentence that gives examples and data</span>
+                </label>
+            </div>
+            <div id="t1-feedback" class="feedback-text text-indigo-700 bg-indigo-50 p-4 rounded-lg border border-indigo-200"></div>
+            <button onclick="checkTask1()" class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 1</button>
+        </section>
+
+        <!-- Part 2: Topic vs Main Idea -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 2: Main Idea vs Topic</h2>
+            <div class="bg-indigo-50 p-6 rounded-xl text-lg mb-6 italic text-indigo-900 border border-indigo-100 leading-relaxed">
+                A <strong>topic</strong> is broad. A <strong>main idea</strong> is more focused.
+            </div>
+            
+            <h3 class="font-bold text-2xl mb-4">Task 2. Decide whether each item is a topic (T) or a main idea (M).</h3>
+            
+            <div class="space-y-4" id="task2">
+                <!-- Item 1 -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <span class="mb-2 md:mb-0 text-lg w-full md:w-3/4">1. Leadership in organisations</span>
+                    <select id="t2_q1" class="md:ml-4 p-3 text-lg border-2 rounded-lg bg-white min-w-[150px]">
+                        <option value="">Select...</option>
+                        <option value="T">Topic (T)</option>
+                        <option value="M">Main Idea (M)</option>
+                    </select>
+                </div>
+                <!-- Item 2 -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <span class="mb-2 md:mb-0 text-lg w-full md:w-3/4">2. Leadership styles influence employee motivation in different ways</span>
+                    <select id="t2_q2" class="md:ml-4 p-3 text-lg border-2 rounded-lg bg-white min-w-[150px]">
+                        <option value="">Select...</option>
+                        <option value="T">Topic (T)</option>
+                        <option value="M">Main Idea (M)</option>
+                    </select>
+                </div>
+                <!-- Item 3 -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <span class="mb-2 md:mb-0 text-lg w-full md:w-3/4">3. Digital marketing</span>
+                    <select id="t2_q3" class="md:ml-4 p-3 text-lg border-2 rounded-lg bg-white min-w-[150px]">
+                        <option value="">Select...</option>
+                        <option value="T">Topic (T)</option>
+                        <option value="M">Main Idea (M)</option>
+                    </select>
+                </div>
+                <!-- Item 4 -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <span class="mb-2 md:mb-0 text-lg w-full md:w-3/4">4. Digital marketing offers cost-effective opportunities for small businesses</span>
+                    <select id="t2_q4" class="md:ml-4 p-3 text-lg border-2 rounded-lg bg-white min-w-[150px]">
+                        <option value="">Select...</option>
+                        <option value="T">Topic (T)</option>
+                        <option value="M">Main Idea (M)</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="checkTask2()" class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 2</button>
+        </section>
+
+        <!-- Part 3: Analysing Context -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 3: Analysing Main Ideas in Context</h2>
+            
+            <div class="bg-gray-50 p-6 rounded-xl border-l-4 border-gray-400 mb-6">
+                <h4 class="font-bold text-gray-700 mb-2">Paragraph A</h4>
+                <p class="leading-relaxed text-lg">
+                    <sup class="text-gray-500 font-bold mr-1">[1]</sup>Businesses operate in competitive global markets. 
+                    <sup class="text-gray-500 font-bold mr-1">[2]</sup>Many organisations seek ways to improve productivity and employee performance. 
+                    <sup class="text-gray-500 font-bold mr-1">[3]</sup>As a result, leadership practices have become a key area of interest in management research. 
+                    <sup class="text-gray-500 font-bold mr-1">[4]</sup>Different leadership styles can influence how employees respond to organisational goals. 
+                    <sup class="text-gray-500 font-bold mr-1">[5]</sup>Leadership approaches play a significant role in shaping employee motivation and performance in modern organisations.
+                </p>
+            </div>
+
+            <h3 class="font-bold text-2xl mb-4">Task 3. Identify the sentence that functions as the main idea.</h3>
+            
+            <div class="space-y-4">
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t3" value="1" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">Sentence 1</span>
+                </label>
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t3" value="3" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">Sentence 3</span>
+                </label>
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t3" value="5" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">Sentence 5</span>
+                </label>
+            </div>
+            <div id="t3-feedback" class="feedback-text text-indigo-700 bg-indigo-50 p-4 rounded-lg border border-indigo-200"></div>
+            <button onclick="checkTask3()" class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 3</button>
+        </section>
+
+        <!-- Part 4: Evaluating Main Ideas -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 4: Evaluating Main Ideas</h2>
+            <h3 class="font-bold text-2xl mb-4">Task 4. Which main idea is stronger for an academic essay?</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <strong class="text-indigo-600 block mb-2">Option A:</strong>
+                    <p class="italic">"Leadership is very important in companies."</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <strong class="text-indigo-600 block mb-2">Option B:</strong>
+                    <p class="italic">"Leadership styles influence employee motivation and workplace performance."</p>
+                </div>
+            </div>
+            
+            <div class="mb-4 space-x-6">
+                <label class="inline-flex items-center cursor-pointer bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200 transition">
+                    <input type="radio" name="t4_choice" value="a" class="h-6 w-6 text-indigo-600"> 
+                    <span class="ml-2 text-xl font-medium">Option A</span>
+                </label>
+                <label class="inline-flex items-center cursor-pointer bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200 transition">
+                    <input type="radio" name="t4_choice" value="b" class="h-6 w-6 text-indigo-600"> 
+                    <span class="ml-2 text-xl font-medium">Option B</span>
+                </label>
+            </div>
+            
+            <label class="block font-semibold mb-2 text-lg">Explain why:</label>
+            <textarea id="t4_explain" class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="Write your explanation here..."></textarea>
+            
+            <div id="t4-feedback" class="feedback-text text-indigo-800 bg-indigo-50 p-4 rounded-xl border border-indigo-200 mt-4 text-lg"></div>
+            <button onclick="checkTask4()" class="mt-4 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 4</button>
+        </section>
+
+        <!-- Part 5: Matching -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 5: Matching Main Ideas to Topics</h2>
+            <h3 class="font-bold text-2xl mb-4">Task 5. Match the topic to the most suitable main idea.</h3>
+            
+            <div class="bg-gray-100 p-4 mb-4 rounded-lg text-sm md:text-base space-y-2">
+                <strong>Main Idea Options:</strong><br>
+                <div class="ml-4">
+                    <span class="font-bold">a.</span> Remote work has changed how companies manage communication and performance.<br>
+                    <span class="font-bold">b.</span> Many companies care about their customers.<br>
+                    <span class="font-bold">c.</span> Customer satisfaction influences loyalty and long-term business success.
+                </div>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <p class="text-lg font-medium mb-2">1. Topic: The use of remote work in modern companies</p>
+                    <select id="t5_q1" class="w-full p-3 text-lg border-2 rounded-lg bg-gray-50">
+                        <option value="">Choose matching main idea...</option>
+                        <option value="a">a. Remote work has changed...</option>
+                        <option value="b">b. Many companies care...</option>
+                        <option value="c">c. Customer satisfaction influences...</option>
+                    </select>
+                </div>
+                <div>
+                    <p class="text-lg font-medium mb-2">2. Topic: Customer satisfaction in service industries</p>
+                    <select id="t5_q2" class="w-full p-3 text-lg border-2 rounded-lg bg-gray-50">
+                        <option value="">Choose matching main idea...</option>
+                        <option value="a">a. Remote work has changed...</option>
+                        <option value="b">b. Many companies care...</option>
+                        <option value="c">c. Customer satisfaction influences...</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="checkTask5()" class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 5</button>
+        </section>
+
+        <!-- Part 6: Improving Weak Ideas -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 6: Improving Weak Main Ideas</h2>
+            <p class="mb-4 text-lg">Rewrite the weak main ideas to make them more academic and specific.</p>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="block font-semibold mb-2 text-xl bg-red-50 p-2 rounded border border-red-100 text-red-800"><i class="fas fa-times-circle mr-2"></i>Weak: "Marketing is very important for companies."</label>
+                    <textarea class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="Rewrite here..."></textarea>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-2 text-xl bg-red-50 p-2 rounded border border-red-100 text-red-800"><i class="fas fa-times-circle mr-2"></i>Weak: "Employees need good management."</label>
+                    <textarea class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="Rewrite here..."></textarea>
+                </div>
+            </div>
+            
+            <div id="t6-feedback" class="feedback-text text-green-800 bg-green-50 p-4 rounded-xl border border-green-200 mt-4 text-lg">
+                <strong>Sample Answers:</strong>
+                <ul class="list-disc ml-5 mt-2">
+                    <li>Marketing plays a key role in helping companies reach customers and compete effectively.</li>
+                    <li>Effective management practices support employee performance and organisational success.</li>
+                </ul>
+            </div>
+            <button onclick="toggleFeedback('t6-feedback')" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-eye mr-2"></i> See Sample Answers</button>
+        </section>
+
+        <!-- Part 7: Alignment -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 7: Aligning Main Ideas</h2>
+            <div class="bg-gray-50 p-6 rounded-xl border-l-4 border-gray-400 mb-6">
+                <h4 class="font-bold text-gray-700 mb-2">Paragraph B</h4>
+                <p class="leading-relaxed text-lg italic">
+                    "Marketing strategies have evolved significantly in recent years. Digital platforms now allow organisations to reach customers more efficiently. These developments are particularly important for small and medium-sized enterprises with limited budgets. [___________________________________]"
+                </p>
+            </div>
+            
+            <h3 class="font-bold text-2xl mb-4">Task 7. Choose the best main idea to complete the introduction.</h3>
+            
+            <div class="space-y-4">
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t7" value="a" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">a. Digital marketing is popular today.</span>
+                </label>
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t7" value="b" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">b. Digital marketing provides cost-effective opportunities for small and medium-sized enterprises.</span>
+                </label>
+            </div>
+            <div id="t7-feedback" class="feedback-text text-indigo-700 bg-indigo-50 p-4 rounded-lg border border-indigo-200"></div>
+            <button onclick="checkTask7()" class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 7</button>
+        </section>
+
+        <!-- Production Section -->
+        <section class="bg-white p-8 rounded-xl shadow-md border-l-8 border-green-500">
+            <h2 class="text-3xl font-bold text-green-700 mb-6 border-b-2 border-green-100 pb-3">Production Tasks</h2>
+
+            <!-- Part 8 -->
+            <div class="mb-10">
+                <h3 class="font-bold text-2xl mb-4">Task 8. Controlled Writing Practice</h3>
+                <p class="text-lg mb-2">Write a main idea sentence for: <strong>The impact of remote work on employee productivity</strong>.</p>
+                <textarea class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" rows="3" placeholder="Write your main idea here..."></textarea>
+                <div id="t8-feedback" class="feedback-text text-green-800 bg-green-50 p-4 rounded-xl border border-green-200 mt-4 text-lg">
+                    <strong>Sample Answer:</strong> "Remote work can influence employee productivity by changing work routines and communication patterns."
+                </div>
+                <button onclick="toggleFeedback('t8-feedback')" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-eye mr-2"></i> See Sample Answer</button>
+            </div>
+
+            <!-- Part 9 -->
+            <div class="mb-10 border-t-2 border-gray-100 pt-8">
+                <h3 class="font-bold text-2xl mb-4">Task 9. Semi-guided Practice</h3>
+                <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                    <p class="font-bold">Choose ONE topic:</p>
+                    <ul class="list-disc ml-5">
+                        <li>Leadership and employee motivation</li>
+                        <li>The role of innovation in business growth</li>
+                    </ul>
+                </div>
+                <textarea class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" rows="3" placeholder="Write a clear main idea sentence..."></textarea>
+                <div id="t9-feedback" class="feedback-text text-green-800 bg-green-50 p-4 rounded-xl border border-green-200 mt-4 text-lg">
+                    <strong>Note:</strong> Answers will vary. Ensure your sentence is specific and controls the focus of the potential essay.
+                </div>
+                <button onclick="toggleFeedback('t9-feedback')" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-eye mr-2"></i> See Feedback Note</button>
+            </div>
+
+            <!-- Part 10 -->
+            <div class="border-t-2 border-gray-100 pt-8">
+                <h3 class="font-bold text-2xl mb-4">Task 10. Reflection</h3>
+                <p class="text-lg mb-2">How does a clear main idea help you organise body paragraphs in an academic essay?</p>
+                <textarea class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" rows="3" placeholder="Explain briefly..."></textarea>
+                <div id="t10-feedback" class="feedback-text text-green-800 bg-green-50 p-4 rounded-xl border border-green-200 mt-4 text-lg">
+                    <strong>Sample Answer:</strong> "A clear main idea helps the writer decide what information to include and how to organise each paragraph to support that central focus."
+                </div>
+                <button onclick="toggleFeedback('t10-feedback')" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-eye mr-2"></i> See Sample Answer</button>
+            </div>
+        </section>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row justify-end items-center gap-6 py-8 no-print">
+            <button onclick="window.print()" class="bg-gray-700 hover:bg-gray-800 text-white font-bold py-4 px-10 rounded-full shadow-xl transition duration-300 flex items-center text-xl">
+                <i class="fas fa-file-pdf mr-3"></i> Save as PDF
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-10 mt-12 text-center text-base no-print">
+        <p><a href="http://fajarudinakbar.online" target="_blank" class="hover:text-white transition-colors underline decoration-dotted underline-offset-4">Designed by fajarudinakbar.online</a></p>
+    </footer>
+
+    <script>
+        // State to track attempts
+        const attempts = {
+            t1: 0,
+            t2: 0,
+            t3: 0,
+            t4: 0,
+            t5: 0,
+            t7: 0
+        };
+
+        // Generic helper for Radio Button Tasks
+        function checkRadioTask(taskKey, groupName, correctVal, feedbackId) {
+            const selected = document.querySelector(`input[name="${groupName}"]:checked`);
+            const feedback = document.getElementById(feedbackId);
+            
+            // Clear previous styles
+            document.querySelectorAll(`input[name="${groupName}"]`).forEach(el => {
+                el.parentElement.classList.remove('bg-green-100', 'border-green-500', 'bg-red-100', 'border-red-500');
+                el.parentElement.style.fontWeight = 'normal';
+                el.parentElement.style.color = 'inherit';
+            });
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            if (selected.value === correctVal) {
+                // Correct
+                selected.parentElement.classList.add('bg-green-100', 'border-green-500');
+                feedback.innerHTML = "<i class='fas fa-check-circle'></i> Correct!";
+                feedback.className = "feedback-text text-green-800 bg-green-50 p-4 rounded-lg border border-green-200 block";
+                feedback.style.display = "block";
+            } else {
+                // Incorrect
+                attempts[taskKey]++;
+                
+                if (attempts[taskKey] >= 2) {
+                    // Show Correct Answer
+                    const correctEl = document.querySelector(`input[name="${groupName}"][value="${correctVal}"]`);
+                    if (correctEl) {
+                        correctEl.parentElement.classList.add('bg-green-100', 'border-green-500');
+                        correctEl.parentElement.style.fontWeight = 'bold';
+                    }
+                    
+                    selected.parentElement.classList.add('bg-red-100', 'border-red-500');
+                    
+                    feedback.innerHTML = "<i class='fas fa-info-circle'></i> Incorrect. The correct answer is highlighted.";
+                    feedback.className = "feedback-text text-indigo-800 bg-indigo-50 p-4 rounded-lg border border-indigo-200 block";
+                    feedback.style.display = "block";
+                } else {
+                    // Try Again
+                    selected.parentElement.classList.add('bg-red-100', 'border-red-500');
+                    const remaining = 2 - attempts[taskKey];
+                    feedback.innerHTML = `<i class='fas fa-times-circle'></i> Incorrect. Try again. (${remaining} attempt${remaining !== 1 ? 's' : ''} remaining)`;
+                    feedback.className = "feedback-text text-red-800 bg-red-50 p-4 rounded-lg border border-red-200 block";
+                    feedback.style.display = "block";
+                }
+            }
+        }
+
+        // Task 1
+        function checkTask1() {
+            checkRadioTask('t1', 't1', 'b', 't1-feedback');
+        }
+
+        // Task 2: Multiple Selects
+        function checkTask2() {
+            const correctMap = {
+                't2_q1': 'T',
+                't2_q2': 'M',
+                't2_q3': 'T',
+                't2_q4': 'M'
+            };
+            
+            let allCorrect = true;
+            for (const [id, val] of Object.entries(correctMap)) {
+                if (document.getElementById(id).value !== val) allCorrect = false;
+            }
+
+            if (allCorrect) {
+                // All good - Apply green
+                for (const [id, val] of Object.entries(correctMap)) checkSelect(id, val);
+            } else {
+                attempts.t2++;
+                if (attempts.t2 >= 2) {
+                    // Show answers
+                    for (const [id, val] of Object.entries(correctMap)) {
+                        const el = document.getElementById(id);
+                        el.value = val;
+                        checkSelect(id, val);
+                    }
+                } else {
+                    // Highlight errors
+                    for (const [id, val] of Object.entries(correctMap)) checkSelect(id, val);
+                    alert(`Incorrect. Please try again. (${2 - attempts.t2} attempts remaining)`);
+                }
+            }
+        }
+
+        // Task 3
+        function checkTask3() {
+            checkRadioTask('t3', 't3', '5', 't3-feedback');
+        }
+
+        // Task 4: Radio + Explain
+        function checkTask4() {
+            const taskKey = 't4';
+            const groupName = 't4_choice';
+            const correctVal = 'b';
+            const feedbackId = 't4-feedback';
+            
+            const selected = document.querySelector(`input[name="${groupName}"]:checked`);
+            const feedback = document.getElementById(feedbackId);
+
+            // Clear styles
+             document.querySelectorAll(`input[name="${groupName}"]`).forEach(el => {
+                el.parentElement.classList.remove('bg-green-100', 'border-green-500', 'bg-red-100', 'border-red-500');
+                el.parentElement.style.fontWeight = 'normal';
+                el.parentElement.style.color = 'inherit';
+            });
+
+            if (!selected) {
+                alert("Please select an answer for Task 4.");
+                return;
+            }
+
+            if (selected.value === correctVal) {
+                selected.parentElement.classList.add('bg-green-100', 'border-green-500');
+                selected.parentElement.style.fontWeight = 'bold';
+                selected.parentElement.style.color = 'green';
+                
+                feedback.innerHTML = "<strong>Answer:</strong> Option B is correct. <br><strong>Reason:</strong> It is more specific, academic, and focused.";
+                feedback.className = "feedback-text text-green-800 bg-green-50 p-4 rounded-lg border border-green-200 block";
+                feedback.style.display = "block";
+            } else {
+                attempts[taskKey]++;
+                if (attempts[taskKey] >= 2) {
+                    // Show Answer
+                    const correctEl = document.querySelector(`input[name="${groupName}"][value="${correctVal}"]`);
+                    if(correctEl) {
+                        correctEl.parentElement.classList.add('bg-green-100', 'border-green-500');
+                        correctEl.parentElement.style.fontWeight = 'bold';
+                    }
+                    selected.parentElement.classList.add('bg-red-100', 'border-red-500');
+
+                    feedback.innerHTML = "<strong>Answer:</strong> Option B is correct. <br><strong>Reason:</strong> It is more specific, academic, and focused.";
+                    feedback.className = "feedback-text text-indigo-800 bg-indigo-50 p-4 rounded-lg border border-indigo-200 block";
+                    feedback.style.display = "block";
+                } else {
+                    selected.parentElement.classList.add('bg-red-100', 'border-red-500');
+                    feedback.innerHTML = `<i class='fas fa-times-circle'></i> Incorrect. Try again. (${2 - attempts[taskKey]} attempts remaining)`;
+                    feedback.className = "feedback-text text-red-800 bg-red-50 p-4 rounded-lg border border-red-200 block";
+                    feedback.style.display = "block";
+                }
+            }
+        }
+
+        // Task 5: Selects
+        function checkTask5() {
+            const correctMap = { 't5_q1': 'a', 't5_q2': 'c' };
+            let allCorrect = true;
+            for (const [id, val] of Object.entries(correctMap)) {
+                if (document.getElementById(id).value !== val) allCorrect = false;
+            }
+
+            if (allCorrect) {
+                for (const [id, val] of Object.entries(correctMap)) checkSelect(id, val);
+            } else {
+                attempts.t5++;
+                if (attempts.t5 >= 2) {
+                    for (const [id, val] of Object.entries(correctMap)) {
+                        const el = document.getElementById(id);
+                        el.value = val;
+                        checkSelect(id, val);
+                    }
+                } else {
+                    for (const [id, val] of Object.entries(correctMap)) checkSelect(id, val);
+                    alert(`Incorrect. Please try again. (${2 - attempts.t5} attempts remaining)`);
+                }
+            }
+        }
+
+        // Task 7
+        function checkTask7() {
+            checkRadioTask('t7', 't7', 'b', 't7-feedback');
+        }
+
+        // Generic Toggle for Text Feedback
+        function toggleFeedback(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'none' || el.style.display === '' ? 'block' : 'none';
+        }
+
+        // Helper function for Select/Dropdown validation
+        function checkSelect(id, correctVal) {
+            const el = document.getElementById(id);
+            if (el.value === correctVal) {
+                el.classList.add('correct-answer');
+                el.classList.remove('incorrect-answer');
+            } else {
+                el.classList.add('incorrect-answer');
+                el.classList.remove('correct-answer');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webinar Outline: Smart Drilling for Writing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #e5e7eb;
+            z-index: 0;
+        }
+
+        .active-section {
+            border-left: 4px solid #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center z-10 shadow-sm">
+        <div>
+            <div class="flex items-center gap-2 text-blue-600 mb-1">
+                <i class="fas fa-video"></i>
+                <span class="text-xs font-bold uppercase tracking-wider">Webinar Dashboard</span>
+            </div>
+            <h1 class="text-xl font-bold text-slate-900">Smart Drilling for Writing to Build Muscle Memory</h1>
+            <p class="text-sm text-slate-500">Speaker: <span class="font-medium text-slate-700">Fajarudin Akbar</span> | Duration: 30 Mins</p>
+        </div>
+        
+        <!-- Timer Controls -->
+        <div class="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">
+            <div class="text-right">
+                <div id="timer-display" class="text-2xl font-mono font-bold text-slate-800">00:00</div>
+                <div class="text-xs text-slate-500">Elapsed Time</div>
+            </div>
+            <button id="toggle-timer-btn" class="w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition flex items-center justify-center shadow-md hover:shadow-lg">
+                <i class="fas fa-play ml-1"></i>
+            </button>
+            <button id="reset-timer-btn" class="w-10 h-10 rounded-full bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition flex items-center justify-center">
+                <i class="fas fa-redo-alt"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 flex overflow-hidden">
+        
+        <!-- Left: Interactive Timeline -->
+        <section class="w-full md:w-1/3 lg:w-1/4 bg-white border-r border-gray-200 overflow-y-auto scrollbar-hide relative flex flex-col">
+            <div class="p-4 bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
+                <h2 class="font-semibold text-slate-700">Agenda Timeline</h2>
+                <p class="text-xs text-slate-500">Click sections to view details</p>
+            </div>
+            
+            <div class="relative p-4 pb-20" id="timeline-container">
+                <div class="timeline-line"></div>
+                <!-- Timeline items will be injected here by JS -->
+            </div>
+        </section>
+
+        <!-- Right: Detail View -->
+        <section class="hidden md:flex flex-1 bg-slate-50 p-6 overflow-y-auto justify-center items-start">
+            <div id="detail-panel" class="w-full max-w-3xl glass-panel rounded-xl p-8 transition-all duration-300 transform">
+                
+                <!-- Dynamic Content Here -->
+                <div class="flex items-center gap-3 mb-6">
+                    <span id="detail-time" class="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-bold border border-blue-200">
+                        0–3 min
+                    </span>
+                    <span id="detail-status" class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-bold border border-emerald-200 hidden">
+                        Live Now
+                    </span>
+                </div>
+
+                <h2 id="detail-title" class="text-3xl font-bold text-slate-900 mb-2">Opening and Framing</h2>
+                <h3 id="detail-focus" class="text-xl text-blue-600 font-medium mb-6">Focus: Writing as a performance skill</h3>
+
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Speaker Actions -->
+                    <div class="bg-white rounded-lg p-6 border-l-4 border-blue-500 shadow-sm">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-microphone-alt text-blue-500 text-lg"></i>
+                            <h4 class="font-bold text-slate-700 uppercase tracking-wide text-sm">Speaker Actions</h4>
+                        </div>
+                        <p id="detail-action" class="text-slate-700 leading-relaxed text-lg">
+                            Present the common IELTS writing problem: learners recognise high-band answers but cannot reproduce them under exam pressure. Introduce the concept of “Smart Drilling for Writing to Build Muscle Memory”.
+                        </p>
+                    </div>
+
+                    <!-- EdTech / Context Note (Personalized for Prof Fajar) -->
+                    <div class="bg-indigo-50 rounded-lg p-5 border border-indigo-100">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-lightbulb text-indigo-500"></i>
+                            <h4 class="font-bold text-indigo-800 uppercase tracking-wide text-xs">Professor's Note</h4>
+                        </div>
+                        <p id="detail-note" class="text-indigo-900 text-sm">
+                            Connect this to the "communicative approach." Ask audience: "How many of you have students who know the grammar rules but freeze when the timer starts?"
+                        </p>
+                    </div>
+
+                    <!-- Visual Aid / Slide Concept -->
+                    <div class="bg-slate-100 rounded-lg p-5 border border-slate-200 border-dashed">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-images text-slate-400"></i>
+                            <h4 class="font-bold text-slate-500 uppercase tracking-wide text-xs">Visual / Slide Concept</h4>
+                        </div>
+                        <p id="detail-visual" class="text-slate-600 text-sm italic">
+                            Image of a musician or athlete training vs. a student reading a book. Text: "Knowledge vs. Performance."
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden flex-col items-center justify-center h-full text-slate-400">
+                <i class="fas fa-layer-group text-6xl mb-4"></i>
+                <p>Select a section to view details</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-3 px-6 text-center text-xs text-slate-500 z-10">
+        Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-blue-600 hover:text-blue-700 font-medium hover:underline transition-colors">fajarudinakbar.online</a>
+    </footer>
+
+    <!-- Mobile Warning Overlay -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 text-center text-sm text-slate-500">
+        Scroll timeline above. For best experience, use tablet or desktop.
+    </div>
+
+    <script>
+        // Data derived from the user's table
+        const webinarData = [
+            {
+                id: 0,
+                startMin: 0,
+                endMin: 3,
+                title: "Opening and Framing",
+                focus: "Writing as a performance skill",
+                action: "Present the common IELTS writing problem: learners recognise high-band answers but cannot reproduce them under exam pressure. Introduce the concept of “Smart Drilling for Writing to Build Muscle Memory”.",
+                note: "Hook: Start with a relatable struggle. 'Why do our students fail despite knowing the rules?'",
+                visual: "Slide: A nervous student looking at a blank page vs. a pianist playing automatically."
+            },
+            {
+                id: 1,
+                startMin: 3,
+                endMin: 8,
+                title: "Why Muscle Memory Matters",
+                focus: "Automaticity in IELTS writing",
+                action: "Explain how band 7–9 writing depends on fast, automatic access to structure, cohesion, and sentence patterns. Contrast smart drilling with memorisation and unfocused practice.",
+                note: "Emphasize cognitive load. If they are thinking about grammar, they aren't thinking about argument.",
+                visual: "Slide: 'Cognitive Budget' chart. Low Muscle Memory = High Brain Drain."
+            },
+            {
+                id: 2,
+                startMin: 8,
+                endMin: 14,
+                title: "What 'Smart Drilling' Means",
+                focus: "Principles of deliberate practice",
+                action: "Define smart drilling as controlled, purposeful rewriting. Clarify what it is not (copying). Introduce the idea of training specific 'writing muscles'.",
+                note: "Use the sports analogy. Drills aren't the game, but they win the game.",
+                visual: "Slide: Definition Box: Smart Drilling ≠ Rote Memorization."
+            },
+            {
+                id: 3,
+                startMin: 14,
+                endMin: 24,
+                title: "Smart Drilling Workflow",
+                focus: "Step-by-step process",
+                action: "Walk through the workflow: Analyse → Rewrite → Adapt → Produce → Reflect. Briefly explain the learning objective of each step and how it builds transfer.",
+                note: "This is the core value section. Spend time here. Maybe show a quick live example of 'Rewrite'.",
+                visual: "Slide: Circular flow chart icons: Analyse (Magnifying glass) → Rewrite (Pen) → Adapt (Gears) → Produce (Paper) → Reflect (Mirror)."
+            },
+            {
+                id: 4,
+                startMin: 24,
+                endMin: 28,
+                title: "Classroom and Self-Study Use",
+                focus: "Practical implementation",
+                action: "Show how the workflow fits into lessons, homework, or weekly routines. Mention how AI tools can support feedback and variation while maintaining academic integrity.",
+                note: "Mention tech integration here. How AI can generate the 'Adapt' prompts.",
+                visual: "Slide: A weekly calendar view showing where drills fit in. Icons for AI tools."
+            },
+            {
+                id: 5,
+                startMin: 28,
+                endMin: 30,
+                title: "Wrap-up and Call to Action",
+                focus: "Key takeaway",
+                action: "Reinforce that high-band writing is trained, not memorised. Invite participants to try the workflow with one IELTS Task 2 model answer in the coming week.",
+                note: "End on a high, motivating note. 'Let's build those muscles.'",
+                visual: "Slide: QR Code for a sample drill worksheet."
+            }
+        ];
+
+        // State
+        let timerInterval = null;
+        let elapsedSeconds = 0;
+        let isRunning = false;
+        let currentActiveId = 0;
+
+        // Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const toggleBtn = document.getElementById('toggle-timer-btn');
+        const resetBtn = document.getElementById('reset-timer-btn');
+        const timelineContainer = document.getElementById('timeline-container');
+        
+        // Detail Elements
+        const detailTitle = document.getElementById('detail-title');
+        const detailFocus = document.getElementById('detail-focus');
+        const detailAction = document.getElementById('detail-action');
+        const detailNote = document.getElementById('detail-note');
+        const detailVisual = document.getElementById('detail-visual');
+        const detailTime = document.getElementById('detail-time');
+        const detailStatus = document.getElementById('detail-status');
+
+        // Initialize
+        function init() {
+            renderTimeline();
+            loadSection(0); // Load first section by default
+        }
+
+        // Render Timeline
+        function renderTimeline() {
+            timelineContainer.innerHTML = '<div class="timeline-line"></div>';
+            
+            webinarData.forEach((section, index) => {
+                const item = document.createElement('div');
+                item.className = `relative pl-10 py-3 cursor-pointer group transition-all duration-200 section-item`;
+                item.dataset.id = section.id;
+                item.onclick = () => {
+                    loadSection(section.id);
+                    // If timer is NOT running, manually setting section sets active class
+                    if (!isRunning) {
+                        highlightSection(section.id);
+                    }
+                };
+
+                const isActive = index === 0;
+                
+                item.innerHTML = `
+                    <div class="absolute left-4 top-5 w-4 h-4 rounded-full border-2 border-white shadow-sm z-10 transition-colors duration-300
+                        ${isActive ? 'bg-blue-600 ring-4 ring-blue-100' : 'bg-gray-300 group-hover:bg-blue-400'}" 
+                        id="dot-${section.id}">
+                    </div>
+                    <div class="rounded-lg p-3 transition-colors duration-200 ${isActive ? 'bg-white shadow-md border border-blue-100' : 'hover:bg-white hover:shadow-sm'} " id="card-${section.id}">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="text-xs font-bold text-slate-400 font-mono">${section.startMin}–${section.endMin} min</span>
+                        </div>
+                        <h3 class="font-semibold text-slate-800 leading-tight group-hover:text-blue-600 transition-colors">${section.title}</h3>
+                        <p class="text-xs text-slate-500 mt-1 truncate">${section.focus}</p>
+                    </div>
+                `;
+                timelineContainer.appendChild(item);
+            });
+        }
+
+        // Load Section Details
+        function loadSection(id) {
+            const data = webinarData.find(d => d.id === id);
+            if (!data) return;
+
+            // Animate out
+            const panel = document.getElementById('detail-panel');
+            panel.classList.add('opacity-50', 'translate-y-2');
+
+            setTimeout(() => {
+                detailTitle.textContent = data.title;
+                detailFocus.textContent = `Focus: ${data.focus}`;
+                detailAction.textContent = data.action;
+                detailNote.textContent = data.note;
+                detailVisual.textContent = data.visual;
+                detailTime.textContent = `${data.startMin}–${data.endMin} min`;
+                
+                // Animate in
+                panel.classList.remove('opacity-50', 'translate-y-2');
+            }, 150);
+        }
+
+        // Highlight Active Section (Visuals only)
+        function highlightSection(id) {
+            // Reset all
+            document.querySelectorAll('.section-item').forEach(el => {
+                const dot = el.querySelector(`[id^="dot-"]`);
+                const card = el.querySelector(`[id^="card-"]`);
+                
+                dot.classList.remove('bg-blue-600', 'ring-4', 'ring-blue-100', 'animate-pulse');
+                dot.classList.add('bg-gray-300');
+                
+                card.classList.remove('bg-white', 'shadow-md', 'border', 'border-blue-100');
+            });
+
+            // Activate specific
+            const activeItem = document.querySelector(`.section-item[data-id="${id}"]`);
+            if (activeItem) {
+                const dot = activeItem.querySelector(`[id^="dot-"]`);
+                const card = activeItem.querySelector(`[id^="card-"]`);
+                
+                dot.classList.remove('bg-gray-300');
+                dot.classList.add('bg-blue-600', 'ring-4', 'ring-blue-100');
+                
+                if (isRunning) dot.classList.add('animate-pulse');
+
+                card.classList.add('bg-white', 'shadow-md', 'border', 'border-blue-100');
+                
+                // Scroll into view if needed
+                activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Timer Logic
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function checkSectionChange(minutes) {
+            const currentSection = webinarData.find(s => minutes >= s.startMin && minutes < s.endMin);
+            
+            if (currentSection) {
+                if (currentActiveId !== currentSection.id) {
+                    currentActiveId = currentSection.id;
+                    highlightSection(currentActiveId);
+                    loadSection(currentActiveId);
+                    detailStatus.classList.remove('hidden');
+                }
+            } else if (minutes >= 30) {
+                 // Finished
+                 detailStatus.textContent = "Finished";
+                 detailStatus.classList.remove('bg-emerald-100', 'text-emerald-700');
+                 detailStatus.classList.add('bg-gray-100', 'text-gray-700');
+            }
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            if (isRunning) {
+                // Pause
+                clearInterval(timerInterval);
+                toggleBtn.innerHTML = '<i class="fas fa-play ml-1"></i>';
+                toggleBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+                toggleBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                detailStatus.classList.add('hidden');
+            } else {
+                // Start
+                timerInterval = setInterval(() => {
+                    elapsedSeconds++;
+                    timerDisplay.textContent = formatTime(elapsedSeconds);
+                    checkSectionChange(elapsedSeconds / 60);
+                }, 1000);
+                toggleBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                toggleBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                toggleBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+                detailStatus.classList.remove('hidden');
+                
+                // Immediate check
+                checkSectionChange(elapsedSeconds / 60);
+            }
+            isRunning = !isRunning;
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            isRunning = false;
+            elapsedSeconds = 0;
+            timerDisplay.textContent = "00:00";
+            toggleBtn.innerHTML = '<i class="fas fa-play ml-1"></i>';
+            toggleBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            toggleBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            
+            currentActiveId = 0;
+            highlightSection(0);
+            loadSection(0);
+            detailStatus.classList.add('hidden');
+        });
+
+        // Run
+        init();
+
+    </script>
+</body>
+</html>

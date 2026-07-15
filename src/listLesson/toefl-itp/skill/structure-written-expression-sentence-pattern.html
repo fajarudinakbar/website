@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITP Structure & Written Expression</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-lg': '12px 12px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f8fafc; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+
+        /* Neo-Brutalist Utility Classes */
+        .neo-card {
+            border: 4px solid #0f172a;
+            box-shadow: 8px 8px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            font-weight: 800;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea, input[type="text"] {
+            resize: vertical;
+            min-height: 60px;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.2s;
+        }
+        textarea:focus, input[type="text"]:focus {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+            outline: none;
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230f172a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            border: 3px solid #0f172a;
+        }
+
+        /* Written Expression Styles - Brutalist */
+        .we-underline {
+            text-decoration: none;
+            background-color: #fecdd3; /* red-200 */
+            border-bottom: 3px solid #e11d48; /* red-600 */
+            font-weight: 800;
+            padding: 0 4px;
+            color: #0f172a;
+        }
+        .we-label {
+            font-size: 0.7em;
+            vertical-align: super;
+            color: #e11d48; 
+            margin-left: 2px;
+            font-weight: 900;
+            background-color: white;
+            border: 1px solid #e11d48;
+            padding: 0 2px;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto neo-card p-6 md:p-10 mb-12">
+        
+        <!-- Breadcrumbs -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#facc15] border-2 border-dark text-dark text-xs font-black uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a] mb-8">
+            <span>TOEFL ITP</span> <i class="fas fa-caret-right"></i> 
+            <span>Structure & Written Expression</span> <i class="fas fa-caret-right"></i> 
+            <span>Sentence Pattern</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 border-b-4 border-dark pb-6">
+            <div>
+                <h1 class="text-3xl md:text-5xl font-black text-dark tracking-tighter uppercase mb-3" style="text-shadow: 2px 2px 0px #60a5fa;">
+                    Sentence Patterns & Error Analysis
+                </h1>
+                <p class="text-dark bg-[#eff6ff] inline-block px-3 py-1 border-2 border-dark font-bold text-sm shadow-[2px_2px_0_0_#0f172a]">
+                    Topic: Part A (Completion) & Part B (Error Identification)
+                </p>
+            </div>
+            <div class="flex flex-col gap-3 shrink-0">
+                <button onclick="resetAll()" class="neo-btn bg-white px-4 py-3 flex items-center justify-center gap-2 text-sm text-dark hover:bg-[#f87171] hover:text-white uppercase">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#eff6ff] border-3 border-dark shadow-neo-sm p-5 mb-10 relative">
+            <div class="absolute -top-3 -left-3 bg-[#3b82f6] text-white px-3 py-1 text-[10px] sm:text-xs font-black uppercase border-2 border-dark">Strategy Guide</div>
+            <p class="text-dark font-medium leading-relaxed mt-2">
+                <i class="fas fa-info-circle mr-2 text-[#3b82f6]"></i> 
+                <strong>Instructions:</strong> This session covers both sections of the TOEFL Grammar paper:
+                <ul class="list-disc ml-6 mt-2 text-sm font-bold space-y-1">
+                    <li><strong>Part A (Structure):</strong> Choose the answer that <em>completes</em> the sentence correctly.</li>
+                    <li><strong>Part B (Written Expression):</strong> Choose the underlined word that is <em>incorrect</em>.</li>
+                </ul>
+            </p>
+        </div>
+
+        <!-- Part 1: Preparation (Cyan Theme) -->
+        <div class="mb-6 border-4 border-dark shadow-neo-sm bg-white">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-4 md:p-6 bg-[#22d3ee] hover:bg-[#06b6d4] transition-colors text-left border-b-4 border-dark group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-10 h-10 flex items-center justify-center font-black text-lg shadow-[2px_2px_0_0_#0f172a] group-hover:shadow-[4px_4px_0_0_#0f172a] group-hover:-translate-y-0.5 transition-all">1</div>
+                    <span class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight">Preparation: The Core Components</span>
+                </div>
+                <div class="w-10 h-10 bg-white border-3 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a]">
+                    <i id="icon-part1" class="fas fa-chevron-down text-dark transition-transform duration-300"></i>
+                </div>
+            </button>
+            <div id="content-part1" class="accordion-content">
+                <div class="p-6 md:p-8 space-y-10 bg-[#cffafe]">
+                    
+                    <!-- Task 1 -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#22d3ee] px-2 border-2 border-dark text-sm">Task 1</span> 
+                                The Train Analogy
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t1', this)" class="neo-btn bg-[#22d3ee] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Analogy</button>
+                        </div>
+                        <p class="font-medium text-slate-800 mb-4 bg-slate-100 p-3 border-2 border-dark">Think of a sentence like a train. It needs an Engine (Subject) to lead it and Wheels (Verb) to move it. Without both, it goes nowhere.<br><br><strong>Question:</strong> What happens if you have an engine but no wheels? (e.g., "The large, expensive car...")</p>
+                        <textarea placeholder="Is it a sentence?" class="w-full p-4 font-medium focus:outline-none"></textarea>
+                        <div id="ans-t1" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform -rotate-1">
+                            <strong class="uppercase font-black text-lg">Answer:</strong> It is a <strong>Fragment</strong> (incomplete). <br><br>
+                            "The large, expensive car..." is just a Noun Phrase. It needs a verb (e.g., "...is fast") to become a complete sentence.
+                        </div>
+                    </div>
+
+                    <!-- Task 2 (Interactive Vocab) -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2 mb-2">
+                            <span class="bg-[#22d3ee] px-2 border-2 border-dark text-sm">Task 2</span> 
+                            Structure Vocabulary
+                        </h3>
+                        <p class="font-bold text-slate-700 mb-6 pb-3 border-b-2 border-slate-200">Match the grammatical terms to their definitions.</p>
+                        <div id="vocab-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-8 flex justify-end">
+                            <button onclick="checkVocab()" class="neo-btn bg-dark text-white hover:bg-slate-800 px-6 py-3 text-sm uppercase">
+                                <i class="fas fa-check-double mr-2"></i> Check Terms
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                         <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                             <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#22d3ee] px-2 border-2 border-dark text-sm">Task 3</span> 
+                                The Preposition Trap
+                            </h3>
+                             <button onclick="toggleAnswer('ans-t3', this)" class="neo-btn bg-[#22d3ee] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Trap</button>
+                          </div>
+                          <p class="font-medium text-slate-800 mb-4 bg-slate-100 p-3 border-2 border-dark">Look at this sentence: <em>"In the morning, the birds sing."</em><br>What is the subject? "Morning" or "Birds"? Why?</p>
+                          <textarea placeholder="Explain your choice..." class="w-full p-4 font-medium focus:outline-none"></textarea>
+                          <div id="ans-t3" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform rotate-1">
+                            <strong class="uppercase font-black text-lg">Answer: The subject is Birds.</strong><br><br>
+                            <strong>Rule:</strong> A subject is <em>never</em> inside a prepositional phrase. "In the morning" is just extra information telling us 'when'. Cross out prepositional phrases to find the real subject!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Reading Passage (Blue Theme) -->
+        <div class="mb-6 border-4 border-dark shadow-neo-sm bg-white">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-4 md:p-6 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left border-b-4 border-dark group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-10 h-10 flex items-center justify-center font-black text-lg shadow-[2px_2px_0_0_#0f172a] group-hover:shadow-[4px_4px_0_0_#0f172a] group-hover:-translate-y-0.5 transition-all"><i class="fas fa-shapes"></i></div>
+                    <span class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight">Study Guide: Two Types of Structure</span>
+                </div>
+                <div class="w-10 h-10 bg-white border-3 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a]">
+                    <i id="icon-part2" class="fas fa-chevron-down text-dark transition-transform duration-300"></i>
+                </div>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-6 md:p-8 bg-[#eff6ff]">
+                    <div class="bg-white border-4 border-dark p-6 md:p-8 shadow-[6px_6px_0_0_#0f172a]">
+                        <h3 class="text-2xl font-black text-dark uppercase mb-4 pb-2 border-b-4 border-dark inline-block">The Golden Formula: S + V</h3>
+                        
+                        <p class="mb-6 font-medium text-lg text-slate-800 bg-[#fefce8] p-4 border-l-4 border-dark">
+                            Every correct sentence in English must have at least one <strong>Subject</strong> and one <strong>Main Verb</strong>.
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-[#dbeafe] p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                <h4 class="font-black text-dark text-lg mb-2 uppercase flex items-center"><span class="bg-[#60a5fa] text-white w-6 h-6 flex items-center justify-center text-sm mr-2 border-2 border-dark">A</span> Part A: Completion</h4>
+                                <p class="font-bold text-sm mb-3"><strong>The Goal:</strong> Find what is <em>missing</em>.</p>
+                                <p class="font-bold text-sm"><strong>Strategy:</strong></p>
+                                <ol class="list-decimal pl-6 mt-1 font-medium text-sm space-y-1">
+                                    <li>Find the Verb. Is it missing?</li>
+                                    <li>Find the Subject. Is it missing?</li>
+                                    <li>If both are there, is a connector missing?</li>
+                                </ol>
+                                <p class="mt-4 font-bold text-sm bg-white p-2 border-2 border-dark inline-block"><em>Example:</em> "_______ was ringing." (Needs Subject)</p>
+                            </div>
+
+                            <div class="bg-[#ffe4e6] p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                <h4 class="font-black text-dark text-lg mb-2 uppercase flex items-center"><span class="bg-[#fb7185] text-white w-6 h-6 flex items-center justify-center text-sm mr-2 border-2 border-dark">B</span> Part B: Written Expression</h4>
+                                <p class="font-bold text-sm mb-3"><strong>The Goal:</strong> Find what is <em>extra</em> or <em>wrong</em>.</p>
+                                <p class="font-bold text-sm"><strong>Strategy:</strong></p>
+                                <ol class="list-decimal pl-6 mt-1 font-medium text-sm space-y-1">
+                                    <li><strong>Double Subject:</strong> "My brother <u>he</u> is..." (Wrong)</li>
+                                    <li><strong>Double Verb:</strong> "The sun <u>rose</u> <u>set</u>." (Wrong)</li>
+                                    <li><strong>Missing Verb:</strong> "The boy <u>playing</u>." (Needs 'is')</li>
+                                </ol>
+                                <p class="mt-4 font-bold text-sm bg-white p-2 border-2 border-dark inline-block"><em>Example:</em> "The girl she is happy." ("She" is error)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Understanding (Emerald Theme) -->
+        <div class="mb-6 border-4 border-dark shadow-neo-sm bg-white">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-4 md:p-6 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left border-b-4 border-dark group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-10 h-10 flex items-center justify-center font-black text-lg shadow-[2px_2px_0_0_#0f172a] group-hover:shadow-[4px_4px_0_0_#0f172a] group-hover:-translate-y-0.5 transition-all">3</div>
+                    <span class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight">Drills: Part A & Part B</span>
+                </div>
+                <div class="w-10 h-10 bg-white border-3 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a]">
+                    <i id="icon-part3" class="fas fa-chevron-down text-dark transition-transform duration-300"></i>
+                </div>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-6 md:p-8 space-y-10 bg-[#dcfce7]">
+                    
+                    <!-- Task 4: ID the Parts -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#4ade80] px-2 border-2 border-dark text-sm">Task 4</span> 
+                                Identify S & V
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t4', this)" class="neo-btn bg-[#4ade80] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Answer</button>
+                        </div>
+                        <p class="font-bold text-slate-700 mb-4 bg-slate-100 p-3 border-2 border-dark">Identify the Subject (S) and Verb (V) in this sentence: <br><em>"In the late 19th century, many immigrants arrived in New York."</em></p>
+                        <div class="space-y-4 font-bold">
+                             <div class="flex items-center gap-4">
+                                 <label class="w-24 uppercase text-sm tracking-wider">Subject =</label>
+                                 <input type="text" placeholder="?" class="flex-1 p-3 border-2 border-dark focus:outline-none bg-white">
+                             </div>
+                             <div class="flex items-center gap-4">
+                                 <label class="w-24 uppercase text-sm tracking-wider">Verb =</label>
+                                 <input type="text" placeholder="?" class="flex-1 p-3 border-2 border-dark focus:outline-none bg-white">
+                             </div>
+                        </div>
+                        <div id="ans-t4" class="answer-box hidden mt-5 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform -rotate-1">
+                            <ul class="space-y-2 font-black text-lg">
+                                <li><strong>Subject:</strong> Immigrants (Not "Century" or "New York" - these are objects of prepositions).</li>
+                                <li><strong>Verb:</strong> Arrived.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 5 (Interactive MCQ - Part A) -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2 mb-4 border-b-2 border-dark pb-3">
+                            <span class="bg-[#4ade80] px-2 border-2 border-dark text-sm">Task 5</span> 
+                            Structure (Part A): Complete the Sentence
+                        </h3>
+                        <p class="font-bold text-slate-700 mb-4">Select the option that <strong>completes</strong> the sentence correctly.</p>
+                        <div id="mcq-container" class="space-y-8">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-8 flex justify-end border-t-4 border-dark pt-6">
+                            <button onclick="checkMCQ()" class="neo-btn bg-dark text-white hover:bg-slate-800 px-6 py-3 text-sm uppercase">
+                                <i class="fas fa-check-double mr-2"></i> Check Part A
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 6 (Written Expression - Part B) -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2 mb-4 border-b-2 border-dark pb-3">
+                            <span class="bg-[#f43f5e] text-white px-2 border-2 border-dark text-sm">Task 6</span> 
+                            Written Expression (Part B): Find the Error
+                        </h3>
+                        <p class="font-bold text-slate-700 mb-4">Identify the <u>underlined</u> word or phrase that is <strong>incorrect</strong>.</p>
+                        <div id="we-container" class="space-y-8">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-8 flex justify-end border-t-4 border-dark pt-6">
+                            <button onclick="checkWE()" class="neo-btn bg-[#e11d48] text-white hover:bg-[#be123c] px-6 py-3 text-sm uppercase">
+                                <i class="fas fa-search mr-2"></i> Check Part B
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 7 (Interactive T/F) -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2 mb-4 pb-3 border-b-2 border-dark">
+                            <span class="bg-[#4ade80] px-2 border-2 border-dark text-sm">Task 7</span> 
+                            Strategy Logic
+                        </h3>
+                        <div id="tf-container" class="space-y-4 font-medium text-lg">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-8 flex justify-end">
+                            <button onclick="checkTF()" class="neo-btn bg-dark text-white hover:bg-slate-800 px-6 py-3 text-sm uppercase">
+                                <i class="fas fa-check-double mr-2"></i> Check Logic
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Discussion (Orange Theme) -->
+        <div class="mb-6 border-4 border-dark shadow-neo-sm bg-white">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-4 md:p-6 bg-[#fb923c] hover:bg-[#f97316] transition-colors text-left border-b-4 border-dark group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-10 h-10 flex items-center justify-center font-black text-lg shadow-[2px_2px_0_0_#0f172a] group-hover:shadow-[4px_4px_0_0_#0f172a] group-hover:-translate-y-0.5 transition-all">4</div>
+                    <span class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight">Discussion (Tasks 8-9)</span>
+                </div>
+                <div class="w-10 h-10 bg-white border-3 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a]">
+                    <i id="icon-part4" class="fas fa-chevron-down text-dark transition-transform duration-300"></i>
+                </div>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-6 md:p-8 space-y-10 bg-[#ffedd5]">
+                    
+                    <!-- Task 8: Critical Thinking -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                         <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#fb923c] px-2 border-2 border-dark text-sm">Task 8</span> 
+                                The "Double Subject" Trap
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t8', this)" class="neo-btn bg-[#fb923c] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Answer</button>
+                        </div>
+                        <p class="font-bold text-slate-800 mb-4 bg-slate-100 p-3 border-2 border-dark">Why is this sentence wrong? <em>"My brother he lives in Jakarta."</em></p>
+                        <textarea class="w-full p-4 font-medium focus:outline-none"></textarea>
+                        <div id="ans-t8" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform rotate-1">
+                            <strong class="uppercase font-black text-lg">Answer: It has a Double Subject.</strong><br><br>
+                            "My brother" is the subject. "He" is a pronoun referring to the same subject. You cannot have both right next to each other acting as the subject of the same verb.
+                        </div>
+                    </div>
+
+                    <!-- Task 9: Fragment Fixer -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#fb923c] px-2 border-2 border-dark text-sm">Task 9</span> 
+                                Fragment Hunting
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t9', this)" class="neo-btn bg-[#fb923c] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Sample</button>
+                        </div>
+                        <p class="font-bold text-slate-800 mb-4">The following text is a fragment (error): <em>"The large yellow bus waiting at the corner."</em> <br>Rewrite it to make it a correct sentence.</p>
+                        <textarea placeholder="Fix the sentence..." class="w-full p-4 font-medium focus:outline-none"></textarea>
+                        <div id="ans-t9" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform -rotate-1">
+                            <strong class="uppercase font-black text-lg">Sample Answer:</strong><br><br>
+                            "The large yellow bus <strong>was</strong> waiting at the corner." <br>
+                            <span class="text-sm font-medium mt-1 inline-block text-slate-800">(Added 'was' to turn 'waiting' into a main verb.)</span><br><br>
+                            <em>OR</em><br><br>
+                            "The large yellow bus waiting at the corner <strong>left early</strong>." <br>
+                            <span class="text-sm font-medium mt-1 inline-block text-slate-800">(Added 'left' as the main verb for the subject 'bus'.)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Advanced (Violet Theme) -->
+        <div class="mb-12 border-4 border-dark shadow-neo-sm bg-white">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-4 md:p-6 bg-[#c084fc] hover:bg-[#a855f7] transition-colors text-left border-b-4 border-dark group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-10 h-10 flex items-center justify-center font-black text-lg shadow-[2px_2px_0_0_#0f172a] group-hover:shadow-[4px_4px_0_0_#0f172a] group-hover:-translate-y-0.5 transition-all">5</div>
+                    <span class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight">Advanced: Synthesis</span>
+                </div>
+                <div class="w-10 h-10 bg-white border-3 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a]">
+                    <i id="icon-part5" class="fas fa-chevron-down text-dark transition-transform duration-300"></i>
+                </div>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-6 md:p-8 space-y-10 bg-[#f3e8ff]">
+                    
+                    <!-- Task 10: Writing -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                         <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#c084fc] px-2 border-2 border-dark text-sm">Task 10</span> 
+                                Sentence Building
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t10', this)" class="neo-btn bg-[#c084fc] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Sample</button>
+                        </div>
+                        <p class="font-bold text-slate-800 mb-4">Write 3 simple sentences about your hometown. Ensure every sentence has a clear Subject and Verb.</p>
+                        <textarea placeholder="1. ...&#10;2. ...&#10;3. ..." class="w-full p-4 font-medium focus:outline-none min-h-[120px]"></textarea>
+                        <div id="ans-t10" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform rotate-1">
+                            <strong class="uppercase font-black text-lg">Sample Sentences:</strong><br><br>
+                            1. <u>Jakarta</u> <strong>is</strong> a very crowded city. <br>
+                            2. <u>The local street food</u> <strong>tastes</strong> absolutely amazing. <br>
+                            3. <u>Many tourists</u> <strong>visit</strong> the national monument every single year.
+                        </div>
+                    </div>
+
+                    <!-- Task 11: Reflection -->
+                    <div class="bg-white border-3 border-dark p-5 md:p-6 shadow-[4px_4px_0_0_#0f172a]">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b-2 border-dark pb-3">
+                            <h3 class="font-black text-dark text-lg uppercase flex items-center gap-2">
+                                <span class="bg-[#c084fc] px-2 border-2 border-dark text-sm">Task 11</span> 
+                                Reflection
+                            </h3>
+                            <button onclick="toggleAnswer('ans-t11', this)" class="neo-btn bg-[#c084fc] text-dark px-3 py-1.5 text-xs font-black uppercase">Show Sample</button>
+                        </div>
+                        <p class="font-bold text-slate-800 mb-4">Which is harder: finding the missing word (Part A) or finding the wrong word (Part B)?</p>
+                        <textarea placeholder="Type your reflection here..." class="w-full p-4 font-medium focus:outline-none"></textarea>
+                        <div id="ans-t11" class="answer-box hidden mt-4 p-5 bg-[#facc15] border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-dark transform -rotate-1">
+                            <strong class="uppercase font-black text-lg">Sample Reflection:</strong><br><br>
+                            "I personally find Part B harder because a sentence can look perfectly normal to me until I actively analyze the specific grammar rules, like number agreement or double subjects. Part A is slightly easier for me because the 'blank' space clearly shows exactly where the missing piece needs to go."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t-4 border-dark text-center">
+            <p class="font-bold text-dark text-xs sm:text-sm bg-[#facc15] inline-block px-4 py-3 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] uppercase tracking-wide">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="underline hover:text-white transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Global State ---
+        let attemptsCount = {};
+
+        // --- Data Configuration Section ---
+        
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { 
+                id: "v1", 
+                word: "1. Subject", 
+                correct: "b", 
+                explanation: "The subject is the noun, pronoun, or noun phrase that performs the action or is described in the sentence.",
+                options: { 
+                    a: "The action of the sentence", 
+                    b: "The person or thing doing the action", 
+                    c: "A word that describes a noun", 
+                    d: "The end of the sentence" 
+                } 
+            },
+            { 
+                id: "v2", 
+                word: "2. Verb", 
+                correct: "a", 
+                explanation: "Verbs express action (run, study) or state of being (is, am, are).",
+                options: { 
+                    a: "The word indicating action or state of being", 
+                    b: "A person's name", 
+                    c: "A connecting word", 
+                    d: "An incomplete thought" 
+                } 
+            },
+            { 
+                id: "v3", 
+                word: "3. Fragment", 
+                correct: "d", 
+                explanation: "A fragment is an error where a group of words is punctuated like a sentence but is missing a subject, a main verb, or both.",
+                options: { 
+                    a: "A very long sentence", 
+                    b: "A perfect grammar score", 
+                    c: "A double subject", 
+                    d: "An incomplete sentence (missing S or V)" 
+                } 
+            },
+             { 
+                id: "v4", 
+                word: "4. Clause", 
+                correct: "c", 
+                explanation: "A clause is the basic building block of a sentence; an independent clause can stand alone as a complete sentence.",
+                options: { 
+                    a: "A single word", 
+                    b: "A type of punctuation", 
+                    c: "A group of words containing a Subject and a Verb", 
+                    d: "A prepositional phrase" 
+                } 
+            }
+        ];
+
+        // 2. MULTIPLE CHOICE DATA (Structure Part A)
+        const mcqData = [
+            { 
+                id: "m1", 
+                question: "The North Platte River ______ from Wyoming into Nebraska.<br><span class='text-xs text-slate-500 italic font-bold mt-2 inline-block'>(Analysis: Missing Verb)</span>", 
+                correct: "a", 
+                explanation: "The sentence has a subject (The North Platte River) but is missing a main verb. 'Flows' is the correct singular verb.",
+                options: ["a. flows", "b. flowing", "c. with flowing water", "d. streams"] 
+            },
+            { 
+                id: "m2", 
+                question: "_______ received its name from a Sioux word meaning 'first people'.<br><span class='text-xs text-slate-500 italic font-bold mt-2 inline-block'>(Analysis: Missing Subject)</span>", 
+                correct: "a", 
+                explanation: "The sentence has a verb (received) but is missing a subject. 'The city' provides the necessary noun phrase.",
+                options: ["a. The city", "b. Located in", "c. It is the city", "d. The city which"] 
+            },
+            { 
+                id: "m3", 
+                question: "A pride of lions _______ up to forty hours a week in active hunting.<br><span class='text-xs text-slate-500 italic font-bold mt-2 inline-block'>(Analysis: Missing Verb)</span>", 
+                correct: "d", 
+                explanation: "The subject is 'A pride' (singular collective noun), not 'lions'. Therefore, the singular verb 'spends' is required.",
+                options: ["a. spending", "b. it spends", "c. they spend", "d. spends"] 
+            },
+            { 
+                id: "m4", 
+                question: "_______ tea plant are small and white.<br><span class='text-xs text-slate-500 italic font-bold mt-2 inline-block'>(Analysis: Missing Subject Phrase)</span>", 
+                correct: "d", 
+                explanation: "The verb 'are' is plural, so we need a plural subject. 'The flowers of the' creates a plural subject phrase to match the verb.",
+                options: ["a. The", "b. On the", "c. Having flowers the", "d. The flowers of the"] 
+            }
+        ];
+
+        // 3. WRITTEN EXPRESSION DATA (Structure Part B)
+        const weData = [
+            {
+                id: "w1",
+                sentence: "The <span class='we-underline'>distinct</span><span class='we-label'>A</span> geology of Cape Cod <span class='we-underline'>it is</span><span class='we-label'>B</span> the result <span class='we-underline'>of</span><span class='we-label'>C</span> glacial <span class='we-underline'>activity</span><span class='we-label'>D</span>.",
+                correct: "B",
+                explanation: "Double Subject. 'The distinct geology' is the subject. We do not need the pronoun 'it' directly before the verb 'is'."
+            },
+            {
+                id: "w2",
+                sentence: "Many <span class='we-underline'>birds</span><span class='we-label'>A</span> will, <span class='we-underline'>in the</span><span class='we-label'>B</span> normal course of <span class='we-underline'>their</span><span class='we-label'>C</span> migration, <span class='we-underline'>flying</span><span class='we-label'>D</span> more than three thousand miles.",
+                correct: "D",
+                explanation: "Wrong Verb Form. 'Will' is a modal verb and must always be followed by the base form of the verb ('fly'), not the '-ing' form ('flying')."
+            },
+            {
+                id: "w3",
+                sentence: "The <span class='we-underline'>coyote</span><span class='we-label'>A</span> <span class='we-underline'>is</span><span class='we-label'>B</span> a clever <span class='we-underline'>animals</span><span class='we-label'>C</span> and is <span class='we-underline'>native</span><span class='we-label'>D</span> to North America.",
+                correct: "C",
+                explanation: "Number Agreement. The article 'a' indicates a singular noun, so it must be followed by 'animal', not the plural 'animals'."
+            },
+            {
+                id: "w4",
+                sentence: "<span class='we-underline'>Because</span><span class='we-label'>A</span> the mist <span class='we-underline'>coming</span><span class='we-label'>B</span> from the <span class='we-underline'>ocean</span><span class='we-label'>C</span>, the plants <span class='we-underline'>are</span><span class='we-label'>D</span> lush and green.",
+                correct: "A",
+                explanation: "Connector error. 'Because' must introduce a full clause (S+V), but 'the mist coming from the ocean' is only a Noun Phrase (missing a main verb). It should be the preposition 'Because of'."
+            }
+        ];
+
+        // 4. TRUE / FALSE DATA
+        const tfData = [
+            { 
+                id: "tf1", 
+                text: "1. Every sentence must have at least one Subject and one Verb.", 
+                correct: "True",
+                explanation: "This is the Golden Formula of English sentences. Without both, it is a fragment." 
+            },
+            { 
+                id: "tf2", 
+                text: "2. In Written Expression, you are looking for the correct word.", 
+                correct: "False",
+                explanation: "In Part B, you must find the word or phrase that is grammatically INCORRECT."
+            },
+            { 
+                id: "tf3", 
+                text: "3. Words ending in '-ing' (like 'running') are always main verbs.", 
+                correct: "False",
+                explanation: "Words ending in '-ing' need a 'be' verb helper (is, are, was, were) to function as a main verb. Otherwise, they are adjectives or nouns." 
+            },
+            { 
+                id: "tf4", 
+                text: "4. A 'Double Subject' error happens when a Noun and Pronoun are used together for the same subject.", 
+                correct: "True",
+                explanation: "For example, 'My car it is broken' uses both 'My car' and 'it' for the same verb. Only one is needed." 
+            }
+        ];
+
+        // --- STREAMING_CHUNK:Defining render functions for dynamic elements... ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            if(vocabData.length === 0) return;
+
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="">Select definition...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col p-4 bg-white border-3 border-dark shadow-[2px_2px_0_0_#0f172a] hover:shadow-[4px_4px_0_0_#0f172a] transition-shadow">
+                    <div class="flex flex-col md:flex-row md:items-center gap-3 w-full">
+                        <div class="md:w-1/3 font-black text-xl uppercase tracking-tight text-dark">${item.word}</div>
+                        <div class="md:w-2/3 flex items-center gap-3">
+                            <select id="${item.id}" class="flex-1 p-3 text-sm md:text-base font-bold border-3 border-dark bg-slate-50 focus:ring-0 focus:shadow-[2px_2px_0_0_#0f172a] outline-none cursor-pointer">
+                                ${optionsHtml}
+                            </select>
+                            <span id="feedback-${item.id}" class="w-8 flex justify-center text-xl"></span>
+                        </div>
+                    </div>
+                    <div id="explanation-${item.id}" class="hidden w-full mt-3 text-sm font-medium"></div>
+                </div>
+            `}).join('');
+        }
+
+        function renderMCQ() {
+            const container = document.getElementById('mcq-container');
+            container.innerHTML = mcqData.map((item, index) => {
+                return `
+                <div class="p-5 md:p-6 border-4 border-dark bg-white shadow-[4px_4px_0_0_#0f172a]">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="font-black text-white bg-dark h-8 w-8 flex items-center justify-center text-lg flex-shrink-0 border-2 border-dark shadow-[2px_2px_0_0_#4ade80]">${index + 1}</span>
+                        <div class="font-black text-lg text-slate-800 leading-relaxed">${item.question}</div>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="space-y-3 pl-2 md:pl-12">
+                        ${item.options.map((opt, idx) => {
+                            const val = ['a','b','c','d'][idx];
+                            return `
+                            <label class="flex items-center gap-3 p-3 bg-white border-2 border-transparent hover:border-dark hover:bg-[#dcfce7] cursor-pointer text-sm md:text-base font-bold transition-all group">
+                                <input type="radio" name="${item.id}" value="${val}" class="w-5 h-5 accent-dark border-2 border-dark cursor-pointer">
+                                <span class="group-hover:translate-x-1 transition-transform">${opt}</span>
+                            </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-lg font-black min-h-[2rem] mt-4 pl-2 md:pl-12"></div>
+                    <div id="explanation-${item.id}" class="hidden mt-2 pl-2 md:pl-12 text-sm font-medium"></div>
+                </div>
+            `}).join('');
+        }
+
+        function renderWE() {
+            const container = document.getElementById('we-container');
+
+            container.innerHTML = weData.map((item, index) => `
+                <div class="p-5 md:p-6 border-4 border-dark bg-[#fff1f2] shadow-[4px_4px_0_0_#0f172a]">
+                    <div class="flex items-start gap-4 mb-5">
+                        <span class="font-black text-white bg-dark h-8 w-8 flex items-center justify-center text-lg flex-shrink-0 border-2 border-dark shadow-[2px_2px_0_0_#f43f5e]">${index + 1}</span>
+                        <div class="font-medium text-xl text-slate-800 leading-loose bg-white p-4 border-2 border-dark">
+                            ${item.sentence}
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-4 pl-2 md:pl-12 font-bold">
+                        ${['A','B','C','D'].map(val => `
+                            <label class="flex items-center gap-2 cursor-pointer bg-white border-2 border-dark p-2 hover:bg-[#fecdd3] transition-colors">
+                                <input type="radio" name="${item.id}" value="${val}" class="w-5 h-5 accent-dark border-2 border-dark">
+                                <span class="text-dark">(${val})</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-lg font-black min-h-[2rem] mt-4 pl-2 md:pl-12"></div>
+                    <div id="explanation-${item.id}" class="hidden mt-2 pl-2 md:pl-12 text-sm font-medium"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col p-4 bg-white border-3 border-dark shadow-[2px_2px_0_0_#0f172a] hover:shadow-[4px_4px_0_0_#0f172a] transition-shadow" id="row-${item.id}">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between w-full">
+                        <span class="text-base md:text-lg font-bold text-dark mb-4 md:mb-0 w-full md:w-2/3 leading-snug">${item.text}</span>
+                        <div class="flex items-center gap-6 font-black uppercase tracking-wide">
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-[#4ade80] group">
+                                <input type="radio" name="${item.id}" value="True" class="w-5 h-5 accent-dark border-2 border-dark cursor-pointer"> 
+                                <span class="group-hover:-translate-y-0.5 transition-transform inline-block">True</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-[#e11d48] group">
+                                <input type="radio" name="${item.id}" value="False" class="w-5 h-5 accent-dark border-2 border-dark cursor-pointer"> 
+                                <span class="group-hover:-translate-y-0.5 transition-transform inline-block">False</span>
+                            </label>
+                            <span id="feedback-${item.id}" class="ml-2 w-8 text-xl"></span>
+                        </div>
+                    </div>
+                    <div id="explanation-${item.id}" class="hidden w-full mt-3 text-sm font-medium"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Helper: Update Parent Height ---
+        function updateParentHeight(element) {
+            const parentAccordion = element.closest('.accordion-content');
+            if (parentAccordion && parentAccordion.classList.contains('active')) {
+                setTimeout(() => {
+                    parentAccordion.style.maxHeight = parentAccordion.scrollHeight + "px";
+                }, 50);
+            }
+        }
+
+        // --- STREAMING_CHUNK:Defining checking and toggle logic handlers... ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select || select.disabled) return; 
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const expl = document.getElementById(`explanation-${item.id}`);
+                const userVal = select.value;
+                
+                if (userVal === "") return;
+
+                if (attemptsCount[item.id] === undefined) attemptsCount[item.id] = 0;
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-[#4ade80] stroke-dark stroke-2"></i>';
+                    select.classList.add('bg-[#dcfce7]', 'border-dark');
+                    select.classList.remove('bg-slate-50', 'bg-[#ffe4e6]', 'bg-[#fefce8]');
+                    select.disabled = true;
+                    expl.innerHTML = `<div class="bg-[#dcfce7] p-3 border-2 border-dark text-slate-800"><strong>Explanation:</strong> ${item.explanation}</div>`;
+                    expl.classList.remove('hidden');
+                } else {
+                    attemptsCount[item.id]++;
+                    if (attemptsCount[item.id] >= 2) {
+                        feedback.innerHTML = '<i class="fas fa-times-circle text-[#e11d48]"></i>';
+                        select.classList.add('bg-[#ffe4e6]');
+                        select.classList.remove('bg-slate-50', 'bg-[#fefce8]');
+                        select.disabled = true;
+                        
+                        const correctOptionText = item.options[item.correct];
+                        expl.innerHTML = `<div class="bg-[#ffe4e6] p-3 border-2 border-dark text-slate-800"><strong class="text-[#e11d48]">Correct Answer:</strong> ${correctOptionText}<br><br><strong>Explanation:</strong> ${item.explanation}</div>`;
+                        expl.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-exclamation-triangle text-[#facc15]"></i>';
+                        select.classList.add('bg-[#fefce8]');
+                        select.classList.remove('bg-slate-50');
+                    }
+                }
+                updateParentHeight(expl);
+            });
+        }
+
+        function checkMCQ() {
+            mcqData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                if(radios[0] && radios[0].disabled) return; 
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const expl = document.getElementById(`explanation-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === "") return;
+
+                if (attemptsCount[item.id] === undefined) attemptsCount[item.id] = 0;
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-white bg-[#4ade80] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-block uppercase tracking-wider text-sm"><i class="fas fa-check mr-2"></i> Correct!</span>';
+                    radios.forEach(r => r.disabled = true);
+                    expl.innerHTML = `<div class="bg-[#dcfce7] p-3 border-2 border-dark text-slate-800"><strong>Explanation:</strong> ${item.explanation}</div>`;
+                    expl.classList.remove('hidden');
+                } else {
+                    attemptsCount[item.id]++;
+                    if (attemptsCount[item.id] >= 2) {
+                        feedback.innerHTML = `<span class="text-white bg-[#e11d48] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-block uppercase tracking-wider text-sm"><i class="fas fa-times mr-2"></i> Incorrect</span>`;
+                        radios.forEach(r => r.disabled = true);
+                        
+                        const correctIndex = ['a','b','c','d'].indexOf(item.correct);
+                        const correctText = item.options[correctIndex];
+                        expl.innerHTML = `<div class="bg-[#ffe4e6] p-3 border-2 border-dark text-slate-800"><strong class="text-[#e11d48]">Correct Answer:</strong> ${correctText}<br><br><strong>Explanation:</strong> ${item.explanation}</div>`;
+                        expl.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<span class="text-dark bg-[#facc15] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-block uppercase tracking-wider text-sm"><i class="fas fa-exclamation-triangle mr-2"></i> Try again (1 attempt left)</span>';
+                    }
+                }
+                updateParentHeight(expl);
+            });
+        }
+
+        function checkWE() {
+            weData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                if(radios[0] && radios[0].disabled) return; 
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const expl = document.getElementById(`explanation-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === "") return;
+
+                if (attemptsCount[item.id] === undefined) attemptsCount[item.id] = 0;
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-white bg-[#4ade80] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-block uppercase tracking-wider text-sm"><i class="fas fa-check mr-2"></i> Correct!</span>';
+                    radios.forEach(r => r.disabled = true);
+                    expl.innerHTML = `<div class="bg-[#dcfce7] p-3 border-2 border-dark text-slate-800"><strong>Explanation:</strong> ${item.explanation}</div>`;
+                    expl.classList.remove('hidden');
+                } else {
+                    attemptsCount[item.id]++;
+                    if (attemptsCount[item.id] >= 2) {
+                        feedback.innerHTML = `<span class="text-white bg-[#e11d48] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-block uppercase tracking-wider text-sm"><i class="fas fa-times mr-2"></i> Incorrect</span>`;
+                        radios.forEach(r => r.disabled = true);
+                        
+                        expl.innerHTML = `<div class="bg-[#ffe4e6] p-3 border-2 border-dark text-slate-800"><strong class="text-[#e11d48]">Correct Answer:</strong> (${item.correct})<br><br><strong>Explanation:</strong> ${item.explanation}</div>`;
+                        expl.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<span class="text-dark bg-[#facc15] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-block uppercase tracking-wider text-sm"><i class="fas fa-exclamation-triangle mr-2"></i> Try again (1 attempt left)</span>';
+                    }
+                }
+                updateParentHeight(expl);
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                if(radios[0] && radios[0].disabled) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const expl = document.getElementById(`explanation-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === "") return;
+
+                if (attemptsCount[item.id] === undefined) attemptsCount[item.id] = 0;
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-[#4ade80]"></i>';
+                    radios.forEach(r => r.disabled = true);
+                    expl.innerHTML = `<div class="bg-[#dcfce7] p-3 border-2 border-dark mt-2 text-slate-800"><strong>Explanation:</strong> ${item.explanation}</div>`;
+                    expl.classList.remove('hidden');
+                } else {
+                    attemptsCount[item.id]++;
+                    if (attemptsCount[item.id] >= 2) {
+                        feedback.innerHTML = '<i class="fas fa-times-circle text-[#e11d48]"></i>';
+                        radios.forEach(r => r.disabled = true);
+                        expl.innerHTML = `<div class="bg-[#ffe4e6] p-3 border-2 border-dark mt-2 text-slate-800"><strong class="text-[#e11d48]">Correct Answer:</strong> ${item.correct}<br><br><strong>Explanation:</strong> ${item.explanation}</div>`;
+                        expl.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-exclamation-triangle text-[#facc15]"></i>';
+                    }
+                }
+                updateParentHeight(expl);
+            });
+        }
+
+        // --- STREAMING_CHUNK:Managing UI interactivity and resets... ---
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerHTML = "<i class='fas fa-eye-slash mr-1'></i> Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                
+                // Restore original button text based on specific tasks
+                const onclickStr = btn.getAttribute('onclick');
+                let originalText = 'Show Answer';
+                if (onclickStr.includes('t3')) originalText = 'Show Trap';
+                else if (onclickStr.includes('t1')) originalText = 'Show Analogy';
+                else if (onclickStr.includes('t9') || onclickStr.includes('t10') || onclickStr.includes('t11')) originalText = 'Show Sample';
+                
+                btn.innerHTML = originalText;
+            }
+            updateParentHeight(el);
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '8000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers?")) {
+                attemptsCount = {}; // Reset attempts tracker
+                document.querySelectorAll('textarea, input[type="text"]').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.classList.remove('bg-[#dcfce7]', 'bg-[#ffe4e6]', 'bg-[#fefce8]'); 
+                    s.classList.add('bg-slate-50');
+                });
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('[id^="explanation-"]').forEach(el => { el.classList.add('hidden'); el.innerHTML = ""; });
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+
+                // Reset regular answer buttons
+                document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                    const onclickStr = btn.getAttribute('onclick');
+                    let originalText = 'Show Answer';
+                    if (onclickStr.includes('t3')) originalText = 'Show Trap';
+                    else if (onclickStr.includes('t1')) originalText = 'Show Analogy';
+                    else if (onclickStr.includes('t9') || onclickStr.includes('t10') || onclickStr.includes('t11')) originalText = 'Show Sample';
+                    
+                    btn.innerHTML = originalText;
+                });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderMCQ();
+            renderWE();
+            renderTF();
+        });
+
+    </script>
+</body>
+</html>

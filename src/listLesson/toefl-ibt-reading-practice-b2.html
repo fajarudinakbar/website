@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT Reading Practice - The Growth of Citizen Science (B2)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom Scrollbar for Passage */
+        .passage-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .passage-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .passage-scroll::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 4px;
+        }
+        .passage-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        /* TOEFL Specific Styles */
+        .paragraph-arrow {
+            display: none;
+            position: absolute;
+            left: -25px;
+            top: 0;
+            font-size: 1.2rem;
+            color: #333;
+        }
+        .active-paragraph .paragraph-arrow {
+            display: block;
+        }
+        
+        .highlight-word {
+            background-color: #e5e7eb;
+            font-weight: bold;
+            padding: 0 2px;
+            border-radius: 2px;
+            border: 1px solid #9ca3af;
+        }
+
+        .highlight-sentence {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .insertion-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            margin: 0 4px;
+            vertical-align: middle;
+        }
+        
+        .insertion-box.filled {
+            width: auto;
+            height: auto;
+            background-color: transparent;
+            color: #1d4ed8;
+            font-weight: bold;
+            border: 2px solid #1d4ed8;
+            padding: 2px 6px;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Prevent text selection to mimic strict test environment */
+        .no-select {
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col font-sans text-gray-800 overflow-hidden select-none">
+
+    <!-- Top Bar -->
+    <header class="bg-white border-b border-gray-300 h-16 flex items-center justify-between px-6 shadow-sm z-10">
+        <div class="flex items-center space-x-4">
+            <span class="font-bold text-lg text-gray-700">TOEFL iBT Reading</span>
+            <span class="text-sm text-gray-500 hidden md:inline"> | The Growth of Citizen Science</span>
+        </div>
+        <div class="flex items-center space-x-6">
+            <div class="font-bold text-gray-600">
+                Question <span id="q-current">1</span> of <span id="q-total">10</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Split -->
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden relative" id="main-container">
+        
+        <!-- Left: Passage -->
+        <div class="w-full md:w-1/2 bg-white border-r border-gray-300 h-full flex flex-col">
+            <div class="p-4 bg-gray-50 border-b border-gray-200 text-center font-serif font-bold text-xl text-gray-800">
+                The Growth of Citizen Science
+            </div>
+            <div id="passage-container" class="passage-scroll flex-1 overflow-y-auto p-8 font-serif text-lg leading-loose text-gray-800 relative">
+                <!-- Paragraphs will be injected here -->
+            </div>
+        </div>
+
+        <!-- Right: Question -->
+        <div class="w-full md:w-1/2 bg-gray-50 h-full flex flex-col">
+            <div id="question-container" class="flex-1 overflow-y-auto p-6 md:p-8">
+                <!-- Question content injected here -->
+            </div>
+
+            <!-- Navigation Footer -->
+            <div class="h-16 bg-white border-t border-gray-300 flex items-center justify-between px-6 shadow-[0_-2px_4px_rgba(0,0,0,0.05)]">
+                <button id="btn-back" onclick="prevQuestion()" class="px-6 py-2 rounded border border-gray-300 hover:bg-gray-100 font-bold text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                </button>
+                <button id="btn-next" onclick="nextQuestion()" class="px-6 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md">
+                    Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Results Modal -->
+    <div id="results-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div class="bg-blue-700 p-6 text-white text-center rounded-t-lg">
+                <h2 class="text-3xl font-bold mb-2">Test Complete</h2>
+                <div id="score-display" class="text-5xl font-bold"></div>
+            </div>
+            <div id="results-details" class="p-6 space-y-6 bg-gray-50">
+                <!-- Details injected here -->
+            </div>
+            <div class="p-6 border-t bg-white flex justify-center">
+                <button onclick="location.reload()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-bold shadow-lg transform hover:-translate-y-1 transition">
+                    Retake Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data & Logic -->
+    <script>
+        // --- DATA ---
+        const PARAGRAPHS = [
+            {
+                id: 1,
+                text: "Across the world, ordinary people are becoming important partners in scientific research through an approach known as “citizen science.” This type of collaboration allows volunteers to collect data, observe natural events, and even help analyze scientific information. Although citizen science is not new, digital tools have expanded its reach, making it possible for thousands of volunteers to participate in projects from their homes."
+            },
+            {
+                id: 2,
+                text: "One reason citizen science has grown so rapidly is the increasing availability of smartphones and online platforms. These technologies allow volunteers to record observations quickly and accurately. For example, participants in bird-watching projects can upload photos, sound recordings, and location data to global databases. Scientists can then use this information to study migration patterns, population changes, and environmental threats. Without the help of volunteers, gathering such large amounts of data would be extremely difficult."
+            },
+            {
+                id: 3,
+                text: "Another important benefit of citizen science is education. When volunteers take part in real scientific research, they gain a deeper understanding of the natural world. Many projects include online training, videos, or simple tutorials that teach volunteers how to identify species, use measurement tools, or follow scientific procedures. As a result, participants not only contribute valuable information but also develop scientific skills that they may use in school, work, or daily life."
+            },
+            {
+                id: 4,
+                text: "Despite these advantages, citizen science also has challenges. One major concern is data quality. Because volunteers have different levels of experience, the information they submit is not always accurate. To address this issue, many projects include verification steps. Experts may review photos, compare data sets, or use computer models to identify errors. Another challenge is volunteer motivation. Participation can decrease over time, especially in long-term projects that require regular observations. %%BOX_A%% Coordinators must find ways to keep volunteers engaged, such as sending progress updates, offering digital badges, or highlighting how volunteers’ contributions influence scientific discoveries. %%BOX_B%%"
+            },
+            {
+                id: 5,
+                text: "Even with these challenges, citizen science continues to expand. Researchers recognize that working with the public creates opportunities that would be impossible through traditional methods alone. More importantly, volunteers often feel a sense of connection and purpose when they see how their observations help solve real scientific problems. In this way, citizen science strengthens not only scientific research but also public engagement with the natural world."
+            }
+        ];
+
+        const QUESTIONS = [
+            {
+                id: 1,
+                type: 'multiple_choice',
+                prompt: "According to paragraph 2, what role do smartphones play in citizen science?",
+                targetPara: 2,
+                options: [
+                    { key: 'A', text: "They reduce the need for expert scientists" },
+                    { key: 'B', text: "They help volunteers collect and share data easily" },
+                    { key: 'C', text: "They replace the need for online databases" },
+                    { key: 'D', text: "They prevent inexperienced volunteers from joining" }
+                ],
+                correctAnswer: 'B',
+                explanation: "Smartphones allow volunteers to “record observations quickly and accurately.”"
+            },
+            {
+                id: 2,
+                type: 'multiple_choice',
+                prompt: "The word “expanded” in paragraph 1 is closest in meaning to:",
+                targetPara: 1,
+                highlightWord: "expanded",
+                options: [
+                    { key: 'A', text: "narrowed" },
+                    { key: 'B', text: "slowed" },
+                    { key: 'C', text: "increased" },
+                    { key: 'D', text: "disappeared" }
+                ],
+                correctAnswer: 'C',
+                explanation: "“Expanded its reach” = increased, grown wider."
+            },
+            {
+                id: 3,
+                type: 'multiple_choice',
+                prompt: "In paragraph 2, the word “this information” refers to:",
+                targetPara: 2,
+                highlightWord: "this information",
+                options: [
+                    { key: 'A', text: "migration patterns" },
+                    { key: 'B', text: "volunteers’ photos and recordings" },
+                    { key: 'C', text: "environmental threats" },
+                    { key: 'D', text: "scientific procedures" }
+                ],
+                correctAnswer: 'B',
+                explanation: "The phrase refers to “photos, sound recordings, and location data.”"
+            },
+            {
+                id: 4,
+                type: 'multiple_choice',
+                prompt: "What can be inferred from paragraph 2 about bird-watching projects in citizen science?",
+                targetPara: 2,
+                options: [
+                    { key: 'A', text: "They require advanced scientific training" },
+                    { key: 'B', text: "They depend heavily on volunteer contributions" },
+                    { key: 'C', text: "They use only written descriptions of birds" },
+                    { key: 'D', text: "They are less popular than other projects" }
+                ],
+                correctAnswer: 'B',
+                explanation: "Scientists rely on volunteers’ observations to study bird behavior."
+            },
+            {
+                id: 5,
+                type: 'multiple_choice',
+                prompt: "Why does the author mention “online training, videos, or simple tutorials” in paragraph 3?",
+                targetPara: 3,
+                options: [
+                    { key: 'A', text: "To show that volunteers need expensive equipment" },
+                    { key: 'B', text: "To explain how volunteers learn the skills needed for projects" },
+                    { key: 'C', text: "To argue that scientific education must happen in schools" },
+                    { key: 'D', text: "To compare different types of scientific research" }
+                ],
+                correctAnswer: 'B',
+                explanation: "These examples show how volunteers receive training."
+            },
+            {
+                id: 6,
+                type: 'multiple_choice',
+                prompt: "Which of the following is NOT mentioned in paragraph 4 as a challenge of citizen science?",
+                targetPara: 4,
+                options: [
+                    { key: 'A', text: "Maintaining data quality" },
+                    { key: 'B', text: "Decreasing volunteer participation" },
+                    { key: 'C', text: "Lack of available technology" },
+                    { key: 'D', text: "Need for data verification" }
+                ],
+                correctAnswer: 'C',
+                explanation: "Technology access is not mentioned as a challenge."
+            },
+            {
+                id: 7,
+                type: 'multiple_choice',
+                prompt: "Which option best expresses the essential meaning of the highlighted sentence in paragraph 4?",
+                targetPara: 4,
+                highlightSentence: "Because volunteers have different levels of experience, the information they submit is not always accurate.",
+                options: [
+                    { key: 'A', text: "Volunteers sometimes make mistakes when collecting data." },
+                    { key: 'B', text: "Volunteers are usually experts in scientific research." },
+                    { key: 'C', text: "All volunteer information is correct." },
+                    { key: 'D', text: "Scientists do not accept volunteer data." }
+                ],
+                correctAnswer: 'A',
+                explanation: "The essential idea is that volunteers sometimes provide inaccurate data."
+            },
+            {
+                id: 8,
+                type: 'insertion',
+                prompt: "In paragraph 4, where would the following sentence best fit?",
+                targetPara: 4,
+                sentence: "These motivations are important because they help maintain participation over long periods.",
+                correctAnswer: 'A',
+                explanation: "The sentence explains why decreasing participation is a problem, so it fits after the first sentence."
+            },
+            {
+                id: 9,
+                type: 'multi_select',
+                prompt: "Prose Summary: Choose TWO statements that represent the most important ideas of the passage.",
+                targetPara: null, // Summary targets whole text
+                options: [
+                    { key: 'A', text: "Citizen science benefits research by providing large amounts of data." },
+                    { key: 'B', text: "Volunteers are not capable of collecting useful scientific information." },
+                    { key: 'C', text: "Citizen science faces challenges such as data accuracy and motivation." },
+                    { key: 'D', text: "Scientists prefer to work without public involvement." }
+                ],
+                correctAnswer: ['A', 'C'],
+                explanation: "These capture the passage’s main points: benefits and challenges."
+            },
+            {
+                id: 10,
+                type: 'table_fill',
+                prompt: "Complete the table. Click an option, then click the correct box (Benefits or Challenges).",
+                targetPara: null,
+                categories: ['Benefits', 'Challenges'],
+                options: [
+                    { id: 'opt1', text: "Volunteers may lose interest over time", correctCat: 'Challenges' },
+                    { id: 'opt2', text: "Volunteers learn scientific skills", correctCat: 'Benefits' },
+                    { id: 'opt3', text: "Smartphones are too expensive", correctCat: null },
+                    { id: 'opt4', text: "All data must be kept secret", correctCat: null }
+                ],
+                explanation: "Benefits: Volunteers develop skills. Challenges: Volunteers may lose motivation."
+            }
+        ];
+
+        // --- STATE ---
+        let currentState = {
+            qIndex: 0,
+            answers: {}, // Stores user answers
+        };
+
+        // --- DOM ELEMENTS ---
+        const els = {
+            qCurrent: document.getElementById('q-current'),
+            qTotal: document.getElementById('q-total'),
+            passageContainer: document.getElementById('passage-container'),
+            questionContainer: document.getElementById('question-container'),
+            btnBack: document.getElementById('btn-back'),
+            btnNext: document.getElementById('btn-next'),
+            resultsModal: document.getElementById('results-modal'),
+            scoreDisplay: document.getElementById('score-display'),
+            resultsDetails: document.getElementById('results-details')
+        };
+
+        // --- INITIALIZATION ---
+        function init() {
+            els.qTotal.innerText = QUESTIONS.length;
+            renderPassage();
+            renderQuestion();
+        }
+
+        // --- RENDER PASSAGE ---
+        function renderPassage() {
+            const currentQ = QUESTIONS[currentState.qIndex];
+            els.passageContainer.innerHTML = '';
+
+            PARAGRAPHS.forEach(para => {
+                const pDiv = document.createElement('div');
+                pDiv.className = `relative mb-6 pl-4 transition-all duration-300 ${currentQ.targetPara === para.id ? 'active-paragraph' : 'opacity-80'}`;
+                pDiv.id = `para-${para.id}`;
+                
+                // Add Arrow
+                const arrow = document.createElement('div');
+                arrow.className = 'paragraph-arrow';
+                arrow.innerHTML = '<i class="fas fa-arrow-right"></i>';
+                pDiv.appendChild(arrow);
+
+                // Process Text for Highlights or Insertion
+                let content = para.text;
+
+                // 1. Vocabulary/Reference Highlight
+                if (currentQ.highlightWord && currentQ.targetPara === para.id) {
+                    const regex = new RegExp(`(${currentQ.highlightWord})`, 'i'); // Simple regex, usually robust enough for this demo
+                    content = content.replace(regex, '<span class="highlight-word">$1</span>');
+                }
+
+                // 2. Sentence Simplification Highlight
+                if (currentQ.highlightSentence && currentQ.targetPara === para.id) {
+                    content = content.replace(currentQ.highlightSentence, `<span class="highlight-sentence">${currentQ.highlightSentence}</span>`);
+                }
+
+                // 3. Sentence Insertion Logic
+                if (currentQ.type === 'insertion' && para.id === 4) {
+                    const insertionSentence = currentQ.sentence;
+                    const userSelection = currentState.answers[currentQ.id];
+                    
+                    // Replace placeholders
+                    // Box A
+                    let boxAHtml = '';
+                    if (userSelection === 'A') {
+                        boxAHtml = `<span class="insertion-box filled fade-in" onclick="handleInsertion('A')">${insertionSentence}</span>`;
+                    } else {
+                        boxAHtml = `<span class="insertion-box" onclick="handleInsertion('A')">■</span>`;
+                    }
+
+                    // Box B
+                    let boxBHtml = '';
+                    if (userSelection === 'B') {
+                        boxBHtml = `<span class="insertion-box filled fade-in" onclick="handleInsertion('B')">${insertionSentence}</span>`;
+                    } else {
+                        boxBHtml = `<span class="insertion-box" onclick="handleInsertion('B')">■</span>`;
+                    }
+
+                    content = content.replace('%%BOX_A%%', boxAHtml).replace('%%BOX_B%%', boxBHtml);
+                } else {
+                    // Clean up placeholders for other questions
+                    content = content.replace(/%%BOX_[AB]%%/g, '');
+                }
+
+                const textSpan = document.createElement('p');
+                textSpan.innerHTML = content;
+                pDiv.appendChild(textSpan);
+                els.passageContainer.appendChild(pDiv);
+            });
+
+            // Auto-scroll to paragraph
+            if (currentQ.targetPara) {
+                setTimeout(() => {
+                    const target = document.getElementById(`para-${currentQ.targetPara}`);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Highlight effect
+                        target.classList.remove('opacity-80');
+                    }
+                }, 100);
+            }
+        }
+
+        // --- RENDER QUESTION ---
+        function renderQuestion() {
+            const q = QUESTIONS[currentState.qIndex];
+            els.qCurrent.innerText = currentState.qIndex + 1;
+            
+            // Button States
+            els.btnBack.disabled = currentState.qIndex === 0;
+            els.btnNext.innerHTML = currentState.qIndex === QUESTIONS.length - 1 ? 'Finish Test <i class="fas fa-check ml-2"></i>' : 'Next <i class="fas fa-arrow-right ml-2"></i>';
+
+            let html = `<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 animate-fade-in">`;
+            
+            // Question Header
+            html += `<h3 class="text-lg font-bold text-gray-800 mb-4 leading-snug">${q.prompt}</h3>`;
+
+            // Specific UI for Insertion Q
+            if (q.type === 'insertion') {
+                html += `<div class="bg-blue-50 border border-blue-200 p-4 rounded mb-4 font-serif text-lg text-blue-900 shadow-sm font-bold">
+                            ${q.sentence}
+                         </div>
+                         <p class="text-sm text-gray-500 italic mb-4">Click on a square [■] in the passage to insert the sentence.</p>`;
+            }
+
+            // Options Container
+            html += `<div class="space-y-3">`;
+
+            // 1. Multiple Choice
+            if (q.type === 'multiple_choice') {
+                q.options.forEach(opt => {
+                    const isSelected = currentState.answers[q.id] === opt.key;
+                    html += `
+                        <label class="flex items-start p-3 border rounded cursor-pointer transition-colors hover:bg-gray-50 ${isSelected ? 'bg-blue-50 border-blue-500 ring-1 ring-blue-500' : 'border-gray-200'}">
+                            <input type="radio" name="q-${q.id}" value="${opt.key}" class="mt-1 mr-3 w-4 h-4 text-blue-600" ${isSelected ? 'checked' : ''} onchange="handleAnswer('${opt.key}')">
+                            <span class="text-gray-700"><b>${opt.key}.</b> ${opt.text}</span>
+                        </label>
+                    `;
+                });
+            }
+
+            // 2. Multi Select
+            if (q.type === 'multi_select') {
+                const currentSel = currentState.answers[q.id] || [];
+                html += `<p class="text-xs font-bold text-gray-400 uppercase mb-2">Select 2 Answers</p>`;
+                q.options.forEach(opt => {
+                    const isSelected = currentSel.includes(opt.key);
+                    html += `
+                        <label class="flex items-start p-3 border rounded cursor-pointer transition-colors hover:bg-gray-50 ${isSelected ? 'bg-blue-50 border-blue-500' : 'border-gray-200'}">
+                            <input type="checkbox" value="${opt.key}" class="mt-1 mr-3 w-4 h-4 rounded text-blue-600" ${isSelected ? 'checked' : ''} onchange="handleMultiSelect('${opt.key}')">
+                            <span class="text-gray-700"><b>${opt.key}.</b> ${opt.text}</span>
+                        </label>
+                    `;
+                });
+            }
+
+            // 3. Table Fill (Drag/Drop Sim)
+            if (q.type === 'table_fill') {
+                html += `<div id="table-interaction-root"></div>`; // Handled by specific function after render
+                setTimeout(() => renderTableInteraction(q), 0);
+            }
+
+            html += `</div></div>`;
+            els.questionContainer.innerHTML = html;
+
+            // Re-render passage to update visual states (like insertion boxes)
+            renderPassage();
+        }
+
+        // --- INTERACTION HANDLERS ---
+
+        window.handleAnswer = (val) => {
+            const q = QUESTIONS[currentState.qIndex];
+            currentState.answers[q.id] = val;
+            renderQuestion(); // Re-render to show selection styling
+        };
+
+        window.handleMultiSelect = (val) => {
+            const q = QUESTIONS[currentState.qIndex];
+            let current = currentState.answers[q.id] || [];
+            if (current.includes(val)) {
+                current = current.filter(k => k !== val);
+            } else {
+                if (current.length < 2) current.push(val);
+            }
+            currentState.answers[q.id] = current;
+            renderQuestion();
+        };
+
+        window.handleInsertion = (boxKey) => {
+            const q = QUESTIONS[currentState.qIndex];
+            currentState.answers[q.id] = boxKey;
+            renderPassage(); // Updates the passage to show the sentence inside the box
+        };
+
+        // Table Logic (Click-to-Move)
+        let activeTableOption = null;
+        function renderTableInteraction(q) {
+            const assignment = currentState.answers[q.id] || {}; // { optId: 'Benefits' }
+            const root = document.getElementById('table-interaction-root');
+            if (!root) return;
+
+            // Categories
+            let html = `<div class="grid grid-cols-2 gap-4 mb-6">`;
+            q.categories.forEach(cat => {
+                const itemsInCat = q.options.filter(opt => assignment[opt.id] === cat);
+                html += `
+                    <div class="border-2 border-dashed ${activeTableOption ? 'border-blue-400 bg-blue-50 cursor-pointer' : 'border-gray-300 bg-gray-50'} rounded p-3 min-h-[150px]" onclick="placeInTable('${cat}')">
+                        <h4 class="font-bold text-center text-gray-600 mb-2 border-b pb-1">${cat}</h4>
+                        <div class="space-y-2">
+                            ${itemsInCat.map(opt => `
+                                <div class="bg-white p-2 rounded shadow text-sm border border-gray-200 flex justify-between items-center animate-fade-in">
+                                    <span>${opt.text}</span>
+                                    <button onclick="event.stopPropagation(); removeFromTable('${opt.id}')" class="text-red-500 hover:text-red-700 ml-1"><i class="fas fa-times"></i></button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${activeTableOption ? '<div class="mt-4 text-center text-xs text-blue-500 font-bold animate-pulse">Tap to Place Here</div>' : ''}
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            // Pool
+            const unassigned = q.options.filter(opt => !assignment[opt.id]);
+            html += `<div class="bg-gray-100 p-3 rounded">
+                <h5 class="text-xs font-bold text-gray-500 uppercase mb-2">Options (Tap to Select)</h5>
+                <div class="space-y-2">
+                    ${unassigned.map(opt => `
+                        <div onclick="selectTableOption('${opt.id}')" class="p-3 bg-white border rounded cursor-pointer transition-all ${activeTableOption === opt.id ? 'ring-2 ring-blue-500 transform scale-[1.02]' : 'hover:border-blue-300'}">
+                            ${opt.text}
+                        </div>
+                    `).join('')}
+                    ${unassigned.length === 0 ? '<p class="text-gray-400 text-xs italic text-center">All options placed.</p>' : ''}
+                </div>
+            </div>`;
+
+            root.innerHTML = html;
+        }
+
+        window.selectTableOption = (id) => {
+            activeTableOption = activeTableOption === id ? null : id;
+            renderQuestion(); // Re-render to update UI state
+        };
+
+        window.placeInTable = (cat) => {
+            if (!activeTableOption) return;
+            const q = QUESTIONS[currentState.qIndex];
+            const prev = currentState.answers[q.id] || {};
+            currentState.answers[q.id] = { ...prev, [activeTableOption]: cat };
+            activeTableOption = null;
+            renderQuestion();
+        };
+
+        window.removeFromTable = (id) => {
+            const q = QUESTIONS[currentState.qIndex];
+            const prev = currentState.answers[q.id] || {};
+            const next = { ...prev };
+            delete next[id];
+            currentState.answers[q.id] = next;
+            renderQuestion();
+        };
+
+        // --- NAVIGATION ---
+        window.nextQuestion = () => {
+            if (currentState.qIndex < QUESTIONS.length - 1) {
+                currentState.qIndex++;
+                renderQuestion();
+            } else {
+                finishTest();
+            }
+        };
+
+        window.prevQuestion = () => {
+            if (currentState.qIndex > 0) {
+                currentState.qIndex--;
+                renderQuestion();
+            }
+        };
+
+        // --- FINISH & SCORING ---
+        function finishTest() {
+            let score = 0;
+            let html = '';
+
+            QUESTIONS.forEach((q, idx) => {
+                const ans = currentState.answers[q.id];
+                let isCorrect = false;
+
+                // Grading Logic
+                if (q.type === 'multiple_choice' || q.type === 'insertion') {
+                    isCorrect = ans === q.correctAnswer;
+                } else if (q.type === 'multi_select') {
+                    const sortedAns = (ans || []).sort().join('');
+                    const sortedCorr = q.correctAnswer.sort().join('');
+                    isCorrect = sortedAns === sortedCorr;
+                } else if (q.type === 'table_fill') {
+                    // Specific logic for Q10
+                    // opt1 (A) -> Challenges, opt2 (B) -> Benefits
+                    const a1 = ans?.['opt1'];
+                    const a2 = ans?.['opt2'];
+                    isCorrect = a1 === 'Challenges' && a2 === 'Benefits';
+                }
+
+                if (isCorrect) score++;
+
+                html += `
+                    <div class="bg-white p-4 rounded border-l-4 ${isCorrect ? 'border-green-500' : 'border-red-500'} shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-gray-800">Question ${idx + 1}</h4>
+                            <span class="${isCorrect ? 'text-green-600' : 'text-red-600'} font-bold text-sm">
+                                ${isCorrect ? '<i class="fas fa-check"></i> Correct' : '<i class="fas fa-times"></i> Incorrect'}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1 mb-2">${q.prompt}</p>
+                        <div class="bg-gray-100 p-2 rounded text-sm text-gray-700">
+                            <strong>Explanation:</strong> ${q.explanation}
+                        </div>
+                    </div>
+                `;
+            });
+
+            els.scoreDisplay.innerText = `${Math.round((score / QUESTIONS.length) * 100)}%`;
+            els.resultsDetails.innerHTML = html;
+            els.resultsModal.classList.remove('hidden');
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Writing Task 2: Body Paragraphs</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+            background-color: #f8fafc;
+            transition: border-color 0.2s;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        .option-label.correct {
+            background-color: #dcfce7;
+            border-color: #22c55e;
+            color: #15803d;
+            font-weight: 600;
+        }
+        .option-label.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+
+        /* T.E.E. Formatting */
+        .tee-t { color: #2563eb; font-weight: 700; } /* Blue */
+        .tee-e { color: #16a34a; font-weight: 700; } /* Green */
+        .tee-ex { color: #d97706; font-weight: 700; } /* Amber */
+
+        /* Pill Radio Buttons for T.E.E Labelling */
+        .tee-radio-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.4rem 1rem;
+            border-radius: 9999px;
+            border: 2px solid #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            background-color: white;
+            user-select: none;
+        }
+        @media (min-width: 768px) {
+            .tee-radio-label {
+                font-size: 0.95rem;
+            }
+        }
+        .tee-radio-input:checked + .tee-radio-label.val-t {
+            border-color: #3b82f6; background-color: #eff6ff; color: #1e3a8a;
+        }
+        .tee-radio-input:checked + .tee-radio-label.val-e {
+            border-color: #22c55e; background-color: #f0fdf4; color: #14532d;
+        }
+        .tee-radio-input:checked + .tee-radio-label.val-ex {
+            border-color: #f59e0b; background-color: #fffbeb; color: #78350f;
+        }
+        .tee-radio-input {
+            display: none;
+        }
+
+        /* Custom Selects */
+        .order-select {
+            border: 2px solid #cbd5e1;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.2s;
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1.25em 1.25em;
+            padding-right: 2.5rem;
+        }
+        .order-select:focus {
+            border-color: #3b82f6;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .order-select.correct {
+            border-color: #22c55e;
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .order-select.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-6 md:p-8 text-sm md:text-base">
+
+    <div class="max-w-6xl mx-auto bg-white p-5 sm:p-8 lg:p-10 rounded-2xl md:rounded-3xl shadow-xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs sm:text-sm md:text-base text-slate-500 mb-6 flex gap-2 font-medium uppercase tracking-wider items-center flex-wrap">
+            <span>IELTS</span> <i class="fas fa-chevron-right text-xs"></i> 
+            <span>Writing</span> <i class="fas fa-chevron-right text-xs"></i> 
+            <span>Task 2</span> <i class="fas fa-chevron-right text-xs"></i> 
+            <span class="text-blue-700 font-bold">Body Paragraphs</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-10">
+            <div>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-cyan-600 tracking-tight mb-3 md:mb-4">
+                    IELTS Skill-Building
+                </h1>
+                <p class="text-lg sm:text-xl md:text-2xl text-slate-500 font-medium leading-tight">Target Skill: How to Write Effective Body Paragraphs</p>
+                <div class="flex flex-wrap gap-2 mt-4">
+                    <span class="bg-slate-100 text-slate-700 px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs sm:text-sm md:text-base font-semibold border border-slate-200"><i class="fas fa-layer-group mr-2 text-blue-500"></i>Level: B1 to B2</span>
+                    <span class="bg-slate-100 text-slate-700 px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs sm:text-sm md:text-base font-semibold border border-slate-200"><i class="fas fa-cubes mr-2 text-blue-500"></i>Focus: T.E.E. Structure</span>
+                </div>
+            </div>
+            <div class="flex gap-2 shrink-0 flex-wrap">
+                <button onclick="resetAll()" class="w-full lg:w-auto flex items-center justify-center gap-2 px-5 py-3 text-base md:text-lg text-slate-500 hover:text-red-600 transition-colors font-bold hover:bg-red-50 rounded-xl border border-slate-200 hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-4 md:border-l-8 border-blue-600 p-5 md:p-6 mb-8 md:mb-10 rounded-r-xl shadow-sm relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+                <i class="fas fa-stream text-6xl md:text-8xl text-blue-600"></i>
+            </div>
+            <p class="text-base md:text-lg text-slate-700 leading-relaxed relative z-10 font-medium">
+                <i class="fas fa-info-circle mr-2 text-blue-600 text-xl md:text-2xl align-middle"></i> 
+                <strong>Instructions:</strong> Master the building blocks of a high-scoring IELTS essay. Learn how to construct logical, well-developed body paragraphs using the T.E.E. method.
+            </p>
+        </div>
+
+        <!-- Section 1: Awareness (Cyan Theme) -->
+        <div class="mb-6 rounded-2xl md:rounded-3xl overflow-hidden border border-cyan-200 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-4 md:border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-cyan-200 text-cyan-800 w-10 h-10 md:w-14 md:h-14 shrink-0 rounded-full flex items-center justify-center font-bold text-lg md:text-2xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-eye"></i></div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-bold text-cyan-900">Step 1: What is a Good Paragraph?</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-xl md:text-3xl transition-transform duration-300 transform rotate-180 shrink-0 ml-2"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 5000px;">
+                <div class="p-5 md:p-8 lg:p-10 bg-white space-y-8">
+                    
+                    <div>
+                        <p class="mb-4 text-base md:text-lg text-slate-700 leading-relaxed">In IELTS Writing Task 2, you must present your ideas clearly. A strong body paragraph focuses on <strong>one main idea</strong> and develops it fully. A weak paragraph is often just a scattered list of ideas. A simple, effective structure to follow is <strong>T.E.E.</strong>:</p>
+                        
+                        <div class="bg-slate-50 p-5 md:p-8 rounded-xl border-2 border-slate-200 shadow-sm mt-5">
+                            <ul class="list-none space-y-4 text-sm md:text-base text-slate-700">
+                                <li class="flex flex-col sm:flex-row sm:items-center gap-3 bg-white p-4 rounded-lg border border-slate-100">
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1.5 rounded-lg font-bold text-lg md:text-xl min-w-[50px] text-center">T</span> 
+                                    <span><strong>Topic Sentence:</strong> The first sentence, which introduces your ONE main idea.</span>
+                                </li>
+                                <li class="flex flex-col sm:flex-row sm:items-center gap-3 bg-white p-4 rounded-lg border border-slate-100">
+                                    <span class="bg-green-100 text-green-800 px-3 py-1.5 rounded-lg font-bold text-lg md:text-xl min-w-[50px] text-center">E</span> 
+                                    <span><strong>Explanation:</strong> One or two sentences that explain your idea. Ask yourself: <em>Why?</em> or <em>How?</em></span>
+                                </li>
+                                <li class="flex flex-col sm:flex-row sm:items-center gap-3 bg-white p-4 rounded-lg border border-slate-100">
+                                    <span class="bg-amber-100 text-amber-800 px-3 py-1.5 rounded-lg font-bold text-lg md:text-xl min-w-[50px] text-center">E</span> 
+                                    <span><strong>Example:</strong> One or two sentences that give a specific, concrete example to support your idea.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-200">
+
+                    <div>
+                        <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-cyan-800 mb-3">The Hook: Evaluation</h3>
+                        <p class="mb-5 text-base md:text-lg text-slate-700 leading-relaxed font-bold">Task: Read the two paragraphs below, which answer the question: <em>"What are the advantages of working from home?"</em> Which paragraph is stronger?</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6 mb-5">
+                            <div class="bg-slate-50 p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm relative pt-10">
+                                <span class="absolute top-0 left-0 bg-slate-200 text-slate-700 font-bold px-3 py-1 rounded-br-lg rounded-tl-lg uppercase tracking-wider text-xs">Paragraph A</span>
+                                <p class="text-sm md:text-base text-slate-700 leading-relaxed font-medium">"Working from home has many advantages. People do not have to commute, which saves time. They can also save money on transport. Furthermore, they have more flexibility and can manage their personal life better. Many companies also save money on office space. It is also good for the environment."</p>
+                            </div>
+                            <div class="bg-slate-50 p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm relative pt-10">
+                                <span class="absolute top-0 left-0 bg-slate-200 text-slate-700 font-bold px-3 py-1 rounded-br-lg rounded-tl-lg uppercase tracking-wider text-xs">Paragraph B</span>
+                                <p class="text-sm md:text-base text-slate-700 leading-relaxed font-medium">"<span class="tee-t">(T)</span> One significant advantage of working from home is the improved work-life balance for employees. <span class="tee-e">(E)</span> This is because people save a large amount of time by not commuting, which they can then use for family, hobbies, or rest. <span class="tee-ex">(Ex)</span> For example, a parent can finish their work at 5 p.m. and immediately join their family, rather than spending an hour in traffic. This flexibility greatly reduces stress."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3 text-sm md:text-base text-slate-800">
+                            <label class="option-label"><input type="radio" name="s1-q1" value="A" class="w-5 h-5 accent-cyan-600 shrink-0"> 
+                                <span class="font-medium flex-1">I think <strong>Paragraph A</strong> is stronger.</span>
+                            </label>
+                            <label class="option-label"><input type="radio" name="s1-q1" value="B" class="w-5 h-5 accent-cyan-600 shrink-0"> 
+                                <span class="font-medium flex-1">I think <strong>Paragraph B</strong> is stronger.</span>
+                            </label>
+                        </div>
+                        
+                        <div class="pt-5 md:pt-6">
+                            <button id="check-step1" class="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-3 rounded-xl text-base md:text-lg font-bold shadow-md transition-colors flex items-center justify-center gap-2" onclick="checkStep1()">
+                                <i class="fas fa-lightbulb"></i> Check Insight
+                            </button>
+                        </div>
+                        
+                        <div id="res-s1" class="hidden answer-box bg-cyan-50 border-2 border-cyan-200 rounded-xl p-5 md:p-6 mt-5">
+                            <div id="s1-feedback-title" class="text-lg md:text-xl font-bold text-cyan-900 mb-2 flex items-center">
+                                <!-- Populated by JS -->
+                            </div>
+                            <p class="text-sm md:text-base text-slate-800 leading-relaxed font-medium">
+                                <strong class="text-green-700 bg-green-100 px-2 py-0.5 rounded inline-block mb-2">Paragraph B is much stronger.</strong><br>
+                                Why? Paragraph A is just a scattered list of ideas with no depth. Paragraph B takes <strong>one specific idea</strong> ("improved work-life balance") and explains it fully with a concrete example. This depth and structure is what you must demonstrate in your IELTS essay.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Guided Practice (Blue Theme) -->
+        <div class="mb-6 rounded-2xl md:rounded-3xl overflow-hidden border border-blue-200 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-blue-50 hover:bg-blue-100 border-l-4 md:border-l-8 border-blue-600 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-blue-200 text-blue-800 w-10 h-10 md:w-14 md:h-14 shrink-0 rounded-full flex items-center justify-center font-bold text-lg md:text-2xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-bold text-blue-900">Step 2: Identifying Structure</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-xl md:text-3xl transition-transform duration-300 shrink-0 ml-2"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-5 md:p-8 lg:p-10 bg-white space-y-10">
+                    
+                    <p class="text-sm md:text-base text-slate-700 font-medium">A strong paragraph is like a building block. Let's practice identifying and assembling the components.</p>
+
+                    <!-- Task 1: Assemble -->
+                    <div>
+                        <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-blue-800 mb-4"><i class="fas fa-sort-numeric-down mr-2 text-blue-500"></i>Task 1: Assemble the Paragraph</h3>
+                        <p class="text-sm md:text-base text-slate-700 mb-5 font-medium">The T, E, and Ex sentences below are mixed up. Put them in the correct order to build a logical paragraph. <br><span class="text-slate-500 italic block mt-1">Topic: The benefits of public libraries.</span></p>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-slate-50 p-4 md:p-5 rounded-xl border-2 border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed"><strong>[Sentence A]</strong> For instance, a person who is unemployed can use the library's computers to apply for jobs or learn new skills through free workshops.</p>
+                                <select id="s2-t1-a" class="order-select text-sm md:text-base w-full sm:w-auto mt-2 sm:mt-0 shrink-0">
+                                    <option value="">Order...</option>
+                                    <option value="1">1st Sentence (T)</option>
+                                    <option value="2">2nd Sentence (E)</option>
+                                    <option value="3">3rd Sentence (Ex)</option>
+                                </select>
+                            </div>
+                            <div class="bg-slate-50 p-4 md:p-5 rounded-xl border-2 border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed"><strong>[Sentence B]</strong> Public libraries play a vital role in providing free access to educational resources for all members of the community.</p>
+                                <select id="s2-t1-b" class="order-select text-sm md:text-base w-full sm:w-auto mt-2 sm:mt-0 shrink-0">
+                                    <option value="">Order...</option>
+                                    <option value="1">1st Sentence (T)</option>
+                                    <option value="2">2nd Sentence (E)</option>
+                                    <option value="3">3rd Sentence (Ex)</option>
+                                </select>
+                            </div>
+                            <div class="bg-slate-50 p-4 md:p-5 rounded-xl border-2 border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed"><strong>[Sentence C]</strong> This means that people who cannot afford to buy books or pay for internet access can still get information and learning opportunities.</p>
+                                <select id="s2-t1-c" class="order-select text-sm md:text-base w-full sm:w-auto mt-2 sm:mt-0 shrink-0">
+                                    <option value="">Order...</option>
+                                    <option value="1">1st Sentence (T)</option>
+                                    <option value="2">2nd Sentence (E)</option>
+                                    <option value="3">3rd Sentence (Ex)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-200">
+
+                    <!-- Task 2: Label -->
+                    <div>
+                        <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-blue-800 mb-4"><i class="fas fa-tags mr-2 text-blue-500"></i>Task 2: Label the Paragraph</h3>
+                        <p class="text-sm md:text-base text-slate-700 mb-5 font-medium">Read the paragraph below. Identify and label the <strong class="text-blue-600">Topic Sentence (T)</strong>, the <strong class="text-green-600">Explanation (E)</strong>, and the <strong class="text-amber-600">Example (Ex)</strong>.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-white p-4 md:p-5 rounded-xl border-2 border-slate-200 shadow-sm flex flex-col gap-3">
+                                <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed">"Banning advertising for fast food products could be an effective way to reduce public health problems."</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <label><input type="radio" name="s2-t2-s1" value="T" class="tee-radio-input"><span class="tee-radio-label val-t">T (Topic)</span></label>
+                                    <label><input type="radio" name="s2-t2-s1" value="E" class="tee-radio-input"><span class="tee-radio-label val-e">E (Explanation)</span></label>
+                                    <label><input type="radio" name="s2-t2-s1" value="Ex" class="tee-radio-input"><span class="tee-radio-label val-ex">Ex (Example)</span></label>
+                                </div>
+                            </div>
+                            <div class="bg-white p-4 md:p-5 rounded-xl border-2 border-slate-200 shadow-sm flex flex-col gap-3">
+                                <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed">"This is because constant advertising, especially during popular TV shows, normalizes the consumption of unhealthy, high-calorie food."</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <label><input type="radio" name="s2-t2-s2" value="T" class="tee-radio-input"><span class="tee-radio-label val-t">T (Topic)</span></label>
+                                    <label><input type="radio" name="s2-t2-s2" value="E" class="tee-radio-input"><span class="tee-radio-label val-e">E (Explanation)</span></label>
+                                    <label><input type="radio" name="s2-t2-s2" value="Ex" class="tee-radio-input"><span class="tee-radio-label val-ex">Ex (Example)</span></label>
+                                </div>
+                            </div>
+                            <div class="bg-white p-4 md:p-5 rounded-xl border-2 border-slate-200 shadow-sm flex flex-col gap-3">
+                                <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed">"If people, particularly children, see these products less often, they are less likely to desire them."</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <label><input type="radio" name="s2-t2-s3" value="T" class="tee-radio-input"><span class="tee-radio-label val-t">T (Topic)</span></label>
+                                    <label><input type="radio" name="s2-t2-s3" value="E" class="tee-radio-input"><span class="tee-radio-label val-e">E (Explanation)</span></label>
+                                    <label><input type="radio" name="s2-t2-s3" value="Ex" class="tee-radio-input"><span class="tee-radio-label val-ex">Ex (Example)</span></label>
+                                </div>
+                            </div>
+                            <div class="bg-white p-4 md:p-5 rounded-xl border-2 border-slate-200 shadow-sm flex flex-col gap-3">
+                                <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed">"For example, several countries that banned tobacco advertising saw a significant long-term decrease in smoking rates, suggesting this approach can work for food as well."</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <label><input type="radio" name="s2-t2-s4" value="T" class="tee-radio-input"><span class="tee-radio-label val-t">T (Topic)</span></label>
+                                    <label><input type="radio" name="s2-t2-s4" value="E" class="tee-radio-input"><span class="tee-radio-label val-e">E (Explanation)</span></label>
+                                    <label><input type="radio" name="s2-t2-s4" value="Ex" class="tee-radio-input"><span class="tee-radio-label val-ex">Ex (Example)</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-5">
+                        <button class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-base md:text-lg font-bold shadow-md transition-colors flex items-center justify-center gap-2" onclick="checkStep2()">
+                            <i class="fas fa-check-double"></i> Check Answers
+                        </button>
+                    </div>
+
+                    <div id="res-s2" class="hidden answer-box bg-blue-50 border-2 border-blue-200 rounded-xl p-5 md:p-6 mt-5">
+                        <div id="s2-feedback-title" class="text-lg md:text-xl font-bold text-blue-900 mb-3 flex items-center">
+                            <!-- Populated by JS -->
+                        </div>
+                        
+                        <div class="space-y-4 text-sm md:text-base text-slate-800 leading-relaxed bg-white p-5 rounded-lg border border-blue-100">
+                            <div>
+                                <h4 class="font-bold text-slate-700 mb-2 border-b pb-1">Task 1 Correct Order:</h4>
+                                <p class="font-medium text-blue-800">1st: Sentence B (T)<br>2nd: Sentence C (E)<br>3rd: Sentence A (Ex)</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-700 mb-2 border-b pb-1">Task 2 Correct Labels:</h4>
+                                <ul class="list-none space-y-1 font-medium">
+                                    <li>Sentence 1 = <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs md:text-sm inline-block my-0.5">T (Topic)</span></li>
+                                    <li>Sentence 2 = <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs md:text-sm inline-block my-0.5">E (Explanation)</span></li>
+                                    <li>Sentence 3 = <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs md:text-sm inline-block my-0.5">E (Explanation)</span></li>
+                                    <li>Sentence 4 = <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-xs md:text-sm inline-block my-0.5">Ex (Example)</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Controlled Practice (Emerald Theme) -->
+        <div class="mb-6 rounded-2xl md:rounded-3xl overflow-hidden border border-emerald-200 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-4 md:border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-emerald-200 text-emerald-800 w-10 h-10 md:w-14 md:h-14 shrink-0 rounded-full flex items-center justify-center font-bold text-lg md:text-2xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-dumbbell"></i></div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-bold text-emerald-900">Step 3: Controlled Practice</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-xl md:text-3xl transition-transform duration-300 shrink-0 ml-2"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-5 md:p-8 lg:p-10 bg-white space-y-10">
+                    
+                    <p class="text-sm md:text-base text-slate-700 font-medium">Now, let's practice creating the individual T.E.E. components yourself.</p>
+
+                    <!-- Write Topic Sentences -->
+                    <div>
+                        <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-emerald-800 mb-4 pb-2 border-b-2 border-emerald-100"><i class="fas fa-pen-nib mr-2"></i>Tasks 1 to 3: Write a Topic Sentence (T)</h3>
+                        <div class="space-y-6 md:space-y-8">
+                            <!-- Item 1 -->
+                            <div class="bg-white p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                                <p class="text-base md:text-lg font-bold text-slate-800 mb-3 leading-relaxed">
+                                    <span class="text-emerald-600 mr-1">1.</span> 
+                                    <span class="bg-slate-100 px-2 py-0.5 rounded text-xs md:text-sm font-mono text-slate-600 uppercase tracking-wider mr-1">Main Idea</span> 
+                                    Studying abroad is expensive.
+                                </p>
+                                <input type="text" class="text-input text-sm md:text-base font-medium" placeholder="Write your full topic sentence here...">
+                                <div class="mt-4">
+                                    <button class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-colors shadow-sm" onclick="toggleSample(this)"><i class="fas fa-eye mr-2"></i>Show Sample</button>
+                                    <div class="hidden model-answer mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm md:text-base text-green-800">
+                                        <strong class="text-green-900 block mb-1">Sample:</strong> "One significant disadvantage of studying abroad is the high financial cost involved."
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Item 2 -->
+                            <div class="bg-white p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                                <p class="text-base md:text-lg font-bold text-slate-800 mb-3 leading-relaxed">
+                                    <span class="text-emerald-600 mr-1">2.</span> 
+                                    <span class="bg-slate-100 px-2 py-0.5 rounded text-xs md:text-sm font-mono text-slate-600 uppercase tracking-wider mr-1">Main Idea</span> 
+                                    The internet has made it easy to find information.
+                                </p>
+                                <input type="text" class="text-input text-sm md:text-base font-medium" placeholder="Write your full topic sentence here...">
+                                <div class="mt-4">
+                                    <button class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-colors shadow-sm" onclick="toggleSample(this)"><i class="fas fa-eye mr-2"></i>Show Sample</button>
+                                    <div class="hidden model-answer mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm md:text-base text-green-800">
+                                        <strong class="text-green-900 block mb-1">Sample:</strong> "The internet has revolutionized modern life, primarily by providing instant access to global information."
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Item 3 -->
+                            <div class="bg-white p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                                <p class="text-base md:text-lg font-bold text-slate-800 mb-3 leading-relaxed">
+                                    <span class="text-emerald-600 mr-1">3.</span> 
+                                    <span class="bg-slate-100 px-2 py-0.5 rounded text-xs md:text-sm font-mono text-slate-600 uppercase tracking-wider mr-1">Main Idea</span> 
+                                    Cities have a problem with traffic.
+                                </p>
+                                <input type="text" class="text-input text-sm md:text-base font-medium" placeholder="Write your full topic sentence here...">
+                                <div class="mt-4">
+                                    <button class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-colors shadow-sm" onclick="toggleSample(this)"><i class="fas fa-eye mr-2"></i>Show Sample</button>
+                                    <div class="hidden model-answer mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm md:text-base text-green-800">
+                                        <strong class="text-green-900 block mb-1">Sample:</strong> "A major challenge facing most large metropolitan areas today is severe traffic congestion."
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-200">
+
+                    <!-- Write Explanations -->
+                    <div>
+                        <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-emerald-800 mb-4 pb-2 border-b-2 border-emerald-100"><i class="fas fa-project-diagram mr-2"></i>Tasks 4 to 6: Write an Explanation (E)</h3>
+                        <div class="space-y-6 md:space-y-8">
+                            <!-- Item 4 -->
+                            <div class="bg-white p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                                <p class="text-base md:text-lg font-bold text-slate-800 mb-3 leading-relaxed">
+                                    <span class="text-emerald-600 mr-1">4.</span> 
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1">T</span> 
+                                    Governments should invest more money in public transport.
+                                </p>
+                                <textarea class="text-input h-20 md:h-28 text-sm md:text-base font-medium" placeholder="Explain WHY or HOW this is true..."></textarea>
+                                <div class="mt-4">
+                                    <button class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-colors shadow-sm" onclick="toggleSample(this)"><i class="fas fa-eye mr-2"></i>Show Sample</button>
+                                    <div class="hidden model-answer mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm md:text-base text-green-800">
+                                        <strong class="text-green-900 block mb-1">Sample:</strong> "This is because high-quality, reliable buses and trains encourage people to use their personal vehicles less, which significantly reduces pollution and traffic."
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Item 5 -->
+                            <div class="bg-white p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                                <p class="text-base md:text-lg font-bold text-slate-800 mb-3 leading-relaxed">
+                                    <span class="text-emerald-600 mr-1">5.</span> 
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1">T</span> 
+                                    Learning a second language can improve a person's career opportunities.
+                                </p>
+                                <textarea class="text-input h-20 md:h-28 text-sm md:text-base font-medium" placeholder="Explain WHY or HOW this is true..."></textarea>
+                                <div class="mt-4">
+                                    <button class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-colors shadow-sm" onclick="toggleSample(this)"><i class="fas fa-eye mr-2"></i>Show Sample</button>
+                                    <div class="hidden model-answer mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm md:text-base text-green-800">
+                                        <strong class="text-green-900 block mb-1">Sample:</strong> "This is due to the fact that many multinational companies require employees who can seamlessly communicate with diverse clients and overseas partners."
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Item 6 -->
+                            <div class="bg-white p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                                <p class="text-base md:text-lg font-bold text-slate-800 mb-3 leading-relaxed">
+                                    <span class="text-emerald-600 mr-1">6.</span> 
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1">T</span> 
+                                    Online shopping has become extremely popular in recent years.
+                                </p>
+                                <textarea class="text-input h-20 md:h-28 text-sm md:text-base font-medium" placeholder="Explain WHY or HOW this is true..."></textarea>
+                                <div class="mt-4">
+                                    <button class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-colors shadow-sm" onclick="toggleSample(this)"><i class="fas fa-eye mr-2"></i>Show Sample</button>
+                                    <div class="hidden model-answer mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm md:text-base text-green-800">
+                                        <strong class="text-green-900 block mb-1">Sample:</strong> "The main reason for this trend is the unparalleled convenience of being able to compare prices and purchase products from home at any hour of the day."
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-200">
+
+                    <!-- Write Examples -->
+                    <div>
+                        <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-emerald-800 mb-4 pb-2 border-b-2 border-emerald-100"><i class="fas fa-search-plus mr-2"></i>Tasks 7 to 9: Provide an Example (Ex)</h3>
+                        <div class="space-y-6 md:space-y-8">
+                            <!-- Item 7 -->
+                            <div class="bg-white p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                                <div class="space-y-2 mb-4">
+                                    <p class="text-base md:text-lg font-bold text-slate-800 leading-relaxed">
+                                        <span class="text-emerald-600 mr-1">7.</span> 
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1">T</span> 
+                                        Using too much social media can negatively affect young people's mental health.
+                                    </p>
+                                    <p class="text-sm md:text-base font-medium text-slate-700 pl-5 md:pl-7 leading-relaxed">
+                                        <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1">E</span> 
+                                        They often see unrealistic images of success or happiness, which can make them feel insecure.
+                                    </p>
+                                </div>
+                                <textarea class="text-input h-20 md:h-28 text-sm md:text-base font-medium" placeholder="Give a specific example..."></textarea>
+                                <div class="mt-4">
+                                    <button class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-colors shadow-sm" onclick="toggleSample(this)"><i class="fas fa-eye mr-2"></i>Show Sample</button>
+                                    <div class="hidden model-answer mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm md:text-base text-green-800">
+                                        <strong class="text-green-900 block mb-1">Sample:</strong> "For instance, a teenager might constantly see photos of celebrities on perfect holidays and feel that their own life is inadequate by comparison."
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Item 8 -->
+                            <div class="bg-white p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                                <div class="space-y-2 mb-4">
+                                    <p class="text-base md:text-lg font-bold text-slate-800 leading-relaxed">
+                                        <span class="text-emerald-600 mr-1">8.</span> 
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1">T</span> 
+                                        Many traditional skills are being lost in the modern age.
+                                    </p>
+                                    <p class="text-sm md:text-base font-medium text-slate-700 pl-5 md:pl-7 leading-relaxed">
+                                        <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1">E</span> 
+                                        This is because automated machines can now perform these jobs, and younger generations are uninterested in learning them.
+                                    </p>
+                                </div>
+                                <textarea class="text-input h-20 md:h-28 text-sm md:text-base font-medium" placeholder="Give a specific example..."></textarea>
+                                <div class="mt-4">
+                                    <button class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-colors shadow-sm" onclick="toggleSample(this)"><i class="fas fa-eye mr-2"></i>Show Sample</button>
+                                    <div class="hidden model-answer mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm md:text-base text-green-800">
+                                        <strong class="text-green-900 block mb-1">Sample:</strong> "For example, skills like traditional weaving or handmade furniture crafting are disappearing rapidly as consumers increasingly prefer cheaper, mass-produced items."
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Item 9 -->
+                            <div class="bg-white p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                                <div class="space-y-2 mb-4">
+                                    <p class="text-base md:text-lg font-bold text-slate-800 leading-relaxed">
+                                        <span class="text-emerald-600 mr-1">9.</span> 
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1">T</span> 
+                                        Team sports are highly beneficial for children's development.
+                                    </p>
+                                    <p class="text-sm md:text-base font-medium text-slate-700 pl-5 md:pl-7 leading-relaxed">
+                                        <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1">E</span> 
+                                        They teach children essential social skills and teamwork that cannot be easily replicated in a standard classroom setting.
+                                    </p>
+                                </div>
+                                <textarea class="text-input h-20 md:h-28 text-sm md:text-base font-medium" placeholder="Give a specific example..."></textarea>
+                                <div class="mt-4">
+                                    <button class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-colors shadow-sm" onclick="toggleSample(this)"><i class="fas fa-eye mr-2"></i>Show Sample</button>
+                                    <div class="hidden model-answer mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-sm md:text-base text-green-800">
+                                        <strong class="text-green-900 block mb-1">Sample:</strong> "For example, by playing on a football team, children must learn how to communicate effectively under pressure and support their teammates towards a common goal."
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-200">
+
+                    <!-- Order Paragraph -->
+                    <div>
+                        <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-emerald-800 mb-4 pb-2 border-b-2 border-emerald-100"><i class="fas fa-list-ol mr-2"></i>Task 10: Order the Paragraph</h3>
+                        <p class="text-sm md:text-base text-slate-700 mb-5 font-medium">Put these sentences in the correct T.E.E. order. <br><span class="text-slate-500 italic block mt-1">Topic: The disadvantage of low-cost air travel.</span></p>
+                        
+                        <div class="space-y-4 bg-slate-50 p-5 md:p-6 rounded-xl border-2 border-slate-200">
+                            <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                                <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed"><strong>[Sentence A]</strong> For example, a single return flight from London to New York can generate more CO2 per person than an individual in some countries produces in an entire year.</p>
+                                <select id="s3-t10-a" class="order-select text-sm md:text-base w-full sm:w-auto mt-2 sm:mt-0 shrink-0">
+                                    <option value="">Order...</option>
+                                    <option value="1">1st</option>
+                                    <option value="2">2nd</option>
+                                    <option value="3">3rd</option>
+                                </select>
+                            </div>
+                            <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                                <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed"><strong>[Sentence B]</strong> This is because flying is a highly carbon-intensive activity, and the increased number of flights directly contributes to greenhouse gas emissions.</p>
+                                <select id="s3-t10-b" class="order-select text-sm md:text-base w-full sm:w-auto mt-2 sm:mt-0 shrink-0">
+                                    <option value="">Order...</option>
+                                    <option value="1">1st</option>
+                                    <option value="2">2nd</option>
+                                    <option value="3">3rd</option>
+                                </select>
+                            </div>
+                            <div class="bg-white p-4 md:p-5 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                                <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed"><strong>[Sentence C]</strong> The primary disadvantage of the boom in low-cost air travel is its severe impact on the environment.</p>
+                                <select id="s3-t10-c" class="order-select text-sm md:text-base w-full sm:w-auto mt-2 sm:mt-0 shrink-0">
+                                    <option value="">Order...</option>
+                                    <option value="1">1st</option>
+                                    <option value="2">2nd</option>
+                                    <option value="3">3rd</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="pt-5">
+                            <button id="check-s3-a10" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl text-base md:text-lg font-bold shadow-md transition-colors flex items-center justify-center gap-2" onclick="checkStep3Task10()">
+                                <i class="fas fa-check"></i> Check Order
+                            </button>
+                        </div>
+                        
+                        <div id="s3-a10-result" class="hidden answer-box bg-emerald-50 border-2 border-emerald-200 rounded-xl p-5 md:p-6 mt-5">
+                            <div id="s3-a10-feedback-title" class="text-lg md:text-xl font-bold text-emerald-900 mb-2 flex items-center">
+                                <!-- Populated by JS -->
+                            </div>
+                            <p class="text-sm md:text-base text-slate-800 leading-relaxed font-medium">
+                                <strong>Correct Order:</strong><br>
+                                <span class="block mt-1">1st: <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs md:text-sm">Sentence C (Topic)</span></span>
+                                <span class="block mt-1">2nd: <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs md:text-sm">Sentence B (Explanation)</span></span>
+                                <span class="block mt-1">3rd: <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-xs md:text-sm">Sentence A (Example)</span></span>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Real Test Simulation (Orange Theme) -->
+        <div class="mb-6 rounded-2xl md:rounded-3xl overflow-hidden border border-orange-200 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-orange-50 hover:bg-orange-100 border-l-4 md:border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-orange-200 text-orange-800 w-10 h-10 md:w-14 md:h-14 shrink-0 rounded-full flex items-center justify-center font-bold text-lg md:text-2xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-stopwatch"></i></div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-bold text-orange-900">Step 4: Real Test Simulation</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 text-xl md:text-3xl transition-transform duration-300 shrink-0 ml-2"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-5 md:p-8 lg:p-10 bg-white space-y-8">
+                    
+                    <p class="text-sm md:text-base text-slate-700 font-medium">Use the skills you have practiced to write one full body paragraph for an Academic Writing Task 2 prompt.</p>
+
+                    <div class="bg-white p-5 md:p-6 rounded-xl border-2 border-slate-200 shadow-sm">
+                        
+                        <div class="bg-slate-50 border-l-4 md:border-l-8 border-slate-400 p-5 md:p-6 rounded-r-xl mb-6 font-medium shadow-sm">
+                            <span class="text-xs md:text-sm font-bold text-slate-500 uppercase tracking-wider block mb-2"><i class="fas fa-file-alt mr-2"></i>Academic Task 2 Prompt</span>
+                            <p class="text-sm md:text-base text-slate-800 mb-2">"Some people believe that university students should pay for their own education, while others argue that governments should pay for it."</p>
+                            <p class="text-sm md:text-base font-bold text-orange-700">"Discuss both these views and give your own opinion."</p>
+                        </div>
+                        
+                        <div class="bg-orange-50/50 p-5 md:p-6 rounded-xl border border-orange-200 mb-6">
+                            <h4 class="font-bold text-orange-800 text-base md:text-lg mb-2"><i class="fas fa-pen-fancy mr-2"></i>Your Task:</h4>
+                            <p class="text-sm md:text-base text-slate-700">Write <strong>one body paragraph</strong> supporting the view that the <strong>government</strong> should pay for university education. Make sure to use the T.E.E. structure.</p>
+                        </div>
+                        
+                        <textarea class="text-input h-48 md:h-64 text-sm md:text-base font-medium leading-relaxed" placeholder="Start with your Topic Sentence..."></textarea>
+                        
+                        <div class="pt-5">
+                            <button id="show-step4-answer" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-xl text-base md:text-lg font-bold shadow-md transition-colors flex items-center justify-center gap-2" onclick="toggleStep4Model(this)">
+                                <i class="fas fa-flag-checkered"></i> Reveal Model Paragraph
+                            </button>
+                        </div>
+                        
+                        <div id="step4-answer" class="hidden answer-box bg-green-50 border-2 border-green-200 rounded-xl p-5 md:p-6 mt-5 shadow-inner">
+                            <strong class="block mb-3 text-green-900 text-base md:text-xl"><i class="fas fa-star mr-2"></i>Model Paragraph:</strong>
+                            <p class="text-xs md:text-sm text-slate-600 mb-4 italic">Here is a high-scoring model. Your paragraph may be different, but it should contain similar distinct structural parts.</p>
+                            <p class="text-sm md:text-base text-slate-800 leading-relaxed font-medium bg-white p-4 md:p-5 rounded-lg border border-green-100">
+                                <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1 inline-block mb-1 sm:mb-0">T</span> 
+                                One strong argument for government-funded higher education is that it ensures equality of opportunity for all citizens. 
+                                <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1 sm:ml-1 inline-block mb-1 sm:mb-0 mt-1 sm:mt-0">E</span> 
+                                If students are forced to pay high tuition fees, many intelligent individuals from poorer backgrounds will be unable to attend university. This creates an unfair system where only the wealthy can access the best education and subsequent jobs. 
+                                <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-xs md:text-sm font-bold mr-1 sm:ml-1 inline-block mb-1 sm:mb-0 mt-1 sm:mt-0">Ex</span> 
+                                For example, in countries like Finland or Germany, where tuition is free or heavily subsidized, young people are able to choose their careers based on their talent and passion, rather than their family's financial situation.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Reflection (Violet Theme) -->
+        <div class="mb-8 rounded-2xl md:rounded-3xl overflow-hidden border border-violet-200 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-violet-50 hover:bg-violet-100 border-l-4 md:border-l-8 border-violet-600 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-violet-200 text-violet-800 w-10 h-10 md:w-14 md:h-14 shrink-0 rounded-full flex items-center justify-center font-bold text-lg md:text-2xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-brain"></i></div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-bold text-violet-900">Step 5: Reflection & Self-Assessment</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-xl md:text-3xl transition-transform duration-300 shrink-0 ml-2"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-5 md:p-8 lg:p-10 bg-white space-y-8">
+                    
+                    <p class="text-sm md:text-base text-slate-700 font-medium">Review the paragraph you wrote in Step 4 and analyze it using the checklist below.</p>
+
+                    <div class="space-y-6 md:space-y-8">
+                        <div>
+                            <p class="mb-3 text-base md:text-lg font-bold text-slate-800"><i class="fas fa-check-square text-violet-500 mr-2"></i> 1. Topic Sentence: <span class="font-medium text-slate-600 block mt-1 text-sm md:text-base">Can you clearly identify your Topic Sentence? Does it focus on exactly ONE main idea?</span></p>
+                            <textarea class="text-input text-sm md:text-base h-20 md:h-28" placeholder="My reflection..."></textarea>
+                        </div>
+                        <div>
+                            <p class="mb-3 text-base md:text-lg font-bold text-slate-800"><i class="fas fa-check-square text-violet-500 mr-2"></i> 2. Explanation: <span class="font-medium text-slate-600 block mt-1 text-sm md:text-base">Does your Explanation sentence clearly and logically explain *why* or *how* your topic sentence is true?</span></p>
+                            <textarea class="text-input text-sm md:text-base h-20 md:h-28" placeholder="My reflection..."></textarea>
+                        </div>
+                        <div>
+                            <p class="mb-3 text-base md:text-lg font-bold text-slate-800"><i class="fas fa-check-square text-violet-500 mr-2"></i> 3. Example: <span class="font-medium text-slate-600 block mt-1 text-sm md:text-base">Is your Example specific, concrete, and directly relevant to the main point?</span></p>
+                            <textarea class="text-input text-sm md:text-base h-20 md:h-28" placeholder="My reflection..."></textarea>
+                        </div>
+                        <div>
+                            <p class="mb-3 text-base md:text-lg font-bold text-slate-800"><i class="fas fa-check-square text-violet-500 mr-2"></i> 4. Weakest Link: <span class="font-medium text-slate-600 block mt-1 text-sm md:text-base">Which part of the T.E.E. structure do you find the most difficult to write (T, E, or E)? Why?</span></p>
+                            <textarea class="text-input text-sm md:text-base h-20 md:h-28" placeholder="My reflection..."></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 md:mt-12 pt-6 md:pt-8 border-t-2 border-slate-100 text-center">
+            <p class="text-slate-500 text-sm md:text-base font-medium tracking-wide">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors font-bold">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                // Clear textareas
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                
+                // Clear Selects
+                document.querySelectorAll('select').forEach(s => {
+                    s.value = "";
+                    s.classList.remove('correct', 'incorrect');
+                });
+
+                // Clear Radios
+                document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                    r.checked = false; 
+                });
+
+                // Hide Explanations/Models globally
+                document.querySelectorAll('.answer-box, .model-answer').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+
+                // Reset dynamic buttons inside Step 3
+                document.querySelectorAll('#content-part3 button').forEach(btn => {
+                    if(btn.innerHTML.includes('Hide Sample')) {
+                        btn.innerHTML = '<i class="fas fa-eye mr-2"></i>Show Sample';
+                    }
+                });
+
+                // Reset Step 4 button
+                const step4Btn = document.getElementById('show-step4-answer');
+                if(step4Btn) {
+                    step4Btn.innerHTML = '<i class="fas fa-flag-checkered"></i> Reveal Model Paragraph';
+                }
+            }
+        }
+
+        // --- Step 1 ---
+        function checkStep1() {
+            const radios = document.getElementsByName('s1-q1');
+            let selected = "";
+            for (let r of radios) { if (r.checked) selected = r.value; }
+            
+            const res = document.getElementById('res-s1');
+            const title = document.getElementById('s1-feedback-title');
+            
+            res.classList.remove('hidden');
+            res.classList.add('visible');
+            
+            if (selected === 'B') {
+                res.classList.remove('bg-red-50', 'border-red-200');
+                res.classList.add('bg-cyan-50', 'border-cyan-200');
+                title.innerHTML = '<i class="fas fa-check-circle mr-2 text-green-600"></i> Correct! Excellent Choice.';
+                title.className = "text-lg md:text-xl font-bold text-green-900 mb-2 flex items-center";
+            } else if (selected === 'A') {
+                res.classList.remove('bg-cyan-50', 'border-cyan-200');
+                res.classList.add('bg-red-50', 'border-red-200');
+                title.innerHTML = '<i class="fas fa-times-circle mr-2 text-red-600"></i> Not quite...';
+                title.className = "text-lg md:text-xl font-bold text-red-900 mb-2 flex items-center";
+            } else {
+                res.classList.add('hidden');
+                alert("Please select an option first.");
+            }
+        }
+
+        // --- Step 2 ---
+        function checkStep2() {
+            let task1Correct = 0;
+            let task2Correct = 0;
+
+            // Check Task 1 (Order: 3, 1, 2)
+            // Sentence A is Ex (3rd), Sentence B is T (1st), Sentence C is E (2nd).
+            const s1A = document.getElementById('s2-t1-a');
+            const s1B = document.getElementById('s2-t1-b');
+            const s1C = document.getElementById('s2-t1-c');
+            
+            // Reset classes
+            [s1A, s1B, s1C].forEach(el => el.classList.remove('correct', 'incorrect'));
+
+            if (s1A.value === '3') { task1Correct++; s1A.classList.add('correct'); } else if(s1A.value) s1A.classList.add('incorrect');
+            if (s1B.value === '1') { task1Correct++; s1B.classList.add('correct'); } else if(s1B.value) s1B.classList.add('incorrect');
+            if (s1C.value === '2') { task1Correct++; s1C.classList.add('correct'); } else if(s1C.value) s1C.classList.add('incorrect');
+
+            // Check Task 2
+            const s2Label1 = document.querySelector('input[name="s2-t2-s1"]:checked')?.value;
+            const s2Label2 = document.querySelector('input[name="s2-t2-s2"]:checked')?.value;
+            const s2Label3 = document.querySelector('input[name="s2-t2-s3"]:checked')?.value;
+            const s2Label4 = document.querySelector('input[name="s2-t2-s4"]:checked')?.value;
+            
+            if (s2Label1 === 'T') task2Correct++;
+            if (s2Label2 === 'E') task2Correct++;
+            if (s2Label3 === 'E') task2Correct++;
+            if (s2Label4 === 'Ex') task2Correct++;
+
+            // Display results
+            const res = document.getElementById('res-s2');
+            const title = document.getElementById('s2-feedback-title');
+            
+            const totalCorrect = task1Correct + task2Correct;
+            const totalQuestions = 7; // 3 for task 1, 4 for task 2
+
+            if (totalCorrect === totalQuestions) {
+                title.innerHTML = `<i class="fas fa-check-circle mr-2 text-green-600"></i> Perfect! (${totalCorrect}/${totalQuestions})`;
+            } else {
+                title.innerHTML = `<i class="fas fa-exclamation-circle mr-2 text-amber-600"></i> Good effort (${totalCorrect}/${totalQuestions})`;
+            }
+
+            res.classList.remove('hidden');
+            res.classList.add('visible');
+        }
+
+        // --- Step 3 ---
+        function toggleSample(btn) {
+            const answerBox = btn.nextElementSibling;
+            if (answerBox.classList.contains('hidden')) {
+                answerBox.classList.remove('hidden');
+                answerBox.classList.add('visible');
+                btn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Hide Sample';
+            } else {
+                answerBox.classList.add('hidden');
+                answerBox.classList.remove('visible');
+                btn.innerHTML = '<i class="fas fa-eye mr-2"></i>Show Sample';
+            }
+        }
+
+        function checkStep3Task10() {
+            const orderA = document.getElementById('s3-t10-a');
+            const orderB = document.getElementById('s3-t10-b');
+            const orderC = document.getElementById('s3-t10-c');
+            
+            // Reset
+            [orderA, orderB, orderC].forEach(el => el.classList.remove('correct', 'incorrect'));
+
+            let correct = 0;
+            if (orderA.value === '3') { correct++; orderA.classList.add('correct'); } else if(orderA.value) orderA.classList.add('incorrect');
+            if (orderB.value === '2') { correct++; orderB.classList.add('correct'); } else if(orderB.value) orderB.classList.add('incorrect');
+            if (orderC.value === '1') { correct++; orderC.classList.add('correct'); } else if(orderC.value) orderC.classList.add('incorrect');
+
+            const res = document.getElementById('s3-a10-result');
+            const title = document.getElementById('s3-a10-feedback-title');
+
+            if (correct === 3) {
+                title.innerHTML = '<i class="fas fa-check-circle mr-2 text-green-600"></i> Correct Order!';
+            } else {
+                title.innerHTML = '<i class="fas fa-times-circle mr-2 text-red-600"></i> Check the correct sequence below.';
+            }
+
+            res.classList.remove('hidden');
+            res.classList.add('visible');
+        }
+
+        // --- Step 4 ---
+        function toggleStep4Model(btn) {
+            const answerBox = document.getElementById('step4-answer');
+            if (answerBox.classList.contains('hidden')) {
+                answerBox.classList.remove('hidden');
+                answerBox.classList.add('visible');
+                btn.innerHTML = '<i class="fas fa-flag-checkered"></i> Hide Model Paragraph';
+            } else {
+                answerBox.classList.add('hidden');
+                answerBox.classList.remove('visible');
+                btn.innerHTML = '<i class="fas fa-flag-checkered"></i> Reveal Model Paragraph';
+            }
+        }
+    </script>
+</body>
+</html>

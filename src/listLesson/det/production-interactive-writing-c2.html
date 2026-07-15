@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Mastery Module: Interactive Writing | CEFR C2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input specific styling */
+        .drill-input {
+            transition: all 0.2s;
+        }
+        .drill-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .drill-input.correct {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+            color: #166534;
+        }
+        .drill-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .drill-input.revealed {
+            border-color: #f59e0b;
+            background-color: #fffbeb;
+            color: #92400e;
+            font-weight: 700;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+        }
+        
+        .timer-prep { color: #8b5cf6; } /* Violet 500 */
+        .timer-write { color: #ef4444; } /* Red 500 */
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base md:text-lg text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Production</span> <span>&gt;</span> 
+            <span>Writing</span> <span>&gt;</span> 
+            <span>CEFR C2</span> <span>&gt;</span> 
+            <span class="text-indigo-800 font-bold">Interactive Writing</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-800 to-slate-800 tracking-tight mb-3">
+                    Interactive Writing Mastery
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-500 font-medium">Score Range: 145–160 | Focus: Syntactic Complexity & Lexical Sophistication</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-xl text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-indigo-800 p-8 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-2xl text-slate-700 leading-relaxed">
+                <i class="fas fa-pen-nib mr-3 text-indigo-800"></i> 
+                <strong>Instructions:</strong> Target the highest score tier (145-160). Master inversions, nominalization, and advanced clauses. All auto-graded drills offer <strong>2 attempts</strong> before revealing the correct answers.
+            </p>
+        </div>
+
+        <!-- Section 1: Concept & Recognition (Cyan Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-600 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-900 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-3xl font-bold text-cyan-900">Steps 1-2: Task Specs & Diagnostics</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-700 text-3xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Step 1: Specs -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-900 mb-6">Step 1: Rapid-Fire Task Specs (60-Second Brief)</h3>
+                        <div class="bg-cyan-50 p-8 rounded-xl border border-cyan-200 text-xl leading-relaxed text-slate-700 space-y-4">
+                            <p><strong>The Impact:</strong> Dominates the Literacy and Writing subscores. At C2, the algorithm looks for <em>Syntactic Complexity</em> and <em>Lexical Sophistication</em> (low-frequency academic words).</p>
+                            <h4 class="font-bold text-cyan-900 mt-6 mb-2">The C2 Targets:</h4>
+                            <ul class="list-disc pl-6 space-y-2">
+                                <li><strong>Inverted Conditionals:</strong> "Should the situation arise..."</li>
+                                <li><strong>Negative Inversion:</strong> "Rarely has a policy..."</li>
+                                <li><strong>Perfect Participle Clauses:</strong> "Having considered the data..."</li>
+                                <li><strong>Prepositional Fronting:</strong> "Of equal importance is..."</li>
+                                <li><strong>Nuanced Hedging:</strong> "...is arguably a byproduct of..."</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Diagnostic -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-900 mb-6">Step 2: The Diagnostic 'Active Comparison' Set</h3>
+                        
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm text-xl mb-6">
+                            <p class="font-bold text-slate-800 mb-2">Prompt:</p>
+                            <p class="font-serif italic text-slate-700">"The ethics of genetic engineering in agriculture are often debated. Evaluate the long-term implications."</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-8 mb-8">
+                            <div class="p-6 bg-slate-100 border border-slate-300 rounded-xl">
+                                <h4 class="font-bold text-slate-800 text-xl mb-3">Model Answer A (C1 Level)</h4>
+                                <p class="text-xl text-slate-700 leading-relaxed font-serif bg-white p-4 rounded border border-slate-200">
+                                    "Although genetic engineering improves crop yields, it might harm biodiversity. Many scientists argue that we do not know the long-term effects on the soil. Therefore, governments must implement strict regulations to protect the environment."
+                                </p>
+                            </div>
+                            <div class="p-6 bg-emerald-50 border border-emerald-300 rounded-xl shadow-sm">
+                                <h4 class="font-bold text-emerald-900 text-xl mb-3">Model Answer B (C2 Level Mastery)</h4>
+                                <p class="text-xl text-emerald-900 leading-relaxed font-serif bg-white p-4 rounded border border-emerald-200">
+                                    "Not only does genetic engineering promise to eradicate food scarcity, but it also presents an existential threat to ecological equilibrium. Were we to ignore the potential for genetic drift, the unintended consequences for indigenous flora would be irreversible. Consequently, the onus lies upon regulatory bodies to exercise unprecedented oversight."
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-8 border-2 border-slate-200 rounded-xl">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="font-bold text-cyan-900 text-2xl">Task: Audit Checklist</h4>
+                                <button onclick="checkAudit()" class="text-lg font-bold text-white bg-cyan-700 px-6 py-2 rounded-lg hover:bg-cyan-800 transition-colors">Check Audit</button>
+                            </div>
+                            
+                            <div class="space-y-6 text-xl text-slate-700">
+                                <div>
+                                    <label class="block font-bold mb-2">1. Identify the Negative Inversion used in the first sentence of Model B.</label>
+                                    <input type="text" id="aud1" class="w-full drill-input p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none" placeholder="Type the starting phrase...">
+                                </div>
+                                <div>
+                                    <label class="block font-bold mb-2">2. Circle the Inverted Conditional (the "if-less" sentence) in Model B.</label>
+                                    <input type="text" id="aud2" class="w-full drill-input p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none" placeholder="Type the inverted clause...">
+                                </div>
+                                <div>
+                                    <label class="block font-bold mb-2">3. Find the Abstract Noun Phrase in Model B that replaces the simple verb "regulate".</label>
+                                    <input type="text" id="aud3" class="w-full drill-input p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none" placeholder="Noun phrase...">
+                                </div>
+                            </div>
+                            <div id="fb-audit" class="mt-6 font-bold text-xl min-h-[2rem]"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Strategy & Warm-up (Blue Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-600 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-900 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-3xl font-bold text-blue-900">Steps 3-4: Strategy & Foundations</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-700 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white border-t border-blue-50 space-y-12">
+                    
+                    <!-- Step 3: Strategy Drill -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-900 mb-6">Step 3: The 'Strategy Fix-It' Drill</h3>
+                        <div class="bg-blue-50 p-8 rounded-xl border border-blue-200 mb-6">
+                            <p class="text-lg font-bold text-slate-500 uppercase tracking-wider mb-2">Mediocre Response:</p>
+                            <p class="text-xl text-slate-800 font-serif leading-relaxed mb-6 bg-white p-6 rounded-lg border border-red-200">
+                                "Global warming is getting worse because people use too much oil. If we don't change our habits, the planet will have big problems in the future. We need to use green energy now."
+                            </p>
+                            
+                            <div class="mb-6">
+                                <h5 class="font-bold text-blue-900 text-xl mb-3">Task: Rewrite immediately using these Pro-Tips:</h5>
+                                <ul class="list-disc pl-6 text-xl text-slate-700 space-y-2 bg-white p-6 rounded-lg border border-blue-100">
+                                    <li><strong>Pro-Tip 1:</strong> Start with a Perfect Participle Clause (e.g., "Having witnessed...").</li>
+                                    <li><strong>Pro-Tip 2:</strong> Use 'precipitated by' instead of 'because.'</li>
+                                    <li><strong>Pro-Tip 3:</strong> Replace 'big problems' with 'catastrophic ramifications.'</li>
+                                </ul>
+                            </div>
+
+                            <label class="block font-bold text-slate-700 text-xl mb-2">Your C2 Rewrite:</label>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-4 focus:ring-blue-200 outline-none h-32" placeholder="Write your revised paragraph here..."></textarea>
+                            
+                            <button onclick="toggleAnswer('strategy-hint', this)" class="mt-4 text-lg font-bold text-blue-700 underline">Show Model Rewrite</button>
+                            <div id="strategy-hint" class="answer-box hidden mt-4 p-6 bg-blue-100 border border-blue-300 rounded-lg text-xl text-blue-900 font-serif italic">
+                                "Having witnessed the escalating severity of global warming, which is largely precipitated by excessive fossil fuel reliance, it is evident that inaction will lead to catastrophic ramifications. Consequently, an immediate transition to sustainable energy infrastructure is imperative."
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Warm-up Suite -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-900 mb-6">Step 4: Foundations Skill-Building Suite (High Volume)</h3>
+                        
+                        <!-- Drill A: Vocab -->
+                        <div class="mb-10 bg-slate-50 p-8 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill A: Vocabulary 'Upgrade'</h4>
+                                <button onclick="checkDrillA()" class="text-lg font-bold text-white bg-blue-700 hover:bg-blue-800 px-6 py-2 rounded-lg transition-colors">Check Vocab</button>
+                            </div>
+                            <p class="text-xl text-slate-600 mb-6">Select the C2-tier academic option for each phrase.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-x-8 gap-y-4 text-xl">
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">1. To make something worse</span>
+                                    <select id="va1" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Aggravate</option><option value="B">B. Exacerbate</option><option value="C">C. Worsen</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">6. To limit something</span>
+                                    <select id="va6" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Restrict</option><option value="B">B. Circumscribe</option><option value="C">C. Stop</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">2. A small amount</span>
+                                    <select id="va2" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Modicum</option><option value="B">B. Little</option><option value="C">C. Bit</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">7. Growing quickly</span>
+                                    <select id="va7" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Proliferating</option><option value="B">B. Rising</option><option value="C">C. Increasing</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">3. To start a process</span>
+                                    <select id="va3" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Begin</option><option value="B">B. Initiate</option><option value="C">C. Instigate</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">8. Agreeing with</span>
+                                    <select id="va8" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Supporting</option><option value="B">B. Concurrent with</option><option value="C">C. With</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">4. Very clear</span>
+                                    <select id="va4" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Obvious</option><option value="B">B. Lucid</option><option value="C">C. Manifest</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">9. Showing that</span>
+                                    <select id="va9" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Evidencing</option><option value="B">B. Saying</option><option value="C">C. Displaying</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">5. Basic principles</span>
+                                    <select id="va5" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Fundamental</option><option value="B">B. Rudimentary</option><option value="C">C. Simple</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">10. Unavoidable</span>
+                                    <select id="va10" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Expected</option><option value="B">B. Inexorable</option><option value="C">C. Sure</option></select>
+                                </div>
+                            </div>
+                            <div id="fb-drilla" class="mt-6 font-bold min-h-[2rem] text-xl"></div>
+                        </div>
+
+                        <!-- Drill B: Scramble -->
+                        <div class="mb-10 bg-slate-50 p-8 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill B: 5 Sentence Scrambles (C2 Inversion/Fronting)</h4>
+                                <button onclick="checkDrillB()" class="text-lg font-bold text-white bg-blue-700 hover:bg-blue-800 px-6 py-2 rounded-lg transition-colors">Check Scrambles</button>
+                            </div>
+                            <div class="space-y-6 text-xl">
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(circumstances / no / under / the / should / be / data / compromised)</p>
+                                    <input type="text" id="vb1" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="1...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(so / the / was / that / response / overwhelming / halted / production / was)</p>
+                                    <input type="text" id="vb2" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="2...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(had / known / the / she / gravity / the / situation / of / would / she / have / resigned)</p>
+                                    <input type="text" id="vb3" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="3...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(only / not / the / is / expensive / project / but / it / also / is / flawed / inherently)</p>
+                                    <input type="text" id="vb4" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="4...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(of / importance / equal / is / the / preservation / of / ethics / professional)</p>
+                                    <input type="text" id="vb5" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="5...">
+                                </div>
+                            </div>
+                            <div id="fb-drillb" class="mt-6 font-bold min-h-[2rem] text-xl"></div>
+                        </div>
+
+                        <!-- Drill C: Spot the Syntax Error -->
+                        <div class="bg-slate-50 p-8 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill C: 5 'Spot the Syntax Error' Items</h4>
+                                <button onclick="checkDrillC()" class="text-lg font-bold text-white bg-blue-700 hover:bg-blue-800 px-6 py-2 rounded-lg transition-colors">Check Errors</button>
+                            </div>
+                            <p class="text-xl text-slate-600 mb-4">Correct the grammatical/syntactic errors in these sentences:</p>
+                            <div class="space-y-6 text-xl">
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">1. Scarcely had the meeting started when the fire alarm rings.</p>
+                                    <input type="text" id="vc1" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">2. The criteria used for the selection process was flawed from the start.</p>
+                                    <input type="text" id="vc2" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">3. Provided the results are positive, the project would have been a success.</p>
+                                    <input type="text" id="vc3" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">4. Neither the CEO nor the board members is willing to compromise.</p>
+                                    <input type="text" id="vc4" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">5. In spite of he was a novice, his contribution was invaluable.</p>
+                                    <input type="text" id="vc5" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                            </div>
+                            <div id="fb-drillc" class="mt-6 font-bold min-h-[2rem] text-xl"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Guided Practice (Emerald Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-600 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-900 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-3xl font-bold text-emerald-900">Step 5: Guided Drafting & Iteration</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-700 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-10">
+                    
+                    <div class="bg-emerald-50 p-8 rounded-xl border border-emerald-200 shadow-inner">
+                        <h4 class="font-bold text-emerald-900 text-2xl mb-4">Prompt:</h4>
+                        <p class="text-2xl font-serif text-slate-800 leading-relaxed mb-6 bg-white p-4 rounded-lg">
+                            "The meritocratic system in modern education is often criticized for reinforcing social inequality. Discuss."
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="bg-white p-6 rounded-lg border border-emerald-100 shadow-sm">
+                                <h5 class="font-bold text-emerald-800 text-xl mb-4">Task 1: Follow the Skeleton</h5>
+                                <ul class="space-y-3 text-lg text-slate-700">
+                                    <li><strong>Lead with Fronting:</strong> "Of significant concern to contemporary sociologists is..."</li>
+                                    <li><strong>Counter (Subjunctive):</strong> "Be that as it may, proponents argue..."</li>
+                                    <li><strong>Syntactic Peak:</strong> "Under no circumstances..."</li>
+                                    <li><strong>Conclusion:</strong> "Ultimately, the [Noun] of [Noun] necessitates..."</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg border border-emerald-100 shadow-sm">
+                                <h5 class="font-bold text-emerald-800 text-xl mb-4">Task 2 (The Upgrade): Integrate these</h5>
+                                <ul class="space-y-3 text-lg text-slate-700 font-serif italic">
+                                    <li>"...perpetuates systemic disparities..."</li>
+                                    <li>"...the ostensible neutrality of..."</li>
+                                    <li>"...is inextricably linked to..."</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <label class="block font-bold text-slate-700 text-xl mb-2">Draft your C2 Response here:</label>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-4 focus:ring-emerald-200 outline-none h-48" placeholder="Start writing..."></textarea>
+                            
+                            <button onclick="toggleAnswer('drafting-hint', this)" class="mt-4 text-lg font-bold text-emerald-700 underline">Show Model Synthesis</button>
+                            <div id="drafting-hint" class="answer-box hidden mt-4 p-6 bg-emerald-100 border border-emerald-300 rounded-lg text-xl text-emerald-900 font-serif leading-loose">
+                                "Of significant concern to contemporary sociologists is the extent to which the meritocratic system perpetuates systemic disparities. Be that as it may, proponents argue that the ostensible neutrality of standardized testing provides a fair baseline for all students. Under no circumstances, however, should we ignore that educational attainment is inextricably linked to socioeconomic privilege. Ultimately, the illusion of pure meritocracy necessitates a fundamental reevaluation of pedagogical assessment frameworks."
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Simulation & Challenge (Violet Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-600 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-900 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-3xl font-bold text-violet-900">Step 6-8: Simulation & Clinic</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-violet-700 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Simulation Setup -->
+                    <div class="bg-violet-50 p-8 rounded-xl border border-violet-200">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-6">
+                            <h3 class="font-bold text-violet-900 text-3xl">Step 6: The 'Pressure Cooker' Simulation</h3>
+                            <div class="bg-white p-6 rounded-xl border-2 border-violet-300 text-center min-w-[200px]">
+                                <p class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-1" id="sim-phase-label">Prep Phase</p>
+                                <div class="text-5xl font-mono font-bold text-violet-500" id="sim-timer-display">00:15</div>
+                                <button id="sim-start-btn" onclick="startPressureCooker()" class="mt-4 bg-violet-700 hover:bg-violet-800 text-white font-bold py-2 px-6 rounded-lg transition-colors w-full text-lg">Start Drill</button>
+                            </div>
+                        </div>
+                        <p class="text-xl text-slate-700 mb-6">Time yourself: <strong>15 seconds to plan</strong>, then <strong>90 seconds to write exactly three C2-level sentences</strong>.</p>
+                        
+                        <div class="mb-6">
+                            <p class="font-bold text-slate-800 text-xl mb-2">Prompt:</p>
+                            <p class="font-serif text-2xl bg-white p-4 rounded border border-slate-200">"Should the state provide a Universal Basic Income (UBI) regardless of employment status?"</p>
+                            <textarea id="sim-textarea" class="w-full mt-4 p-4 border border-slate-300 rounded-lg text-xl focus:ring-2 focus:ring-violet-400 outline-none h-32 bg-slate-100" placeholder="Textarea unlocks during the 90s writing phase..." disabled></textarea>
+                        </div>
+
+                        <div class="bg-white border border-violet-200 rounded-xl p-6">
+                            <h4 class="font-bold text-violet-800 text-xl mb-4">Performance Friction Checklist:</h4>
+                            <div class="space-y-2 text-lg text-slate-700">
+                                <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-violet-600"> Did you use at least one word with 4+ syllables?</label>
+                                <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-violet-600"> Did you include a non-defining relative clause?</label>
+                                <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-violet-600"> Did you avoid using the word "I"?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Independent Marathon -->
+                    <div class="pt-8 border-t border-slate-200">
+                        <h3 class="text-3xl font-bold text-violet-900 mb-6">Step 7: The Independent Mastery Marathon</h3>
+                        <p class="text-xl text-slate-600 mb-6">Draft your responses and anticipate a follow-up ("Why?" or "Counter-argument").</p>
+                        
+                        <div class="space-y-6 text-xl">
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 1 (Standard):</span> Discuss the viability of nuclear energy as a primary power source. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 2 (Professional):</span> Evaluate the impact of algorithmic bias on hiring practices. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 3 (Workplace):</span> A firm decides to eliminate all middle-management roles. Argue the implications. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 border-l-4 border-l-violet-600"><span class="font-bold text-violet-900 block mb-2">Item 4 (High Academic):</span> "Linguistic diversity is a prerequisite for cognitive diversity." Analyze this statement. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                            <div class="p-6 bg-violet-50 rounded-xl border-2 border-violet-300"><span class="font-bold text-violet-900 block mb-2">Follow-up Specialist:</span> Choose one of the above and write a follow-up response addressing a counter-argument to your first answer. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24 bg-white"></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Step 8: Error Clinic -->
+                    <div class="pt-10 border-t border-slate-200">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-red-800">Step 8: The Error-Correction Clinic</h3>
+                            <button onclick="checkClinic()" class="text-lg font-bold text-white bg-red-700 hover:bg-red-800 px-6 py-2 rounded-lg transition-colors">Check Clinic</button>
+                        </div>
+                        <p class="text-xl text-slate-700 mb-6">Identify and fix the 7 errors in this 'Glitchy Paragraph' (C2 Focus).</p>
+                        
+                        <div class="p-6 bg-red-50 border border-red-200 rounded-xl mb-6">
+                            <p class="font-serif text-xl text-slate-800 leading-loose">
+                                "The rapid advancement of AI is a <span class="bg-red-200 px-1 rounded font-bold">1. very big change</span> for humanity. It is helping many industries to become <span class="bg-red-200 px-1 rounded font-bold">2. more better</span>. <span class="bg-red-200 px-1 rounded font-bold">3. But</span>, if we <span class="bg-red-200 px-1 rounded font-bold">4. don't be careful</span>, it will be dangerous. The government should <span class="bg-red-200 px-1 rounded font-bold">5. make some laws</span> for AI soon. Many people think that AI might take over the world. It is important to know that AI has no feelings. <span class="bg-red-200 px-1 rounded font-bold">6. Its</span> just a machine. <span class="bg-red-200 px-1 rounded font-bold">7. (Replace 'big' in previous sentence context)</span>"
+                                <br><br><em>(Note: The prompt targets 7 fixes including replacing 'big' with 'profound/systemic' and 'Its' with 'It is').</em>
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 text-lg bg-white p-6 border border-slate-300 rounded-xl">
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">1.</span><input type="text" id="cl1" class="drill-input flex-1 p-2 border rounded" placeholder="Replacement for 'very big change'"></div>
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">2.</span><input type="text" id="cl2" class="drill-input flex-1 p-2 border rounded" placeholder="Replacement for 'more better'"></div>
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">3.</span><input type="text" id="cl3" class="drill-input flex-1 p-2 border rounded" placeholder="Replacement for 'don't be careful'"></div>
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">4.</span><input type="text" id="cl4" class="drill-input flex-1 p-2 border rounded" placeholder="Replacement for 'make some laws'"></div>
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">5.</span><input type="text" id="cl5" class="drill-input flex-1 p-2 border rounded" placeholder="Replacement for 'big' (profound...)"></div>
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">6.</span><input type="text" id="cl6" class="drill-input flex-1 p-2 border rounded" placeholder="Correction for 'Its'"></div>
+                            <div class="flex items-center gap-3 md:col-span-2"><span class="font-bold w-6">7.</span><input type="text" id="cl7" class="drill-input flex-1 p-2 border rounded" placeholder="Replacement for 'But'"></div>
+                        </div>
+                        <div id="fb-clinic" class="mt-6 font-bold text-xl min-h-[2rem]"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Reflection (Rose Theme) -->
+        <div class="mb-12 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-600 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-900 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-3xl font-bold text-rose-900">Step 9-10: AI Lab & Review</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-rose-700 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- AI Prompting -->
+                    <div class="bg-rose-50 p-8 rounded-xl border-l-4 border-rose-600 shadow-sm space-y-6">
+                        <h3 class="text-3xl font-bold text-rose-900 mb-4"><i class="fas fa-robot mr-3"></i>Step 9: The AI Prompting Lab</h3>
+                        
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">The 'Drill Sergeant' (Generate Prompts):</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-1">I am preparing for the Duolingo English Test Interactive Writing task at a C1/C2 level. Generate 5 complex prompts regarding urban sociology, environmental ethics, and corporate governance. For each prompt, provide a follow-up question that challenges my initial stance and forces me to use the Subjunctive Mood.</p>
+                                <button onclick="copyToClipboard('ai-prompt-1')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">The 'Score Auditor' (Grade Response):</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-2">Analyze the following text for lexical density and syntactic complexity. Identify any 'B1/B2-level' vocabulary and suggest 'C2-level' academic synonyms. Rate the use of inversion and participle clauses. Provide an estimated DET score (10-160). [PASTE WORK HERE]</p>
+                                <button onclick="copyToClipboard('ai-prompt-2')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reflection -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-rose-900 mb-6">Step 10: Metacognitive Performance Log</h3>
+                        <p class="text-xl text-slate-700 italic mb-6">"Your discipline in the drills determines your dominance in the results. Keep pushing."</p>
+                        
+                        <div class="overflow-x-auto rounded-xl border border-slate-300">
+                            <table class="w-full text-lg">
+                                <thead>
+                                    <tr class="bg-rose-50 text-rose-900">
+                                        <th class="p-4">Task</th>
+                                        <th class="p-4">Time Taken</th>
+                                        <th class="p-4">Errors Found</th>
+                                        <th class="p-4">Linguistic Target Used?</th>
+                                        <th class="p-4">Next Step Goal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-slate-700">Simulation</td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="e.g. 90s"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="e.g. 1 comma splice"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="Yes (Fronting)"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="Focus on inversion"></td>
+                                    </tr>
+                                    <tr class="bg-slate-50">
+                                        <td class="p-4 font-bold text-slate-700">Marathon</td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-xl font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-800 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- State Management ---
+        let attempts = {
+            audit: 0,
+            drilla: 0,
+            drillb: 0,
+            drillc: 0,
+            clinic: 0
+        };
+
+        const ansAudit = {
+            aud1: ["not only does", "not only does genetic engineering"],
+            aud2: ["were we to", "were we to ignore"],
+            aud3: ["regulatory bodies", "unprecedented oversight", "exercise unprecedented oversight"]
+        };
+
+        const ansDrillA = {
+            va1: "B",
+            va2: "A",
+            va3: "C",
+            va4: "C",
+            va5: "B",
+            va6: "B",
+            va7: "A",
+            va8: "B",
+            va9: "A",
+            va10: "B"
+        };
+
+        const ansDrillB = {
+            vb1: "under no circumstances should the data be compromised",
+            vb2: "so overwhelming was the response that production was halted",
+            vb3: "had she known the gravity of the situation she would have resigned",
+            vb4: "not only is the project expensive but it is also inherently flawed",
+            vb5: "of equal importance is the preservation of professional ethics"
+        };
+
+        const ansDrillC = {
+            vc1: ["rang", "had rang"],
+            vc2: ["were"],
+            vc3: ["will be"],
+            vc4: ["are"],
+            vc5: ["despite being", "in spite of the fact he was", "despite the fact he was"]
+        };
+
+        const ansClinic = {
+            cl1: ["transformative paradigm shift", "transformative"],
+            cl2: ["optimal", "enhanced", "optimized"],
+            cl3: ["exercise due diligence", "exercise diligence", "are not careful"],
+            cl4: ["enact stringent legislation", "enact legislation", "implement strict laws"],
+            cl5: ["profound", "systemic"],
+            cl6: ["it is", "it represents"],
+            cl7: ["nevertheless", "conversely"]
+        };
+
+        function cleanString(str) {
+            return str.toLowerCase().replace(/[.,!?'"()]/g, '').trim().replace(/\s+/g, ' ');
+        }
+
+        // --- Logic Handlers ---
+
+        function handleInputCheck(idList, ansObj, attemptKey, feedbackId, isExactObj = false, customLogic = null, isSelect = false) {
+            let correctCount = 0;
+            const total = idList.length;
+            const currentAttempt = attempts[attemptKey];
+            const feedback = document.getElementById(feedbackId);
+
+            idList.forEach(id => {
+                const el = document.getElementById(id);
+                const val = isSelect ? el.value : cleanString(el.value);
+                
+                let isCorrect = false;
+                let targetAns = "";
+
+                if (customLogic) {
+                    const res = customLogic(val, id);
+                    isCorrect = res.ok;
+                    targetAns = res.target;
+                } else if (isExactObj) {
+                    targetAns = ansObj[id];
+                    isCorrect = val === cleanString(targetAns);
+                } else {
+                    const acceptable = ansObj[id];
+                    if (isSelect) {
+                        targetAns = acceptable;
+                        isCorrect = val === targetAns;
+                    } else {
+                        isCorrect = acceptable.some(t => val.includes(cleanString(t)));
+                        targetAns = acceptable[0]; 
+                    }
+                }
+
+                if (isCorrect && val !== "") {
+                    el.classList.add('correct');
+                    el.classList.remove('incorrect');
+                    correctCount++;
+                } else {
+                    el.classList.add('incorrect');
+                    el.classList.remove('correct');
+                    if (currentAttempt >= 1) { // Reveal on 2nd fail
+                        el.value = isSelect ? targetAns : (targetAns.charAt(0).toUpperCase() + targetAns.slice(1));
+                        el.classList.add('revealed');
+                    }
+                }
+            });
+
+            if (correctCount === total) {
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Perfect!</span>';
+                idList.forEach(id => document.getElementById(id).disabled = true);
+                attempts[attemptKey] = 2; // Lock
+            } else {
+                attempts[attemptKey]++;
+                if (attempts[attemptKey] >= 2) {
+                    feedback.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answers revealed.</span>';
+                    idList.forEach(id => document.getElementById(id).disabled = true);
+                } else {
+                    feedback.innerHTML = `<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>${correctCount}/${total} correct. 1 attempt left.</span>`;
+                }
+            }
+        }
+
+        function checkAudit() {
+            handleInputCheck(['aud1', 'aud2', 'aud3'], ansAudit, 'audit', 'fb-audit');
+        }
+
+        function checkDrillA() {
+            const ids = Array.from({length: 10}, (_, i) => `va${i+1}`);
+            handleInputCheck(ids, ansDrillA, 'drilla', 'fb-drilla', true, null, true); // true for isSelect
+        }
+
+        function checkDrillB() {
+            const ids = Array.from({length: 5}, (_, i) => `vb${i+1}`);
+            handleInputCheck(ids, ansDrillB, 'drillb', 'fb-drillb', true);
+        }
+
+        function checkDrillC() {
+            const ids = Array.from({length: 5}, (_, i) => `vc${i+1}`);
+            handleInputCheck(ids, ansDrillC, 'drillc', 'fb-drillc');
+        }
+
+        function checkClinic() {
+            const ids = Array.from({length: 7}, (_, i) => `cl${i+1}`);
+            handleInputCheck(ids, ansClinic, 'clinic', 'fb-clinic');
+        }
+
+        // --- Pressure Cooker Sim Timer ---
+        let simInterval;
+        let simTime = 15;
+        let simPhase = 'prep'; // 'prep' or 'write'
+
+        function startPressureCooker() {
+            const btn = document.getElementById('sim-start-btn');
+            const display = document.getElementById('sim-timer-display');
+            const label = document.getElementById('sim-phase-label');
+            const textarea = document.getElementById('sim-textarea');
+            
+            clearInterval(simInterval);
+            simTime = 15;
+            simPhase = 'prep';
+            
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            label.innerText = "Preparation Phase";
+            display.classList.remove('timer-write', 'text-red-600');
+            display.classList.add('timer-prep');
+            textarea.disabled = true;
+            textarea.classList.add('bg-slate-100');
+            textarea.classList.remove('bg-white');
+            
+            simInterval = setInterval(() => {
+                simTime--;
+                const mins = Math.floor(simTime / 60);
+                const secs = simTime % 60;
+                display.innerText = `0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                
+                if (simTime <= 0) {
+                    if (simPhase === 'prep') {
+                        simPhase = 'write';
+                        simTime = 90;
+                        label.innerText = "Writing Phase (3 Sentences)";
+                        display.classList.remove('timer-prep');
+                        display.classList.add('timer-write');
+                        textarea.disabled = false;
+                        textarea.classList.remove('bg-slate-100');
+                        textarea.classList.add('bg-white');
+                        textarea.focus();
+                    } else if (simPhase === 'write') {
+                        clearInterval(simInterval);
+                        label.innerText = "Time's Up!";
+                        textarea.disabled = true;
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                        btn.innerText = "Restart Drill";
+                        alert("Time is up! Review your 3 sentences.");
+                    }
+                }
+            }, 1000);
+        }
+
+        // --- Utils ---
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Model Rewrite";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert("Prompt copied to clipboard!");
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers and reset attempts?")) {
+                attempts = { audit: 0, drilla: 0, drillb: 0, drillc: 0, clinic: 0 };
+
+                document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('correct', 'incorrect', 'revealed', 'bg-slate-100');
+                });
+                
+                document.querySelectorAll('select').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('correct', 'incorrect', 'revealed');
+                });
+
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+                
+                document.querySelectorAll('[id^="fb-"]').forEach(f => f.innerHTML = "");
+
+                document.querySelectorAll('.answer-box').forEach(el => {
+                    el.classList.add('hidden');
+                    el.classList.remove('visible');
+                });
+
+                // Reset Sim Timer
+                clearInterval(simInterval);
+                document.getElementById('sim-timer-display').innerText = "00:15";
+                document.getElementById('sim-phase-label').innerText = "Prep Phase";
+                document.getElementById('sim-timer-display').classList.remove('timer-write', 'text-red-600');
+                document.getElementById('sim-timer-display').classList.add('timer-prep');
+                const simBtn = document.getElementById('sim-start-btn');
+                simBtn.disabled = false;
+                simBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                simBtn.innerText = "Start Drill";
+            }
+        }
+
+    </script>
+</body>
+</html>

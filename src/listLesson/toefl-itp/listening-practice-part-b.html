@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL ITP Listening Part B - Practice Test B</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --bg-light: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --success: #22c55e;
+            --error: #ef4444;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header & Progress */
+        header {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            border-top: 6px solid var(--primary);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .progress-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .progress-step {
+            position: relative;
+            z-index: 2;
+            background: #e2e8f0;
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .progress-step.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Pages & Animations */
+        .module-page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .module-page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Homepage Styles */
+        .home-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .home-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .instruction-list {
+            text-align: left;
+            margin: 20px auto;
+            max-width: 500px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .instruction-list li {
+            margin-bottom: 10px;
+            list-style-position: inside;
+        }
+
+        .audio-setup-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e3a8a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        /* Module Containers */
+        .module-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .module-header {
+            background: #f8fafc;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .module-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .module-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .module-content {
+            padding: 24px;
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: border-color 0.3s;
+        }
+
+        .question-card.unanswered-error {
+            border: 2px solid var(--error);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .q-number {
+            font-weight: 700;
+            color: var(--secondary);
+            background: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .question-text-revealed {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-main);
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .option-input {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* Feedback Area */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.correct {
+            background-color: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #166534;
+        }
+
+        .feedback.incorrect {
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .transcript-box {
+            display: none;
+            background: #f1f5f9;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #334155;
+            border-radius: 4px;
+        }
+        
+        .transcript-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .transcript-content {
+            font-style: italic;
+        }
+
+        .explanation-text {
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        /* Controls */
+        .controls-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            color: var(--text-main);
+        }
+        
+        .btn-audio {
+            background-color: #0284c7;
+        }
+        
+        .btn-audio:hover {
+            background-color: #0369a1;
+        }
+
+        .btn-next {
+            background: var(--text-main);
+            display: none;
+        }
+        
+        .btn-next:hover {
+            background: #000;
+        }
+
+        /* Score Summary Page */
+        .summary-card {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .final-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .correct-answer-highlight {
+            border-color: var(--success) !important;
+            background-color: #dcfce7 !important;
+        }
+        
+        .wrong-answer-highlight {
+            border-color: var(--error) !important;
+            background-color: #fee2e2 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>TOEFL ITP Listening - Part B</h1>
+        <div class="subtitle">Practice Test B | Longer Conversations</div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-track"></div>
+            <div id="step-1" class="progress-step">1</div>
+            <div id="step-2" class="progress-step">2</div>
+            <div id="step-3" class="progress-step">🏁</div>
+        </div>
+    </header>
+
+    <form id="quizForm">
+        <div id="quiz-content">
+            <!-- Pages injected here by JS -->
+        </div>
+    </form>
+</div>
+
+<script>
+    // --- CONVERSATION SCRIPTS ---
+    const conversation1Script = `
+        <strong>(Questions 31 to 34)</strong><br><br>
+        <strong>Narrator:</strong> Listen to a conversation between two friends.<br>
+        <strong>Woman:</strong> Can you help me out? I need to get my passport picture taken again.<br>
+        <strong>Man:</strong> Again? I thought you just had one taken last week.<br>
+        <strong>Woman:</strong> I did, but the passport office rejected it. They said the lighting was bad and my face couldn't be clearly seen.<br>
+        <strong>Man:</strong> That's annoying. Why don't you just go to a professional photographer this time?<br>
+        <strong>Woman:</strong> I would, but it's expensive and I need to get the application in by tomorrow. I just want to look the same as I usually do, nothing fancy. Can you take it with your camera?<br>
+        <strong>Man:</strong> Sure, let's find a white wall.
+    `;
+
+    const conversation2Script = `
+        <strong>(Questions 35 to 38)</strong><br><br>
+        <strong>Narrator:</strong> Listen to a conversation about a science class trip.<br>
+        <strong>Man:</strong> I have to admit, that trip to the science museum was actually pretty interesting.<br>
+        <strong>Woman:</strong> See? I told you. You thought it would be boring just looking at old equipment.<br>
+        <strong>Man:</strong> Yeah, you were right. I really liked the hands-on exhibits. It makes it so much easier to understand the concepts when you can actually touch things and see how they react.<br>
+        <strong>Woman:</strong> Definitely. The chemistry section was cool, especially the part about how we evaluate smells and perfumes. <br>
+        <strong>Man:</strong> Exactly. Though I still have questions about the chemical analysis part. We should probably go talk to Dr. Carver about our observations before we write the report.
+    `;
+
+    // --- QUIZ DATA ---
+    const quizData = [
+        // Conversation 1 (Questions 31 to 34)
+        { 
+            id: 31, 
+            script: conversation1Script,
+            question: "What does the woman want the man to do?", 
+            options: { 
+                A: "She needs a passport picture.", 
+                B: "She wants him to retake her passport picture.", 
+                C: "She needs help with her passport application.", 
+                D: "She wants to get some film developed." 
+            }, 
+            answer: "B", 
+            explanation: "The woman asks the man to help her get her passport picture taken 'again' (retake)." 
+        },
+        { 
+            id: 32, 
+            script: conversation1Script,
+            question: "What is the problem with the woman's passport picture?", 
+            options: { 
+                A: "The picture is more than one month old.", 
+                B: "The person’s face can’t be clearly seen in the picture.", 
+                C: "The picture wasn’t taken by an official photographer.", 
+                D: "The person hadn’t gotten a haircut." 
+            }, 
+            answer: "B", 
+            explanation: "She states the passport office rejected it because 'my face couldn't be clearly seen'." 
+        },
+        { 
+            id: 33, 
+            script: conversation1Script,
+            question: "Why does the woman want the man to take the picture?", 
+            options: { 
+                A: "To look the same as she usually does.", 
+                B: "To match her student ID card.", 
+                C: "To match her old passport picture.", 
+                D: "To make her look more serious." 
+            }, 
+            answer: "A", 
+            explanation: "She mentions she just wants 'to look the same as I usually do, nothing fancy'." 
+        },
+        { 
+            id: 34, 
+            script: conversation1Script,
+            question: "Why is the woman in a hurry?", 
+            options: { 
+                A: "It’ll replace the one she lost.", 
+                B: "She’ll need extra pages for visas.", 
+                C: "She thinks it’s expensive.", 
+                D: "She needs it quickly." 
+            }, 
+            answer: "D", 
+            explanation: "She says she needs to get the application in 'by tomorrow', implying urgency." 
+        },
+
+        // Conversation 2 (Questions 35 to 38)
+        { 
+            id: 35, 
+            script: conversation2Script,
+            question: "What are the speakers discussing?", 
+            options: { 
+                A: "Why science museums are boring.", 
+                B: "Laboratory analysis of chemicals.", 
+                C: "The value of hands-on science exhibits.", 
+                D: "Ways to evaluate various smells." 
+            }, 
+            answer: "C", 
+            explanation: "They discuss how the 'hands-on exhibits' made the concepts easier to understand." 
+        },
+        { 
+            id: 36, 
+            script: conversation2Script,
+            question: "What had the man assumed about the museum?", 
+            options: { 
+                A: "There was too much to see.", 
+                B: "They thought it would be dull.", 
+                C: "They didn’t have time to go.", 
+                D: "They had to write a report about it." 
+            }, 
+            answer: "B", 
+            explanation: "The woman reminds him, 'You thought it would be boring'." 
+        },
+        { 
+            id: 37, 
+            script: conversation2Script,
+            question: "What do the speakers say about the exhibits?", 
+            options: { 
+                A: "They can help people learn science concepts.", 
+                B: "They can be hard to figure out.", 
+                C: "They are less interesting than traditional museum displays.", 
+                D: "They can be used to train chemists." 
+            }, 
+            answer: "A", 
+            explanation: "The man notes it is 'easier to understand the concepts when you can actually touch things'." 
+        },
+        { 
+            id: 38, 
+            script: conversation2Script,
+            question: "What will the speakers probably do next?", 
+            options: { 
+                A: "Visit a police lab.", 
+                B: "Analyze other perfumes.", 
+                C: "Talk to Dr. Carver about their observations.", 
+                D: "Return to the museum." 
+            }, 
+            answer: "C", 
+            explanation: "The man suggests, 'We should probably go talk to Dr. Carver'." 
+        }
+    ];
+
+    const quizContent = document.getElementById('quiz-content');
+    const totalScore = { 1: 0, 2: 0 }; // Scores for each section
+
+    // Module definitions
+    const modules = [
+        { id: 1, range: [0, 4], title: "Conversation 1", subtitle: "Questions 31 to 34" },
+        { id: 2, range: [4, 8], title: "Conversation 2", subtitle: "Questions 35 to 38" }
+    ];
+
+    function renderApp() {
+        // 1. Render Homepage
+        const homeDiv = document.createElement('div');
+        homeDiv.id = 'page-home';
+        homeDiv.className = 'module-page active';
+        homeDiv.innerHTML = `
+            <div class="home-card">
+                <span class="home-icon">🎧</span>
+                <h2>Welcome to Part B</h2>
+                <p>This section consists of longer conversations. You will hear a conversation and answer several questions about it.</p>
+                
+                <div class="audio-setup-box">
+                    <strong>Step 1: Audio Setup</strong><br>
+                    <p style="margin: 8px 0; font-size: 0.9rem;">Please open the audio file in a new tab before starting the quiz.</p>
+                    <a href="https://drive.google.com/file/d/1Ab-2AloYvJmT3gC4eIsKtkYpO5yUtf-1/view?usp=drive_link" target="_blank" class="btn btn-audio">
+                        🔊 Open Audio File
+                    </a>
+                </div>
+
+                <ul class="instruction-list">
+                    <li>This part has <strong>2 Conversations</strong> (Questions 31 to 38).</li>
+                    <li>Questions will not appear on the screen during the test. Listen to the audio to hear the questions.</li>
+                    <li>Answer all questions in a set to reveal the transcript and explanations.</li>
+                </ul>
+
+                <button type="button" class="btn" onclick="startTest()">Start Part B &rarr;</button>
+            </div>
+        `;
+        quizContent.appendChild(homeDiv);
+
+        // 2. Render Modules
+        modules.forEach((mod) => {
+            const pageDiv = document.createElement('div');
+            pageDiv.id = `page-${mod.id}`;
+            pageDiv.className = `module-page`;
+            
+            pageDiv.innerHTML = `
+                <div class="module-container">
+                    <div class="module-header">
+                        <div class="module-title">${mod.title}</div>
+                        <div class="module-subtitle">${mod.subtitle}</div>
+                    </div>
+                    <div class="module-content" id="questions-area-${mod.id}">
+                        <!-- Questions go here -->
+                    </div>
+                </div>
+                <div class="controls-area">
+                    ${mod.id > 1 ? `<button type="button" class="btn btn-secondary" onclick="goToPreviousPage(${mod.id})">&larr; Previous Conversation</button>` : '<span></span>'}
+                    
+                    <div>
+                        <button type="button" id="submit-btn-${mod.id}" class="btn" onclick="submitModule(${mod.id}, ${mod.range[0]}, ${mod.range[1]})">
+                            Submit Answers
+                        </button>
+                        <button type="button" id="next-btn-${mod.id}" class="btn btn-next" onclick="goToNextPage(${mod.id})">
+                            Proceed &rarr;
+                        </button>
+                    </div>
+                </div>
+            `;
+            quizContent.appendChild(pageDiv);
+
+            // Render Questions
+            const qContainer = pageDiv.querySelector(`#questions-area-${mod.id}`);
+            const slice = quizData.slice(mod.range[0], mod.range[1]);
+
+            slice.forEach((q, i) => {
+                const card = document.createElement('div');
+                card.id = `card-${q.id}`;
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="q-number">Question ${q.id}</span>
+                    </div>
+                    <!-- Question text is intentionally omitted to simulate real test conditions -->
+                    <div class="options-grid">
+                        ${Object.entries(q.options).map(([key, value]) => `
+                            <label class="option-label" id="label-${q.id}-${key}">
+                                <input type="radio" name="q${q.id}" value="${key}" class="option-input" onclick="clearError(${q.id})">
+                                <span><strong>(${key})</strong> ${value}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- Hidden Feedback Area -->
+                    <div id="feedback-${q.id}" class="feedback"></div>
+                    
+                    <!-- Hidden Transcript Area (Shared for conversation) -->
+                    <div id="transcript-${q.id}" class="transcript-box">
+                        <span class="transcript-header">Full Conversation Transcript</span>
+                        <div class="transcript-content">${q.script}</div>
+                    </div>
+                `;
+                qContainer.appendChild(card);
+            });
+        });
+
+        // 3. Render Summary Page (Hidden)
+        const summaryDiv = document.createElement('div');
+        summaryDiv.id = `page-summary`;
+        summaryDiv.className = `module-page`;
+        summaryDiv.innerHTML = `
+            <div class="module-container summary-card">
+                <h2>Part B Completed!</h2>
+                <p>You have finished the Longer Conversations section.</p>
+                <div class="final-score" id="total-score-display">--/8</div>
+                
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="goToPreviousPage(3)">Review Conversation 2</button>
+                    <button type="button" class="btn" onclick="location.reload()">Start Over</button>
+                </div>
+            </div>
+        `;
+        quizContent.appendChild(summaryDiv);
+    }
+
+    function startTest() {
+        document.getElementById('page-home').classList.remove('active');
+        document.getElementById('page-1').classList.add('active');
+        document.getElementById('step-1').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function clearError(id) {
+        const card = document.getElementById(`card-${id}`);
+        if(card) card.classList.remove('unanswered-error');
+    }
+
+    function submitModule(modId, start, end) {
+        const moduleQuestions = quizData.slice(start, end);
+        let unansweredCount = 0;
+        let firstUnansweredId = null;
+
+        // 1. Validation
+        moduleQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            if (!selected) {
+                unansweredCount++;
+                const card = document.getElementById(`card-${q.id}`);
+                card.classList.add('unanswered-error');
+                if (!firstUnansweredId) firstUnansweredId = q.id;
+            }
+        });
+
+        if (unansweredCount > 0) {
+            alert(`Please answer all questions in this conversation before submitting.`);
+            if (firstUnansweredId) {
+                document.getElementById(`card-${firstUnansweredId}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        // 2. Grading & Feedback
+        let modScore = 0;
+        moduleQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${q.id}`);
+            const transcriptEl = document.getElementById(`transcript-${q.id}`);
+            
+            // Show Transcript
+            transcriptEl.style.display = 'block';
+
+            // Reset styles
+            Object.keys(q.options).forEach(key => {
+                document.getElementById(`label-${q.id}-${key}`).classList.remove('correct-answer-highlight', 'wrong-answer-highlight');
+            });
+
+            // Logic and Feedback injection (including the previously hidden question text)
+            if (selected.value === q.answer) {
+                modScore++;
+                feedbackEl.className = "feedback correct";
+                feedbackEl.innerHTML = `
+                    <div class="question-text-revealed"><strong>Question heard:</strong> ${q.question}</div>
+                    <strong>Correct!</strong> 
+                    <div class="explanation-text">${q.explanation}</div>
+                `;
+                document.getElementById(`label-${q.id}-${q.answer}`).classList.add('correct-answer-highlight');
+            } else {
+                feedbackEl.className = "feedback incorrect";
+                feedbackEl.innerHTML = `
+                    <div class="question-text-revealed"><strong>Question heard:</strong> ${q.question}</div>
+                    <strong>Incorrect.</strong> The correct answer is <strong>(${q.answer})</strong>. 
+                    <div class="explanation-text">${q.explanation}</div>
+                `;
+                document.getElementById(`label-${q.id}-${selected.value}`).classList.add('wrong-answer-highlight');
+                document.getElementById(`label-${q.id}-${q.answer}`).classList.add('correct-answer-highlight');
+            }
+            feedbackEl.style.display = 'block';
+            
+            // Lock inputs
+            const inputs = document.querySelectorAll(`input[name="q${q.id}"]`);
+            inputs.forEach(i => i.disabled = true);
+        });
+
+        // 3. Save Score & UI Transition
+        totalScore[modId] = modScore;
+        
+        // Hide Submit, Show Next
+        document.getElementById(`submit-btn-${modId}`).style.display = 'none';
+        
+        const nextBtn = document.getElementById(`next-btn-${modId}`);
+        if(modId === 2) {
+            nextBtn.innerHTML = "Finish & View Score";
+        }
+        nextBtn.style.display = 'inline-flex';
+
+        // Update Step Indicator to Completed
+        document.getElementById(`step-${modId}`).classList.remove('active');
+        document.getElementById(`step-${modId}`).classList.add('completed');
+        
+        // Scroll top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToNextPage(currentModId) {
+        document.getElementById(`page-${currentModId}`).classList.remove('active');
+        
+        if (currentModId < 2) {
+            const nextId = currentModId + 1;
+            document.getElementById(`page-${nextId}`).classList.add('active');
+            document.getElementById(`step-${nextId}`).classList.add('active');
+        } else {
+            document.getElementById(`page-summary`).classList.add('active');
+            document.getElementById(`step-3`).classList.add('completed');
+            
+            const total = totalScore[1] + totalScore[2];
+            document.getElementById('total-score-display').innerText = `${total} / 8`;
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToPreviousPage(currentModId) {
+        // 1. Hide Current
+        if (currentModId === 3) { // Summary page
+            document.getElementById(`page-summary`).classList.remove('active');
+            document.getElementById(`step-3`).classList.remove('completed');
+        } else {
+            document.getElementById(`page-${currentModId}`).classList.remove('active');
+            document.getElementById(`step-${currentModId}`).classList.remove('active');
+        }
+
+        // 2. Show Previous
+        const prevId = currentModId - 1;
+        document.getElementById(`page-${prevId}`).classList.add('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    renderApp();
+</script>
+
+</body>
+</html>

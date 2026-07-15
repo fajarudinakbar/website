@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Interactive Reading - The Scope Creep Crisis</title>
+    
+    <!-- Tailwind CSS for flawless styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for Graphic Novel Aesthetic -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Vibrant Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        comic: ['Bangers', 'cursive'],
+                    },
+                    boxShadow: {
+                        'comic': '6px 6px 0px 0px #0f172a',
+                        'comic-hover': '8px 8px 0px 0px #0f172a',
+                        'comic-sm': '3px 3px 0px 0px #0f172a',
+                        'comic-pressed': '0px 0px 0px 0px #0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Halftone Comic Background */
+        body {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+            background-size: 24px 24px;
+            overflow-x: hidden;
+        }
+
+        /* Tactile Button Mechanics */
+        .comic-btn {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translate(0px, 0px);
+        }
+        .comic-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a !important;
+        }
+        .comic-btn:active {
+            transform: translate(6px, 6px);
+            box-shadow: 0px 0px 0px 0px #0f172a !important;
+        }
+
+        /* Staggered Pop-In Animation */
+        .animate-pop {
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Page Transition */
+        #app-container {
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        .fade-out-active {
+            opacity: 0 !important;
+            transform: scale(0.98) translateY(10px) !important;
+        }
+
+        /* Progress Bar Animation */
+        .progress-fill {
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="text-slate-900 font-sans p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col">
+
+    <div class="max-w-4xl mx-auto flex-grow w-full" id="app-container">
+        <!-- Content will be injected here by JavaScript -->
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 mb-4 text-center animate-pop" style="animation-delay: 1s;">
+        <p class="font-extrabold text-slate-500 text-sm sm:text-base uppercase tracking-widest">
+            Designed by <a href="https://fajarudinakbar.online" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 px-3 py-1 rounded-md border-2 border-transparent hover:border-indigo-600 transition-all font-black border-b-4 border-b-indigo-600">fajarudinakbar.online</a>
+        </p>
+    </footer>
+
+    <script>
+        // --- DATA STRUCTURES ---
+        const readingPanels = [
+            { text: "Welcome to Horizon Marketing. You are a Senior Account Manager handling big corporate clients.", icon: "fa-solid fa-building", bg: "bg-sky-100", color: "text-sky-600" },
+            { text: "Your team is finalizing a massive advertising campaign for Apex Corporation. The contract is signed and the budget is locked.", icon: "fa-solid fa-file-contract", bg: "bg-emerald-100", color: "text-emerald-600" },
+            { text: "However, the client keeps asking for small extra favors. In business, this dangerous habit is called scope creep.", icon: "fa-solid fa-magnifying-glass-chart", bg: "bg-amber-100", color: "text-amber-600" },
+            { text: "Today, the client emailed asking for three extra commercial videos without offering to pay more money.", icon: "fa-solid fa-video", bg: "bg-rose-100", color: "text-rose-600" },
+            { text: "Your creative team is already working late every night just to meet the original deadline.", icon: "fa-solid fa-battery-quarter", bg: "bg-purple-100", color: "text-purple-600" },
+            { text: "If you say yes, your team will burn out and the company loses profit on the extra work hours.", icon: "fa-solid fa-chart-line-down", bg: "bg-indigo-100", color: "text-indigo-600" },
+            { text: "If you say no, the angry client might cancel the entire marketing contract.", icon: "fa-solid fa-user-xmark", bg: "bg-yellow-200", color: "text-yellow-700" },
+            { text: "As the manager, you must protect your team but keep the client happy. It is a delicate balance. What will you do?", icon: "fa-solid fa-scale-balanced", bg: "bg-red-100", color: "text-red-700" }
+        ];
+
+        const storyNodes = {
+            start: {
+                chapter: 1, title: "The Urgent Email",
+                panels: [
+                    { type: "action", text: "You read the email from Ms. Davis, the lead client at Apex Corporation.", icon: "fa-solid fa-envelope-open-text", color: "text-slate-600", bg: "bg-slate-100" },
+                    { type: "narration", text: "She casually asks for three extra social media videos for the product launch.", icon: "fa-solid fa-mobile-screen", color: "text-blue-600", bg: "bg-blue-100" },
+                    { type: "thought", text: "The deadline is in forty eight hours. This is completely impossible under normal circumstances.", icon: "fa-solid fa-clock", color: "text-purple-600", bg: "bg-purple-100" }
+                ],
+                choices: [
+                    { text: "Tell the client no immediately to protect the schedule.", next: "step2_team", btnClass: "bg-white text-slate-900" },
+                    { text: "Consult your creative team first to see if it is possible.", next: "step2_team", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step2_team: {
+                chapter: 2, title: "The Team Meeting",
+                panels: [
+                    { type: "action", text: "You walk into the design studio to speak with Alex, the lead video editor.", icon: "fa-solid fa-palette", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "dialogue", speaker: "Alex", text: "We are already working overtime to meet the original contract. We cannot do three more videos.", icon: "fa-solid fa-user-injured", color: "text-rose-600", bg: "bg-rose-100" },
+                    { type: "thought", text: "I know pushing them harder will ruin the quality of the main campaign.", icon: "fa-solid fa-brain", color: "text-amber-600", bg: "bg-amber-100" }
+                ],
+                choices: [
+                    { text: "Force the team to do the extra work to save the client relationship.", next: "step3_call", btnClass: "bg-white text-slate-900" },
+                    { text: "Promise Alex you will protect their schedule and handle the client.", next: "step3_call", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step3_call: {
+                chapter: 3, title: "The Phone Call",
+                panels: [
+                    { type: "action", text: "You schedule a quick phone call with Ms. Davis to discuss the new request.", icon: "fa-solid fa-phone", color: "text-indigo-600", bg: "bg-indigo-100" },
+                    { type: "narration", text: "You calmly explain that the three videos are outside the agreed project scope.", icon: "fa-solid fa-file-contract", color: "text-red-600", bg: "bg-red-100" },
+                    { type: "dialogue", speaker: "Ms. Davis", text: "We are spending a lot of money with you. I expected more flexibility from your agency.", icon: "fa-solid fa-comment-dollar", color: "text-slate-700", bg: "bg-slate-200" }
+                ],
+                choices: [
+                    { text: "Apologize and say you will try your best to do it for free.", next: "step4_counter", btnClass: "bg-white text-slate-900" },
+                    { text: "Politely remind her of the signed contract and resource limits.", next: "step4_counter", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step4_counter: {
+                chapter: 4, title: "The Counter Offer",
+                panels: [
+                    { type: "narration", text: "The tension on the phone call rises. Ms. Davis demands a solution today.", icon: "fa-solid fa-fire", color: "text-sky-700", bg: "bg-sky-100" },
+                    { type: "thought", text: "I must calculate the actual cost of producing three rush videos over the weekend.", icon: "fa-solid fa-calculator", color: "text-emerald-700", bg: "bg-emerald-100" },
+                    { type: "system", text: "CALCULATION COMPLETE.\nIt will cost five thousand dollars to hire emergency freelance editors.", icon: "fa-solid fa-money-bill-trend-up", color: "text-rose-700", bg: "bg-rose-100" }
+                ],
+                choices: [
+                    { text: "Offer to do one video for free as a special favor.", next: "step5_director", btnClass: "bg-white text-slate-900" },
+                    { text: "Send an official invoice for the extra five thousand dollars.", next: "step5_director", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step5_director: {
+                chapter: 5, title: "The Director Steps In",
+                panels: [
+                    { type: "action", text: "Your agency director, Mr. Silva, walks past your desk and asks about the Apex account.", icon: "fa-solid fa-user-tie", color: "text-amber-600", bg: "bg-amber-100" },
+                    { type: "narration", text: "You explain the difficult situation with Ms. Davis and the extra videos.", icon: "fa-solid fa-comments", color: "text-blue-700", bg: "bg-blue-100" },
+                    { type: "dialogue", speaker: "Mr. Silva", text: "Apex is our biggest client. Do whatever it takes to keep them happy.", icon: "fa-solid fa-bullhorn", color: "text-purple-700", bg: "bg-purple-200" }
+                ],
+                choices: [
+                    { text: "Agree with the director and force your team to work the weekend.", next: "step6_email", btnClass: "bg-white text-slate-900" },
+                    { text: "Disagree respectfully and explain the risk of team burnout.", next: "step6_email", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step6_email: {
+                chapter: 6, title: "The Final Email",
+                panels: [
+                    { type: "action", text: "You sit down to type the final response to Ms. Davis.", icon: "fa-solid fa-keyboard", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "narration", text: "Your hands hover over the keyboard. This email will decide the future of the project.", icon: "fa-solid fa-pen-nib", color: "text-slate-700", bg: "bg-slate-200" },
+                    { type: "thought", text: "I must choose between protecting our profits and team, or keeping a demanding client happy.", icon: "fa-solid fa-scale-unbalanced", color: "text-sky-600", bg: "bg-sky-100" }
+                ],
+                choices: [
+                    { text: "Write an email accepting all her demands for free.", next: "ending_burnout", btnClass: "bg-white text-slate-900" },
+                    { text: "Write a firm email requiring payment for any extra work.", next: "ending_boundary", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ending_boundary: {
+                chapter: "END", title: "Setting Boundaries",
+                panels: [
+                    { type: "action", text: "You send the firm email. Ms. Davis is frustrated but agrees to pay the extra invoice.", icon: "fa-solid fa-check-double", color: "text-blue-600", bg: "bg-blue-100" },
+                    { type: "narration", text: "You hire freelancers with the extra budget. The team is not overworked, and quality remains high.", icon: "fa-solid fa-people-group", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "dialogue", speaker: "Alex", text: "Thank you for protecting us. We delivered an amazing campaign because we were not exhausted.", icon: "fa-solid fa-face-smile", color: "text-amber-600", bg: "bg-amber-100" }
+                ],
+                isEnding: true,
+                softSkill: "Boundary Setting and Negotiation",
+                analysis: "Saying no is a powerful business tool. How does setting strict boundaries actually increase respect between an agency and a client?"
+            },
+            ending_burnout: {
+                chapter: "END", title: "The Cost of Compliance",
+                panels: [
+                    { type: "action", text: "You accept the demands. The team works forty eight hours straight with no sleep.", icon: "fa-solid fa-battery-empty", color: "text-purple-600", bg: "bg-purple-100" },
+                    { type: "narration", text: "Because they are exhausted, the final videos have embarrassing spelling mistakes.", icon: "fa-solid fa-triangle-exclamation", color: "text-rose-600", bg: "bg-rose-100" },
+                    { type: "dialogue", speaker: "Ms. Davis", text: "These videos are terrible! We are reviewing our contract with your agency next month.", icon: "fa-solid fa-face-angry", color: "text-red-600", bg: "bg-red-100" }
+                ],
+                isEnding: true,
+                softSkill: "Scope Management and Team Advocacy",
+                analysis: "Trying to please the client destroyed the team's ability to do good work. Why is protecting your team essential for delivering high quality products?"
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        let state = {
+            stage: 'reading',
+            currentNode: 'start'
+        };
+
+        // --- TEXT TO SPEECH (TTS) INTEGRATION ---
+        let availableVoices = [];
+        let currentUtterance = null;
+        let activeSpeakerBtn = null;
+
+        function loadVoices() {
+            availableVoices = window.speechSynthesis.getVoices();
+        }
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        loadVoices(); 
+
+        function toggleSpeech(btnElement, textToSpeak) {
+            if (window.speechSynthesis.speaking && activeSpeakerBtn === btnElement) {
+                window.speechSynthesis.cancel();
+                resetSpeakerButton();
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            resetSpeakerButton();
+
+            if (!textToSpeak) return;
+
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            
+            if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
+
+            let selectedVoice = availableVoices.find(v => v.name.includes('Natural') && v.lang.startsWith('en'));
+            if (!selectedVoice) selectedVoice = availableVoices.find(v => v.name.includes('Google') && v.lang.startsWith('en'));
+            if (!selectedVoice) selectedVoice = availableVoices.find(v => v.lang.startsWith('en'));
+
+            if (selectedVoice) {
+                currentUtterance.voice = selectedVoice;
+            }
+
+            currentUtterance.rate = 0.9;
+            currentUtterance.pitch = 1.0;
+
+            activeSpeakerBtn = btnElement;
+            const icon = btnElement.querySelector('i');
+            icon.classList.remove('fa-volume-high', 'text-slate-500');
+            icon.classList.add('fa-stop', 'text-rose-600');
+            btnElement.classList.add('bg-rose-100', 'border-rose-600');
+            btnElement.classList.remove('bg-white', 'border-slate-300');
+
+            currentUtterance.onend = resetSpeakerButton;
+            currentUtterance.onerror = resetSpeakerButton;
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function resetSpeakerButton() {
+            if (activeSpeakerBtn) {
+                const icon = activeSpeakerBtn.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-stop', 'text-rose-600');
+                    icon.classList.add('fa-volume-high', 'text-slate-500');
+                }
+                activeSpeakerBtn.classList.remove('bg-rose-100', 'border-rose-600');
+                activeSpeakerBtn.classList.add('bg-white', 'border-slate-300');
+                activeSpeakerBtn = null;
+            }
+        }
+
+        function stopAllAudio() {
+            window.speechSynthesis.cancel();
+            resetSpeakerButton();
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function render() {
+            const container = document.getElementById('app-container');
+            container.innerHTML = ''; 
+
+            const header = document.createElement('header');
+            header.className = 'mb-12 text-center animate-pop';
+            header.innerHTML = `
+                <h1 class="font-comic text-6xl md:text-7xl text-slate-900 mb-3 tracking-wider uppercase" style="text-shadow: 3px 3px 0 #cbd5e1;">The Scope Creep Crisis</h1>
+                <div class="inline-block bg-slate-900 text-white font-extrabold text-sm md:text-lg uppercase tracking-widest px-6 py-2 rounded-full shadow-comic-sm transform -rotate-1">
+                    A B1 Business English Interactive Lesson
+                </div>
+            `;
+            container.appendChild(header);
+
+            if (state.stage === 'reading') container.appendChild(renderReading());
+            else if (state.stage === 'story') container.appendChild(renderStory());
+            else if (state.stage === 'reflection') container.appendChild(renderReflection());
+        }
+
+        function renderReading() {
+            const div = document.createElement('div');
+            
+            let panelsHTML = '<div class="flex flex-col space-y-8 mb-16">';
+            readingPanels.forEach((panel, index) => {
+                const delay = index * 150; 
+                panelsHTML += `
+                    <div class="animate-pop relative bg-white border-4 border-slate-900 rounded-2xl shadow-comic p-6 sm:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#0f172a] transition-transform duration-300" style="animation-delay: ${delay}ms;">
+                        
+                        <!-- Text To Speech Button -->
+                        <button onclick="toggleSpeech(this, \`${panel.text.replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                            <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </button>
+
+                        <div class="absolute -top-5 -left-4 sm:-left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl text-slate-900 z-10 transform -rotate-6 shadow-comic-sm">
+                            ${index + 1}
+                        </div>
+                        <div class="flex-shrink-0 border-4 border-slate-900 rounded-full w-24 h-24 flex items-center justify-center transform -rotate-3 shadow-comic-sm ${panel.bg}">
+                            <i class="${panel.icon} text-5xl ${panel.color}"></i>
+                        </div>
+                        <div class="flex-grow text-center sm:text-left mt-2 sm:mt-0 flex items-center pr-8 sm:pr-12">
+                            <p class="font-extrabold text-xl sm:text-2xl leading-relaxed text-slate-800 text-left">${panel.text}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            panelsHTML += '</div>';
+
+            div.innerHTML = `
+                <div class="flex justify-center items-center space-x-4 mb-12 animate-pop" style="animation-delay: 0ms;">
+                    <i class="fa-solid fa-book-open-reader text-5xl text-indigo-600 transform -rotate-6"></i>
+                    <h2 class="font-comic text-5xl text-slate-900 tracking-wide uppercase">Prologue</h2>
+                </div>
+                
+                ${panelsHTML}
+
+                <div class="animate-pop bg-indigo-600 rounded-3xl p-8 sm:p-12 border-4 border-slate-900 shadow-comic mt-12 relative overflow-hidden group" style="animation-delay: ${readingPanels.length * 150}ms;">
+                    <div class="absolute -right-10 -bottom-10 opacity-20 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-700">
+                        <i class="fa-solid fa-briefcase text-9xl text-white"></i>
+                    </div>
+                    <div class="relative z-10 text-center sm:text-left">
+                        <h4 class="font-comic text-4xl text-white mb-4 tracking-wide uppercase">Start Your Career Journey</h4>
+                        <p class="text-indigo-100 mb-8 font-bold text-xl sm:text-2xl max-w-2xl text-left">
+                            You have read the facts. Now, you must make the professional choices. This scenario has 7 chapters. Can you handle the pressure?
+                        </p>
+                        <button onclick="startGame()" class="comic-btn inline-flex bg-amber-400 text-slate-900 px-8 py-5 rounded-xl font-black text-2xl hover:bg-amber-300 items-center justify-center space-x-4 border-4 border-slate-900 shadow-comic w-full sm:w-auto cursor-pointer">
+                            <span>ENTER CHAPTER 1</span>
+                            <i class="fa-solid fa-arrow-right transform group-hover:translate-x-2 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function renderStory() {
+            const node = storyNodes[state.currentNode];
+            const div = document.createElement('div');
+            
+            const isEnding = node.chapter === 'END';
+            const progressPercent = isEnding ? 100 : Math.round(((node.chapter - 1) / 7) * 100);
+
+            const progressBar = `
+                <div class="animate-pop w-full bg-white border-4 border-slate-900 rounded-full h-8 mb-10 shadow-comic-sm overflow-hidden relative" style="animation-delay: 0ms;">
+                    <div class="progress-fill bg-emerald-400 h-full border-r-4 border-slate-900 flex items-center justify-end px-3" style="width: ${progressPercent}%">
+                        ${progressPercent > 10 ? `<i class="fa-solid fa-briefcase text-slate-900"></i>` : ''}
+                    </div>
+                </div>
+            `;
+
+            let html = progressBar + `
+                <div class="animate-pop bg-white rounded-3xl shadow-comic p-6 sm:p-10 border-4 border-slate-900" style="animation-delay: 150ms;">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-10 pb-6 border-b-4 border-slate-200 gap-4">
+                        <h2 class="font-comic text-5xl text-slate-900 tracking-widest uppercase">${node.title}</h2>
+                        <span class="text-lg font-black text-slate-900 bg-amber-400 px-5 py-2 border-4 border-slate-900 rounded-xl uppercase transform rotate-2 shadow-comic-sm">
+                            ${isEnding ? 'CONCLUSION' : `CHAPTER ${node.chapter} OF 7`}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            `;
+
+            node.panels.forEach((panel, index) => {
+                const isFullWidth = index % 3 === 0;
+                const delay = 300 + (index * 150);
+                
+                let content = "";
+                if (panel.type === "dialogue") {
+                    content = `
+                        <div class="flex items-end space-x-4 w-full mt-2">
+                            <i class="${panel.icon} text-6xl ${panel.color} drop-shadow-md"></i>
+                            <div class="bg-white border-4 border-slate-900 rounded-[2rem] rounded-bl-none p-5 relative shadow-comic-sm flex-grow">
+                                <p class="font-black text-slate-900 text-xl leading-snug text-left">"${panel.text}"</p>
+                            </div>
+                        </div>
+                    `;
+                } else if (panel.type === "system") {
+                    content = `
+                        <div class="flex items-center space-x-6 mt-2">
+                            <div class="bg-white p-3 rounded-full border-4 border-slate-900 shadow-comic-sm">
+                                <i class="${panel.icon} ${panel.color} text-4xl animate-pulse"></i>
+                            </div>
+                            <p class="font-mono text-lg font-black whitespace-pre-line leading-relaxed text-slate-900 uppercase text-left">${panel.text}</p>
+                        </div>
+                    `;
+                } else {
+                    content = `
+                        <div class="flex flex-col items-center text-center space-y-5 mt-4">
+                            <div class="bg-white p-5 rounded-full border-4 border-slate-900 shadow-comic-sm transform hover:scale-110 transition-transform duration-300">
+                                <i class="${panel.icon} text-6xl ${panel.color}"></i>
+                            </div>
+                            <p class="font-extrabold text-xl sm:text-2xl text-slate-900 leading-relaxed text-center">${panel.text}</p>
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="animate-pop relative border-4 border-slate-900 rounded-2xl shadow-comic p-8 flex flex-col justify-center ${panel.bg} ${isFullWidth ? 'md:col-span-2' : ''}" style="animation-delay: ${delay}ms;">
+                        <button onclick="toggleSpeech(this, \`${panel.text.replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                            <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </button>
+                        ${content}
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            if (!isEnding) {
+                const choiceDelay = 300 + (node.panels.length * 150);
+                html += `
+                    <div class="animate-pop bg-slate-100 p-8 rounded-2xl border-4 border-slate-900 shadow-comic" style="animation-delay: ${choiceDelay}ms;">
+                        <h3 class="font-comic text-4xl text-slate-900 tracking-widest mb-8 text-center uppercase">Make Your Decision</h3>
+                        <div class="space-y-5">
+                `;
+                node.choices.forEach((choice, index) => {
+                    html += `
+                        <button onclick="handleChoice('${choice.next}')" class="comic-btn w-full text-left p-5 rounded-xl border-4 border-slate-900 shadow-comic hover:bg-amber-100 transition-colors flex items-center space-x-6 ${choice.btnClass} group cursor-pointer">
+                            <div class="bg-indigo-600 text-white w-14 h-14 rounded-full flex items-center justify-center font-comic text-3xl border-4 border-slate-900 flex-shrink-0 shadow-comic-sm">
+                                ${index + 1}
+                            </div>
+                            <span class="font-extrabold text-xl sm:text-2xl leading-snug flex-grow text-slate-900">${choice.text}</span>
+                            <i class="fa-solid fa-circle-arrow-right text-4xl text-slate-300 group-hover:text-indigo-600 transform group-hover:translate-x-2 transition-all"></i>
+                        </button>
+                    `;
+                });
+                html += `</div></div></div>`;
+            } else {
+                const endDelay = 300 + (node.panels.length * 150);
+                html += `
+                    <div class="animate-pop bg-amber-300 rounded-2xl p-8 sm:p-12 border-4 border-slate-900 shadow-comic mt-10" style="animation-delay: ${endDelay}ms;">
+                        <h3 class="font-comic text-5xl text-slate-900 tracking-widest mb-8 border-b-4 border-slate-900 pb-4 uppercase">Situation Resolved</h3>
+                        
+                        <div class="bg-white border-4 border-slate-900 rounded-xl p-6 mb-6 shadow-comic-sm">
+                            <h4 class="text-base font-black text-slate-500 uppercase mb-2">Soft Skill Focus</h4>
+                            <p class="text-indigo-700 font-comic text-3xl tracking-wide">${node.softSkill}</p>
+                        </div>
+
+                        <div class="bg-white border-4 border-slate-900 rounded-xl p-6 mb-10 shadow-comic-sm relative">
+                            <button onclick="toggleSpeech(this, \`${node.analysis.replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <h4 class="text-base font-black text-slate-500 uppercase mb-3">Critical Analysis Prompt</h4>
+                            <p class="text-slate-900 font-extrabold text-2xl leading-relaxed pr-12 text-left">
+                                ${node.analysis}
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-6">
+                            <button onclick="resetApp()" class="comic-btn flex-1 bg-white border-4 border-slate-900 text-slate-900 px-6 py-5 rounded-xl font-black text-xl hover:bg-slate-100 transition-colors flex items-center justify-center space-x-3 shadow-comic">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>PLAY AGAIN</span>
+                            </button>
+                            <button onclick="setStage('reflection')" class="comic-btn flex-1 bg-indigo-600 border-4 border-slate-900 text-white px-6 py-5 rounded-xl font-black text-xl hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-3 shadow-comic">
+                                <i class="fa-solid fa-users"></i>
+                                <span>TEAM DISCUSSION</span>
+                            </button>
+                        </div>
+                    </div></div>
+                `;
+            }
+
+            div.innerHTML = html;
+            return div;
+        }
+
+        function renderReflection() {
+            const div = document.createElement('div');
+            
+            const discussionPrompts = [
+                "In the prologue, how does 'scope creep' hurt both the employees and the profit of the company?",
+                "Why is it difficult for an account manager to say no to a client who spends a lot of money?",
+                "In your opinion, what is the best way to tell a client that their extra request will cost more money?"
+            ];
+
+            div.innerHTML = `
+                <div class="animate-pop bg-white rounded-3xl shadow-comic p-8 sm:p-12 border-4 border-slate-900" style="animation-delay: 0ms;">
+                    <div class="flex flex-col items-center justify-center space-y-4 mb-12 border-b-4 border-slate-900 pb-8 text-center">
+                        <i class="fa-solid fa-comments text-6xl text-indigo-600"></i>
+                        <h2 class="font-comic text-5xl md:text-6xl text-slate-900 tracking-wide uppercase">Team Discussion</h2>
+                    </div>
+
+                    <div class="space-y-10 mb-12">
+                        <div class="animate-pop bg-sky-50 p-8 rounded-2xl border-4 border-slate-900 shadow-comic relative" style="animation-delay: 200ms;">
+                            <button onclick="toggleSpeech(this, \`${discussionPrompts[0].replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <div class="absolute -top-6 -left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl shadow-comic-sm">1</div>
+                            <h3 class="font-comic text-4xl text-sky-900 mb-4 tracking-wide uppercase pr-12">Reading Comprehension</h3>
+                            <p class="text-slate-800 font-extrabold text-xl leading-relaxed text-left">${discussionPrompts[0]}</p>
+                        </div>
+
+                        <div class="animate-pop bg-purple-50 p-8 rounded-2xl border-4 border-slate-900 shadow-comic relative" style="animation-delay: 400ms;">
+                            <button onclick="toggleSpeech(this, \`${discussionPrompts[1].replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <div class="absolute -top-6 -left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl shadow-comic-sm">2</div>
+                            <h3 class="font-comic text-4xl text-purple-900 mb-4 tracking-wide uppercase pr-12">Evaluating Boundaries</h3>
+                            <p class="text-slate-800 font-extrabold text-xl leading-relaxed text-left">${discussionPrompts[1]}</p>
+                        </div>
+
+                        <div class="animate-pop bg-emerald-50 p-8 rounded-2xl border-4 border-slate-900 shadow-comic relative" style="animation-delay: 600ms;">
+                            <button onclick="toggleSpeech(this, \`${discussionPrompts[2].replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <div class="absolute -top-6 -left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl shadow-comic-sm">3</div>
+                            <h3 class="font-comic text-4xl text-emerald-900 mb-4 tracking-wide uppercase pr-12">Professional Communication</h3>
+                            <p class="text-slate-800 font-extrabold text-xl leading-relaxed text-left">${discussionPrompts[2]}</p>
+                        </div>
+                    </div>
+
+                    <div class="animate-pop" style="animation-delay: 800ms;">
+                        <button onclick="resetApp()" class="comic-btn w-full bg-slate-900 text-white px-8 py-6 rounded-2xl font-black text-2xl hover:bg-slate-800 transition-colors flex items-center justify-center space-x-4 border-4 border-slate-900 shadow-comic uppercase tracking-wider">
+                            <i class="fa-solid fa-rotate-right text-3xl"></i>
+                            <span>Restart Entire Lesson</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        // --- ACTIONS ---
+        function doTransition(actionCallback) {
+            const container = document.getElementById('app-container');
+            container.classList.add('fade-out-active');
+            stopAllAudio(); 
+            
+            setTimeout(() => {
+                actionCallback();
+                render();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                setTimeout(() => {
+                    container.classList.remove('fade-out-active');
+                }, 50);
+            }, 300); 
+        }
+
+        function setStage(newStage) {
+            doTransition(() => { state.stage = newStage; });
+        }
+
+        function startGame() {
+            doTransition(() => {
+                state.currentNode = 'start';
+                state.stage = 'story';
+            });
+        }
+
+        function handleChoice(nextNode) {
+            doTransition(() => { state.currentNode = nextNode; });
+        }
+
+        function resetApp() {
+            doTransition(() => {
+                state = { stage: 'reading', currentNode: 'start' };
+            });
+        }
+
+        // --- INITIALIZE ---
+        window.onload = () => {
+            const container = document.getElementById('app-container');
+            container.classList.add('fade-out-active');
+            render();
+            setTimeout(() => { container.classList.remove('fade-out-active'); }, 50);
+        };
+    </script>
+</body>
+</html>

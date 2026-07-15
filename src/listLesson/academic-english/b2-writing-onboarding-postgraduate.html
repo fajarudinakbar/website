@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>B2 Academic Writing - Onboarding & Postgraduate Literacy</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism & Scaled Typography -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '10px 10px 0px 0px #0f172a',
+                        'neo-sm': '5px 5px 0px 0px #0f172a',
+                        'neo-hover': '8px 8px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                        '5': '5px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+            background-size: 30px 30px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+            overflow-wrap: normal;
+            word-break: normal;
+        }
+        
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 4px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 3px solid #f2f3ff; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Collapsing Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 5px 5px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px 0px #0f172a;
+        }
+
+        .neo-btn {
+            border: 4px solid #0f172a;
+            box-shadow: 5px 5px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .neo-btn:hover:not(:disabled) {
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .neo-btn:active:not(:disabled) {
+            transform: translate(3px, 3px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.6;
+            font-weight: 700;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.35rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            accent-color: #0f172a;
+            cursor: pointer;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-dark p-4 sm:p-6 md:p-12 text-2xl">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 sm:p-10 lg:p-14 border-5 border-dark shadow-neo">
+        
+        <!-- Part 1: Breadcrumbs -->
+        <div class="mb-10 flex gap-3 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Academic English</span> 
+            <span class="text-xl whitespace-nowrap">></span>
+            <span class="bg-[#facc15] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Writing</span> 
+            <span class="text-xl whitespace-nowrap">></span>
+            <span class="bg-brand-400 px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">B2 Level</span> 
+            <span class="text-xl whitespace-nowrap">></span>
+            <span class="bg-brand-500 text-white px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Onboarding & Postgraduate Literacy</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-8 mb-12 border-b-5 border-dark pb-10">
+            <div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-dark uppercase tracking-tight mb-6 leading-none">
+                    Onboarding & Postgraduate Literacy
+                </h1>
+                <p class="text-2xl text-slate-800 font-bold leading-snug bg-brand-100 inline-block px-4 py-2 border-3 border-dark">
+                    Transitioning to Postgraduate Standards in Business Education
+                </p>
+            </div>
+            <div class="flex gap-4 shrink-0 w-full lg:w-auto">
+                <button onclick="openResetModal()" class="neo-btn w-full lg:w-auto px-6 py-4 text-xl text-dark bg-[#f87171] whitespace-nowrap">
+                    <i data-lucide="rotate-ccw" class="w-6 h-6"></i> Reset Worksheet
+                </button>
+            </div>
+        </div>
+
+        <!-- Introduction Block -->
+        <div class="bg-[#fefce8] border-4 border-dark p-6 md:p-8 mb-12 shadow-neo-sm flex items-start gap-5">
+            <div class="bg-[#facc15] p-3 border-3 border-dark shrink-0">
+                <i data-lucide="info" class="w-8 h-8 text-dark"></i>
+            </div>
+            <p class="text-2xl text-dark font-bold leading-relaxed">
+                <span class="uppercase font-black text-3xl block mb-2 whitespace-nowrap">Pedagogical Instructions:</span>
+                This onboarding module bridges the gap between concise executive-style business writing and precise peer-reviewed academic synthesis. Proceed sequentially through each interactive and reflective task below to calibrate your baseline writing registers.
+            </p>
+        </div>
+
+        <!-- ACCORDIONS MAIN CONTAINER -->
+        <div class="space-y-6 md:space-y-8">
+
+            <!-- Part 1 Accordion (Preparation - Warm-Up Thinking) -->
+            <div class="border-5 border-dark shadow-neo bg-[#e0f2fe] overflow-hidden">
+                <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group">
+                    <div class="flex items-center gap-5">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            1
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Part 1: Preparation & Warm-Up Thinking</span>
+                    </div>
+                    <div id="icon-wrapper-part1" class="transition-transform duration-300 transform rotate-180 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part1" class="accordion-content active border-t-5 border-dark">
+                    <div>
+                        <div class="bg-white p-6 md:p-10 space-y-10">
+                            <!-- Task 1 -->
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <span class="bg-brand-200 text-dark border-3 border-dark font-black px-3 py-1 text-lg uppercase inline-block mb-4 whitespace-nowrap">Task 1: Warm-Up Thinking</span>
+                                <p class="text-2xl font-bold mb-6 text-slate-800">
+                                    Answer the following questions carefully to review your current paradigm:
+                                </p>
+                                
+                                <div class="space-y-6">
+                                    <div>
+                                        <label class="block font-bold mb-2 text-xl">1. In your past professional or academic experience, how have you usually structured reports or essays? What techniques did you use to ensure absolute clarity for the reader?</label>
+                                        <textarea id="warmup-q1" class="text-input text-xl font-medium" placeholder="My report structures usually included..."></textarea>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block font-bold mb-2 text-xl">2. Why do you think university professors prioritize peer-reviewed citations over a writer's personal real-world management success?</label>
+                                        <textarea id="warmup-q2" class="text-input text-xl font-medium" placeholder="University systems look for verified literature because..."></textarea>
+                                    </div>
+
+                                    <div>
+                                        <label class="block font-bold mb-2 text-xl">3. What specific challenges do you anticipate when moving away from brief, fragmented bullet points toward fully unified, long-form academic prose?</label>
+                                        <textarea id="warmup-q3" class="text-input text-xl font-medium" placeholder="I anticipate issues related to linking paragraphs because..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Task 1.1 -->
+                            <div class="bg-[#fcf6ff] border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                                    <span class="bg-[#e879f9] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase whitespace-nowrap">Task 1.1: AI Support for Warm-Up</span>
+                                    <button onclick="copyPrompt('prompt-t1-1')" class="neo-btn bg-white text-dark px-4 py-2 text-lg whitespace-nowrap">
+                                        <i data-lucide="copy" class="w-5 h-5"></i> Copy Prompt for AI
+                                    </button>
+                                </div>
+                                <p class="text-xl font-bold text-slate-700 leading-relaxed mb-4">
+                                    Get personalized, encouraging feedback on your writing style differences. Copy the prompt below and paste it into an AI chat model:
+                                </p>
+                                <div class="bg-slate-50 border-3 border-dark p-4 font-mono text-lg text-dark overflow-x-auto select-all" id="prompt-t1-1">Act as an expert academic writing coach. I am a professional transitioning into a postgraduate business program. Summarize the fundamental structural and philosophical differences between corporate report writing and postgraduate academic writing. Keep the tone encouraging, objective, and clear for a B2-level learner, specifically highlighting the concepts of empirical proof and independent critical synthesis.</div>
+                            </div>
+
+                            <!-- Task 2 Vocabulary match -->
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <span class="bg-[#38bdf8] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase inline-block mb-4 whitespace-nowrap">Task 2: Vocabulary in Context</span>
+                                <p class="text-2xl font-bold mb-6 text-slate-800">
+                                    Read the sentences taken from the text. Choose the correct contextual meaning of each CAPITALIZED term.
+                                </p>
+                                <div id="vocab-section" class="space-y-6">
+                                    <!-- Populated dynamically by script -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2 Accordion (Core Reading Passage) -->
+            <div class="border-5 border-dark shadow-neo bg-[#eff6ff] overflow-hidden">
+                <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group">
+                    <div class="flex items-center gap-5">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            2
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Part 2: Core Reading Passage</span>
+                    </div>
+                    <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part2" class="accordion-content border-t-5 border-dark">
+                    <div>
+                        <div class="bg-white p-6 md:p-10 space-y-10">
+                            <div class="flex justify-end">
+                                <button onclick="playTTS()" id="tts-btn" class="neo-btn bg-[#60a5fa] text-dark px-6 py-3 text-xl w-full sm:w-auto whitespace-nowrap">
+                                    <i data-lucide="volume-2" class="w-6 h-6"></i> Listen to Passage
+                                </button>
+                            </div>
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-10 shadow-inner space-y-6 text-2xl text-justify font-medium leading-relaxed">
+                                <p>
+                                    Transitioning from a professional corporate environment to a postgraduate academic track requires a profound <span class="bg-[#facc15] px-1.5 py-0.5 border-2 border-dark font-bold">TRANSFORMATION</span> in communication style. While corporate managers naturally excel at delivering concise, action-oriented findings, university writing systems demand thorough <span class="bg-[#38bdf8] px-1.5 py-0.5 border-2 border-dark font-bold">EMPIRICAL</span> verification. In business, decisions are frequently backed by institutional authority or immediate observation; conversely, academic prose requires every assertion to be systematically <span class="bg-[#4ade80] px-1.5 py-0.5 border-2 border-dark font-bold">EMBEDDED</span> within existing literature. Writers must demonstrate <span class="bg-[#facc15] px-1.5 py-0.5 border-2 border-dark font-bold">SYNTHESIS</span> by linking diverse peer-reviewed theories to show how individual studies intersect or diverge, rather than merely summarizing papers in isolation.
+                                </p>
+                                <p>
+                                    Furthermore, postgraduate rubrics evaluate manuscripts based on structural clarity, presentation standards, and the critical execution of arguments rather than simple linguistic fluency. For instance, relying on stylistic shortcuts such as bullet points instead of fully extended prose blocks can result in an immediate reduction of marks. A robust academic essay also requires an extensive research <span class="bg-[#38bdf8] px-1.5 py-0.5 border-2 border-dark font-bold">FOOTPRINT</span>. Referencing fewer than ten scholarly sources often makes a comprehensive investigation unlikely, as it indicates a dependence on basic course notes rather than independent inquiry.
+                                </p>
+                                <p>
+                                    Ultimately, the primary objective of postgraduate literacy training is to bridge this stylistic gap. This process involves mastering advanced structural devices, utilizing academic <span class="bg-[#4ade80] px-1.5 py-0.5 border-2 border-dark font-bold">HEDGING</span> to maintain objective distance, and evaluating the boundary conditions of published models. Moving from functional professional output to a postgraduate standard means viewing writing not as a list of grammar rules, but as a deliberate framework designed to validate complex conceptual claims.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 3 Accordion (Understanding & Critical Analysis) -->
+            <div class="border-5 border-dark shadow-neo bg-[#d1fae5] overflow-hidden">
+                <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group">
+                    <div class="flex items-center gap-5">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            3
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Part 3: Understanding & Critical Analysis</span>
+                    </div>
+                    <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part3" class="accordion-content border-t-5 border-dark">
+                    <div>
+                        <div class="bg-white p-6 md:p-10 space-y-10">
+                            <!-- Task 3 -->
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <span class="bg-brand-200 text-dark border-3 border-dark font-black px-3 py-1 text-lg uppercase inline-block mb-4 whitespace-nowrap">Task 3: General Understanding (Gist)</span>
+                                <div class="space-y-6">
+                                    <div>
+                                        <label class="block font-bold mb-2 text-xl">1. What is the central purpose of this orientation passage?</label>
+                                        <textarea id="gist-q1" class="text-input text-xl font-medium" placeholder="The primary intent of the text is to..."></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold mb-2 text-xl">2. Who is the primary target audience of this text, and what professional shift are they currently experiencing?</label>
+                                        <textarea id="gist-q2" class="text-input text-xl font-medium" placeholder="The text speaks to..."></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold mb-2 text-xl">3. Based on the conclusion of the text, how should postgraduate academic writing be conceptualized?</label>
+                                        <textarea id="gist-q3" class="text-input text-xl font-medium" placeholder="It should be viewed as..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Task 4 -->
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <span class="bg-[#38bdf8] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase inline-block mb-4 whitespace-nowrap">Task 4: Detail and Meaning</span>
+                                <div class="space-y-6">
+                                    <div>
+                                        <label class="block font-bold mb-2 text-xl">1. According to the text, what specific formatting layout choice will cause a student to be penalized, even if their grammar is pristine?</label>
+                                        <textarea id="detail-q1" class="text-input text-xl font-medium" placeholder="Writing with bullet points instead of..."></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold mb-2 text-xl">2. What baseline number of scholarly references is explicitly mentioned, and why is falling below this number considered an issue by assessors?</label>
+                                        <textarea id="detail-q2" class="text-input text-xl font-medium" placeholder="The baseline is... because..."></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold mb-2 text-xl">3. How does the core source of authority differ between business decision-making and academic prose according to the first paragraph?</label>
+                                        <textarea id="detail-q3" class="text-input text-xl font-medium" placeholder="Business relies on... whereas academic prose..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Interactive MCQ Check -->
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <span class="bg-brand-400 text-white border-3 border-dark font-black px-3 py-1.5 text-lg uppercase inline-block mb-4 whitespace-nowrap">Deep Comprehension Check</span>
+                                <p class="text-2xl font-bold mb-6 text-slate-800">
+                                    Apply text analysis to select the correct answers under standard assessment parameters:
+                                </p>
+                                <div id="mcq-section" class="space-y-8">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Task 5 True/False -->
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <span class="bg-[#4ade80] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase inline-block mb-4 whitespace-nowrap">Task 5: Opinion Check (True/False with Reason)</span>
+                                <p class="text-2xl font-bold mb-6 text-slate-800">
+                                    Evaluate the statements below based on the text. Write a brief justification for your choice in the box, then verify your conceptual assessment using the interactive True/False engine.
+                                </p>
+                                <div id="tf-section" class="space-y-8">
+                                    <!-- True/False loaded dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Task 6 Cause and Effect -->
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <span class="bg-[#facc15] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase inline-block mb-4 whitespace-nowrap">Task 6: Cause and Effect Thinking</span>
+                                <p class="text-2xl font-bold mb-6 text-slate-800">
+                                    Read the following pairs of events. Determine which event acts as the primary CAUSE and which constitutes the resulting EFFECT based on the text.
+                                </p>
+                                <div id="ce-section" class="space-y-8">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Task 6.1 Extension -->
+                            <div class="bg-[#fcf6ff] border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                                    <span class="bg-[#e879f9] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase whitespace-nowrap">Task 6.1: AI-Guided Extension Prompt</span>
+                                    <button onclick="copyPrompt('prompt-t6-1')" class="neo-btn bg-white text-dark px-4 py-2 text-lg whitespace-nowrap">
+                                        <i data-lucide="copy" class="w-5 h-5"></i> Copy Prompt for AI
+                                    </button>
+                                </div>
+                                <p class="text-xl font-bold text-slate-700 leading-relaxed mb-4">
+                                    Assess your mastery of academic cause-effect markers and logic transitions:
+                                </p>
+                                <div class="bg-slate-50 border-3 border-dark p-4 font-mono text-lg text-dark overflow-x-auto select-all" id="prompt-t6-1">Review my understanding of cause-and-effect logic in postgraduate writing. I will provide a short paragraph explaining why relying exclusively on basic course notes causes an essay to fall into a lower grading band. Check my logic for any analytical gaps, suggest how I can reinforce my explanation using advanced B2 cause-effect connectors (such as 'consequently', 'thereby', 'as a direct result', or 'instigates'), and provide one clear example of an optimized paragraph.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 4 Accordion (Speaking & Situational Registers) -->
+            <div class="border-5 border-dark shadow-neo bg-[#ffedd5] overflow-hidden">
+                <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group">
+                    <div class="flex items-center gap-5">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            4
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Part 4: Speaking & Situational Registers</span>
+                    </div>
+                    <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part4" class="accordion-content border-t-5 border-dark">
+                    <div>
+                        <div class="bg-white p-6 md:p-10 space-y-10">
+                            <!-- Task 7 Speaking -->
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <span class="bg-[#fb923c] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase inline-block mb-4 whitespace-nowrap">Task 7: Speaking – Personal Position</span>
+                                <p class="text-2xl font-bold mb-6 text-slate-800">
+                                    Discuss the following questions with a partner or prepare your verbal arguments:
+                                </p>
+                                <ul class="list-disc pl-6 space-y-4 font-bold text-xl mb-6">
+                                    <li>Think of a time you had to justify a major decision or claim in a professional workspace. Did you rely primarily on personal experience, organizational authority, or external evidence? How must you modify that habit for an academic paper?</li>
+                                    <li>Real-world corporate executives frequently state that they prefer bullet points over long paragraphs. Do you agree that business-school assignments should penalize bullet points? Defend your position using logical arguments.</li>
+                                </ul>
+                                <textarea class="text-input text-xl font-medium" placeholder="Prepare notes or record draft positions here..."></textarea>
+                            </div>
+
+                            <!-- Task 7.1 AI Coach -->
+                            <div class="bg-[#fcf6ff] border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                                    <span class="bg-[#e879f9] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase whitespace-nowrap">Task 7.1: AI as Practice Partner</span>
+                                    <button onclick="copyPrompt('prompt-t7-1')" class="neo-btn bg-white text-dark px-4 py-2 text-lg whitespace-nowrap">
+                                        <i data-lucide="copy" class="w-5 h-5"></i> Copy Prompt for AI
+                                    </button>
+                                </div>
+                                <p class="text-xl font-bold text-slate-700 leading-relaxed mb-4">
+                                    Configure AI to serve as a constructive assessor to test your real-time academic speech:
+                                </p>
+                                <div class="bg-slate-50 border-3 border-dark p-4 font-mono text-lg text-dark overflow-x-auto select-all" id="prompt-t7-1">Act as a constructive but rigorous university academic assessor. I am going to state my personal position on whether executive brevity (like bullet points) should be penalized in postgraduate business school assignments. Listen to my spoken argument, evaluate my grammatical control and vocabulary use at a B2 level, and ask me two challenging follow-up questions that force me to implement academic hedging and defend my logic.</div>
+                            </div>
+
+                            <!-- Task 8 Register adaptive -->
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <span class="bg-[#fb923c] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase inline-block mb-4 whitespace-nowrap">Task 8: Discussion – Contextual Skills</span>
+                                <p class="text-2xl font-bold mb-4 text-slate-800 text-justify font-sans">
+                                    In pairs or small groups, analyze the social and professional implications of writing registers. Consider how a corporate executive might react if an employee wrote a daily project update in a highly dense, academic format. Conversely, consider how a university professor reacts to an executive-style summary missing all theoretical context. Why is situational awareness and register adaptation a crucial skill in both professional and academic landscapes?
+                                </p>
+                                <textarea class="text-input text-xl font-medium" placeholder="Analyze registers, context adaptation, and audience responses..."></textarea>
+                            </div>
+
+                            <!-- Task 9 Alex MBA Case study -->
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <span class="bg-[#fb923c] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase inline-block mb-4 whitespace-nowrap">Task 9: Case Study – Decision Making</span>
+                                <div class="bg-slate-100 border-3 border-dark p-4 font-bold text-xl mb-4 text-slate-700">
+                                    <strong>Scenario Context:</strong> Alex is a highly successful operations manager with fifteen years of corporate leadership experience who is beginning an Executive MBA. For the first assignment, Alex writes a structurally clear turnaround plan for a struggling global retail corporation. The plan is commercially flawless, highly practical, and employs excellent industry terminology. However, Alex relies entirely on personal management intuition, internal corporate data, and just two textbook references. The paper heavily features bulleted lists for maximum readability.
+                                </div>
+                                <div class="space-y-4 mb-6">
+                                    <p class="text-xl font-bold">1. If you were the academic assessor, what grade band (Fail, Pass, Merit, Distinction) would you award this paper based on the rubrics described in the orientation guide, and why?</p>
+                                    <p class="text-xl font-bold">2. What specific advice would you give Alex to help transform this exact same practical corporate knowledge into a valid postgraduate essay before final submission?</p>
+                                </div>
+                                <textarea class="text-input text-xl font-medium" placeholder="Draft your recommendations and grading analysis for Alex here..."></textarea>
+                                
+                                <div class="flex justify-end mt-4">
+                                    <button onclick="toggleSample('sample-t9', this)" class="neo-btn bg-white text-dark px-6 py-3 text-lg whitespace-nowrap">
+                                        Show Case Analysis Advice
+                                    </button>
+                                </div>
+
+                                <div id="sample-t9" class="answer-box hidden mt-6 p-6 bg-[#f0fdf4] border-4 border-dark shadow-inner text-2xl">
+                                    <strong class="font-black uppercase text-dark block mb-3"><i data-lucide="check-check" class="w-6 h-6 inline mr-2 text-[#22c55e]"></i>Academic Assessor Guidelines:</strong>
+                                    <p class="font-medium text-slate-700 leading-relaxed mb-4">
+                                        <strong>Suggested Grade Band:</strong> This paper falls into the <strong>Fail</strong> band (or at best a marginal pass threshold) despite its practical excellence.
+                                    </p>
+                                    <p class="font-medium text-slate-700 leading-relaxed">
+                                        <strong>Assessment Reasons & Feedback:</strong> Alex relies heavily on intuitive management observations, only citing two textbooks. The guidelines explicitly specify that failing to reach a baseline of ten references implies heavy dependence on course notes rather than deep academic inquiry. Furthermore, the extensive use of bulleted lists will cause a direct reduction of presentation marks. Alex must convert the bulleted layout into linked prose blocks and anchor managerial observations with peer-reviewed references.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Task 9.1 AI Debate -->
+                            <div class="bg-[#fcf6ff] border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                                    <span class="bg-[#e879f9] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase whitespace-nowrap">Task 9.1: AI Role Play Comparison</span>
+                                    <button onclick="copyPrompt('prompt-t9-1')" class="neo-btn bg-white text-dark px-4 py-2 text-lg whitespace-nowrap">
+                                        <i data-lucide="copy" class="w-5 h-5"></i> Copy Prompt for AI
+                                    </button>
+                                </div>
+                                <p class="text-xl font-bold text-slate-700 leading-relaxed mb-4">
+                                    Generate a dynamic interaction comparing these divergent mindsets:
+                                </p>
+                                <div class="bg-slate-50 border-3 border-dark p-4 font-mono text-lg text-dark overflow-x-auto select-all" id="prompt-t9-1">Simulate a structured debate between two distinct characters: Professor Fajar (a strict, constructive postgraduate academic assessor who demands deep empirical synthesis and continuous formal prose blocks) and Alex (a busy corporate operations manager who strongly believes that executive brevity and real-world commercial results are far more valuable than dense theoretical citations). Generate a 3-turn dialogue where they debate the merits of Alex's essay style. Ensure both characters speak clearly at a B2/C1 transition standard.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 5 Accordion (Final Reflection) -->
+            <div class="border-5 border-dark shadow-neo bg-[#fae8ff] overflow-hidden">
+                <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group">
+                    <div class="flex items-center gap-5">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            5
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Part 5: Final Reflection</span>
+                    </div>
+                    <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part5" class="accordion-content border-t-5 border-dark">
+                    <div>
+                        <div class="bg-white p-6 md:p-10 space-y-10">
+                            <div class="bg-slate-50 border-4 border-dark p-6 md:p-8 shadow-neo-sm space-y-6">
+                                <span class="bg-[#e879f9] text-dark border-3 border-dark font-black px-3 py-1.5 text-lg uppercase inline-block whitespace-nowrap">Task 10: Final Reflection</span>
+                                <label class="block font-bold text-slate-800 text-xl leading-relaxed mb-4">
+                                    Write a reflection paragraph of <strong>exactly 5 to 6 sentences</strong> answering the following prompts:
+                                    <br>1. What is the most critical stylistic shift you need to make personally as you transition into postgraduate academic writing?
+                                    <br>2. Which specific requirement mentioned in the text (e.g., source count, prose blocks, empirical verification, academic hedging) do you think will be the most challenging for you to implement?
+                                    <br>3. What concrete step will you take this week to begin practicing this specific skill?
+                                </label>
+                                
+                                <textarea id="reflection-area" oninput="trackReflectionStats()" class="text-input text-xl font-medium" placeholder="Draft your 5-6 sentence reflection here..."></textarea>
+                                
+                                <!-- Counter Helper -->
+                                <div class="flex justify-between items-center bg-slate-100 border-2 border-dark p-3 text-lg font-bold">
+                                    <span>Sentence Count: <span id="sentence-count">0</span> / 5-6</span>
+                                    <span>Word Count: <span id="word-count">0</span></span>
+                                </div>
+
+                                <div class="flex justify-end pt-4">
+                                    <button onclick="toggleSample('sample-t10', this)" class="neo-btn bg-[#e879f9] text-dark px-8 py-4 text-xl whitespace-nowrap">
+                                        Show Sample Reflection
+                                    </button>
+                                </div>
+
+                                <div id="sample-t10" class="answer-box hidden mt-6 p-6 bg-[#f0fdf4] border-4 border-dark shadow-inner text-2xl">
+                                    <strong class="font-black uppercase text-dark block mb-3"><i data-lucide="check-square" class="w-6 h-6 inline mr-2 text-[#22c55e]"></i>Exemplar Response (Exactly 5 Sentences):</strong>
+                                    <p class="font-medium text-slate-700 leading-relaxed mb-4">
+                                        Transitioning to postgraduate coursework requires me to shift away from bulleted layouts in favor of unified prose blocks. Specifically, committing to an extensive research footprint of at least ten references representing external evidence presents my greatest challenge. To overcome this limitation, I must avoid relying purely on my personal management success. Consequently, this week I will dedicate three hours to navigating the university's peer-reviewed database. Setting up this weekly research routine will establish the empirical verification framework necessary to survive academic assessments.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t-5 border-dark text-center">
+            <p class="text-dark text-xl font-black uppercase tracking-wider bg-[#facc15] inline-block px-6 py-3 border-4 border-dark shadow-neo-sm">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="underline hover:text-brand-900 transition-colors">Fajarudin Akbar</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification System -->
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-8 py-5 shadow-neo transition-all duration-300 translate-y-36 opacity-0 z-50 flex items-center gap-4 font-black text-xl uppercase tracking-wide w-max max-w-[90vw]">
+        <i id="toast-icon" data-lucide="info" class="w-8 h-8 shrink-0"></i>
+        <span id="toast-msg">Default Toast Notification</span>
+    </div>
+
+    <!-- Reset Confirmation Custom Modal -->
+    <div id="reset-modal" class="modal">
+        <div class="bg-white border-5 border-dark p-8 max-w-lg w-full mx-4 shadow-neo">
+            <h3 class="text-3xl font-black uppercase mb-4">Are you absolutely sure?</h3>
+            <p class="text-xl font-bold mb-6 text-slate-700">This action will clear all of your typed reflection notes, interactive task selections, and reset attempt tracks.</p>
+            <div class="flex gap-4">
+                <button onclick="confirmReset()" class="neo-btn flex-1 bg-[#f87171] text-dark py-3 text-lg">Yes, Reset</button>
+                <button onclick="closeResetModal()" class="neo-btn flex-1 bg-slate-200 text-dark py-3 text-lg">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts / Data Models / Two-Attempt Control Engine -->
+    <script>
+        const vocabData = [
+            {
+                id: "v1",
+                word: "TRANSFORMATION",
+                correct: "b",
+                options: {
+                    a: "a. A minor adjustment or clerical correction",
+                    b: "b. A complete and significant change in form or nature",
+                    c: "c. A temporary substitute or alternative strategy"
+                },
+                hint: "Paragraph 1 contrasts corporate communication with postgraduate standards. Think of a complete structural style shift.",
+                explanation: "b - 'Transformation' means a complete and significant change. In this context, it describes the major shift required when moving from a corporate to an academic writing style."
+            },
+            {
+                id: "v2",
+                word: "EMPIRICAL",
+                correct: "a",
+                options: {
+                    a: "a. Based on verifiable observation, data, or experience rather than pure theory",
+                    b: "b. Governed by historical rules, absolute traditions, and ancient systems",
+                    c: "c. Completed rapidly without planning, editing, or external validation"
+                },
+                hint: "Think about scientific verification or data collection. The text contrasts university systems with intuitive observations.",
+                explanation: "a - 'Empirical' means based on verifiable observation, data, or evidence rather than theory alone. The text contrasts corporate action items with university systems that demand evidence-based validation."
+            },
+            {
+                id: "v3",
+                word: "EMBEDDED",
+                correct: "b",
+                options: {
+                    a: "a. Removed or isolated completely from its original context",
+                    b: "b. Firmly fixed, integrated, and deeply rooted as an essential part of a surrounding whole",
+                    c: "c. Distributed broadly to an external commercial audience for marketing purposes"
+                },
+                hint: "Reflect on how your assertions must reside directly inside the literature surrounding your topic.",
+                explanation: "b - 'Embedded' means firmly fixed and integrated as an essential part of a surrounding whole. The text indicates that academic assertions must be rooted directly into existing published literature."
+            },
+            {
+                id: "v4",
+                word: "SYNTHESIS",
+                correct: "b",
+                options: {
+                    a: "a. The act of duplicating multiple paragraphs verbatim from course textbooks",
+                    b: "b. The combination of separate ideas, findings, or components to form a coherent, unified argument",
+                    c: "c. A style of creative writing that deliberately avoids formal organizational rules"
+                },
+                hint: "It involves drawing links between divergent papers to form a single cohesive model rather than explaining them separately.",
+                explanation: "b - 'Synthesis' means the process of combining separate ideas or components to form a unified argument. The passage explicitly defines synthesis as linking diverse peer-reviewed theories together."
+            },
+            {
+                id: "v5",
+                word: "FOOTPRINT",
+                correct: "c",
+                options: {
+                    a: "a. The literal, physical length of a student's final printed manuscript",
+                    b: "b. The negative environmental impact caused by printing academic articles",
+                    c: "c. The visible mark, evidence, or cumulative impact of thorough, widespread research activity"
+                },
+                hint: "Think of an operational footprint of references. A high count of peer-reviewed citations leaves a strong trace.",
+                explanation: "c - 'Footprint' refers to the visible mark or evidence of thorough, widespread activity. An 'extensive research footprint' means clear evidence of wide-ranging scholarly reading throughout the text."
+            },
+            {
+                id: "v6",
+                word: "HEDGING",
+                correct: "a",
+                options: {
+                    a: "a. The strategic use of cautious, non-absolute language to avoid overgeneralization and protect claims",
+                    b: "b. A method of converting large numerical spreadsheets into colorful visual graphs",
+                    c: "c. The practice of evading complex prompts by switching to a completely unrelated topic"
+                },
+                hint: "Look for parameters describing safe academic buffers (such as using words like 'suggests' or 'tends to').",
+                explanation: "a - 'Hedging' means the use of cautious, non-absolute language to avoid overgeneralization. The text mentions hedging as an advanced device used to maintain objective distance and protect analytical claims."
+            }
+        ];
+
+        const mcqData = [
+            {
+                id: "m1",
+                question: "1. What represents the primary analytical difference between descriptive and critical prose?",
+                correct: "c",
+                options: {
+                    a: "a. Descriptive prose focuses strictly on grammar guidelines, while critical prose uses complex vocabulary.",
+                    b: "b. Descriptive prose utilizes personal management stories, while critical prose uses institutional authority.",
+                    c: "c. Descriptive prose merely states facts or definitions, while critical prose evaluates methodology and evidence limitations."
+                },
+                hint: "Review paragraph 2. Look for definitions of what descriptive and critical writing actually do.",
+                explanation: "c - Critical writing goes beyond summarizing facts (description) to challenge research methods and evaluate evidence validity."
+            },
+            {
+                id: "m2",
+                question: "2. Which formatting choice acts as a 'stylistic shortcut' that triggers an immediate mark reduction?",
+                correct: "a",
+                options: {
+                    a: "a. Incorporating bullet points instead of writing in fully extended prose blocks.",
+                    b: "b. Writing in passive voice instead of active manager directives.",
+                    c: "c. Using fewer than twenty external peer-reviewed citations."
+                },
+                hint: "Check paragraph 2 for presentation and formatting layouts that penalize grades.",
+                explanation: "a - Relying on bullet points violates formal presentation conventions and results in a direct loss of points."
+            },
+            {
+                id: "m3",
+                question: "3. What does an extensive research 'footprint' indicate to an academic assessor?",
+                correct: "b",
+                options: {
+                    a: "a. The literal, physical length of the final paper.",
+                    b: "b. Independent inquiry beyond simple reliance on basic course notes.",
+                    c: "c. The environmental metrics associated with digital research database usage."
+                },
+                hint: "Read paragraph 2 about research footprint and the baseline number of references.",
+                explanation: "b - A robust reference footprint (10+ sources) demonstrates independent academic search and deep library exploration."
+            }
+        ];
+
+        const tfData = [
+            {
+                id: "tf1",
+                text: "1. Corporate communication strategies value fully extended prose blocks over concise, action-oriented layouts.",
+                correct: "False",
+                hint: "Reread the first paragraph. Contrast business brevity with academic structural prose blocks.",
+                explanation: "False. Corporate communication values concise, brief, and action-oriented layouts like bullet points, whereas academic writing values fully extended paragraph and prose blocks."
+            },
+            {
+                id: "tf2",
+                text: "2. Postgraduate marking rubrics grade academic essays solely on linguistic fluency and flawless sentence structures.",
+                correct: "False",
+                hint: "Examine paragraph 2 carefully. Does simple fluent grammar guarantee high postgraduate marks?",
+                explanation: "False. The text states that marks are awarded based on structural clarity, presentation standards, and the critical execution of arguments rather than simple linguistic fluency."
+            },
+            {
+                id: "tf3",
+                text: "3. Incorporating fewer than ten references suggests that a student has relied heavily on course notes instead of independent inquiry.",
+                correct: "True",
+                hint: "Check paragraph 2 reference baseline requirements.",
+                explanation: "True. The passage explicitly outlines that fewer than ten references makes a comprehensive analysis unlikely, indicating a heavy dependence on basic course notes."
+            },
+            {
+                id: "tf4",
+                text: "4. Academic hedging is an advanced writing device used by postgraduate students to make bold, absolute claims that cannot be challenged.",
+                correct: "False",
+                hint: "Hedging centers around cautious expressions like 'implies' or 'indicates.' Are these absolute claims?",
+                explanation: "False. Academic hedging is used to maintain objective distance and ensure cautious, non-absolute analysis rather than making bold, absolute claims."
+            },
+            {
+                id: "tf5",
+                text: "5. The text implies that academic writing should be approached as a deliberate framework designed to validate complex management concepts.",
+                correct: "True",
+                hint: "Read the final sentence of the text.",
+                explanation: "True. The final sentence specifies that moving to a postgraduate standard requires seeing academic writing as a deliberate structural framework designed to validate complex conceptual claims rather than a mere list of grammar rules."
+            }
+        ];
+
+        const ceData = [
+            {
+                id: "ce1",
+                context: "Pair 1: Layout selections and grade impact.",
+                promptA: "A: A student incorporates professional layout devices like bullet points instead of writing in extended prose blocks.",
+                promptB: "B: The student experiences an immediate reduction in their final presentation marks.",
+                correctA: "Cause",
+                correctB: "Effect",
+                hint: "The formatting layout choice occurs first and acts as the trigger which initiates the grading deduction.",
+                explanation: "Explanation: The formatting decision (using bullet points) violates presentation guidelines, which directly triggers an automated or manual reduction in marks under the presentation band, regardless of grammatical quality."
+            },
+            {
+                id: "ce2",
+                context: "Pair 2: Core connections and literary validation.",
+                promptA: "A: A writer successfully connects diverse peer-reviewed concepts to map out areas of agreement or disagreement.",
+                promptB: "B: The writer demonstrates the necessary level of academic synthesis required for a postgraduate literature review.",
+                correctA: "Cause",
+                correctB: "Effect",
+                hint: "Connecting external literature is the active method. Reflect on what result this active method generates.",
+                explanation: "Explanation: The active cross-examination and connection of separate theories is the direct methodology by which synthesis is achieved and demonstrated to the academic assessor."
+            }
+        ];
+
+        const state = {
+            attempts: {}, // tracks id -> attempts
+            completed: {} // tracks id -> completed status
+        };
+
+        // DOM Loader and Initializer
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderVocab();
+            renderMCQ();
+            renderTF();
+            renderCE();
+        });
+
+        // Toggles Accordions dynamically with height auto calculations
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            const isActive = content.classList.contains('active');
+            
+            if (isActive) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-section');
+            container.innerHTML = vocabData.map(v => `
+                <div class="bg-slate-50 border-4 border-dark p-6 shadow-neo-sm relative overflow-hidden" id="card-${v.id}">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4">
+                        <label class="font-black text-2xl tracking-tight text-brand-700 whitespace-nowrap">${v.word}</label>
+                        <div id="feedback-wrapper-${v.id}" class="flex items-center gap-3"></div>
+                    </div>
+                    <select id="${v.id}" onchange="evaluateInteractiveTask('${v.id}', 'vocab')" class="text-input text-xl font-bold pr-10 focus:ring-4 focus:ring-brand-500">
+                        <option value="">-- Choose Definition --</option>
+                        <option value="a">${v.options.a}</option>
+                        <option value="b">${v.options.b}</option>
+                        <option value="c">${v.options.c}</option>
+                    </select>
+                    <div id="hint-wrapper-${v.id}" class="mt-4 font-bold text-xl hidden transition-all"></div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderMCQ() {
+            const container = document.getElementById('mcq-section');
+            container.innerHTML = mcqData.map(m => `
+                <div class="bg-slate-50 border-4 border-dark p-6 shadow-neo-sm" id="card-${m.id}">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <p class="font-bold text-2xl text-dark text-pretty">${m.question}</p>
+                        <div id="feedback-wrapper-${m.id}" class="shrink-0"></div>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4" id="options-container-${m.id}">
+                        ${Object.entries(m.options).map(([key, text]) => `
+                            <label class="option-label" id="label-${m.id}-${key}">
+                                <input type="radio" name="${m.id}" value="${key}" onclick="evaluateInteractiveTask('${m.id}', 'mcq')">
+                                <span class="text-xl font-bold">${text}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="hint-wrapper-${m.id}" class="mt-4 font-bold text-xl hidden transition-all"></div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-section');
+            container.innerHTML = tfData.map(tf => `
+                <div class="bg-slate-50 border-4 border-dark p-6 shadow-neo-sm" id="card-${tf.id}">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <p class="font-bold text-2xl text-dark text-pretty">${tf.text}</p>
+                        <div id="feedback-wrapper-${tf.id}" class="shrink-0"></div>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block font-bold mb-2 text-xl">Justify your choice (Optional):</label>
+                        <textarea id="justification-${tf.id}" class="text-input text-xl font-medium" placeholder="My reason for this choice is..."></textarea>
+                    </div>
+                    <div class="flex gap-6" id="options-container-${tf.id}">
+                        <label class="option-label w-full sm:w-1/2" id="label-${tf.id}-True">
+                            <input type="radio" name="${tf.id}" value="True" onclick="evaluateInteractiveTask('${tf.id}', 'tf')">
+                            <span class="text-xl font-bold">True</span>
+                        </label>
+                        <label class="option-label w-full sm:w-1/2" id="label-${tf.id}-False">
+                            <input type="radio" name="${tf.id}" value="False" onclick="evaluateInteractiveTask('${tf.id}', 'tf')">
+                            <span class="text-xl font-bold">False</span>
+                        </label>
+                    </div>
+                    <div id="hint-wrapper-${tf.id}" class="mt-4 font-bold text-xl hidden transition-all"></div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderCE() {
+            const container = document.getElementById('ce-section');
+            container.innerHTML = ceData.map(ce => `
+                <div class="bg-slate-50 border-4 border-dark p-6 shadow-neo-sm" id="card-${ce.id}">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 border-b-2 border-dark pb-3">
+                        <h4 class="font-black text-xl tracking-tight text-brand-800">${ce.context}</h4>
+                        <div id="feedback-wrapper-${ce.id}" class="flex items-center gap-3"></div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                            <span class="text-lg font-black text-dark bg-white border-2 border-dark px-2 py-1 shrink-0">Statement A</span>
+                            <p class="text-xl font-bold flex-1">${ce.promptA}</p>
+                            <select id="${ce.id}-a" onchange="evaluateInteractiveTask('${ce.id}', 'ce')" class="text-input text-lg font-bold w-full md:w-48 focus:ring-4">
+                                <option value="">-- Classify --</option>
+                                <option value="Cause">Cause</option>
+                                <option value="Effect">Effect</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                            <span class="text-lg font-black text-dark bg-white border-2 border-dark px-2 py-1 shrink-0">Statement B</span>
+                            <p class="text-xl font-bold flex-1">${ce.promptB}</p>
+                            <select id="${ce.id}-b" onchange="evaluateInteractiveTask('${ce.id}', 'ce')" class="text-input text-lg font-bold w-full md:w-48 focus:ring-4">
+                                <option value="">-- Classify --</option>
+                                <option value="Cause">Cause</option>
+                                <option value="Effect">Effect</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="hint-wrapper-${ce.id}" class="mt-4 font-bold text-xl hidden transition-all"></div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function evaluateInteractiveTask(id, type) {
+            if (state.completed[id]) return;
+
+            let record = null;
+            let isCorrect = false;
+            let userVal = "";
+
+            if (type === 'vocab') {
+                record = vocabData.find(v => v.id === id);
+                userVal = document.getElementById(id).value;
+                if (!userVal) return;
+                isCorrect = (userVal === record.correct);
+            } else if (type === 'mcq') {
+                record = mcqData.find(m => m.id === id);
+                const radios = document.getElementsByName(id);
+                radios.forEach(r => { if (r.checked) userVal = r.value; });
+                if (!userVal) return;
+                isCorrect = (userVal === record.correct);
+            } else if (type === 'tf') {
+                record = tfData.find(t => t.id === id);
+                const radios = document.getElementsByName(id);
+                radios.forEach(r => { if (r.checked) userVal = r.value; });
+                if (!userVal) return;
+                isCorrect = (userVal === record.correct);
+            } else if (type === 'ce') {
+                record = ceData.find(c => c.id === id);
+                const valA = document.getElementById(`${id}-a`).value;
+                const valB = document.getElementById(`${id}-b`).value;
+                if (!valA || !valB) return;
+                isCorrect = (valA === record.correctA && valB === record.correctB);
+                userVal = `${valA}-${valB}`;
+            }
+
+            if (!state.attempts[id]) {
+                state.attempts[id] = 1;
+            } else {
+                state.attempts[id]++;
+            }
+
+            const attempt = state.attempts[id];
+            const feedbackWrapper = document.getElementById(`feedback-wrapper-${id}`);
+            const hintWrapper = document.getElementById(`hint-wrapper-${id}`);
+
+            // Success state logic
+            if (isCorrect) {
+                state.completed[id] = true;
+                feedbackWrapper.innerHTML = `
+                    <span class="text-emerald-900 bg-emerald-400 border-3 border-dark px-4 py-2 font-black text-lg inline-flex items-center gap-2 shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i> Correct
+                    </span>`;
+                hintWrapper.className = "mt-4 p-4 border-3 border-dark bg-emerald-50 text-emerald-900 text-lg font-medium";
+                hintWrapper.innerHTML = `<strong>Success Explanation:</strong> ${record.explanation}`;
+                hintWrapper.classList.remove('hidden');
+
+                lockTaskInputs(id, type, record);
+                triggerAudio(true);
+                showNotification("Correct solution verified!", "check-circle");
+            } 
+            // First Attempt failure logic
+            else if (attempt === 1) {
+                feedbackWrapper.innerHTML = `
+                    <span class="text-amber-950 bg-amber-400 border-3 border-dark px-4 py-2 font-black text-lg inline-flex items-center gap-2 shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">
+                        <i data-lucide="alert-circle" class="w-5 h-5"></i> Try Again
+                    </span>`;
+                hintWrapper.className = "mt-4 p-4 border-3 border-dark bg-amber-50 text-amber-950 text-lg font-medium";
+                hintWrapper.innerHTML = `<strong>Interactive Hint:</strong> ${record.hint}`;
+                hintWrapper.classList.remove('hidden');
+
+                applyVisualFail(id, type, userVal);
+                triggerAudio(false);
+                showNotification("Concept check failed. Take a second attempt.", "alert-triangle");
+            } 
+            // Second Attempt failure lock out logic
+            else {
+                state.completed[id] = true;
+                feedbackWrapper.innerHTML = `
+                    <span class="text-rose-950 bg-rose-400 border-3 border-dark px-4 py-2 font-black text-lg inline-flex items-center gap-2 shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">
+                        <i data-lucide="x-circle" class="w-5 h-5"></i> Locked
+                    </span>`;
+                hintWrapper.className = "mt-4 p-4 border-3 border-dark bg-rose-50 text-rose-950 text-lg font-medium";
+                
+                let correctDisplay = "";
+                if (type === 'vocab') {
+                    correctDisplay = record.correct.toUpperCase();
+                } else if (type === 'mcq') {
+                    correctDisplay = record.correct.toUpperCase();
+                } else if (type === 'tf') {
+                    correctDisplay = record.correct;
+                } else if (type === 'ce') {
+                    correctDisplay = `Statement A: ${record.correctA} | Statement B: ${record.correctB}`;
+                }
+
+                hintWrapper.innerHTML = `<strong>Incorrect.</strong> Correct Solution: <strong>${correctDisplay}</strong>. <br><strong>Explanation:</strong> ${record.explanation}`;
+                hintWrapper.classList.remove('hidden');
+
+                lockTaskInputs(id, type, record);
+                triggerAudio(false);
+                showNotification("Attempts locked. Recommended corrections displayed.", "lock");
+            }
+            lucide.createIcons();
+        }
+
+        function lockTaskInputs(id, type, record) {
+            if (type === 'vocab') {
+                const el = document.getElementById(id);
+                el.value = record.correct;
+                el.disabled = true;
+                el.className = "text-input text-xl font-bold pr-10 bg-emerald-100 border-emerald-600";
+            } else if (type === 'mcq') {
+                const radios = document.getElementsByName(id);
+                radios.forEach(r => {
+                    r.disabled = true;
+                    const label = document.getElementById(`label-${id}-${r.value}`);
+                    label.className = "option-label";
+                    if (r.value === record.correct) {
+                        label.classList.add('bg-emerald-100', 'border-emerald-600');
+                    } else {
+                        label.classList.add('opacity-50');
+                    }
+                });
+            } else if (type === 'tf') {
+                const radios = document.getElementsByName(id);
+                radios.forEach(r => {
+                    r.disabled = true;
+                    const label = document.getElementById(`label-${id}-${r.value}`);
+                    label.className = "option-label";
+                    if (r.value === record.correct) {
+                        label.classList.add('bg-emerald-100', 'border-emerald-600');
+                    } else {
+                        label.classList.add('opacity-50');
+                    }
+                });
+                document.getElementById(`justification-${id}`).disabled = true;
+            } else if (type === 'ce') {
+                const elA = document.getElementById(`${id}-a`);
+                const elB = document.getElementById(`${id}-b`);
+                elA.value = record.correctA;
+                elB.value = record.correctB;
+                elA.disabled = true;
+                elB.disabled = true;
+                elA.className = "text-input text-lg font-bold w-full md:w-48 bg-emerald-100 border-emerald-600";
+                elB.className = "text-input text-lg font-bold w-full md:w-48 bg-emerald-100 border-emerald-600";
+            }
+        }
+
+        function applyVisualFail(id, type, userVal) {
+            if (type === 'vocab') {
+                const el = document.getElementById(id);
+                el.classList.add('bg-amber-50', 'border-amber-500');
+            } else if (type === 'mcq') {
+                const label = document.getElementById(`label-${id}-${userVal}`);
+                if (label) label.classList.add('bg-amber-50', 'border-amber-500');
+            } else if (type === 'tf') {
+                const label = document.getElementById(`label-${id}-${userVal}`);
+                if (label) label.classList.add('bg-amber-50', 'border-amber-500');
+            } else if (type === 'ce') {
+                document.getElementById(`${id}-a`).classList.add('bg-amber-50', 'border-amber-500');
+                document.getElementById(`${id}-b`).classList.add('bg-amber-50', 'border-amber-500');
+            }
+        }
+
+        function copyPrompt(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            
+            try {
+                document.execCommand('copy');
+                showNotification("Prompt copied to clipboard!", "copy");
+            } catch (err) {
+                showNotification("Copy failed. Highlight manually.", "x");
+            }
+            selection.removeAllRanges();
+        }
+
+        function showNotification(msg, icon = "info") {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-msg');
+            const iconEl = document.getElementById('toast-icon');
+
+            msgEl.innerText = msg;
+            iconEl.setAttribute('data-lucide', icon);
+            lucide.createIcons();
+
+            toast.classList.remove('translate-y-36', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-36', 'opacity-0');
+            }, 3500);
+        }
+
+        function triggerAudio(success) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                if (success) {
+                    osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.15);
+                } else {
+                    osc.frequency.setValueAtTime(293.66, ctx.currentTime); // D4
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.22);
+                }
+            } catch (e) {
+                // Audio Context auto-blocked by browsers till navigation event
+            }
+        }
+
+        let speechActive = false;
+        function playTTS() {
+            const btn = document.getElementById('tts-btn');
+            
+            if (speechActive) {
+                window.speechSynthesis.cancel();
+                speechActive = false;
+                btn.innerHTML = `<i data-lucide="volume-2" class="w-6 h-6"></i> Listen to Passage`;
+                lucide.createIcons();
+                return;
+            }
+
+            const passage = `
+                Transitioning from a professional corporate environment to a postgraduate academic track requires a profound TRANSFORMATION in communication style. While corporate managers naturally excel at delivering concise, action-oriented findings, university writing systems demand thorough EMPIRICAL verification. In business, decisions are frequently backed by institutional authority or immediate observation; conversely, academic prose requires every assertion to be systematically EMBEDDED within existing literature. Writers must demonstrate SYNTHESIS by linking diverse peer-reviewed theories to show how individual studies intersect or diverge, rather than merely summarizing papers in isolation.
+                Furthermore, postgraduate rubrics evaluate manuscripts based on structural clarity, presentation standards, and the critical execution of arguments rather than simple linguistic fluency. For instance, relying on stylistic shortcuts such as bullet points instead of fully extended prose blocks can result in an immediate reduction of marks. A robust academic essay also requires an extensive research FOOTPRINT. Referencing fewer than ten scholarly sources often makes a comprehensive investigation unlikely, as it indicates a dependence on basic course notes rather than independent inquiry.
+                Ultimately, the primary objective of postgraduate literacy training is to bridge this stylistic gap. This process involves mastering advanced structural devices, utilizing academic HEDGING to maintain objective distance, and evaluating the boundary conditions of published models. Moving from functional professional output to a postgraduate standard means viewing writing not as a list of grammar rules, but as a deliberate framework designed to validate complex conceptual claims.
+            `;
+
+            const synth = new SpeechSynthesisUtterance(passage);
+            const voices = window.speechSynthesis.getVoices();
+            
+            let targetVoice = voices.find(v => v.name.includes("Natural") && v.name.includes("English"));
+            if (!targetVoice) {
+                targetVoice = voices.find(v => v.lang.startsWith("en") && v.name.includes("Google"));
+            }
+            if (!targetVoice) {
+                targetVoice = voices.find(v => v.lang.startsWith("en"));
+            }
+
+            if (targetVoice) synth.voice = targetVoice;
+            synth.rate = 0.95;
+
+            synth.onend = () => {
+                speechActive = false;
+                btn.innerHTML = `<i data-lucide="volume-2" class="w-6 h-6"></i> Listen to Passage`;
+                lucide.createIcons();
+            };
+
+            synth.onerror = () => {
+                speechActive = false;
+                btn.innerHTML = `<i data-lucide="volume-2" class="w-6 h-6"></i> Listen to Passage`;
+                lucide.createIcons();
+            };
+
+            window.speechSynthesis.speak(synth);
+            speechActive = true;
+            btn.innerHTML = `<i data-lucide="square" class="w-6 h-6"></i> Stop Listening`;
+            lucide.createIcons();
+        }
+
+        function trackReflectionStats() {
+            const val = document.getElementById('reflection-area').value.trim();
+            if (!val) {
+                document.getElementById('sentence-count').innerText = "0";
+                document.getElementById('word-count').innerText = "0";
+                return;
+            }
+            
+            const words = val.match(/\b[-a-zA-Z']+\b/g);
+            const sentences = val.split(/[.!?]+/).filter(s => s.trim().length > 0);
+
+            document.getElementById('sentence-count').innerText = sentences.length;
+            document.getElementById('word-count').innerText = words ? words.length : 0;
+        }
+
+        function toggleSample(id, btn) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                if (id === 'sample-t9') {
+                    btn.innerText = "Hide Case Analysis Advice";
+                } else if (id === 'sample-t10') {
+                    btn.innerText = "Hide Sample Reflection";
+                } else {
+                    btn.innerText = "Hide Output";
+                }
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                if (id === 'sample-t9') {
+                    btn.innerText = "Show Case Analysis Advice";
+                } else if (id === 'sample-t10') {
+                    btn.innerText = "Show Sample Reflection";
+                } else {
+                    btn.innerText = "Show Output";
+                }
+            }
+        }
+
+        function openResetModal() {
+            document.getElementById('reset-modal').classList.add('active');
+        }
+
+        function closeResetModal() {
+            document.getElementById('reset-modal').classList.remove('active');
+        }
+
+        function confirmReset() {
+            closeResetModal();
+            state.attempts = {};
+            state.completed = {};
+
+            document.querySelectorAll('textarea').forEach(t => t.value = "");
+            
+            renderVocab();
+            renderMCQ();
+            renderTF();
+            renderCE();
+
+            trackReflectionStats();
+
+            document.querySelectorAll('.answer-box').forEach(a => {
+                a.classList.add('hidden');
+                a.classList.remove('visible');
+            });
+
+            // Re-open first accordion default
+            const content = document.getElementById('content-part1');
+            const iconWrapper = document.getElementById('icon-wrapper-part1');
+            content.classList.add('active');
+            iconWrapper.style.transform = 'rotate(180deg)';
+
+            // Collapse other accordions
+            ['part2', 'part3', 'part4', 'part5'].forEach(key => {
+                const otherContent = document.getElementById(`content-${key}`);
+                const otherIcon = document.getElementById(`icon-wrapper-${key}`);
+                otherContent.classList.remove('active');
+                otherIcon.style.transform = 'rotate(0deg)';
+            });
+
+            showNotification("Worksheet has been fully cleared.", "rotate-ccw");
+        }
+    </script>
+</body>
+</html>

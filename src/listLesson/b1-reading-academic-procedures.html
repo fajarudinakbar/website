@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Reading - Academic Procedures</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Reading Highlights */
+        .highlight-text {
+            background-color: #fef08a; /* Yellow-200 */
+            padding: 2px 4px;
+            border-radius: 4px;
+            border-bottom: 2px solid #eab308; /* Yellow-500 */
+            transition: all 0.5s ease;
+            font-weight: bold;
+            color: #854d0e;
+        }
+
+        /* Flowchart Specifics */
+        .flow-line-vertical {
+            width: 2px;
+            background-color: #cbd5e1;
+            margin: 0 auto;
+            height: 24px;
+        }
+        .flow-arrow-down::after {
+            content: "↓";
+            display: block;
+            text-align: center;
+            color: #94a3b8;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base text-slate-500 mb-8 flex gap-2 font-medium uppercase tracking-wider">
+            <span>Academic English</span> <span>&gt;</span> 
+            <span>Reading</span> <span>&gt;</span> 
+            <span>B1 Level</span> <span>&gt;</span> 
+            <span class="text-indigo-700 font-bold">Admissions Process</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-violet-600 tracking-tight mb-3">
+                    Academic Procedures
+                </h1>
+                <p class="text-xl text-slate-500 font-medium">Topic: Higher Education & Admissions</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-lg text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-indigo-600 p-6 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-xl text-slate-700 leading-relaxed">
+                <i class="fas fa-university mr-3 text-indigo-600"></i> 
+                <strong>Instructions:</strong> Master the university application process. Complete the vocabulary, read the guide, and map the process flow.
+                <br><span class="text-base text-slate-500 italic ml-10">(Correct answers appear after 2 incorrect attempts.)</span>
+            </p>
+        </div>
+
+        <!-- Part 1: Vocabulary (Cyan Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-2xl font-bold text-cyan-900">Preparation</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-2xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 2000px;">
+                <div class="p-10 bg-white">
+                    <p class="text-lg text-slate-600 mb-6 font-medium">Match the academic terms with their correct definitions.</p>
+                    <div id="vocab-container" class="grid gap-4">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-8 text-right">
+                        <button onclick="checkVocab()" class="text-lg font-bold text-white bg-cyan-600 px-8 py-3 rounded-xl hover:bg-cyan-700 transition-colors shadow-lg">Check Vocabulary</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: Reading Passage (Blue Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-book-reader"></i></div>
+                    <span class="text-2xl font-bold text-blue-900">Reading: Applying to Global University</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 2000px;">
+                <div class="p-10 bg-white prose prose-slate max-w-none text-justify leading-loose text-xl border-t border-blue-50">
+                    <p class="mb-6">Applying for a Master’s degree can be stressful, but following this procedure will ensure your application is successful. The process for the September intake begins in January.</p>
+                    
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Step 1: Preparation and Eligibility</h3>
+                    <p class="mb-6">First, prospective students must check the website to see if they are <span id="read-fc1">eligible</span>. You must hold a Bachelor's degree with a GPA of at least 3.0. If your GPA is lower than 3.0, you cannot apply.</p>
+                    
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Step 2: Documentation and Submission</h3>
+                    <p class="mb-6">Next, gather your documents. You need a valid passport, an IELTS certificate, and your academic <span id="read-fc2">transcripts</span>. Once ready, create an account on the portal, upload the files, and pay the $50 application fee. You must submit everything before the <span id="read-fc3">March 31st deadline</span>.</p>
+                    
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Step 3: Assessment (The Decision Phase)</h3>
+                    <p class="mb-6">After submission, the Admissions Office performs an "Admin Check." If your documents are incomplete, they will email you to request the <span id="read-fc4">missing files</span>. You have 7 days to reply. If the documents are complete, your application is sent to the <span id="read-fc5">Faculty</span> for review. This takes 4–6 weeks. If the Faculty rejects you, you will receive a notification email. The process ends here. If the Faculty accepts you, you will receive a conditional <span id="read-fc6">Letter of Offer</span>.</p>
+                    
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Step 4: Acceptance and Enrollment</h3>
+                    <p>To accept the offer, you must pay the first semester’s <span id="read-fc7">tuition deposit</span>. Finally, once the payment is confirmed, you will receive a "Confirmation of Enrollment" (CoE), which allows you to apply for a student visa.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: Flowchart (Emerald Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-2xl font-bold text-emerald-900">Complete the Admissions Flowchart</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-10 bg-white">
+                    <p class="text-lg text-slate-600 mb-8 font-medium text-center">Fill in the missing steps based on the reading. Correct answers will highlight the text in Part 2.</p>
+                    
+                    <div class="max-w-4xl mx-auto flex flex-col items-center space-y-4">
+                        
+                        <!-- Start -->
+                        <div class="bg-emerald-100 text-emerald-900 px-6 py-3 rounded-full font-bold border border-emerald-300 text-center w-full md:w-2/3">
+                            (START): Student checks 
+                            <select id="fc1" data-correct="eligibility" class="bg-white border-b-2 border-emerald-500 text-center outline-none px-2 py-1 mx-2 cursor-pointer">
+                                <option value="">Select...</option>
+                                <option value="eligibility">Eligibility</option>
+                                <option value="visa">Visa Status</option>
+                                <option value="scholarship">Scholarship</option>
+                            </select> 
+                            (GPA > 3.0)
+                            <div id="fb-fc1" class="text-sm h-5 font-bold mt-1"></div>
+                        </div>
+                        <div class="flow-line-vertical flow-arrow-down"></div>
+
+                        <!-- Step 1 -->
+                        <div class="bg-white border-2 border-slate-300 p-4 rounded-xl shadow-sm w-full md:w-2/3 text-center">
+                            <span class="font-bold text-emerald-700">Step 1:</span> Upload documents (Passport, IELTS, 
+                            <select id="fc2" data-correct="transcripts" class="bg-emerald-50/50 border-b-2 border-emerald-300 outline-none text-center px-2 py-1 cursor-pointer">
+                                <option value="">Select...</option>
+                                <option value="transcripts">Transcripts</option>
+                                <option value="photos">Photos</option>
+                                <option value="tickets">Flight Tickets</option>
+                            </select>)
+                            <div id="fb-fc2" class="text-sm h-5 font-bold mt-1"></div>
+                        </div>
+                        <div class="flow-line-vertical flow-arrow-down"></div>
+
+                        <!-- Step 2 -->
+                        <div class="bg-white border-2 border-slate-300 p-4 rounded-xl shadow-sm w-full md:w-2/3 text-center">
+                            <span class="font-bold text-emerald-700">Step 2:</span> Pay fee and submit before the 
+                            <select id="fc3" data-correct="deadline" class="bg-emerald-50/50 border-b-2 border-emerald-300 outline-none text-center px-2 py-1 cursor-pointer">
+                                <option value="">Select...</option>
+                                <option value="deadline">Deadline</option>
+                                <option value="interview">Interview</option>
+                                <option value="exam">Exam</option>
+                            </select>
+                            <div id="fb-fc3" class="text-sm h-5 font-bold mt-1"></div>
+                        </div>
+                        <div class="flow-line-vertical flow-arrow-down"></div>
+
+                        <!-- Decision A -->
+                        <div class="bg-yellow-50 border-2 border-yellow-200 p-4 rounded-xl w-full md:w-2/3 text-center font-bold text-yellow-800">
+                            Decision A: Are docs complete?
+                        </div>
+
+                        <!-- Branching -->
+                        <div class="flex justify-between w-full md:w-5/6 relative gap-4">
+                            <!-- Left Branch (NO) -->
+                            <div class="flex flex-col items-center w-1/2 border-r border-slate-200 pr-2">
+                                <div class="text-red-500 font-bold mb-2">NO ↙</div>
+                                <div class="bg-red-50 border border-red-200 p-3 rounded-lg text-center text-sm w-full mb-2">
+                                    <strong>Step 3:</strong><br>University requests 
+                                    <select id="fc4" data-correct="missing" class="bg-white border-b border-red-300 outline-none text-center px-1 cursor-pointer w-full">
+                                        <option value="">...</option>
+                                        <option value="missing">Missing Files</option>
+                                        <option value="money">More Money</option>
+                                    </select>
+                                    <div id="fb-fc4" class="text-xs h-4 font-bold mt-1"></div>
+                                </div>
+                                <div class="flow-line-vertical flow-arrow-down"></div>
+                                <div class="bg-red-50 border border-red-200 p-3 rounded-lg text-center text-sm w-full">
+                                    <strong>Step 5:</strong><br>Student replies in 7 days.
+                                </div>
+                            </div>
+
+                            <!-- Right Branch (YES) -->
+                            <div class="flex flex-col items-center w-1/2 pl-2">
+                                <div class="text-green-500 font-bold mb-2">↘ YES</div>
+                                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg text-center text-sm w-full mb-2">
+                                    <strong>Step 4:</strong> Application sent to 
+                                    <select id="fc5" data-correct="faculty" class="bg-white border-b border-emerald-400 outline-none text-center px-1 cursor-pointer w-full">
+                                        <option value="">...</option>
+                                        <option value="faculty">Faculty</option>
+                                        <option value="dean">Dean</option>
+                                        <option value="agent">Agent</option>
+                                    </select>
+                                    <div id="fb-fc5" class="text-xs h-4 font-bold mt-1"></div>
+                                </div>
+                                <div class="flow-line-vertical flow-arrow-down"></div>
+                                <div class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-center text-sm w-full">
+                                    <strong>Decision B:</strong> Faculty Decision?
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decision B Logic (Simplified) -->
+                        <div class="flex justify-between w-full md:w-5/6 relative gap-4 mt-2">
+                             <!-- Left: Reject -->
+                             <div class="flex flex-col items-center w-1/2 pr-2">
+                                <div class="text-red-500 text-xs font-bold">↙ Reject</div>
+                                <div class="bg-slate-100 p-2 text-xs rounded w-full text-center">Step 6: Receive email. (STOP)</div>
+                             </div>
+                             <!-- Right: Accept -->
+                             <div class="flex flex-col items-center w-1/2 pl-2">
+                                <div class="text-green-500 text-xs font-bold">↘ Accept</div>
+                                <div class="bg-emerald-100 border border-emerald-300 p-2 text-xs rounded w-full text-center">
+                                    <strong>Step 7:</strong> Receive 
+                                    <select id="fc6" data-correct="offer" class="bg-white border-b border-emerald-500 outline-none w-20 text-center">
+                                        <option value="">...</option>
+                                        <option value="offer">Letter of Offer</option>
+                                        <option value="visa">Visa</option>
+                                    </select>
+                                    <div id="fb-fc6" class="h-3"></div>
+                                </div>
+                             </div>
+                        </div>
+
+                        <!-- Convergence -->
+                        <div class="flow-line-vertical flow-arrow-down"></div>
+                        <div class="bg-white border-2 border-slate-300 p-4 rounded-xl shadow-sm w-full md:w-2/3 text-center">
+                            <span class="font-bold text-emerald-700">Step 8:</span> Pay 
+                            <select id="fc7" data-correct="tuition" class="bg-emerald-50/50 border-b-2 border-emerald-300 outline-none text-center px-2 py-1 cursor-pointer">
+                                <option value="">Select...</option>
+                                <option value="tuition">Tuition</option>
+                                <option value="rent">Rent</option>
+                                <option value="tax">Tax</option>
+                            </select> deposit.
+                            <div id="fb-fc7" class="text-sm h-5 font-bold mt-1"></div>
+                        </div>
+                        <div class="flow-line-vertical flow-arrow-down"></div>
+                        <div class="bg-slate-800 text-white px-6 py-3 rounded-full font-bold border border-slate-600">(END): Receive CoE</div>
+
+                    </div>
+
+                    <div class="mt-8 text-right">
+                        <button onclick="checkFlowchart()" class="text-lg font-bold text-white bg-emerald-600 px-8 py-3 rounded-xl hover:bg-emerald-700 transition-colors shadow-lg">Check Flowchart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: Logical Analysis (Orange Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-orange-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-8 bg-orange-50 hover:bg-orange-100 border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-orange-200 text-orange-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-2xl font-bold text-orange-900">Logical Analysis (If/Unless)</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-10 bg-white">
+                    <div class="space-y-6">
+                        <!-- Logic 1 -->
+                        <div>
+                            <p class="mb-2 text-slate-700 font-medium">1. Unless a student has a GPA of 3.0 or higher, they...</p>
+                            <input type="text" id="log1" data-correct="cannot apply,can't apply" class="w-full p-4 border border-orange-200 rounded-xl text-lg focus:border-orange-500 outline-none" placeholder="Finish the sentence...">
+                            <div id="fb-log1" class="text-sm font-bold mt-2 h-6"></div>
+                        </div>
+                        <!-- Logic 2 -->
+                        <div>
+                            <p class="mb-2 text-slate-700 font-medium">2. If a student fails to reply to the "missing file" email within 7 days, the application will likely be...</p>
+                            <input type="text" id="log2" data-correct="rejected,cancelled,stopped" class="w-full p-4 border border-orange-200 rounded-xl text-lg focus:border-orange-500 outline-none" placeholder="Finish the sentence...">
+                            <div id="fb-log2" class="text-sm font-bold mt-2 h-6"></div>
+                        </div>
+                        <!-- Logic 3 -->
+                        <div>
+                            <p class="mb-2 text-slate-700 font-medium">3. A student cannot apply for a student visa until they receive...</p>
+                            <input type="text" id="log3" data-correct="the confirmation of enrollment,coe,confirmation of enrollment" class="w-full p-4 border border-orange-200 rounded-xl text-lg focus:border-orange-500 outline-none" placeholder="Finish the sentence...">
+                            <div id="fb-log3" class="text-sm font-bold mt-2 h-6"></div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-right">
+                        <button onclick="checkLogic()" class="text-lg font-bold text-white bg-orange-500 px-8 py-3 rounded-xl hover:bg-orange-600 transition-colors shadow-lg">Check Logic</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: Critical Thinking (Violet Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-2xl font-bold text-violet-900">Critical Thinking</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-10 bg-white">
+                    <div class="bg-violet-50 p-4 rounded-lg border border-violet-100 mb-6">
+                        <p class="text-violet-900 italic text-base"><strong>Discussion:</strong> "The text says the process for September intake starts in January. Why do universities require students to apply 8 months in advance?"</p>
+                    </div>
+                    
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-slate-700 font-bold w-3/4">Your Thoughts:</p>
+                        <button onclick="toggleAnswer('ans-crit', this)" class="text-sm font-bold text-violet-600 border border-violet-200 bg-white px-3 py-1 rounded hover:bg-violet-50 transition-colors">Show Sample Answer</button>
+                    </div>
+                    <textarea class="w-full p-3 border border-slate-200 rounded-lg text-lg focus:ring-2 focus:ring-violet-400 outline-none h-32" placeholder="Think about visas, housing, reviewing applications..."></textarea>
+                    <div id="ans-crit" class="answer-box hidden mt-3 p-4 bg-white rounded-lg border border-violet-200 text-base text-slate-700">
+                        <strong>Sample Answer:</strong> "The university needs time to review thousands of applications carefully. The student needs time to get a visa (which can take months), find safe accommodation, book flights, and prepare financially for the move."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-lg font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        
+        // Attempts Tracking
+        const attempts = {};
+
+        // Part 1: Vocab Data
+        const vocabData = [
+            { id: "v1", word: "1. Prospective (student)", correct: "c", options: { a: "Official list of grades", b: "Time year begins", c: "Person likely to become a student", d: "Money for classes", e: "Qualified/Allowed", f: "Letter saying Yes", g: "Sign up officially", h: "Final date" } },
+            { id: "v2", word: "2. Transcript", correct: "a" },
+            { id: "v3", word: "3. Intake", correct: "b" },
+            { id: "v4", word: "4. Deadline", correct: "h" },
+            { id: "v5", word: "5. Tuition", correct: "d" },
+            { id: "v6", word: "6. Eligible", correct: "e" },
+            { id: "v7", word: "7. Letter of Offer", correct: "f" },
+            { id: "v8", word: "8. Enroll", correct: "g" }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            const optionsHtml = `
+                <option value="">Select definition...</option>
+                <option value="a">a. Document showing grades (Transcript)</option>
+                <option value="b">b. Time year begins (Intake)</option>
+                <option value="c">c. Person likely to be student</option>
+                <option value="d">d. Money for classes (Tuition)</option>
+                <option value="e">e. Qualified/Allowed</option>
+                <option value="f">f. Letter saying "Yes"</option>
+                <option value="g">g. Sign up officially</option>
+                <option value="h">h. Final date (Deadline)</option>
+            `;
+            
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col md:flex-row md:items-center gap-4 p-4 bg-cyan-50/50 rounded-xl border border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <div class="md:w-1/3 font-bold text-cyan-900">${item.word}</div>
+                    <div class="md:w-2/3 flex items-center gap-4">
+                        <select id="${item.id}" class="flex-1 p-3 border border-slate-300 rounded-lg text-lg focus:outline-none focus:border-cyan-500 cursor-pointer bg-white">
+                            ${optionsHtml}
+                        </select>
+                        <div id="feedback-${item.id}" class="w-auto flex-shrink-0 text-lg font-bold min-w-[24px]"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    select.classList.add('border-green-500', 'bg-green-50');
+                    select.disabled = true;
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    if (attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-sm font-bold text-red-600 bg-red-100 px-2 rounded">Ans: ${item.correct}</span>`;
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    }
+                    select.classList.add('border-red-300');
+                }
+            });
+        }
+
+        function highlightReading(stepId) {
+            const el = document.getElementById(`read-${stepId}`);
+            if(el) {
+                el.classList.add('highlight-text');
+            }
+        }
+
+        function checkFlowchart() {
+            // IDs fc1 to fc7
+            for (let i = 1; i <= 7; i++) {
+                const input = document.getElementById(`fc${i}`);
+                const feedback = document.getElementById(`fb-fc${i}`);
+                const val = input.value;
+                const correct = input.dataset.correct;
+                const key = `fc${i}`;
+
+                if (!attempts[key]) attempts[key] = 0;
+
+                if (val === correct) {
+                    feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check"></i></span>';
+                    input.classList.add('border-green-500', 'bg-green-50');
+                    input.classList.remove('border-red-300');
+                    input.disabled = true;
+                    highlightReading(key);
+                } else if (val !== "") {
+                    attempts[key]++;
+                    if (attempts[key] >= 2) {
+                        const selectedOption = input.querySelector(`option[value="${correct}"]`);
+                        const correctText = selectedOption ? selectedOption.text : correct;
+                        feedback.innerHTML = `<span class="text-red-600 text-xs">Ans: ${correctText}</span>`;
+                        input.value = correct;
+                        input.classList.add('border-green-500'); 
+                        input.disabled = true;
+                        highlightReading(key);
+                    } else {
+                        feedback.innerHTML = '<span class="text-red-500 text-xs">Try again</span>';
+                        input.classList.add('border-red-300');
+                    }
+                }
+            }
+        }
+
+        function checkLogic() {
+            // IDs log1 to log3
+            for (let i = 1; i <= 3; i++) {
+                const input = document.getElementById(`log${i}`);
+                const feedback = document.getElementById(`fb-log${i}`);
+                const correctList = input.dataset.correct.split(',');
+                const val = input.value.trim().toLowerCase();
+                const key = `log${i}`;
+
+                if (!attempts[key]) attempts[key] = 0;
+
+                const isCorrect = correctList.some(c => val.includes(c));
+
+                if (isCorrect) {
+                    feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check"></i> Correct</span>';
+                    input.classList.add('border-green-500', 'bg-green-50');
+                    input.disabled = true;
+                } else if (val !== "") {
+                    attempts[key]++;
+                    if (attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-600">Sample: "...${correctList[0]}"</span>`;
+                    } else {
+                        feedback.innerHTML = '<span class="text-red-500">Not quite. Check Part 2.</span>';
+                    }
+                    input.classList.add('border-red-300');
+                }
+            }
+        }
+
+        // --- Utility ---
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Sample Answer";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '3000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your work?")) {
+                for (const key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input').forEach(i => {
+                    i.value = "";
+                    i.disabled = false;
+                    i.classList.remove('border-green-500', 'bg-green-50', 'border-red-300');
+                });
+                document.querySelectorAll('select').forEach(s => {
+                    s.value = "";
+                    s.disabled = false;
+                    s.classList.remove('border-green-500', 'bg-green-50', 'border-red-300');
+                });
+                
+                // Clear Highlights
+                document.querySelectorAll('.highlight-text').forEach(el => el.classList.remove('highlight-text'));
+
+                // Clear Feedback
+                document.querySelectorAll('[id^="feedback-"], [id^="fb-"]').forEach(f => f.innerHTML = "");
+                
+                // Hide Answers
+                document.querySelectorAll('.answer-box').forEach(el => {
+                    el.classList.add('hidden');
+                    el.classList.remove('visible');
+                });
+                
+                // Reset Buttons
+                document.querySelectorAll('button').forEach(btn => {
+                   if(btn.innerText.includes("Hide")) btn.innerText = "Show Sample Answer"; 
+                });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+        });
+
+    </script>
+</body>
+</html>

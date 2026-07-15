@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Infographic - Education and Careers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* BASE SETUP & NEO-BRUTALISM */
+        :root {
+            --bg-color: #e5e5e5;
+            --black: #000000;
+            --white: #ffffff;
+            --yellow: #FFD500;
+            --pink: #FF90E8;
+            --blue: #90C4FF;
+            --green: #00E599;
+            --purple: #B590FF;
+            --orange: #FF7B00;
+            --border-thick: 6px solid #000000;
+            --shadow-hard: 8px 8px 0px #000000;
+            --shadow-hard-hover: 12px 12px 0px #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--black);
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* INFOGRAPHIC CONTAINER */
+        .infographic-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 40px;
+            grid-template-columns: 1fr;
+        }
+
+        /* HEADER BLOCK */
+        .header-block {
+            background-color: var(--blue);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-block h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 1;
+            margin-bottom: 20px;
+            background-color: var(--white);
+            display: inline-block;
+            padding: 10px 30px;
+            border: 4px solid var(--black);
+            box-shadow: 6px 6px 0px var(--black);
+        }
+
+        .header-block p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background-color: var(--black);
+            color: var(--white);
+            display: inline-block;
+            padding: 10px 20px;
+        }
+
+        /* GRAMMAR TOOLKIT */
+        .grammar-toolkit {
+            background-color: var(--white);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .grammar-box {
+            border: 4px solid var(--black);
+            padding: 20px;
+            position: relative;
+        }
+
+        .grammar-badge {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 5px 15px;
+            font-weight: 700;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            border: 2px solid var(--black);
+        }
+
+        .signal-words {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            background-color: rgba(0,0,0,0.05);
+            padding: 10px;
+            border: 2px dashed var(--black);
+        }
+
+        /* GRID LAYOUTS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* INTERACTIVE CARDS */
+        .interactive-card {
+            background-color: var(--white);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 30px;
+            transition: all 0.2s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .interactive-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: var(--shadow-hard-hover);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border: 4px solid var(--black);
+            background-color: var(--white);
+            box-shadow: 4px 4px 0px var(--black);
+        }
+
+        .card-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background-color: var(--black);
+            color: var(--white);
+            padding: 5px 15px;
+            display: inline-block;
+        }
+
+        /* FLIP CONTENT */
+        .reveal-content {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 4px dashed var(--black);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .interactive-card.active .reveal-content {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .interactive-card.active {
+            background-color: var(--black);
+            color: var(--white);
+        }
+
+        .interactive-card.active .card-title {
+            background-color: var(--white);
+            color: var(--black);
+        }
+
+        .interactive-card.active .card-icon {
+            box-shadow: 4px 4px 0px var(--white);
+        }
+
+        /* SCENARIO GENERATOR */
+        .generator-block {
+            background-color: var(--purple);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 50px;
+            text-align: center;
+        }
+
+        .generator-btn {
+            background-color: var(--yellow);
+            color: var(--black);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 20px 40px;
+            border: 4px solid var(--black);
+            box-shadow: 6px 6px 0px var(--black);
+            cursor: pointer;
+            transition: all 0.1s ease;
+            margin-bottom: 30px;
+        }
+
+        .generator-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0px var(--black);
+        }
+
+        #scenario-display {
+            background-color: var(--white);
+            border: 4px solid var(--black);
+            padding: 30px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            box-shadow: inset 4px 4px 0px rgba(0,0,0,0.1);
+        }
+
+        .task-box {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 1.2rem;
+        }
+
+        /* STRATEGIC CONSENSUS MATRIX */
+        .consensus-block {
+            background-color: var(--white);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 40px;
+        }
+
+        .consensus-header {
+            background-color: var(--green);
+            padding: 20px;
+            border: 4px solid var(--black);
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .vote-option {
+            border: 4px solid var(--black);
+            padding: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .vote-option:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .vote-option.selected {
+            background-color: var(--black);
+            color: var(--white);
+        }
+
+        .vote-option.selected .badge {
+            background-color: var(--yellow);
+            color: var(--black);
+        }
+
+        .badge {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 5px 10px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        /* UTILITIES */
+        .section-label {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background-color: var(--black);
+            color: var(--white);
+            display: inline-block;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            transform: rotate(-2deg);
+        }
+
+        .highlight-text {
+            background-color: var(--yellow);
+            padding: 2px 5px;
+            font-weight: 700;
+            color: var(--black);
+            border: 2px solid var(--black);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HELPER CLASSES */
+        .bg-pink { background-color: var(--pink); }
+        .bg-yellow { background-color: var(--yellow); }
+        .bg-blue { background-color: var(--blue); }
+        .bg-green { background-color: var(--green); }
+        .bg-purple { background-color: var(--purple); }
+        .bg-orange { background-color: var(--orange); }
+
+    </style>
+</head>
+<body>
+
+    <div class="infographic-wrapper">
+        
+        <!-- HEADER -->
+        <header class="header-block">
+            <h1>Education <i class="fa-solid fa-xmark"></i> Careers</h1>
+            <p>Interactive Discussion & Grammar Focus</p>
+        </header>
+
+        <!-- GRAMMAR TOOLKIT -->
+        <section class="grammar-toolkit">
+            <div class="grammar-box bg-pink">
+                <div class="grammar-badge">PAST SIMPLE</div>
+                <h3 style="margin-top: 15px;">Finished Actions</h3>
+                <p>Use this for actions that are completely finished at a specific time in the past.</p>
+                <div class="signal-words">
+                    <strong>Time Signals:</strong> yesterday, in 2020, last year, ago. <br><br>
+                    <strong>Example:</strong> "I <span class="highlight-text">graduated</span> from university in 2022."
+                </div>
+            </div>
+            <div class="grammar-box bg-blue">
+                <div class="grammar-badge">PRESENT PERFECT</div>
+                <h3 style="margin-top: 15px;">Life Experience</h3>
+                <p>Use this for actions that connect the past to the present, or for life experiences.</p>
+                <div class="signal-words">
+                    <strong>Time Signals:</strong> since, for, already, yet, ever, never. <br><br>
+                    <strong>Example:</strong> "I <span class="highlight-text">have worked</span> in sales since 2020."
+                </div>
+            </div>
+        </section>
+
+        <!-- ZONE 1: SHARE YOUR JOURNEY (Click to reveal) -->
+        <section>
+            <div class="section-label">01. Share Your Journey</div>
+            <div class="grid-2">
+                <div class="interactive-card bg-orange" onclick="this.classList.toggle('active')">
+                    <div class="card-icon" style="background-color: var(--orange);"><i class="fa-solid fa-school"></i></div>
+                    <div class="card-title">My Past Education</div>
+                    <p style="font-weight: 700; font-size: 1.2rem;">Tell your partner about a finished event.</p>
+                    <div class="reveal-content">
+                        <strong>Discussion Task (Use Past Simple):</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Where did you study? When did you finish?</li>
+                            <li>What was the most difficult subject you studied last year?</li>
+                            <li>Why did you choose that subject?</li>
+                        </ul>
+                    </div>
+                    <div style="position: absolute; top: 10px; right: 10px; font-size: 0.8rem; font-weight: 700;">CLICK TO SEE TASK</div>
+                </div>
+
+                <div class="interactive-card bg-yellow" onclick="this.classList.toggle('active')">
+                    <div class="card-icon" style="background-color: var(--yellow);"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="card-title">My Experience Now</div>
+                    <p style="font-weight: 700; font-size: 1.2rem;">Tell your partner about your life experience.</p>
+                    <div class="reveal-content">
+                        <strong>Discussion Task (Use Present Perfect):</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>How long have you worked in your current industry?</li>
+                            <li>What is the best project you have completed so far?</li>
+                            <li>Have you ever managed a team?</li>
+                        </ul>
+                    </div>
+                    <div style="position: absolute; top: 10px; right: 10px; font-size: 0.8rem; font-weight: 700;">CLICK TO SEE TASK</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ZONE 2: AUTHENTIC SCENARIO GENERATOR -->
+        <section>
+            <div class="section-label" style="transform: rotate(1deg); background-color: var(--purple);">02. Real Work Scenarios</div>
+            <div class="generator-block">
+                <button class="generator-btn" onclick="generateScenario()">
+                    <i class="fa-solid fa-bolt"></i> Get Scenario
+                </button>
+                <div id="scenario-display">
+                    Click the button above to get a workplace situation to discuss.
+                </div>
+                <div class="task-box">
+                    <strong style="color: var(--yellow);">Your Goal:</strong> Talk about the situation with your partner. Pay attention to the timeline (what happened in the past vs. what has happened recently). Make a plan to solve the problem.
+                </div>
+            </div>
+        </section>
+
+        <!-- ZONE 3: STRATEGIC CONSENSUS -->
+        <section>
+            <div class="section-label" style="transform: rotate(-1deg); background-color: var(--green); color: var(--black);">03. The Hiring Panel</div>
+            <div class="consensus-block">
+                <div class="consensus-header">
+                    <i class="fa-solid fa-users-gear"></i> Task: Choose the Best Candidate
+                    <p style="font-size: 1.2rem; font-weight: 500; margin-top: 10px;">Your company needs a new Project Manager. You and your partner are the managers. You can only hire ONE person. Discuss their past achievements and present experience to make a decision.</p>
+                </div>
+                
+                <div class="grid-3">
+                    <div class="vote-option bg-white" onclick="selectOption(this)">
+                        <div class="badge">Candidate A</div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">The Graduate</h3>
+                        <ul style="margin-left: 20px; margin-bottom: 15px; font-weight: 500;">
+                            <li><span class="highlight-text">Graduated</span> in 2023 with a Master's degree in Business.</li>
+                            <li><span class="highlight-text">Finished</span> a top management course last month.</li>
+                            <li><span class="highlight-text">Has never managed</span> a real team before.</li>
+                        </ul>
+                        <div style="margin-top: auto; font-weight: 700; font-size: 0.9rem; text-decoration: underline;">Click to hire Candidate A</div>
+                    </div>
+                    
+                    <div class="vote-option bg-white" onclick="selectOption(this)">
+                        <div class="badge">Candidate B</div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">The Veteran</h3>
+                        <ul style="margin-left: 20px; margin-bottom: 15px; font-weight: 500;">
+                            <li><span class="highlight-text">Did not go</span> to university.</li>
+                            <li><span class="highlight-text">Has worked</span> in this industry since 2015.</li>
+                            <li><span class="highlight-text">Has successfully led</span> five major projects already.</li>
+                        </ul>
+                        <div style="margin-top: auto; font-weight: 700; font-size: 0.9rem; text-decoration: underline;">Click to hire Candidate B</div>
+                    </div>
+
+                    <div class="vote-option bg-white" onclick="selectOption(this)">
+                        <div class="badge">Candidate C</div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">The Career Changer</h3>
+                        <ul style="margin-left: 20px; margin-bottom: 15px; font-weight: 500;">
+                            <li><span class="highlight-text">Worked</span> as a teacher from 2018 to 2022.</li>
+                            <li><span class="highlight-text">Has just finished</span> a project management bootcamp.</li>
+                            <li><span class="highlight-text">Has already built</span> an excellent portfolio of sample work.</li>
+                        </ul>
+                        <div style="margin-top: auto; font-weight: 700; font-size: 0.9rem; text-decoration: underline;">Click to hire Candidate C</div>
+                    </div>
+                </div>
+
+                <div id="consensus-result" style="display: none; margin-top: 30px; background-color: var(--black); color: var(--white); padding: 20px; border: 4px solid var(--yellow);">
+                    <h4 style="color: var(--yellow); margin-bottom: 10px;">Final Decision</h4>
+                    <p id="consensus-text" style="font-size: 1.2rem;"></p>
+                    <p style="margin-top: 15px; font-weight: 700;">Final Task: Tell the class why you made this choice. Use the Past Simple and Present Perfect to explain their qualifications.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // B1 Level Data for Scenario Generator - Focused on Tense Timelines
+        const scenarios = [
+            "A worker started here in 2021. They were a great employee last year, but they have not finished any tasks this week. What should we do?",
+            "Candidate A has built three successful apps already. Candidate B studied app design in university in 2022, but has never built a real app. Who do you hire?",
+            "Your team lost a major client yesterday because of poor communication. However, your team has worked very hard all month. How do you talk to them?",
+            "The company introduced new software last month. Half the team learned it quickly, but the older staff haven't logged in yet. How do you fix this?",
+            "An employee asked for a promotion yesterday. They have worked here for five years, but they did not meet their sales goals last year. Do you promote them?"
+        ];
+
+        // Function for Scenario Generator
+        function generateScenario() {
+            const display = document.getElementById('scenario-display');
+            const randomIndex = Math.floor(Math.random() * scenarios.length);
+            
+            // Brief fade effect
+            display.style.opacity = 0;
+            setTimeout(() => {
+                display.innerHTML = `"${scenarios[randomIndex]}"`;
+                display.style.opacity = 1;
+            }, 200);
+        }
+
+        // Function for Strategic Consensus Selection
+        function selectOption(selectedElement) {
+            // Remove 'selected' class from all options
+            const options = document.querySelectorAll('.vote-option');
+            options.forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Add 'selected' class to clicked option
+            selectedElement.classList.add('selected');
+
+            // Show result box
+            const resultBox = document.getElementById('consensus-result');
+            const resultText = document.getElementById('consensus-text');
+            const selectedTitle = selectedElement.querySelector('h3').innerText;
+            
+            resultText.innerHTML = `Your panel has decided to hire: <strong>${selectedTitle}</strong>.`;
+            resultBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

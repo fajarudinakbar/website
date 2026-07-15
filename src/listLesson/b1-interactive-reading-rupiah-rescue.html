@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Interactive Reading - The Rupiah Rescue</title>
+    
+    <!-- Tailwind CSS for modern responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for Comic Book / Graphic Novel Aesthetic -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for engaging interactive icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        comic: ['Bangers', 'cursive'],
+                    },
+                    boxShadow: {
+                        'comic': '6px 6px 0px 0px #0f172a',
+                        'comic-hover': '8px 8px 0px 0px #0f172a',
+                        'comic-sm': '3px 3px 0px 0px #0f172a',
+                        'comic-pressed': '0px 0px 0px 0px #0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Retro Halftone Comic Dot Pattern */
+        body {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+            background-size: 24px 24px;
+            overflow-x: hidden;
+        }
+
+        /* Tactile Button Actions */
+        .comic-btn {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translate(0px, 0px);
+        }
+        .comic-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a !important;
+        }
+        .comic-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px 0px #0f172a !important;
+        }
+
+        /* Animated pop-in for graphical panels */
+        .animate-pop {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.95) translateY(15px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Smooth page change effects */
+        #app-container {
+            transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+        }
+        .fade-out-active {
+            opacity: 0 !important;
+            transform: scale(0.98) translateY(8px) !important;
+        }
+
+        /* Fluid CSS transition for the progress status bar */
+        .progress-fill {
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="text-slate-900 font-sans p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col justify-between">
+
+    <div class="max-w-4xl mx-auto flex-grow w-full" id="app-container">
+        <!-- HTML components are actively injected and swapped here by JS -->
+    </div>
+
+    <footer class="mt-16 mb-4 text-center animate-pop" style="animation-delay: 800ms;">
+        <p class="font-extrabold text-slate-500 text-sm sm:text-base uppercase tracking-widest">
+            Designed by <a href="https://fajarudinakbar.online" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 px-3 py-1 rounded-md border-2 border-transparent hover:border-indigo-600 transition-all font-black border-b-4 border-b-indigo-600">fajarudinakbar.online</a>
+        </p>
+    </footer>
+
+    <script>
+        // Exact 8 Reading Cards mapping the adapted news report
+        const readingPanels = [
+            { 
+                text: "The Indonesian rupiah fell against the US dollar. On Thursday morning, June 4, 2026, the exchange rate reached Rp 18,015, marking its lowest level in history.", 
+                icon: "fa-solid fa-chart-line-down", 
+                bg: "bg-rose-100", 
+                color: "text-rose-600" 
+            },
+            { 
+                text: "Later during the trading day, the rupiah moved back up and stabilized to around Rp 17,900 per dollar, recovering from its record low.", 
+                icon: "fa-solid fa-arrow-trend-up", 
+                bg: "bg-emerald-100", 
+                color: "text-emerald-600" 
+            },
+            { 
+                text: "Financial experts say the main reason for this currency fall is the rising conflict in the Middle East between the US and Iran.", 
+                icon: "fa-solid fa-earth-americas", 
+                bg: "bg-indigo-100", 
+                color: "text-indigo-600" 
+            },
+            { 
+                text: "Because of this geopolitical tension, many global investors prefer to hold US dollars, which are widely viewed as a 'safe-haven' currency.", 
+                icon: "fa-solid fa-shield-halved", 
+                bg: "bg-sky-100", 
+                color: "text-sky-600" 
+            },
+            { 
+                text: "This sudden shift in investor demand makes the US dollar much stronger, while making regional currencies like the rupiah weaker.", 
+                icon: "fa-solid fa-scale-unbalanced-flip", 
+                bg: "bg-purple-100", 
+                color: "text-purple-600" 
+            },
+            { 
+                text: "Another problem is the rising cost of world oil. Higher energy prices put extra financial pressure on import-heavy nations.", 
+                icon: "fa-solid fa-oil-well", 
+                bg: "bg-amber-100", 
+                color: "text-amber-600" 
+            },
+            { 
+                text: "Indonesia imports substantial energy paid in US dollars. When oil prices rise, the nation needs more dollars, causing further pressure on the rupiah.", 
+                icon: "fa-solid fa-truck-container", 
+                bg: "bg-orange-100", 
+                color: "text-orange-600" 
+            },
+            { 
+                text: "To protect currency stability, Bank Indonesia (BI) plans to limit undocumented dollar purchases to $25,000 per person per month starting June 2026.", 
+                icon: "fa-solid fa-building-columns", 
+                bg: "bg-teal-100", 
+                color: "text-teal-600" 
+            }
+        ];
+
+        // Graphic novel interactive branches mapped across exactly 7 Chapters
+        const storyNodes = {
+            start: {
+                chapter: 1, 
+                title: "The Historical Crash",
+                panels: [
+                    { type: "narration", text: "You are Rian, the financial manager of a manufacturing firm in West Java. Your operations rely on imported microchips from foreign markets.", icon: "fa-solid fa-user-tie", color: "text-slate-700", bg: "bg-slate-100" },
+                    { type: "action", text: "It is June 4, 2026. You open the news and see a shocking headline: The rupiah has crashed to a historic low of Rp 18,015 per dollar.", icon: "fa-solid fa-laptop-code", color: "text-red-600", bg: "bg-red-100" },
+                    { type: "thought", text: "We have to pay our foreign suppliers in US dollars this week. If the rupiah remains this weak, our import budget will explode!", icon: "fa-solid fa-brain", color: "text-blue-600", bg: "bg-blue-100" }
+                ],
+                choices: [
+                    { text: "Call an emergency advisory meeting with your financial team.", next: "ch2_meeting", btnClass: "bg-white text-slate-900" },
+                    { text: "Instruct your purchase manager to buy dollars right away before rates worsen.", next: "ch2_panic", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch2_meeting: {
+                chapter: 2, 
+                title: "The Advisory Council",
+                panels: [
+                    { type: "action", text: "You assemble your senior accountants to analyze the market volatility charts.", icon: "fa-solid fa-users", color: "text-indigo-600", bg: "bg-indigo-100" },
+                    { type: "dialogue", speaker: "CFO", text: "Rian, the crash is fueled by emotional panic over the US-Iran conflict. But look! The rate is already stabilizing back down to Rp 17,900.", icon: "fa-solid fa-comments", color: "text-sky-600", bg: "bg-sky-100" },
+                    { type: "thought", text: "Should I hold off on buying to see if the market cools down, or buy now to be safe?", icon: "fa-solid fa-circle-question", color: "text-amber-600", bg: "bg-amber-100" }
+                ],
+                choices: [
+                    { text: "Trust the CFO and wait 24 hours to monitor the exchange rate.", next: "ch3_wait", btnClass: "bg-white text-slate-900" },
+                    { text: "Ignore the advice and secure the exchange rate immediately.", next: "ch3_buy", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch2_panic: {
+                chapter: 2, 
+                title: "The Regulatory Wall",
+                panels: [
+                    { type: "action", text: "You submit a request to purchase $40,000 to cover the outstanding supplier invoice.", icon: "fa-solid fa-money-bill-transfer", color: "text-red-600", bg: "bg-red-100" },
+                    { type: "system", text: "TRANSACTION FLAG:\nBank Indonesia's new June 2026 rule limits undocumented dollar purchases to $25,000 per month.", icon: "fa-solid fa-circle-exclamation", color: "text-amber-700", bg: "bg-amber-100" },
+                    { type: "thought", text: "The bank won't let us process the full amount unless we provide formal trade documentation.", icon: "fa-solid fa-folder-open", color: "text-slate-600", bg: "bg-slate-100" }
+                ],
+                choices: [
+                    { text: "Try to bypass the system by splitting the purchase across multiple staff accounts.", next: "ch3_bypass", btnClass: "bg-white text-slate-900" },
+                    { text: "Stop the rushed transfer and begin compiling the legal trade papers.", next: "ch3_comply", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch3_wait: {
+                chapter: 3, 
+                title: "The Oil Spillover",
+                panels: [
+                    { type: "action", text: "A day passes. The rupiah remains steady at Rp 17,900. However, geopolitical developments cause global oil prices to surge.", icon: "fa-solid fa-hourglass-half", color: "text-slate-600", bg: "bg-slate-100" },
+                    { type: "dialogue", speaker: "Logistics Manager", text: "Rian, fuel costs are skyrocketing. Our international shipping carriers are adding a heavy energy surcharge to our invoices!", icon: "fa-solid fa-truck-ramp-box", color: "text-rose-600", bg: "bg-rose-100" },
+                    { type: "thought", text: "Importing goods is becoming extremely expensive. We must optimize our logistics strategy.", icon: "fa-solid fa-gears", color: "text-blue-600", bg: "bg-blue-100" }
+                ],
+                choices: [
+                    { text: "Investigate alternative local West Java shipping companies to avoid dollar premiums.", next: "ch4_local_logistics", btnClass: "bg-white text-slate-900" },
+                    { text: "Absorb the international shipping fee to guarantee safe transport.", next: "ch4_global_logistics", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch3_buy: {
+                chapter: 3, 
+                title: "Peak Purchase Toll",
+                panels: [
+                    { type: "action", text: "You complete the transaction, but you bought at the absolute peak rate of Rp 18,015.", icon: "fa-solid fa-file-invoice-dollar", color: "text-rose-600", bg: "bg-rose-100" },
+                    { type: "system", text: "LEDGER STATUS:\nCompany operating cash reserves have been depleted by an unexpected 15% exchange rate loss.", icon: "fa-solid fa-arrow-trend-down", color: "text-red-700", bg: "bg-red-50" },
+                    { type: "thought", text: "This leaves us with very tight cash flow. How do we source our remaining parts?", icon: "fa-solid fa-lightbulb", color: "text-slate-600", bg: "bg-slate-100" }
+                ],
+                choices: [
+                    { text: "Look into domestic raw material alternatives to preserve cash.", next: "ch4_local_logistics", btnClass: "bg-white text-slate-900" },
+                    { text: "Continue importing from original global suppliers and deal with tight reserves.", next: "ch4_global_logistics", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch3_bypass: {
+                chapter: 3, 
+                title: "Compliance Red Flag",
+                panels: [
+                    { type: "action", text: "You instruct staff members to initiate minor personal transfers to bypass the limits.", icon: "fa-solid fa-people-arrows", color: "text-amber-700", bg: "bg-amber-50" },
+                    { type: "system", text: "COMPLIANCE NOTICE:\nThe bank's security system flags your structured transactions as suspicious activity. Accounts frozen.", icon: "fa-solid fa-ban", color: "text-red-700", bg: "bg-red-100" },
+                    { type: "thought", text: "Bypassing bank stability rules was a severe mistake. We must resolve this mess legally.", icon: "fa-solid fa-gavel", color: "text-slate-600", bg: "bg-slate-100" }
+                ],
+                choices: [
+                    { text: "Cooperate with the compliance officer and supply official trade invoices.", next: "ch4_comply_fast", btnClass: "bg-white text-slate-900" },
+                    { text: "File a formal dispute against the bank's lock to force funds open.", next: "ch4_dispute", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch3_comply: {
+                chapter: 3, 
+                title: "The Legal Route",
+                panels: [
+                    { type: "action", text: "You refuse shortcuts and spent the morning gathering shipping manifests and customs clearance forms.", icon: "fa-solid fa-folder-open", color: "text-sky-600", bg: "bg-sky-100" },
+                    { type: "system", text: "SUCCESS:\nYour trade papers are approved. The bank authorizes the purchase of the full import amount.", icon: "fa-solid fa-circle-check", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "thought", text: "Complying with central bank guidelines protects our firm's legal standing.", icon: "fa-solid fa-heart", color: "text-rose-600", bg: "bg-rose-100" }
+                ],
+                choices: [
+                    { text: "Choose domestic shipping networks to transport your cleared assets.", next: "ch4_local_logistics", btnClass: "bg-white text-slate-900" },
+                    { text: "Agree to pay rising global cargo shipping rates.", next: "ch4_global_logistics", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch4_local_logistics: {
+                chapter: 4, 
+                title: "Domestic Routing",
+                panels: [
+                    { type: "action", text: "You reach out to local logistics agencies operating in the Java region.", icon: "fa-solid fa-map-location-dot", color: "text-indigo-600", bg: "bg-indigo-100" },
+                    { type: "dialogue", speaker: "Local Carrier", text: "We accept payments exclusively in rupiah and offer stable, fuel-efficient routing through domestic highways.", icon: "fa-solid fa-truck-fast", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "thought", text: "This protects us from ocean-freight price spikes and global fuel volatility.", icon: "fa-solid fa-shield", color: "text-slate-600", bg: "bg-slate-100" }
+                ],
+                choices: [
+                    { text: "Proceed with local shipping routes to transport materials.", next: "ch5_localization", btnClass: "bg-white text-slate-900" },
+                    { text: "Re-evaluate the security of foreign-flagged carriers.", next: "ch5_import_struggle", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch4_global_logistics: {
+                chapter: 4, 
+                title: "The Global Premium",
+                panels: [
+                    { type: "action", text: "You maintain contracts with international shipping agents despite rising fuel prices.", icon: "fa-solid fa-ship", color: "text-rose-600", bg: "bg-rose-100" },
+                    { type: "dialogue", speaker: "Agent", text: "Global container costs are up due to the Middle East tension. We require a 20% fuel surcharge paid in USD.", icon: "fa-solid fa-triangle-exclamation", color: "text-amber-600", bg: "bg-amber-100" },
+                    { type: "thought", text: "Relying purely on international shipping channels exposes our business to external shocks.", icon: "fa-solid fa-earth-asia", color: "text-indigo-600", bg: "bg-indigo-100" }
+                ],
+                choices: [
+                    { text: "Acknowledge the rising fees but seek local supply alternatives next.", next: "ch5_localization", btnClass: "bg-white text-slate-900" },
+                    { text: "Accept the premium cargo fees to avoid modifying company operations.", next: "ch5_import_struggle", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch4_comply_fast: {
+                chapter: 4, 
+                title: "Restoring Compliance",
+                panels: [
+                    { type: "action", text: "You formally submit the correct trade documents to the bank's legal department.", icon: "fa-solid fa-clipboard-check", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "dialogue", speaker: "Officer", text: "Thank you for cooperating. Your trade accounts are unfrozen. Please adhere to the BI guidelines in future.", icon: "fa-solid fa-user-shield", color: "text-indigo-600", bg: "bg-indigo-100" },
+                    { type: "thought", text: "We avoided legal disaster, but we lost valuable shipping days.", icon: "fa-solid fa-circle-exclamation", color: "text-rose-600", bg: "bg-rose-100" }
+                ],
+                choices: [
+                    { text: "Focus heavily on domestic sourcing to prevent regulatory blocks.", next: "ch5_localization", btnClass: "bg-white text-slate-900" },
+                    { text: "Re-initiate the international trade sequence legally.", next: "ch5_import_struggle", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch4_dispute: {
+                chapter: 4, 
+                title: "Legal Gridlock",
+                panels: [
+                    { type: "action", text: "You aggressively dispute the bank freeze without submitting proper documentation.", icon: "fa-solid fa-handshake-slash", color: "text-red-700", bg: "bg-red-50" },
+                    { type: "dialogue", speaker: "Bank Manager", text: "We cannot override national central bank rules. Your transactions will remain locked until paperwork is delivered.", icon: "fa-solid fa-building-columns", color: "text-rose-700", bg: "bg-rose-100" },
+                    { type: "thought", text: "Fighting national stability guidelines is a losing battle. We must yield.", icon: "fa-solid fa-scale-unbalanced", color: "text-slate-600", bg: "bg-slate-100" }
+                ],
+                choices: [
+                    { text: "Concede, submit the required trade records, and shift to local sourcing.", next: "ch5_localization", btnClass: "bg-white text-slate-900" },
+                    { text: "Keep fighting the dispute and pay international premiums when released.", next: "ch5_import_struggle", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch5_localization: {
+                chapter: 5, 
+                title: "The Sourcing Pivot",
+                panels: [
+                    { type: "action", text: "Your company begins active testing of raw electronics materials produced locally.", icon: "fa-solid fa-vial-circle-check", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "narration", text: "A reputable supplier in West Java offers quality alternative parts, bypassing import tariffs and global shipping headaches.", icon: "fa-solid fa-handshake", color: "text-sky-600", bg: "bg-sky-100" },
+                    { type: "thought", text: "Should we make a major commitment to this local vendor, or keep it as a backup?", icon: "fa-solid fa-brain", color: "text-amber-600", bg: "bg-amber-100" }
+                ],
+                choices: [
+                    { text: "Increase local supply ratio to 50% immediately to limit currency risk.", next: "ch6_local_deal", btnClass: "bg-white text-slate-900" },
+                    { text: "Maintain only 10% local supply, relying heavily on foreign imports.", next: "ch6_market_rebound", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch5_import_struggle: {
+                chapter: 5, 
+                title: "Rising Import Tolls",
+                panels: [
+                    { type: "action", text: "You maintain reliance on import components as oil costs escalate shipping fees.", icon: "fa-solid fa-money-bill-trend-up", color: "text-rose-600", bg: "bg-rose-100" },
+                    { type: "narration", text: "Because you pay logistics and suppliers in US dollars, your product retail margins are shrinking fast.", icon: "fa-solid fa-scissors", color: "text-red-600", bg: "bg-red-50" },
+                    { type: "thought", text: "We need a protective buffer. How can we shield our business from future exchange shocks?", icon: "fa-solid fa-shield", color: "text-indigo-600", bg: "bg-indigo-100" }
+                ],
+                choices: [
+                    { text: "Consult BI partners about currency hedging contracts to lock in fixed rates.", next: "ch6_hedging_plan", btnClass: "bg-white text-slate-900" },
+                    { text: "Pass the rising import costs directly onto your Indonesian customers.", next: "ch6_price_increase", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch6_local_deal: {
+                chapter: 6, 
+                title: "The Regional Contract",
+                panels: [
+                    { type: "action", text: "You meet with the West Java manufacturer to draft a bulk partnership contract.", icon: "fa-solid fa-signature", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "dialogue", speaker: "Supplier CEO", text: "We can guarantee a stable parts supply priced in rupiah. This protects us both from global currency fluctuations.", icon: "fa-solid fa-comments", color: "text-sky-600", bg: "bg-sky-100" },
+                    { type: "thought", text: "By spending rupiah locally, we keep our operations secure and predictable.", icon: "fa-solid fa-award", color: "text-amber-500", bg: "bg-amber-100" }
+                ],
+                choices: [
+                    { text: "Proceed to Chapter 7 to finalize your business strategy.", next: "ch7_final_strategy", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch6_market_rebound: {
+                chapter: 6, 
+                title: "Waiting for Recovery",
+                panels: [
+                    { type: "action", text: "You delay a bulk local contract, hoping the global US dollar index declines soon.", icon: "fa-solid fa-hourglass", color: "text-slate-600", bg: "bg-slate-100" },
+                    { type: "narration", text: "However, market reports show geopolitical tensions persist, keeping the rupiah weak against the greenback.", icon: "fa-solid fa-chart-line", color: "text-rose-600", bg: "bg-rose-100" },
+                    { type: "thought", text: "Operating without a defensive plan is highly risky. We must act now.", icon: "fa-solid fa-lightbulb", color: "text-indigo-600", bg: "bg-indigo-100" }
+                ],
+                choices: [
+                    { text: "Proceed to Chapter 7 to finalize your business strategy.", next: "ch7_final_strategy", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch6_hedging_plan: {
+                chapter: 6, 
+                title: "The Financial Shield",
+                panels: [
+                    { type: "action", text: "You sit down with Bank Indonesia associates to negotiate a foreign exchange forward contract.", icon: "fa-solid fa-handshake-angle", color: "text-indigo-600", bg: "bg-indigo-100" },
+                    { type: "dialogue", speaker: "BI Adviser", text: "We can guarantee an exchange rate of Rp 17,850 for your import transactions over the next six months.", icon: "fa-solid fa-file-invoice", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "thought", text: "This will lock in our future costs, making them fully predictable.", icon: "fa-solid fa-circle-dollar-to-slot", color: "text-amber-600", bg: "bg-amber-100" }
+                ],
+                choices: [
+                    { text: "Proceed to Chapter 7 to finalize your business strategy.", next: "ch7_final_strategy", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch6_price_increase: {
+                chapter: 6, 
+                title: "Consumer Backlash",
+                panels: [
+                    { type: "action", text: "You increase retail pricing for your products by 12% to cover high import expenses.", icon: "fa-solid fa-tags", color: "text-rose-600", bg: "bg-rose-100" },
+                    { type: "dialogue", speaker: "Customer Union", text: "Local competitors are keeping prices stable. If your prices remain this high, we will buy elsewhere!", icon: "fa-solid fa-face-frown", color: "text-red-600", bg: "bg-red-50" },
+                    { type: "thought", text: "Passing import inflation down to clients is hurting our brand loyalty.", icon: "fa-solid fa-heart-broken", color: "text-purple-600", bg: "bg-purple-100" }
+                ],
+                choices: [
+                    { text: "Proceed to Chapter 7 to finalize your business strategy.", next: "ch7_final_strategy", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ch7_final_strategy: {
+                chapter: 7, 
+                title: "The Final Master Plan",
+                panels: [
+                    { type: "action", text: "You stand before the board of directors to present your long-term stabilization plan.", icon: "fa-solid fa-chalkboard-user", color: "text-indigo-600", bg: "bg-indigo-100" },
+                    { type: "narration", text: "The historic fluctuations of June 4, 2026, proved that unchecked exposure to global energy spikes and foreign currency can cripple local firms.", icon: "fa-solid fa-chart-pie", color: "text-sky-600", bg: "bg-sky-100" },
+                    { type: "thought", text: "Our final choice will define the financial future of our assembly firm. Which path do we take?", icon: "fa-solid fa-brain", color: "text-amber-600", bg: "bg-amber-100" }
+                ],
+                choices: [
+                    { text: "Sustain a permanent local supply network within Indonesia to stay safe.", next: "ending_localization", btnClass: "bg-white text-slate-900" },
+                    { text: "Deploy a structured central bank currency-hedging plan.", next: "ending_hedging", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ending_localization: {
+                chapter: "END", 
+                title: "The Domestic Sourcing Era",
+                panels: [
+                    { type: "action", text: "You permanently transition 50% of electronic assembly assets to domestic vendors.", icon: "fa-solid fa-map-pin", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "narration", text: "By paying regional suppliers in rupiah, your enterprise is completely protected from Middle East oil shocks and sudden US dollar spikes.", icon: "fa-solid fa-truck-ramp-box", color: "text-sky-600", bg: "bg-sky-100" },
+                    { type: "thought", text: "Sourcing locally strengthens our domestic industry and provides solid financial immunity.", icon: "fa-solid fa-star", color: "text-amber-500", bg: "bg-amber-100" }
+                ],
+                isEnding: true,
+                softSkill: "Strategic Supply Chain Management",
+                analysis: "You countered exchange rate volatility by localizing your supply chain. How does supporting domestic suppliers boost the wider national economy during global crises?"
+            },
+            ending_hedging: {
+                chapter: "END", 
+                title: "The Financial Shield",
+                panels: [
+                    { type: "action", text: "You lock in future currency transaction rates at Rp 17,850 with Bank Indonesia associates.", icon: "fa-solid fa-file-shield", color: "text-indigo-600", bg: "bg-indigo-100" },
+                    { type: "narration", text: "Your operational costs are now perfectly predictable. Even if oil prices climb or geopolitical panic peaks, your import pricing remains completely safe.", icon: "fa-solid fa-money-bill-trend-up", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "thought", text: "Predictability allows us to outline our pricing with full business confidence.", icon: "fa-solid fa-circle-dollar-to-slot", color: "text-amber-600", bg: "bg-amber-100" }
+                ],
+                isEnding: true,
+                softSkill: "Financial Risk Mitigation",
+                analysis: "You secured a fixed exchange rate to stabilize your operating margins. What could be the financial disadvantages if the Indonesian Rupiah unexpectedly recovers back to Rp 15,000?"
+            }
+        };
+
+        // --- STATE CONTROL ---
+        let state = {
+            stage: 'reading',
+            currentNode: 'start'
+        };
+
+        let availableVoices = [];
+        let currentUtterance = null;
+        let activeSpeakerBtn = null;
+
+        function loadVoices() {
+            availableVoices = window.speechSynthesis.getVoices();
+        }
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices(); 
+
+        function toggleSpeech(btnElement, textToSpeak) {
+            if (window.speechSynthesis.speaking && activeSpeakerBtn === btnElement) {
+                window.speechSynthesis.cancel();
+                resetSpeakerButton();
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            resetSpeakerButton();
+
+            if (!textToSpeak) return;
+
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            
+            if (availableVoices.length === 0) {
+                availableVoices = window.speechSynthesis.getVoices();
+            }
+
+            // Target clean, natural English voices with fallback defaults
+            let selectedVoice = availableVoices.find(v => v.name.includes('Natural') && v.lang.startsWith('en'));
+            if (!selectedVoice) selectedVoice = availableVoices.find(v => v.name.includes('Google') && v.lang.startsWith('en'));
+            if (!selectedVoice) selectedVoice = availableVoices.find(v => v.lang.startsWith('en'));
+
+            if (selectedVoice) {
+                currentUtterance.voice = selectedVoice;
+            }
+
+            currentUtterance.rate = 0.92;
+            currentUtterance.pitch = 1.0;
+
+            activeSpeakerBtn = btnElement;
+            const icon = btnElement.querySelector('i');
+            icon.classList.remove('fa-volume-high', 'text-slate-500');
+            icon.classList.add('fa-stop', 'text-rose-600');
+            btnElement.classList.add('bg-rose-100', 'border-rose-600');
+            btnElement.classList.remove('bg-white', 'border-slate-300');
+
+            currentUtterance.onend = resetSpeakerButton;
+            currentUtterance.onerror = resetSpeakerButton;
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function resetSpeakerButton() {
+            if (activeSpeakerBtn) {
+                const icon = activeSpeakerBtn.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-stop', 'text-rose-600');
+                    icon.classList.add('fa-volume-high', 'text-slate-500');
+                }
+                activeSpeakerBtn.classList.remove('bg-rose-100', 'border-rose-600');
+                activeSpeakerBtn.classList.add('bg-white', 'border-slate-300');
+                activeSpeakerBtn = null;
+            }
+        }
+
+        function stopAllAudio() {
+            window.speechSynthesis.cancel();
+            resetSpeakerButton();
+        }
+
+        function render() {
+            const container = document.getElementById('app-container');
+            container.innerHTML = ''; 
+
+            const header = document.createElement('header');
+            header.className = 'mb-12 text-center animate-pop';
+            header.innerHTML = `
+                <h1 class="font-comic text-5xl md:text-7xl text-slate-900 mb-3 tracking-wider uppercase" style="text-shadow: 3px 3px 0 #cbd5e1;">The Rupiah Rescue</h1>
+                <div class="inline-block bg-slate-900 text-white font-extrabold text-sm md:text-lg uppercase tracking-widest px-6 py-2 rounded-full shadow-comic-sm transform -rotate-1">
+                    An Interactive B1 Level Economics Lesson
+                </div>
+            `;
+            container.appendChild(header);
+
+            if (state.stage === 'reading') container.appendChild(renderReading());
+            else if (state.stage === 'story') container.appendChild(renderStory());
+            else if (state.stage === 'reflection') container.appendChild(renderReflection());
+        }
+
+        function renderReading() {
+            const div = document.createElement('div');
+            
+            let panelsHTML = '<div class="flex flex-col space-y-8 mb-16">';
+            readingPanels.forEach((panel, index) => {
+                const delay = index * 120; 
+                panelsHTML += `
+                    <div class="animate-pop relative bg-white border-4 border-slate-900 rounded-2xl shadow-comic p-6 sm:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#0f172a] transition-transform duration-300" style="animation-delay: ${delay}ms;">
+                        
+                        <button onclick="toggleSpeech(this, \`${panel.text.replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                            <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </button>
+
+                        <div class="absolute -top-5 -left-4 sm:-left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl text-slate-900 z-10 transform -rotate-6 shadow-comic-sm">
+                            ${index + 1}
+                        </div>
+                        <div class="flex-shrink-0 border-4 border-slate-900 rounded-full w-24 h-24 flex items-center justify-center transform -rotate-3 shadow-comic-sm ${panel.bg}">
+                            <i class="${panel.icon} text-5xl ${panel.color}"></i>
+                        </div>
+                        <div class="flex-grow text-center sm:text-left mt-2 sm:mt-0 flex items-center pr-8 sm:pr-12">
+                            <p class="font-extrabold text-xl sm:text-2xl leading-relaxed text-slate-800 text-left">${panel.text}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            panelsHTML += '</div>';
+
+            div.innerHTML = `
+                <div class="flex justify-center items-center space-x-4 mb-12 animate-pop" style="animation-delay: 0ms;">
+                    <i class="fa-solid fa-book-open-reader text-5xl text-indigo-600 transform -rotate-6"></i>
+                    <h2 class="font-comic text-5xl text-slate-900 tracking-wide uppercase">Interactive Reading</h2>
+                </div>
+                
+                ${panelsHTML}
+
+                <div class="animate-pop bg-indigo-600 rounded-3xl p-8 sm:p-12 border-4 border-slate-900 shadow-comic mt-12 relative overflow-hidden group" style="animation-delay: ${readingPanels.length * 120}ms;">
+                    <div class="absolute -right-10 -bottom-10 opacity-20 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-700">
+                        <i class="fa-solid fa-money-bill-trend-up text-9xl text-white"></i>
+                    </div>
+                    <div class="relative z-10 text-center sm:text-left">
+                        <h4 class="font-comic text-4xl text-white mb-4 tracking-wide uppercase">Become the Financial Manager</h4>
+                        <p class="text-indigo-100 mb-8 font-bold text-xl sm:text-2xl max-w-2xl text-left">
+                            You have digested the facts. Now, assume the role of Rian. Can you guide your firm safely through Indonesia's historic currency crash?
+                        </p>
+                        <button onclick="startGame()" class="comic-btn inline-flex bg-amber-400 text-slate-900 px-8 py-5 rounded-xl font-black text-2xl hover:bg-amber-300 items-center justify-center space-x-4 border-4 border-slate-900 shadow-comic w-full sm:w-auto cursor-pointer">
+                            <span>ENTER SCENARIO</span>
+                            <i class="fa-solid fa-arrow-right transform group-hover:translate-x-2 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function renderStory() {
+            const node = storyNodes[state.currentNode];
+            const div = document.createElement('div');
+            
+            const isEnding = node.chapter === 'END';
+            // Scale active step percentage indicator across 7 Chapters
+            const progressPercent = isEnding ? 100 : Math.round(((node.chapter) / 7) * 100);
+
+            const progressBar = `
+                <div class="animate-pop w-full bg-white border-4 border-slate-900 rounded-full h-8 mb-10 shadow-comic-sm overflow-hidden relative" style="animation-delay: 0ms;">
+                    <div class="progress-fill bg-emerald-400 h-full border-r-4 border-slate-900 flex items-center justify-end px-3" style="width: ${progressPercent}%">
+                        ${progressPercent > 10 ? `<i class="fa-solid fa-coins text-slate-900"></i>` : ''}
+                    </div>
+                </div>
+            `;
+
+            let html = progressBar + `
+                <div class="animate-pop bg-white rounded-3xl shadow-comic p-6 sm:p-10 border-4 border-slate-900" style="animation-delay: 100ms;">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-10 pb-6 border-b-4 border-slate-200 gap-4">
+                        <h2 class="font-comic text-4xl md:text-5xl text-slate-900 tracking-widest uppercase">${node.title}</h2>
+                        <span class="text-lg font-black text-slate-900 bg-amber-400 px-5 py-2 border-4 border-slate-900 rounded-xl uppercase transform rotate-2 shadow-comic-sm">
+                            ${isEnding ? 'CONCLUSION' : `CHAPTER ${node.chapter} OF 7`}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            `;
+
+            node.panels.forEach((panel, index) => {
+                const isFullWidth = index % 3 === 0;
+                const delay = 200 + (index * 120);
+                
+                let content = "";
+                if (panel.type === "dialogue") {
+                    content = `
+                        <div class="flex items-end space-x-4 w-full mt-2">
+                            <i class="${panel.icon} text-6xl ${panel.color} drop-shadow-md"></i>
+                            <div class="bg-white border-4 border-slate-900 rounded-[2rem] rounded-bl-none p-5 relative shadow-comic-sm flex-grow">
+                                <span class="block text-xs font-black text-slate-400 uppercase mb-1">${panel.speaker}</span>
+                                <p class="font-black text-slate-900 text-xl leading-snug text-left">"${panel.text}"</p>
+                            </div>
+                        </div>
+                    `;
+                } else if (panel.type === "system") {
+                    content = `
+                        <div class="flex items-center space-x-6 mt-2">
+                            <div class="bg-white p-3 rounded-full border-4 border-slate-900 shadow-comic-sm">
+                                <i class="${panel.icon} ${panel.color} text-4xl animate-pulse"></i>
+                            </div>
+                            <p class="font-mono text-lg font-black whitespace-pre-line leading-relaxed text-slate-900 uppercase text-left">${panel.text}</p>
+                        </div>
+                    `;
+                } else {
+                    content = `
+                        <div class="flex flex-col items-center text-center space-y-5 mt-4">
+                            <div class="bg-white p-5 rounded-full border-4 border-slate-900 shadow-comic-sm transform hover:scale-105 transition-transform duration-300">
+                                <i class="${panel.icon} text-6xl ${panel.color}"></i>
+                            </div>
+                            <p class="font-extrabold text-xl sm:text-2xl text-slate-900 leading-relaxed text-center">${panel.text}</p>
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="animate-pop relative border-4 border-slate-900 rounded-2xl shadow-comic p-8 flex flex-col justify-center ${panel.bg} ${isFullWidth ? 'md:col-span-2' : ''}" style="animation-delay: ${delay}ms;">
+                        <button onclick="toggleSpeech(this, \`${panel.text.replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                            <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </button>
+                        ${content}
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            if (!isEnding) {
+                const choiceDelay = 200 + (node.panels.length * 120);
+                html += `
+                    <div class="animate-pop bg-slate-100 p-8 rounded-2xl border-4 border-slate-900 shadow-comic" style="animation-delay: ${choiceDelay}ms;">
+                        <h3 class="font-comic text-4xl text-slate-900 tracking-widest mb-8 text-center uppercase">Make Rian's Decision</h3>
+                        <div class="space-y-5">
+                `;
+                node.choices.forEach((choice, index) => {
+                    html += `
+                        <button onclick="handleChoice('${choice.next}')" class="comic-btn w-full text-left p-5 rounded-xl border-4 border-slate-900 shadow-comic hover:bg-amber-100 transition-colors flex items-center space-x-6 ${choice.btnClass} group cursor-pointer">
+                            <div class="bg-indigo-600 text-white w-14 h-14 rounded-full flex items-center justify-center font-comic text-3xl border-4 border-slate-900 flex-shrink-0 shadow-comic-sm">
+                                ${index + 1}
+                            </div>
+                            <span class="font-extrabold text-xl sm:text-2xl leading-snug flex-grow text-slate-900">${choice.text}</span>
+                            <i class="fa-solid fa-circle-arrow-right text-4xl text-slate-300 group-hover:text-indigo-600 transform group-hover:translate-x-2 transition-all"></i>
+                        </button>
+                    `;
+                });
+                html += `</div></div></div>`;
+            } else {
+                const endDelay = 200 + (node.panels.length * 120);
+                html += `
+                    <div class="animate-pop bg-amber-300 rounded-2xl p-8 sm:p-12 border-4 border-slate-900 shadow-comic mt-10" style="animation-delay: ${endDelay}ms;">
+                        <h3 class="font-comic text-5xl text-slate-900 tracking-widest mb-8 border-b-4 border-slate-900 pb-4 uppercase">Scenario Concluded</h3>
+                        
+                        <div class="bg-white border-4 border-slate-900 rounded-xl p-6 mb-6 shadow-comic-sm">
+                            <h4 class="text-xs font-black text-slate-400 uppercase mb-1">Target Capability Focus</h4>
+                            <p class="text-indigo-700 font-comic text-3xl tracking-wide">${node.softSkill}</p>
+                        </div>
+
+                        <div class="bg-white border-4 border-slate-900 rounded-xl p-6 mb-10 shadow-comic-sm relative">
+                            <button onclick="toggleSpeech(this, \`${node.analysis.replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <h4 class="text-xs font-black text-slate-400 uppercase mb-2">Critical Analysis & Discussion Prompt</h4>
+                            <p class="text-slate-900 font-extrabold text-2xl leading-relaxed pr-12 text-left">
+                                ${node.analysis}
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-6">
+                            <button onclick="resetApp()" class="comic-btn flex-1 bg-white border-4 border-slate-900 text-slate-900 px-6 py-5 rounded-xl font-black text-xl hover:bg-slate-100 transition-colors flex items-center justify-center space-x-3 shadow-comic">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>REPLAY STORY</span>
+                            </button>
+                            <button onclick="setStage('reflection')" class="comic-btn flex-1 bg-indigo-600 border-4 border-slate-900 text-white px-6 py-5 rounded-xl font-black text-xl hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-3 shadow-comic">
+                                <i class="fa-solid fa-comments"></i>
+                                <span>CLASS TALK</span>
+                            </button>
+                        </div>
+                    </div></div>
+                `;
+            }
+
+            div.innerHTML = html;
+            return div;
+        }
+
+        function renderReflection() {
+            const div = document.createElement('div');
+            
+            const discussionPrompts = [
+                "According to the reading, what global geopolitical tensions led directly to the weakening of the Indonesian Rupiah in 2026?",
+                "How does high demand for import energy (like oil and gas paid in US Dollars) negatively pressure local currency exchange rates?",
+                "What is Bank Indonesia's target in setting a monthly $25,000 threshold, and how might that restrict local businesses?"
+            ];
+
+            div.innerHTML = `
+                <div class="animate-pop bg-white rounded-3xl shadow-comic p-8 sm:p-12 border-4 border-slate-900" style="animation-delay: 0ms;">
+                    <div class="flex flex-col items-center justify-center space-y-4 mb-12 border-b-4 border-slate-900 pb-8 text-center">
+                        <i class="fa-solid fa-comments text-6xl text-indigo-600"></i>
+                        <h2 class="font-comic text-5xl md:text-6xl text-slate-900 tracking-wide uppercase">Class Discussion</h2>
+                    </div>
+
+                    <div class="space-y-10 mb-12">
+                        <div class="animate-pop bg-sky-50 p-8 rounded-2xl border-4 border-slate-900 shadow-comic relative" style="animation-delay: 150ms;">
+                            <button onclick="toggleSpeech(this, \`${discussionPrompts[0].replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <div class="absolute -top-6 -left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl shadow-comic-sm">1</div>
+                            <h3 class="font-comic text-3xl text-sky-900 mb-4 tracking-wide uppercase pr-12">Reading Comprehension</h3>
+                            <p class="text-slate-800 font-extrabold text-xl leading-relaxed text-left">${discussionPrompts[0]}</p>
+                        </div>
+
+                        <div class="animate-pop bg-purple-50 p-8 rounded-2xl border-4 border-slate-900 shadow-comic relative" style="animation-delay: 300ms;">
+                            <button onclick="toggleSpeech(this, \`${discussionPrompts[1].replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <div class="absolute -top-6 -left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl shadow-comic-sm">2</div>
+                            <h3 class="font-comic text-3xl text-purple-900 mb-4 tracking-wide uppercase pr-12">Macroeconomics Logic</h3>
+                            <p class="text-slate-800 font-extrabold text-xl leading-relaxed text-left">${discussionPrompts[1]}</p>
+                        </div>
+
+                        <div class="animate-pop bg-emerald-50 p-8 rounded-2xl border-4 border-slate-900 shadow-comic relative" style="animation-delay: 450ms;">
+                            <button onclick="toggleSpeech(this, \`${discussionPrompts[2].replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <div class="absolute -top-6 -left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl shadow-comic-sm">3</div>
+                            <h3 class="font-comic text-3xl text-emerald-900 mb-4 tracking-wide uppercase pr-12">Critical Evaluation</h3>
+                            <p class="text-slate-800 font-extrabold text-xl leading-relaxed text-left">${discussionPrompts[2]}</p>
+                        </div>
+                    </div>
+
+                    <div class="animate-pop" style="animation-delay: 600ms;">
+                        <button onclick="resetApp()" class="comic-btn w-full bg-slate-900 text-white px-8 py-6 rounded-2xl font-black text-2xl hover:bg-slate-800 transition-colors flex items-center justify-center space-x-4 border-4 border-slate-900 shadow-comic uppercase tracking-wider">
+                            <i class="fa-solid fa-rotate-right text-3xl"></i>
+                            <span>Restart Entire Lesson</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function doTransition(actionCallback) {
+            const container = document.getElementById('app-container');
+            container.classList.add('fade-out-active');
+            stopAllAudio(); 
+            
+            setTimeout(() => {
+                actionCallback();
+                render();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                setTimeout(() => {
+                    container.classList.remove('fade-out-active');
+                }, 50);
+            }, 250); 
+        }
+
+        function setStage(newStage) {
+            doTransition(() => { state.stage = newStage; });
+        }
+
+        function startGame() {
+            doTransition(() => {
+                state.currentNode = 'start';
+                state.stage = 'story';
+            });
+        }
+
+        function handleChoice(nextNode) {
+            doTransition(() => { state.currentNode = nextNode; });
+        }
+
+        function resetApp() {
+            doTransition(() => {
+                state = { stage: 'reading', currentNode: 'start' };
+            });
+        }
+
+        window.onload = () => {
+            const container = document.getElementById('app-container');
+            container.classList.add('fade-out-active');
+            render();
+            setTimeout(() => { container.classList.remove('fade-out-active'); }, 50);
+        };
+    </script>
+</body>
+</html>

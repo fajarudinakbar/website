@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL ITP Written Expression - Practice Test C</title>
+    <style>
+        :root {
+            --primary: #0ea5e9; /* Light Blue for Structure Section */
+            --primary-dark: #0284c7;
+            --secondary: #64748b;
+            --bg-light: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --success: #22c55e;
+            --error: #ef4444;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header & Progress */
+        header {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            border-top: 6px solid var(--primary);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .progress-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .progress-step {
+            position: relative;
+            z-index: 2;
+            background: #e2e8f0;
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.4);
+        }
+
+        .progress-step.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Pages & Animations */
+        .module-page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .module-page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Homepage Styles */
+        .home-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .home-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .instruction-list {
+            text-align: left;
+            margin: 20px auto;
+            max-width: 500px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .instruction-list li {
+            margin-bottom: 10px;
+            list-style-position: inside;
+        }
+
+        /* Module Containers */
+        .module-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .module-header {
+            background: #f0f9ff;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .module-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .module-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .module-content {
+            padding: 24px;
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: border-color 0.3s;
+        }
+
+        .question-card.unanswered-error {
+            border: 2px solid var(--error);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .q-number {
+            font-weight: 700;
+            color: var(--secondary);
+            background: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+        }
+        
+        /* Underline styling specifically for Written Expression */
+        .u-word {
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-decoration-color: var(--text-main);
+            text-underline-offset: 4px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            cursor: default;
+        }
+
+        .u-label {
+            font-size: 0.75em;
+            vertical-align: sub;
+            margin-left: 2px;
+            color: var(--secondary);
+            font-weight: normal;
+            text-decoration: none;
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .option-input {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* Feedback Area */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.correct {
+            background-color: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #166534;
+        }
+
+        .feedback.incorrect {
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .explanation-text {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+
+        /* Controls */
+        .controls-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            color: var(--text-main);
+        }
+
+        .btn-next {
+            background: var(--text-main);
+            display: none;
+        }
+        
+        .btn-next:hover {
+            background: #000;
+        }
+
+        /* Score Summary Page */
+        .summary-card {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .final-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .correct-answer-highlight {
+            border-color: var(--success) !important;
+            background-color: #dcfce7 !important;
+        }
+        
+        .wrong-answer-highlight {
+            border-color: var(--error) !important;
+            background-color: #fee2e2 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>TOEFL ITP Written Expression</h1>
+        <div class="subtitle">Practice Test C</div>
+        
+        <div class="progress-container">
+            <div class="progress-track"></div>
+            <div id="step-1" class="progress-step">1</div>
+            <div id="step-2" class="progress-step">2</div>
+            <div id="step-3" class="progress-step">3</div>
+            <div id="step-4" class="progress-step">🏁</div>
+        </div>
+    </header>
+
+    <form id="quizForm">
+        <div id="quiz-content">
+            </div>
+    </form>
+</div>
+
+<script>
+    // --- QUIZ DATA ---
+    const quizData = [
+        // Page 1 (16-23)
+        { 
+            id: 16, 
+            question: "The <span class=\"u-word\">most tallest<span class=\"u-label\">(A)</span></span> building in the <span class=\"u-word\">district<span class=\"u-label\">(B)</span></span> was <span class=\"u-word\">completed<span class=\"u-label\">(C)</span></span> late last <span class=\"u-word\">year<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "most tallest", B: "district", C: "completed", D: "year" }, 
+            answer: "A", 
+            explanation: "Double superlative error. 'Tallest' is already the superlative form of 'tall'. It should simply be 'tallest'." 
+        },
+        { 
+            id: 17, 
+            question: "<span class=\"u-word\">Each<span class=\"u-label\">(A)</span></span> of the <span class=\"u-word\">candidates<span class=\"u-label\">(B)</span></span> <span class=\"u-word\">need<span class=\"u-label\">(C)</span></span> to bring a printed <span class=\"u-word\">resume<span class=\"u-label\">(D)</span></span> to the interview.", 
+            options: { A: "Each", B: "candidates", C: "need", D: "resume" }, 
+            answer: "C", 
+            explanation: "Subject-verb agreement. The subject 'Each' is singular, so the verb must also be singular. It should be 'needs'."
+        },
+        { 
+            id: 18, 
+            question: "The <span class=\"u-word\">success<span class=\"u-label\">(A)</span></span> of the project depends on the <span class=\"u-word\">reliable<span class=\"u-label\">(B)</span></span> of the <span class=\"u-word\">new<span class=\"u-label\">(C)</span></span> software <span class=\"u-word\">system<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "success", B: "reliable", C: "new", D: "system" }, 
+            answer: "B", 
+            explanation: "Incorrect word form. A noun is required after the article 'the'. It should be the noun 'reliability', not the adjective 'reliable'." 
+        },
+        { 
+            id: 19, 
+            question: "The <span class=\"u-word\">weather<span class=\"u-label\">(A)</span></span> was <span class=\"u-word\">too<span class=\"u-label\">(B)</span></span> cold that <span class=\"u-word\">they<span class=\"u-label\">(C)</span></span> decided to <span class=\"u-word\">stay<span class=\"u-label\">(D)</span></span> indoors.", 
+            options: { A: "weather", B: "too", C: "they", D: "stay" }, 
+            answer: "B", 
+            explanation: "Correlative conjunction error. When expressing cause and effect with 'that', the word 'so' is used. It should be 'so cold that'." 
+        },
+        { 
+            id: 20, 
+            question: "The <span class=\"u-word\">director<span class=\"u-label\">(A)</span></span> wishes that the <span class=\"u-word\">budget<span class=\"u-label\">(B)</span></span> <span class=\"u-word\">is<span class=\"u-label\">(C)</span></span> larger for the <span class=\"u-word\">upcoming<span class=\"u-label\">(D)</span></span> documentary.", 
+            options: { A: "director", B: "budget", C: "is", D: "upcoming" }, 
+            answer: "C", 
+            explanation: "Subjunctive mood error. After the verb 'wish', the past tense form is used to express a present unreality. It should be 'were' or 'was'." 
+        },
+        { 
+            id: 21, 
+            question: "<span class=\"u-word\">In spite<span class=\"u-label\">(A)</span></span> the heavy <span class=\"u-word\">snowfall<span class=\"u-label\">(B)</span></span>, the <span class=\"u-word\">trains<span class=\"u-label\">(C)</span></span> arrived on <span class=\"u-word\">time<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "In spite", B: "snowfall", C: "trains", D: "time" }, 
+            answer: "A", 
+            explanation: "Preposition error. The correct prepositional phrase is 'In spite of' or simply 'Despite'." 
+        },
+        { 
+            id: 22, 
+            question: "The <span class=\"u-word\">committee<span class=\"u-label\">(A)</span></span> reached <span class=\"u-word\">an<span class=\"u-label\">(B)</span></span> unanimous <span class=\"u-word\">decision<span class=\"u-label\">(C)</span></span> regarding the <span class=\"u-word\">new<span class=\"u-label\">(D)</span></span> policy.", 
+            options: { A: "committee", B: "an", C: "decision", D: "new" }, 
+            answer: "B", 
+            explanation: "Article error. Although 'unanimous' starts with a vowel letter, it begins with a consonant sound ('y'). It should be 'a unanimous'." 
+        },
+        { 
+            id: 23, 
+            question: "<span class=\"u-word\">These<span class=\"u-label\">(A)</span></span> type of <span class=\"u-word\">batteries<span class=\"u-label\">(B)</span></span> <span class=\"u-word\">lasts<span class=\"u-label\">(C)</span></span> longer than <span class=\"u-word\">others<span class=\"u-label\">(D)</span></span> on the market.", 
+            options: { A: "These", B: "batteries", C: "lasts", D: "others" }, 
+            answer: "A", 
+            explanation: "Demonstrative agreement. 'Type' is singular, so it requires a singular demonstrative pronoun. It should be 'This type' or 'These types'." 
+        },
+        
+        // Page 2 (24-31)
+        { 
+            id: 24, 
+            question: "The <span class=\"u-word\">researcher<span class=\"u-label\">(A)</span></span> gathered valuable <span class=\"u-word\">informations<span class=\"u-label\">(B)</span></span> during <span class=\"u-word\">the<span class=\"u-label\">(C)</span></span> extensive field <span class=\"u-word\">study<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "researcher", B: "informations", C: "the", D: "study" }, 
+            answer: "B", 
+            explanation: "Countability error. 'Information' is an uncountable noun and cannot be pluralized. It should be 'information'." 
+        },
+        { 
+            id: 25, 
+            question: "She <span class=\"u-word\">refused<span class=\"u-label\">(A)</span></span> <span class=\"u-word\">answering<span class=\"u-label\">(B)</span></span> the <span class=\"u-word\">questions<span class=\"u-label\">(C)</span></span> without her legal counsel <span class=\"u-word\">present<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "refused", B: "answering", C: "questions", D: "present" }, 
+            answer: "B", 
+            explanation: "Verb complementation. The verb 'refuse' is followed by an infinitive, not a gerund. It should be 'to answer'." 
+        },
+        { 
+            id: 26, 
+            question: "The <span class=\"u-word\">doctor<span class=\"u-label\">(A)</span></span> recommended that the <span class=\"u-word\">patient<span class=\"u-label\">(B)</span></span> <span class=\"u-word\">takes<span class=\"u-label\">(C)</span></span> a few days off <span class=\"u-word\">work<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "doctor", B: "patient", C: "takes", D: "work" }, 
+            answer: "C", 
+            explanation: "Subjunctive mood error. After verbs of recommendation like 'recommend that', the base form of the verb is used. It should be 'take'." 
+        },
+        { 
+            id: 27, 
+            question: "The <span class=\"u-word\">new<span class=\"u-label\">(A)</span></span> smartphone is <span class=\"u-word\">not<span class=\"u-label\">(B)</span></span> as <span class=\"u-word\">expensive<span class=\"u-label\">(C)</span></span> <span class=\"u-word\">than<span class=\"u-label\">(D)</span></span> the previous model.", 
+            options: { A: "new", B: "not", C: "expensive", D: "than" }, 
+            answer: "D", 
+            explanation: "Comparative structure error. The construction is 'as + adjective + as'. It should be 'as'." 
+        },
+        { 
+            id: 28, 
+            question: "He is <span class=\"u-word\">neither<span class=\"u-label\">(A)</span></span> <span class=\"u-word\">qualified<span class=\"u-label\">(B)</span></span> for the position <span class=\"u-word\">or<span class=\"u-label\">(C)</span></span> interested in <span class=\"u-word\">applying<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "neither", B: "qualified", C: "or", D: "applying" }, 
+            answer: "C", 
+            explanation: "Correlative conjunction error. The pair is 'neither... nor'. It should be 'nor'." 
+        },
+        { 
+            id: 29, 
+            question: "<span class=\"u-word\">Economics<span class=\"u-label\">(A)</span></span> <span class=\"u-word\">are<span class=\"u-label\">(B)</span></span> a fascinating <span class=\"u-word\">subject<span class=\"u-label\">(C)</span></span> for many <span class=\"u-word\">university<span class=\"u-label\">(D)</span></span> students.", 
+            options: { A: "Economics", B: "are", C: "subject", D: "university" }, 
+            answer: "B", 
+            explanation: "Subject-verb agreement. Fields of study ending in '-ics' (like Economics, Physics) are singular. The verb should be 'is'." 
+        },
+        { 
+            id: 30, 
+            question: "The <span class=\"u-word\">company<span class=\"u-label\">(A)</span></span> has been <span class=\"u-word\">operating<span class=\"u-label\">(B)</span></span> in this region <span class=\"u-word\">for<span class=\"u-label\">(C)</span></span> <span class=\"u-word\">1995<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "company", B: "operating", C: "for", D: "1995" }, 
+            answer: "C", 
+            explanation: "Preposition of time error. Use 'since' with a specific point in time in the past. It should be 'since'." 
+        },
+        { 
+            id: 31, 
+            question: "The <span class=\"u-word\">success<span class=\"u-label\">(A)</span></span> of the agricultural event is <span class=\"u-word\">dependent<span class=\"u-label\">(B)</span></span> <span class=\"u-word\">of<span class=\"u-label\">(C)</span></span> the <span class=\"u-word\">weather<span class=\"u-label\">(D)</span></span> conditions.", 
+            options: { A: "success", B: "dependent", C: "of", D: "weather" }, 
+            answer: "C", 
+            explanation: "Idiomatic preposition error. The adjective 'dependent' is followed by 'on'. It should be 'on'." 
+        },
+
+        // Page 3 (32-40)
+        { 
+            id: 32, 
+            question: "<span class=\"u-word\">Either<span class=\"u-label\">(A)</span></span> the <span class=\"u-word\">manager<span class=\"u-label\">(B)</span></span> or the employees <span class=\"u-word\">is<span class=\"u-label\">(C)</span></span> responsible for the <span class=\"u-word\">error<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "Either", B: "manager", C: "is", D: "error" }, 
+            answer: "C", 
+            explanation: "Subject-verb agreement. With 'either... or', the verb must agree with the subject closest to it ('employees'). It should be 'are'." 
+        },
+        { 
+            id: 33, 
+            question: "The <span class=\"u-word\">scholarship<span class=\"u-label\">(A)</span></span> will be awarded to <span class=\"u-word\">whomever<span class=\"u-label\">(B)</span></span> <span class=\"u-word\">meets<span class=\"u-label\">(C)</span></span> the highest academic <span class=\"u-word\">standards<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "scholarship", B: "whomever", C: "meets", D: "standards" }, 
+            answer: "B", 
+            explanation: "Pronoun case error. The pronoun acts as the subject of the dependent clause '...meets the highest academic standards'. It should be 'whoever'." 
+        },
+        { 
+            id: 34, 
+            question: "The <span class=\"u-word\">bird<span class=\"u-label\">(A)</span></span> built <span class=\"u-word\">it's<span class=\"u-label\">(B)</span></span> nest <span class=\"u-word\">high<span class=\"u-label\">(C)</span></span> in the branches of the oak <span class=\"u-word\">tree<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "bird", B: "it's", C: "high", D: "tree" }, 
+            answer: "B", 
+            explanation: "Possessive pronoun error. 'It's' means 'it is'. The possessive form is 'its'." 
+        },
+        { 
+            id: 35, 
+            question: "She <span class=\"u-word\">enjoys<span class=\"u-label\">(A)</span></span> <span class=\"u-word\">reading<span class=\"u-label\">(B)</span></span>, swimming, and <span class=\"u-word\">to paint<span class=\"u-label\">(C)</span></span> in her <span class=\"u-word\">free time<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "enjoys", B: "reading", C: "to paint", D: "free time" }, 
+            answer: "C", 
+            explanation: "Parallel structure error. Items in a series must be in the same grammatical form. It should be the gerund 'painting'." 
+        },
+        { 
+            id: 36, 
+            question: "<span class=\"u-word\">Never<span class=\"u-label\">(A)</span></span> <span class=\"u-word\">I have<span class=\"u-label\">(B)</span></span> seen such a <span class=\"u-word\">beautiful<span class=\"u-label\">(C)</span></span> sunset <span class=\"u-word\">before<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "Never", B: "I have", C: "beautiful", D: "before" }, 
+            answer: "B", 
+            explanation: "Inversion error. When a negative adverbial begins a sentence, the subject and auxiliary verb must be inverted. It should be 'have I'." 
+        },
+        { 
+            id: 37, 
+            question: "The <span class=\"u-word\">passengers<span class=\"u-label\">(A)</span></span> were told that <span class=\"u-word\">their<span class=\"u-label\">(B)</span></span> <span class=\"u-word\">luggages<span class=\"u-label\">(C)</span></span> would arrive <span class=\"u-word\">shortly<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "passengers", B: "their", C: "luggages", D: "shortly" }, 
+            answer: "C", 
+            explanation: "Countability error. 'Luggage' is an uncountable noun and does not take a plural 's'. It should be 'luggage'." 
+        },
+        { 
+            id: 38, 
+            question: "I am <span class=\"u-word\">not<span class=\"u-label\">(A)</span></span> used <span class=\"u-word\">to wake<span class=\"u-label\">(B)</span></span> up so <span class=\"u-word\">early<span class=\"u-label\">(C)</span></span> in the <span class=\"u-word\">morning<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "not", B: "to wake", C: "early", D: "morning" }, 
+            answer: "B", 
+            explanation: "Verb pattern error. The phrase 'be used to' is followed by a gerund, not an infinitive. It should be 'to waking'." 
+        },
+        { 
+            id: 39, 
+            question: "<span class=\"u-word\">Everyone<span class=\"u-label\">(A)</span></span> <span class=\"u-word\">who<span class=\"u-label\">(B)</span></span> attends the workshop must submit <span class=\"u-word\">their<span class=\"u-label\">(C)</span></span> evaluation <span class=\"u-word\">form<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "Everyone", B: "who", C: "their", D: "form" }, 
+            answer: "C", 
+            explanation: "Pronoun agreement error. 'Everyone' is grammatically singular. In formal standardized English testing, the pronoun should be 'his or her'." 
+        },
+        { 
+            id: 40, 
+            question: "He drove <span class=\"u-word\">too<span class=\"u-label\">(A)</span></span> <span class=\"u-word\">fastly<span class=\"u-label\">(B)</span></span> around the <span class=\"u-word\">corner<span class=\"u-label\">(C)</span></span> and nearly <span class=\"u-word\">crashed<span class=\"u-label\">(D)</span></span>.", 
+            options: { A: "too", B: "fastly", C: "corner", D: "crashed" }, 
+            answer: "B", 
+            explanation: "Word form error. The word 'fast' is both an adjective and an adverb. The word 'fastly' does not exist in standard English. It should be 'fast'." 
+        }
+    ];
+
+    const quizContent = document.getElementById('quiz-content');
+    const totalScore = { 1: 0, 2: 0, 3: 0 }; 
+
+    // Modules
+    const modules = [
+        { id: 1, range: [0, 8], title: "Part B: Written Expression", subtitle: "Questions 16 to 23" },
+        { id: 2, range: [8, 16], title: "Part B: Written Expression (Continued)", subtitle: "Questions 24 to 31" },
+        { id: 3, range: [16, 25], title: "Part B: Written Expression (Continued)", subtitle: "Questions 32 to 40" }
+    ];
+
+    function renderApp() {
+        // 1. Render Homepage
+        const homeDiv = document.createElement('div');
+        homeDiv.id = 'page-home';
+        homeDiv.className = 'module-page active';
+        homeDiv.innerHTML = `
+            <div class="home-card">
+                <span class="home-icon">✍️</span>
+                <h2>Welcome to Written Expression</h2>
+                <p>This test simulates Part B (Written Expression) of the TOEFL ITP.</p>
+                
+                <ul class="instruction-list">
+                    <li>This part contains <strong>25 Questions</strong>.</li>
+                    <li>Sentences have four underlined words or phrases.</li>
+                    <li>Identify the one underlined part that must be changed to be correct.</li>
+                    <li>You must answer all questions in a section before proceeding.</li>
+                </ul>
+
+                <button type="button" class="btn" onclick="startTest()">Start Part B &rarr;</button>
+            </div>
+        `;
+        quizContent.appendChild(homeDiv);
+
+        // 2. Render Modules
+        modules.forEach((mod) => {
+            const pageDiv = document.createElement('div');
+            pageDiv.id = `page-${mod.id}`;
+            pageDiv.className = `module-page`;
+            
+            pageDiv.innerHTML = `
+                <div class="module-container">
+                    <div class="module-header">
+                        <div class="module-title">${mod.title}</div>
+                        <div class="module-subtitle">${mod.subtitle}</div>
+                    </div>
+                    <div class="module-content" id="questions-area-${mod.id}">
+                        </div>
+                </div>
+                <div class="controls-area">
+                    ${mod.id > 1 ? `<button type="button" class="btn btn-secondary" onclick="goToPreviousPage(${mod.id})">&larr; Previous Page</button>` : '<span></span>'}
+                    
+                    <div>
+                        <button type="button" id="submit-btn-${mod.id}" class="btn" onclick="submitModule(${mod.id}, ${mod.range[0]}, ${mod.range[1]})">
+                            Submit Answers
+                        </button>
+                        <button type="button" id="next-btn-${mod.id}" class="btn btn-next" onclick="goToNextPage(${mod.id})">
+                            Proceed &rarr;
+                        </button>
+                    </div>
+                </div>
+            `;
+            quizContent.appendChild(pageDiv);
+
+            // Render Questions
+            const qContainer = pageDiv.querySelector(`#questions-area-${mod.id}`);
+            const slice = quizData.slice(mod.range[0], mod.range[1]);
+
+            slice.forEach((q) => {
+                const card = document.createElement('div');
+                card.id = `card-${q.id}`;
+                card.className = 'question-card';
+                
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="q-number">Question ${q.id}</span>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options-grid">
+                        ${Object.entries(q.options).map(([key, value]) => `
+                            <label class="option-label" id="label-${q.id}-${key}">
+                                <input type="radio" name="q${q.id}" value="${key}" class="option-input" onclick="clearError(${q.id})">
+                                <span><strong>(${key})</strong> ${value}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    
+                    <div id="feedback-${q.id}" class="feedback"></div>
+                `;
+                qContainer.appendChild(card);
+            });
+        });
+
+        // 3. Render Summary Page (Hidden)
+        const summaryDiv = document.createElement('div');
+        summaryDiv.id = `page-summary`;
+        summaryDiv.className = `module-page`;
+        summaryDiv.innerHTML = `
+            <div class="module-container summary-card">
+                <h2>Written Expression Completed!</h2>
+                <p>You have finished the Structure section (Part B).</p>
+                <div class="final-score" id="total-score-display">--/25</div>
+                
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="goToPreviousPage(4)">Review Answers</button>
+                    <button type="button" class="btn" onclick="location.reload()">Start Over</button>
+                </div>
+            </div>
+        `;
+        quizContent.appendChild(summaryDiv);
+    }
+
+    function startTest() {
+        document.getElementById('page-home').classList.remove('active');
+        document.getElementById('page-1').classList.add('active');
+        document.getElementById('step-1').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function clearError(id) {
+        const card = document.getElementById(`card-${id}`);
+        if(card) card.classList.remove('unanswered-error');
+    }
+
+    function submitModule(modId, start, end) {
+        const moduleQuestions = quizData.slice(start, end);
+        let unansweredCount = 0;
+        let firstUnansweredId = null;
+
+        // 1. Validation
+        moduleQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            if (!selected) {
+                unansweredCount++;
+                const card = document.getElementById(`card-${q.id}`);
+                card.classList.add('unanswered-error');
+                if (!firstUnansweredId) firstUnansweredId = q.id;
+            }
+        });
+
+        if (unansweredCount > 0) {
+            alert(`Please answer all questions in this section before submitting.`);
+            if (firstUnansweredId) {
+                document.getElementById(`card-${firstUnansweredId}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        // 2. Grading & Feedback
+        let modScore = 0;
+        moduleQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${q.id}`);
+            
+            // Reset styles
+            Object.keys(q.options).forEach(key => {
+                document.getElementById(`label-${q.id}-${key}`).classList.remove('correct-answer-highlight', 'wrong-answer-highlight');
+            });
+
+            // Logic
+            if (selected.value === q.answer) {
+                modScore++;
+                feedbackEl.className = "feedback correct";
+                feedbackEl.innerHTML = `<strong>Correct!</strong> <div class="explanation-text">${q.explanation}</div>`;
+                document.getElementById(`label-${q.id}-${q.answer}`).classList.add('correct-answer-highlight');
+            } else {
+                feedbackEl.className = "feedback incorrect";
+                feedbackEl.innerHTML = `<strong>Incorrect.</strong> The error is <strong>(${q.answer})</strong>. <div class="explanation-text">${q.explanation}</div>`;
+                document.getElementById(`label-${q.id}-${selected.value}`).classList.add('wrong-answer-highlight');
+                document.getElementById(`label-${q.id}-${q.answer}`).classList.add('correct-answer-highlight');
+            }
+            feedbackEl.style.display = 'block';
+            
+            // Lock inputs
+            const inputs = document.querySelectorAll(`input[name="q${q.id}"]`);
+            inputs.forEach(i => i.disabled = true);
+        });
+
+        // 3. Save Score & UI Transition
+        totalScore[modId] = modScore;
+        
+        // Hide Submit, Show Next
+        document.getElementById(`submit-btn-${modId}`).style.display = 'none';
+        
+        const nextBtn = document.getElementById(`next-btn-${modId}`);
+        if(modId === 3) {
+            nextBtn.innerHTML = "Finish & View Score";
+        }
+        nextBtn.style.display = 'inline-flex';
+
+        // Update Step Indicator to Completed
+        document.getElementById(`step-${modId}`).classList.remove('active');
+        document.getElementById(`step-${modId}`).classList.add('completed');
+        
+        // Scroll top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToNextPage(currentModId) {
+        document.getElementById(`page-${currentModId}`).classList.remove('active');
+        
+        if (currentModId < 3) {
+            const nextId = currentModId + 1;
+            document.getElementById(`page-${nextId}`).classList.add('active');
+            document.getElementById(`step-${nextId}`).classList.add('active');
+        } else {
+            document.getElementById(`page-summary`).classList.add('active');
+            document.getElementById(`step-4`).classList.add('completed');
+            
+            const total = totalScore[1] + totalScore[2] + totalScore[3];
+            document.getElementById('total-score-display').innerText = `${total} / 25`;
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToPreviousPage(currentModId) {
+        // 1. Hide Current
+        if (currentModId === 4) { // Summary page
+            document.getElementById(`page-summary`).classList.remove('active');
+            document.getElementById(`step-4`).classList.remove('completed');
+        } else {
+            document.getElementById(`page-${currentModId}`).classList.remove('active');
+            document.getElementById(`step-${currentModId}`).classList.remove('active');
+        }
+
+        // 2. Show Previous
+        const prevId = currentModId - 1;
+        document.getElementById(`page-${prevId}`).classList.add('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    renderApp();
+</script>
+
+</body>
+</html>

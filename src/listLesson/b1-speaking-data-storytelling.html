@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>B1 (GSE 50) Speaking - Beyond the Script: Data Storytelling</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            overflow-wrap: normal;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 4px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 3px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+        .text-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            margin-top: 0.75rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .text-input:disabled {
+            background-color: #f1f5f9;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            white-space: nowrap;
+        }
+        .neo-btn:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .neo-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Option Labels (Radios) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.6;
+            font-weight: 800;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.35rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            accent-color: #0f172a;
+        }
+        .option-label:hover:not(.locked) {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .option-label.locked {
+            cursor: not-allowed;
+        }
+
+        /* 3-State Feedback Styles */
+        .state-amber { background-color: #fef08a !important; border-color: #ca8a04 !important; color: #854d0e !important; }
+        .state-rose { background-color: #fecdd3 !important; border-color: #e11d48 !important; color: #9f1239 !important; }
+        .state-emerald { background-color: #a7f3d0 !important; border-color: #059669 !important; color: #065f46 !important; }
+
+        /* AI Prompt Box */
+        .ai-prompt-neo {
+            background-color: #e0f2fe;
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            padding: 1.5rem;
+            position: relative;
+        }
+        .ai-prompt-neo::before {
+            content: "AI ASSISTANT";
+            position: absolute;
+            top: -16px;
+            left: 16px;
+            background: #0ea5e9;
+            color: white;
+            padding: 4px 12px;
+            font-weight: 900;
+            border: 3px solid #0f172a;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Pulsing Audio Animation */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .audio-playing-icon {
+            animation: pulse-ring 2s infinite;
+            border-radius: 50%;
+        }
+
+        /* Speaking Timer Pulse Animation */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); transform: scale(0.95); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); transform: scale(0.95); }
+        }
+        .recording-pulse {
+            animation: pulse-red 1.5s infinite;
+            background-color: #fca5a5 !important;
+            border-color: #dc2626 !important;
+        }
+        
+        /* Audio Player Styling */
+        audio {
+            border-radius: 0;
+            border: 3px solid #0f172a;
+            background: #f1f5f9;
+        }
+        audio::-webkit-media-controls-panel {
+            background-color: #f8fafc;
+            border-radius: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 sm:p-6 md:p-10">
+
+    <div class="max-w-7xl mx-auto bg-white p-6 sm:p-10 lg:p-12 border-4 border-dark shadow-neo">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base sm:text-xl text-dark mb-10 flex gap-3 font-black uppercase tracking-wider items-center flex-wrap whitespace-nowrap">
+            <span class="bg-[#c4b5fd] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Professional English</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#c4b5fd] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Speaking</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#facc15] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">B1 / GSE 50</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#818cf8] text-white px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Data Storytelling</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-8 mb-10 md:mb-14 border-b-4 border-dark pb-10">
+            <div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-dark uppercase tracking-tight mb-5 leading-tight">
+                    Beyond the Script: Data Storytelling & Oral Fluency
+                </h1>
+                <p class="text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-4 py-2 border-3 border-dark">
+                    Topic: Interpreting the Clinical Outcome Out Loud
+                </p>
+            </div>
+            <div class="flex gap-4 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-3 px-6 py-4 text-xl text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-6 h-6"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#fefce8] border-4 border-dark p-6 md:p-8 mb-10 md:mb-14 shadow-neo flex items-start gap-5">
+            <div class="bg-[#facc15] p-3 border-3 border-dark shrink-0 mt-1">
+                <i data-lucide="mic" class="w-8 h-8 text-dark"></i>
+            </div>
+            <p class="text-xl md:text-2xl text-dark font-bold leading-relaxed">
+                <span class="uppercase font-black text-2xl mr-2">Speaking & Audio Focus:</span> This lesson relies heavily on <strong>oral practice</strong>. Read the scripts, study the chart scaffolding, and use the <strong>built-in recording tools</strong> to practice explaining data out loud before you check the sample answers. You can play back your recordings to self-evaluate!
+            </p>
+        </div>
+
+        <!-- Accordion Container -->
+        <div class="space-y-10 md:space-y-12">
+
+            <!-- Part 1: Preparation (Cyan Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            1
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Preparation (Tasks 1 to 2)</span>
+                    </div>
+                    <div id="icon-wrapper-part1" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part1" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 1 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 1</span> Warm Up Speaking
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t1', this, 'Show Sample Ideas')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Ideas</button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-6 italic text-brand-700">Do not type. Speak your answers out loud for 30 seconds for each question.</p>
+                            <ul class="list-disc pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>When you see a complex chart, what is the hardest part about explaining it in English?</li>
+                                <li>Why is the way a doctor speaks (their tone and stress) just as important as the data they show?</li>
+                            </ul>
+                            
+                            <div id="ans-t1" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="lightbulb" class="w-8 h-8 inline mr-2 text-[#eab308] fill-current"></i>Sample Spoken Ideas:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li>"For me, it is difficult to find the main message quickly. I try to look for the biggest trends before I speak."</li>
+                                    <li>"Tone and stress tell the audience what is most important. If a speaker sounds unsure, the audience will not trust the data."</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 2 (Interactive Vocab) -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 border-b-4 border-dark pb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 2</span> Tier 2 Vocabulary Check
+                                </h3>
+                                <button onclick="checkVocab()" class="neo-btn bg-[#38bdf8] text-dark px-8 py-4 text-xl">
+                                    Submit Answers
+                                </button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-8">Select the correct definition for the CAPITALIZED word in each context. You will need these words for your speaking tasks later.</p>
+                            
+                            <div id="vocab-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Listening Content (Blue Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#eff6ff]">
+                <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black">
+                            <i data-lucide="bar-chart-2" class="w-8 h-8 md:w-10 md:h-10"></i>
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Core Content: Chart & Script</span>
+                    </div>
+                    <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-10">
+                        
+                        <!-- Visual Aid: SVG Chart -->
+                        <div class="bg-white border-4 border-dark p-6 md:p-8 shadow-[6px_6px_0_0_#0f172a]">
+                            <div class="flex items-center gap-3 mb-6">
+                                <span class="bg-[#3b82f6] text-white px-3 py-1 font-black uppercase tracking-wide border-2 border-dark text-lg">Visual Aid 1</span>
+                                <h3 class="text-2xl md:text-3xl font-black uppercase text-dark">Post-Operative Recovery Speed</h3>
+                            </div>
+                            
+                            <div class="relative w-full overflow-hidden border-3 border-slate-300 bg-slate-50 pt-6 pr-6">
+                                <!-- SVG Chart directly coded -->
+                                <svg viewBox="0 0 700 350" class="w-full h-auto" preserveAspectRatio="xMidYMid meet">
+                                    <!-- Background Grids -->
+                                    <line x1="60" y1="50" x2="650" y2="50" stroke="#cbd5e1" stroke-dasharray="5,5" stroke-width="2"/>
+                                    <line x1="60" y1="110" x2="650" y2="110" stroke="#cbd5e1" stroke-dasharray="5,5" stroke-width="2"/>
+                                    <line x1="60" y1="170" x2="650" y2="170" stroke="#cbd5e1" stroke-dasharray="5,5" stroke-width="2"/>
+                                    <line x1="60" y1="230" x2="650" y2="230" stroke="#cbd5e1" stroke-dasharray="5,5" stroke-width="2"/>
+                                    
+                                    <!-- Axes -->
+                                    <line x1="60" y1="290" x2="650" y2="290" stroke="#0f172a" stroke-width="4"/>
+                                    <line x1="60" y1="30" x2="60" y2="290" stroke="#0f172a" stroke-width="4"/>
+
+                                    <!-- Y-Axis Labels (Progress %) -->
+                                    <text x="45" y="55" font-family="Plus Jakarta Sans" font-size="16" font-weight="800" fill="#0f172a" text-anchor="end">100%</text>
+                                    <text x="45" y="115" font-family="Plus Jakarta Sans" font-size="16" font-weight="800" fill="#0f172a" text-anchor="end">75%</text>
+                                    <text x="45" y="175" font-family="Plus Jakarta Sans" font-size="16" font-weight="800" fill="#0f172a" text-anchor="end">50%</text>
+                                    <text x="45" y="235" font-family="Plus Jakarta Sans" font-size="16" font-weight="800" fill="#0f172a" text-anchor="end">25%</text>
+                                    <text x="45" y="295" font-family="Plus Jakarta Sans" font-size="16" font-weight="800" fill="#0f172a" text-anchor="end">0%</text>
+
+                                    <!-- X-Axis Labels (Time) -->
+                                    <text x="150" y="325" font-family="Plus Jakarta Sans" font-size="18" font-weight="800" fill="#0f172a" text-anchor="middle">Week 1</text>
+                                    <text x="310" y="325" font-family="Plus Jakarta Sans" font-size="18" font-weight="800" fill="#0f172a" text-anchor="middle">Week 2</text>
+                                    <text x="470" y="325" font-family="Plus Jakarta Sans" font-size="18" font-weight="800" fill="#0f172a" text-anchor="middle">Week 3</text>
+                                    <text x="630" y="325" font-family="Plus Jakarta Sans" font-size="18" font-weight="800" fill="#0f172a" text-anchor="middle">Week 4</text>
+
+                                    <!-- Data Line: Group B (Steady Progress - Orange) -->
+                                    <polyline points="60,250 150,210 310,160 470,120 630,85" fill="none" stroke="#fb923c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <!-- Points for Group B -->
+                                    <circle cx="150" cy="210" r="8" fill="#fb923c" stroke="#0f172a" stroke-width="3"/>
+                                    <circle cx="310" cy="160" r="8" fill="#fb923c" stroke="#0f172a" stroke-width="3"/>
+                                    <circle cx="470" cy="120" r="8" fill="#fb923c" stroke="#0f172a" stroke-width="3"/>
+                                    <circle cx="630" cy="85" r="8" fill="#fb923c" stroke="#0f172a" stroke-width="3"/>
+
+                                    <!-- Data Line: Group A (Sharp Increase - Blue) -->
+                                    <polyline points="60,250 150,220 310,90 470,60 630,50" fill="none" stroke="#3b82f6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <!-- Points for Group A -->
+                                    <circle cx="150" cy="220" r="8" fill="#3b82f6" stroke="#0f172a" stroke-width="3"/>
+                                    <circle cx="310" cy="90" r="8" fill="#3b82f6" stroke="#0f172a" stroke-width="3"/>
+                                    <circle cx="470" cy="60" r="8" fill="#3b82f6" stroke="#0f172a" stroke-width="3"/>
+                                    <circle cx="630" cy="50" r="8" fill="#3b82f6" stroke="#0f172a" stroke-width="3"/>
+                                </svg>
+                            </div>
+                            
+                            <!-- Legend -->
+                            <div class="flex flex-wrap justify-center gap-8 mt-8 border-t-4 border-slate-200 pt-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-2 bg-[#3b82f6] border-2 border-dark"></div>
+                                    <span class="font-black text-xl md:text-2xl text-dark">Group A (Early Mobilization)</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-2 bg-[#fb923c] border-2 border-dark"></div>
+                                    <span class="font-black text-xl md:text-2xl text-dark">Group B (Standard Care)</span>
+                                </div>
+                            </div>
+
+                            <!-- Chart Scaffolding (Idea Breakdown) -->
+                            <div class="mt-8 bg-slate-100 border-4 border-slate-300 p-6 flex flex-col md:flex-row gap-6 shadow-inner">
+                                <div class="flex-1 border-l-4 border-blue-500 pl-4">
+                                    <h4 class="font-black text-xl text-blue-700 uppercase flex items-center gap-2">
+                                        <i data-lucide="trending-up" class="w-5 h-5"></i> Group A Breakdown
+                                    </h4>
+                                    <p class="font-bold text-slate-700 mt-2 text-lg">Represents patients with "Early Mobilization". Notice the <strong class="text-blue-600 uppercase">sharp increase</strong> (steep line) between Week 1 and Week 2. They recover quickly, reaching nearly 100% by Week 4.</p>
+                                </div>
+                                <div class="flex-1 border-l-4 border-orange-500 pl-4">
+                                    <h4 class="font-black text-xl text-orange-700 uppercase flex items-center gap-2">
+                                        <i data-lucide="trending-up" class="w-5 h-5"></i> Group B Breakdown
+                                    </h4>
+                                    <p class="font-bold text-slate-700 mt-2 text-lg">Represents "Standard Care". This line shows <strong class="text-orange-600 uppercase">steady progress</strong>. It rises gradually and consistently, ending around 75% at Week 4.</p>
+                                </div>
+                                <div class="flex-1 border-l-4 border-emerald-500 pl-4">
+                                    <h4 class="font-black text-xl text-emerald-700 uppercase flex items-center gap-2">
+                                        <i data-lucide="lightbulb" class="w-5 h-5"></i> Core Narrative
+                                    </h4>
+                                    <p class="font-bold text-slate-700 mt-2 text-lg">The <strong>narrative</strong> is clear: Group A recovered significantly faster. The data strongly <strong>suggests</strong> that the new early mobilization protocol is highly effective.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Audio Player (TTS Script) -->
+                        <div class="bg-slate-800 border-4 border-dark p-6 md:p-10 shadow-neo text-white flex flex-col xl:flex-row items-center gap-8 justify-between mt-10">
+                            <div id="audio-info" class="text-center xl:text-left flex items-center gap-6 w-full">
+                                <div id="audio-icon-wrapper" class="bg-blue-500 p-4 border-3 border-white rounded-full shrink-0">
+                                    <i data-lucide="volume-2" class="w-10 h-10 text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl md:text-3xl font-black mb-2 uppercase">Audio Presentation</h3>
+                                    <p id="audio-status" class="text-xl text-blue-300 font-bold">Listen to how the speaker naturally explains the chart.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 shrink-0 w-full xl:w-auto">
+                                <button id="btn-play" onclick="playAudio()" class="neo-btn bg-[#3b82f6] border-white text-white hover:bg-[#2563eb] w-full xl:w-auto px-8 py-4 text-2xl shadow-[6px_6px_0_0_#ffffff]">
+                                    <i data-lucide="play" class="w-6 h-6"></i> Play Script
+                                </button>
+                                <button id="btn-stop" onclick="stopAudio()" class="neo-btn bg-[#ef4444] border-white text-white hover:bg-[#dc2626] w-full xl:w-auto px-8 py-4 text-2xl shadow-[6px_6px_0_0_#ffffff] hidden">
+                                    <i data-lucide="square" class="w-6 h-6"></i> Stop
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Transcript -->
+                        <div class="bg-slate-50 border-4 border-dark p-6 md:p-10 shadow-inner">
+                            <div class="flex justify-between items-center mb-8 border-b-4 border-dark pb-6">
+                                <h3 class="text-3xl md:text-4xl font-black text-dark uppercase">Transcript</h3>
+                                <button onclick="toggleAnswer('transcript-content', this, 'Show Transcript')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Hide Transcript</button>
+                            </div>
+                            
+                            <div id="transcript-content" class="space-y-8 text-2xl text-slate-800 font-medium leading-relaxed visible">
+                                <p>
+                                    <strong class="font-black text-blue-700 bg-blue-100 px-2 py-1 border-2 border-blue-800 mr-2 uppercase text-xl">Presenter:</strong> "Good afternoon, colleagues. Today, I want to present the results of our recent trial on post-operative recovery times. Please look at the first chart on the screen. As you can see, there is a <strong class="font-black underline decoration-4 decoration-brand-400">SHARP</strong> increase in recovery speed for patients in Group A."
+                                </p>
+                                <p>
+                                    <strong class="font-black text-blue-700 bg-blue-100 px-2 py-1 border-2 border-blue-800 mr-2 uppercase text-xl">Presenter:</strong> "I want to emphasize this specific point: the data <strong class="font-black underline decoration-4 decoration-brand-400">SUGGESTS</strong> that early mobilization is the primary driver of this trend. While Group B shows steady progress, the difference is statistically significant. Now, some might argue that the sample size was too small, but we have mitigated this by using a diverse demographic."
+                                </p>
+                                <p>
+                                    <strong class="font-black text-blue-700 bg-blue-100 px-2 py-1 border-2 border-blue-800 mr-2 uppercase text-xl">Presenter:</strong> "It is <strong class="font-black underline decoration-4 decoration-brand-400">CRUCIAL</strong> that we do not simply list these numbers, but rather understand the story they tell. The <strong class="font-black underline decoration-4 decoration-brand-400">NARRATIVE</strong> here is clear: changing our floor protocol could reduce hospital stays by 15%. I am ready to <strong class="font-black underline decoration-4 decoration-brand-400">DEFEND</strong> these conclusions because the evidence is robust. Does anyone have any questions regarding our methodology or the <strong class="font-black underline decoration-4 decoration-brand-400">PROJECTION</strong> for next quarter?"
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 3: Understanding (Emerald Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            3
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Understanding (Tasks 3 to 4)</span>
+                    </div>
+                    <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 3 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 3</span> Detail and Meaning
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t3', this, 'Show Sample Answers')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Answers</button>
+                            </div>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>According to the speaker, what is the "primary driver" of faster recovery in Group A?</li>
+                                <li>How does the speaker address the potential weakness of the "sample size"?</li>
+                                <li>What is the "Narrative" or the final recommendation the speaker makes?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Quickly type your answers here..."></textarea>
+                            
+                            <div id="ans-t3" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-square" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Sample Answers:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li><strong>Driver:</strong> Early mobilization.</li>
+                                    <li><strong>Sample size addressed:</strong> By using a diverse demographic in the trial.</li>
+                                    <li><strong>Narrative:</strong> Changing the floor protocol could reduce hospital stays by 15%.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 4 (Interactive T/F) -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 border-b-4 border-dark pb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 4</span> True or False Check
+                                </h3>
+                                <button onclick="checkTF()" class="neo-btn bg-[#4ade80] text-dark px-8 py-4 text-xl">
+                                    Submit Answers
+                                </button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-8">Verify the following statements based on the script and chart.</p>
+                            <div id="tf-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 4: Analysis (Orange Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#ffedd5]">
+                <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            4
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Speaking Practice (Tasks 5 to 6)</span>
+                    </div>
+                    <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 5: Shadowing Practice -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-6">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 5</span> Shadowing & Recording
+                            </h3>
+                            <p class="text-2xl text-slate-800 font-bold mb-6">
+                                "Shadowing" is when you listen to native speech and repeat it simultaneously. 
+                                <br><br>Play the audio in Part 2. Then, use the recorder below to <strong>record yourself</strong> reading the transcript aloud. Emphasize the capitalized words (<strong class="text-brand-600">SHARP, SUGGESTS, CRUCIAL</strong>). Listen to your recording to check your pace.
+                            </p>
+                            
+                            <!-- Recording Tool -->
+                            <div class="bg-white p-6 border-4 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+                                    <div class="flex items-center gap-4 w-full sm:w-auto">
+                                        <div id="icon-wrapper-task5" class="p-3 bg-red-100 text-red-600 border-3 border-dark rounded-full shrink-0 transition-colors">
+                                            <i data-lucide="mic" class="w-8 h-8"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-black text-xl uppercase">Record Oral Delivery</h4>
+                                            <p class="font-bold text-slate-600 text-2xl" id="timer-display-task5">00:00</p>
+                                        </div>
+                                    </div>
+                                    <button id="btn-task5" onclick="startRecordingTimer('task5', this)" class="neo-btn bg-red-500 text-white px-8 py-4 w-full sm:w-auto">Start Recording</button>
+                                </div>
+                                <!-- Audio Playback Block (Hidden Initially) -->
+                                <div id="playback-container-task5" class="hidden mt-6 pt-6 border-t-4 border-dashed border-slate-300">
+                                    <h4 class="font-black text-lg uppercase text-slate-600 mb-3 flex items-center gap-2"><i data-lucide="headphones" class="w-5 h-5"></i> Review Your Shadowing:</h4>
+                                    <audio id="audio-playback-task5" controls class="w-full h-12"></audio>
+                                    <ul class="list-disc pl-8 mt-4 space-y-2 text-xl font-bold text-slate-700">
+                                        <li>Did you stress the word 'SHARP' clearly?</li>
+                                        <li>Does your voice sound confident like the presenter?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task 6: Cause/Effect (Spoken) -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-6">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 6</span> Logical Effects (Spoken)
+                            </h3>
+                            <p class="text-2xl text-slate-800 font-bold mb-6">Look at the Cause below. Start the recording, then <strong>speak your explanation</strong> of the Effect aloud. Aim for about 30 seconds. Do not write it down first.</p>
+                            
+                            <div class="bg-slate-50 border-4 border-dark p-6 mb-8">
+                                <span class="font-black text-xl text-orange-900 block mb-2 uppercase">Cause:</span>
+                                <p class="font-bold text-2xl text-dark">The team used a diverse demographic (many different types of people) for the trial instead of just a few similar patients.</p>
+                                
+                                <span class="font-black text-xl text-dark uppercase mt-6 block"><i data-lucide="arrow-right" class="w-6 h-6 inline"></i> Spoken Effect Prompt:</span> 
+                                <p class="font-bold text-2xl text-slate-600 italic">"As a result, the audience..."</p>
+                            </div>
+
+                            <!-- Recording Tool -->
+                            <div class="bg-white p-6 border-4 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+                                    <div class="flex items-center gap-4 w-full sm:w-auto">
+                                        <div id="icon-wrapper-task6" class="p-3 bg-red-100 text-red-600 border-3 border-dark rounded-full shrink-0 transition-colors">
+                                            <i data-lucide="mic" class="w-8 h-8"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-black text-xl uppercase">Record Explanation</h4>
+                                            <p class="font-bold text-slate-600 text-2xl" id="timer-display-task6">00:00</p>
+                                        </div>
+                                    </div>
+                                    <button id="btn-task6" onclick="startRecordingTimer('task6', this)" class="neo-btn bg-red-500 text-white px-8 py-4 w-full sm:w-auto">Start Recording</button>
+                                </div>
+                                <!-- Audio Playback Block (Hidden Initially) -->
+                                <div id="playback-container-task6" class="hidden mt-6 pt-6 border-t-4 border-dashed border-slate-300">
+                                    <h4 class="font-black text-lg uppercase text-slate-600 mb-3 flex items-center gap-2"><i data-lucide="headphones" class="w-5 h-5"></i> Review Your Explanation:</h4>
+                                    <audio id="audio-playback-task6" controls class="w-full h-12"></audio>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 5: Case Studies (Violet Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fae8ff]">
+                <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            5
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Case Study Oral Defence (Task 7)</span>
+                    </div>
+                    <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 7: Roleplay/Dilemma -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-6 border-b-4 border-dark pb-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 7</span> The Ethical Dilemma
+                                </h3>
+                            </div>
+                            <div class="bg-[#fdf4ff] p-6 border-4 border-dark mb-8 shadow-[6px_6px_0_0_#0f172a]">
+                                <p class="text-2xl text-dark font-black uppercase mb-4 tracking-wide"><i data-lucide="alert-triangle" class="w-8 h-8 inline mr-2 text-fuchsia-600"></i> Scenario:</p>
+                                <p class="text-2xl text-slate-800 font-bold leading-relaxed mb-6">You are presenting to the Board of Directors. Your data shows that a new expensive machine is <strong>NOT</strong> improving patient outcomes as expected.</p>
+                                
+                                <p class="text-xl font-bold mb-3 uppercase tracking-wider text-slate-500">First, choose your approach:</p>
+                                <div class="space-y-4" id="task7-options">
+                                    <label class="option-label m-0 py-4 text-xl group w-full cursor-pointer transition-colors duration-200">
+                                        <input type="radio" name="ethical_choice" value="A" class="hidden" onchange="updateTask7UI()">
+                                        <div class="w-6 h-6 border-3 border-dark rounded-sm mt-1 flex items-center justify-center shrink-0 radio-custom bg-white"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                                        <div>
+                                            <span class="font-black text-dark block mb-1 uppercase tracking-wide">Option A: Clinical Honesty</span>
+                                            <span class="font-bold text-slate-700">Present the data directly and honestly, risking the cancellation of the project.</span>
+                                        </div>
+                                    </label>
+                                    <label class="option-label m-0 py-4 text-xl group w-full cursor-pointer transition-colors duration-200">
+                                        <input type="radio" name="ethical_choice" value="B" class="hidden" onchange="updateTask7UI()">
+                                        <div class="w-6 h-6 border-3 border-dark rounded-sm mt-1 flex items-center justify-center shrink-0 radio-custom bg-white"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                                        <div>
+                                            <span class="font-black text-dark block mb-1 uppercase tracking-wide">Option B: Focus on Potential</span>
+                                            <span class="font-bold text-slate-700">Focus your "Data Storytelling" only on the potential future benefits, softening the negative data to keep the funding.</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <p class="text-2xl text-slate-800 font-bold mb-6 text-fuchsia-800">
+                                <strong>Speaking Challenge:</strong> After selecting an option above, stand up. Start the recorder and deliver a formal argument directly to the "Board" explaining and justifying your chosen approach. Aim for about 60 seconds.
+                            </p>
+
+                            <!-- Recording Tool -->
+                            <div class="bg-white p-6 border-4 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+                                    <div class="flex items-center gap-4 w-full sm:w-auto">
+                                        <div id="icon-wrapper-task7" class="p-3 bg-red-100 text-red-600 border-3 border-dark rounded-full shrink-0 transition-colors">
+                                            <i data-lucide="mic" class="w-8 h-8"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-black text-xl uppercase">Record Argument</h4>
+                                            <p class="font-bold text-slate-600 text-2xl" id="timer-display-task7">00:00</p>
+                                        </div>
+                                    </div>
+                                    <button id="btn-task7" onclick="startRecordingTimer('task7', this)" class="neo-btn bg-red-500 text-white px-8 py-4 w-full sm:w-auto">Start Recording</button>
+                                </div>
+                                <!-- Audio Playback Block (Hidden Initially) -->
+                                <div id="playback-container-task7" class="hidden mt-6 pt-6 border-t-4 border-dashed border-slate-300">
+                                    <h4 class="font-black text-lg uppercase text-slate-600 mb-3 flex items-center gap-2"><i data-lucide="headphones" class="w-5 h-5"></i> Review Your Board Argument:</h4>
+                                    <audio id="audio-playback-task7" controls class="w-full h-12 mb-6"></audio>
+                                    
+                                    <!-- Reveal Impact Button -->
+                                    <button onclick="showTask7Impact()" class="neo-btn bg-dark text-white px-6 py-3 text-xl hover:bg-slate-800 w-full sm:w-auto">
+                                        <i data-lucide="eye" class="w-5 h-5"></i> Show Possible Impact
+                                    </button>
+                                    
+                                    <!-- Impact Display Box -->
+                                    <div id="task7-impact-box" class="hidden mt-6 p-6 border-4 border-dark shadow-neo text-xl">
+                                        <p id="task7-impact-text" class="font-bold leading-relaxed"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 6: Reflection (Rose Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fff1f2]">
+                <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#fb7185] hover:bg-[#f43f5e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            6
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Final Assessment (Task 8)</span>
+                    </div>
+                    <div id="icon-wrapper-part6" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part6" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-8 md:space-y-10">
+                        <div>
+                            <h3 class="text-3xl font-black text-dark mb-6 uppercase tracking-wide">Task 8: Unscripted Data Storytelling</h3>
+                            <p class="text-2xl text-slate-800 mb-8 font-bold leading-relaxed">
+                                Review the new <strong>Visual Aid 2</strong> below. Without writing a script, start the recorder and present the chart to an imaginary audience using your own words. Aim for about 90 seconds. You must naturally include at least three vocabulary words from Task 2 (e.g., SUGGESTS, SHARP, PROJECTION). 
+                            </p>
+
+                            <!-- NEW VISUAL AID FOR TASK 8 -->
+                            <div class="bg-white border-4 border-dark p-6 md:p-8 shadow-[6px_6px_0_0_#0f172a] mb-10">
+                                <div class="flex items-center gap-3 mb-6">
+                                    <span class="bg-[#f43f5e] text-white px-3 py-1 font-black uppercase tracking-wide border-2 border-dark text-lg">Visual Aid 2</span>
+                                    <h3 class="text-2xl md:text-3xl font-black uppercase text-dark">Quarterly Patient Satisfaction</h3>
+                                </div>
+                                
+                                <div class="relative w-full overflow-hidden border-3 border-slate-300 bg-slate-50 pt-6 pr-6">
+                                    <svg viewBox="0 0 700 350" class="w-full h-auto" preserveAspectRatio="xMidYMid meet">
+                                        <!-- Background Grids -->
+                                        <line x1="60" y1="50" x2="650" y2="50" stroke="#cbd5e1" stroke-dasharray="5,5" stroke-width="2"/>
+                                        <line x1="60" y1="110" x2="650" y2="110" stroke="#cbd5e1" stroke-dasharray="5,5" stroke-width="2"/>
+                                        <line x1="60" y1="170" x2="650" y2="170" stroke="#cbd5e1" stroke-dasharray="5,5" stroke-width="2"/>
+                                        <line x1="60" y1="230" x2="650" y2="230" stroke="#cbd5e1" stroke-dasharray="5,5" stroke-width="2"/>
+                                        
+                                        <!-- Axes -->
+                                        <line x1="60" y1="290" x2="650" y2="290" stroke="#0f172a" stroke-width="4"/>
+                                        <line x1="60" y1="30" x2="60" y2="290" stroke="#0f172a" stroke-width="4"/>
+
+                                        <!-- Y-Axis Labels (Score 0-100) -->
+                                        <text x="45" y="55" font-family="Plus Jakarta Sans" font-size="16" font-weight="800" fill="#0f172a" text-anchor="end">100</text>
+                                        <text x="45" y="115" font-family="Plus Jakarta Sans" font-size="16" font-weight="800" fill="#0f172a" text-anchor="end">75</text>
+                                        <text x="45" y="175" font-family="Plus Jakarta Sans" font-size="16" font-weight="800" fill="#0f172a" text-anchor="end">50</text>
+                                        <text x="45" y="235" font-family="Plus Jakarta Sans" font-size="16" font-weight="800" fill="#0f172a" text-anchor="end">25</text>
+                                        <text x="45" y="295" font-family="Plus Jakarta Sans" font-size="16" font-weight="800" fill="#0f172a" text-anchor="end">0</text>
+
+                                        <!-- X-Axis Labels (Quarters) -->
+                                        <text x="150" y="325" font-family="Plus Jakarta Sans" font-size="18" font-weight="800" fill="#0f172a" text-anchor="middle">Q1</text>
+                                        <text x="310" y="325" font-family="Plus Jakarta Sans" font-size="18" font-weight="800" fill="#0f172a" text-anchor="middle">Q2</text>
+                                        <text x="470" y="325" font-family="Plus Jakarta Sans" font-size="18" font-weight="800" fill="#0f172a" text-anchor="middle">Q3</text>
+                                        <text x="630" y="325" font-family="Plus Jakarta Sans" font-size="18" font-weight="800" fill="#0f172a" text-anchor="middle">Q4</text>
+
+                                        <!-- BAR CHARTS -->
+                                        <!-- Q1 -->
+                                        <rect x="115" y="146" width="30" height="144" fill="#94a3b8" stroke="#0f172a" stroke-width="3"/>
+                                        <rect x="155" y="146" width="30" height="144" fill="#fb7185" stroke="#0f172a" stroke-width="3"/>
+                                        
+                                        <!-- Q2 -->
+                                        <rect x="275" y="134" width="30" height="156" fill="#94a3b8" stroke="#0f172a" stroke-width="3"/>
+                                        <rect x="315" y="110" width="30" height="180" fill="#fb7185" stroke="#0f172a" stroke-width="3"/>
+                                        
+                                        <!-- Q3 -->
+                                        <rect x="435" y="141.2" width="30" height="148.8" fill="#94a3b8" stroke="#0f172a" stroke-width="3"/>
+                                        <rect x="475" y="86" width="30" height="204" fill="#fb7185" stroke="#0f172a" stroke-width="3"/>
+                                        
+                                        <!-- Q4 -->
+                                        <rect x="595" y="131.6" width="30" height="158.4" fill="#94a3b8" stroke="#0f172a" stroke-width="3"/>
+                                        <rect x="635" y="64.4" width="30" height="225.6" fill="#fb7185" stroke="#0f172a" stroke-width="3"/>
+                                    </svg>
+                                </div>
+                                
+                                <!-- Legend -->
+                                <div class="flex flex-wrap justify-center gap-8 mt-8 border-t-4 border-slate-200 pt-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-6 h-6 bg-[#94a3b8] border-3 border-dark"></div>
+                                        <span class="font-black text-xl md:text-2xl text-dark">Standard Protocol</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-6 h-6 bg-[#fb7185] border-3 border-dark"></div>
+                                        <span class="font-black text-xl md:text-2xl text-dark">New Protocol</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <!-- Recording Tool -->
+                            <div class="bg-slate-50 p-6 border-4 border-dark shadow-[6px_6px_0_0_#0f172a]">
+                                <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+                                    <div class="flex items-center gap-4 w-full sm:w-auto">
+                                        <div id="icon-wrapper-task8" class="p-3 bg-red-100 text-red-600 border-3 border-dark rounded-full shrink-0 transition-colors">
+                                            <i data-lucide="mic" class="w-8 h-8"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-black text-xl uppercase">Record Final Summary</h4>
+                                            <p class="font-bold text-slate-600 text-2xl" id="timer-display-task8">00:00</p>
+                                        </div>
+                                    </div>
+                                    <button id="btn-task8" onclick="startRecordingTimer('task8', this)" class="neo-btn bg-red-500 text-white px-8 py-4 w-full sm:w-auto">Start Final Recording</button>
+                                </div>
+                                <!-- Audio Playback Block (Hidden Initially) -->
+                                <div id="playback-container-task8" class="hidden mt-6 pt-6 border-t-4 border-dashed border-slate-300">
+                                    <h4 class="font-black text-lg uppercase text-slate-600 mb-3 flex items-center gap-2"><i data-lucide="headphones" class="w-5 h-5"></i> Review Your Final Presentation:</h4>
+                                    <audio id="audio-playback-task8" controls class="w-full h-12"></audio>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t-4 border-dark text-center mb-8">
+            <p class="text-dark text-xl font-black uppercase tracking-wider bg-[#facc15] inline-block px-6 py-3 border-4 border-dark shadow-neo">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">Fajarudin Akbar</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-8 py-5 shadow-neo transition-all duration-300 translate-y-32 opacity-0 z-50 flex items-center gap-4 font-black text-xl uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="info" class="w-8 h-8 shrink-0 text-brand-600"></i> <span id="toast-msg">Notification</span>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- Init Lucide Icons ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderVocab();
+            renderTF();
+        });
+
+        // Track attempts globally
+        const attempts = {};
+        
+        // Track speaking timers and recording
+        const timers = {};
+        const mediaRecorders = {};
+        const audioChunks = {};
+
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { 
+                id: "v1", 
+                word: "SHARP",
+                sentence: "As you can see, there is a SHARP increase in recovery speed for patients in Group A.", 
+                correct: "a", 
+                options: { 
+                    a: "A very sudden and noticeable change.", 
+                    b: "An object that is dangerous to touch.", 
+                    c: "A clear and intelligent medical mind." 
+                },
+                hint: "Think about a steep rise on a graph."
+            },
+            { 
+                id: "v2", 
+                word: "SUGGESTS",
+                sentence: "I want to emphasize this point: the data SUGGESTS that early mobilization is the driver.", 
+                correct: "b", 
+                options: { 
+                    a: "To prove something with 100% absolute certainty.", 
+                    b: "To state an idea or a possibility based on evidence.", 
+                    c: "To demand that someone changes their behavior." 
+                },
+                hint: "A professional way to interpret data without claiming absolute proof."
+            },
+            { 
+                id: "v3", 
+                word: "CRUCIAL",
+                sentence: "It is CRUCIAL that we do not simply list these numbers.", 
+                correct: "a", 
+                options: { 
+                    a: "Extremely important or necessary.", 
+                    b: "Optional and not required for the process.", 
+                    c: "Related to a painful physical injury." 
+                },
+                hint: "Another word for vital or essential."
+            },
+            { 
+                id: "v4", 
+                word: "NARRATIVE",
+                sentence: "The NARRATIVE here is clear: changing our floor protocol could reduce stays.", 
+                correct: "b", 
+                options: { 
+                    a: "A list of physical symptoms a patient describes.", 
+                    b: "The way in which a series of events or facts is connected and told as a story.", 
+                    c: "A type of medicine used for chronic pain." 
+                },
+                hint: "Building a logical connection or 'story' from the data."
+            },
+            { 
+                id: "v5", 
+                word: "DEFEND",
+                sentence: "I am ready to DEFEND these conclusions because the evidence is robust.", 
+                correct: "b", 
+                options: { 
+                    a: "To hide information so that others cannot see it.", 
+                    b: "To provide support for an idea when it is questioned by others.", 
+                    c: "To attack a colleague because of a personal disagreement." 
+                },
+                hint: "To stand up for your work and provide logical reasons."
+            },
+            { 
+                id: "v6", 
+                word: "PROJECTION",
+                sentence: "Does anyone have questions regarding our methodology or the PROJECTION for next quarter?", 
+                correct: "a", 
+                options: { 
+                    a: "An estimate or a statement of what is expected to happen in the future.", 
+                    b: "A physical machine used to show movies on a wall.", 
+                    c: "A memory from the speaker's childhood." 
+                },
+                hint: "A forecast based on current trends."
+            }
+        ];
+
+        // 3. TRUE / FALSE DATA
+        const tfData = [
+            { 
+                id: "tf1", 
+                text: "1. The speaker believes that Group B is performing better than Group A.", 
+                correct: "False", 
+                explanation: "Group A has a \"sharp increase\" in recovery speed compared to Group B.",
+                hint: "Check which group had a 'sharp increase'."
+            },
+            { 
+                id: "tf2", 
+                text: "2. The speaker is unwilling to answer questions about how the study was conducted.", 
+                correct: "False", 
+                explanation: "The speaker explicitly asks for questions regarding methodology at the end.",
+                hint: "Listen to the very last sentence of the script."
+            },
+            { 
+                id: "tf3", 
+                text: "3. The speaker uses the data to argue for a change in hospital protocols.", 
+                correct: "True", 
+                explanation: "The speaker suggests that changing floor protocols could reduce stays by 15%.",
+                hint: "What is the 'narrative' the speaker mentions?"
+            },
+            { 
+                id: "tf4", 
+                text: "4. The speaker thinks that numbers alone are enough to persuade an audience.", 
+                correct: "False", 
+                explanation: "The speaker states it is \"crucial that we do not simply list these numbers.\"",
+                hint: "What does the speaker say we should NOT simply do?"
+            }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            if(vocabData.length === 0) return;
+
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="" disabled selected>Select definition...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${key.toUpperCase()}. ${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col xl:flex-row xl:items-center gap-6 p-6 bg-white border-4 border-dark shadow-neo-sm w-full">
+                    <div class="xl:w-2/5 font-black text-dark text-2xl bg-cyan-100 px-4 py-2 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">${item.word}</div>
+                    <div class="xl:w-3/5 flex flex-col gap-3">
+                        <select id="${item.id}" class="text-input mt-0 py-4 text-xl cursor-pointer w-full" onchange="resetVocabState('${item.id}')">
+                            ${optionsHtml}
+                        </select>
+                        <div id="feedback-${item.id}" class="text-xl font-bold hidden px-4 py-2 border-3 mt-2"></div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function resetVocabState(id) {
+            const select = document.getElementById(id);
+            const feedback = document.getElementById(`feedback-${id}`);
+            select.classList.remove('state-amber', 'state-rose', 'state-emerald');
+            feedback.classList.add('hidden');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="bg-white p-6 md:p-8 border-4 border-dark shadow-neo mb-6 flex flex-col gap-6">
+                    <span class="text-2xl font-black text-dark leading-relaxed">${item.text}</span>
+                    <div class="flex flex-wrap items-center gap-6">
+                        <label class="option-label m-0 flex-1 justify-center py-4 text-2xl group">
+                            <input type="radio" name="${item.id}" value="True" class="mt-1 w-6 h-6 hidden" onchange="resetTFState('${item.id}')">
+                            <div class="w-6 h-6 border-3 border-dark rounded-sm group-[.locked]:bg-slate-200 mt-1 flex items-center justify-center shrink-0 radio-custom"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                            <span class="uppercase tracking-wide">True</span>
+                        </label>
+                        <label class="option-label m-0 flex-1 justify-center py-4 text-2xl group">
+                            <input type="radio" name="${item.id}" value="False" class="mt-1 w-6 h-6 hidden" onchange="resetTFState('${item.id}')">
+                            <div class="w-6 h-6 border-3 border-dark rounded-sm group-[.locked]:bg-slate-200 mt-1 flex items-center justify-center shrink-0 radio-custom"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                            <span class="uppercase tracking-wide">False</span>
+                        </label>
+                    </div>
+                    <div id="feedback-${item.id}" class="text-xl font-bold hidden px-5 py-4 border-3 mt-2 leading-relaxed"></div>
+                </div>
+            `).join('');
+
+            // Add custom radio behavior
+            setTimeout(() => {
+                document.querySelectorAll('input[type="radio"]:not([name="ethical_choice"])').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const name = e.target.name;
+                        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                            const dot = r.parentElement.querySelector('.inner-dot');
+                            if(r.checked) dot.classList.remove('hidden');
+                            else dot.classList.add('hidden');
+                        });
+                    });
+                });
+            }, 100);
+        }
+
+        function resetTFState(id) {
+            const feedback = document.getElementById(`feedback-${id}`);
+            const radios = document.getElementsByName(id);
+            radios.forEach(r => {
+                r.closest('.option-label').classList.remove('state-amber', 'state-rose', 'state-emerald');
+            });
+            feedback.classList.add('hidden');
+        }
+
+        // --- Task 7 Logic ---
+        function updateTask7UI() {
+            document.querySelectorAll('input[name="ethical_choice"]').forEach(r => {
+                const dot = r.parentElement.querySelector('.inner-dot');
+                const label = r.closest('.option-label');
+                if(r.checked) {
+                    dot.classList.remove('hidden');
+                    label.classList.add('bg-fuchsia-100');
+                    label.classList.add('border-fuchsia-800');
+                } else {
+                    dot.classList.add('hidden');
+                    label.classList.remove('bg-fuchsia-100');
+                    label.classList.remove('border-fuchsia-800');
+                }
+            });
+            // Hide impact box if they change their mind before clicking the button again
+            document.getElementById('task7-impact-box').classList.add('hidden');
+        }
+
+        function showTask7Impact() {
+            const selected = document.querySelector('input[name="ethical_choice"]:checked');
+            if (!selected) {
+                showToast("Please select Option A or Option B first.");
+                return;
+            }
+            
+            const impactBox = document.getElementById('task7-impact-box');
+            const impactText = document.getElementById('task7-impact-text');
+            
+            impactBox.classList.remove('hidden');
+            
+            if (selected.value === 'A') {
+                impactText.innerHTML = "<strong>Impact of Option A:</strong> The board cancels the expensive project, saving the hospital $2M. While the tech team is frustrated by the loss of funding, your clinical integrity is highly praised by the hospital director, establishing you as a trustworthy leader.";
+                impactBox.className = "mt-6 p-6 border-4 border-dark shadow-neo bg-[#d1fae5] text-slate-800 text-xl"; // Emerald
+            } else {
+                impactText.innerHTML = "<strong>Impact of Option B:</strong> Funding continues and the machine stays. However, patient outcomes stagnate. Six months later, a clinical audit reveals the skewed data presentation, severely damaging your professional credibility and risking your position.";
+                impactBox.className = "mt-6 p-6 border-4 border-dark shadow-neo bg-[#fecdd3] text-slate-800 text-xl"; // Rose
+            }
+        }
+
+        // --- Interactive Audio Recording Tools ---
+        
+        async function startRecordingTimer(taskId, btn) {
+            const display = document.getElementById(`timer-display-${taskId}`);
+            const wrapper = document.getElementById(`icon-wrapper-${taskId}`);
+            const playbackContainer = document.getElementById(`playback-container-${taskId}`);
+            const audioPlayer = document.getElementById(`audio-playback-${taskId}`);
+            
+            // If currently running, stop it
+            if (timers[taskId]) {
+                stopRecording(taskId);
+                return;
+            }
+            
+            try {
+                // Request mic access
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorders[taskId] = new MediaRecorder(stream);
+                audioChunks[taskId] = [];
+
+                mediaRecorders[taskId].ondataavailable = e => {
+                    if (e.data.size > 0) audioChunks[taskId].push(e.data);
+                };
+
+                mediaRecorders[taskId].onstop = () => {
+                    const audioBlob = new Blob(audioChunks[taskId], { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    audioPlayer.src = audioUrl;
+                    playbackContainer.classList.remove('hidden');
+                    // Ensure microphone turns off
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                // UI setup for Recording Mode
+                btn.innerText = "Stop Recording";
+                btn.classList.replace('bg-red-500', 'bg-slate-800');
+                wrapper.classList.add('recording-pulse');
+                playbackContainer.classList.add('hidden'); // hide player during record
+                
+                let timeElapsed = 0;
+                updateDisplay(display, timeElapsed);
+                
+                // Start MediaRecorder
+                mediaRecorders[taskId].start();
+
+                timers[taskId] = setInterval(() => {
+                    timeElapsed++;
+                    updateDisplay(display, timeElapsed);
+                }, 1000);
+
+            } catch (err) {
+                console.error("Microphone access error: ", err);
+                showToast("Mic access denied. Running timer only mode.");
+                runFallbackTimer(taskId, btn);
+            }
+        }
+
+        function runFallbackTimer(taskId, btn) {
+            const display = document.getElementById(`timer-display-${taskId}`);
+            const wrapper = document.getElementById(`icon-wrapper-${taskId}`);
+            
+            btn.innerText = "Stop Timer";
+            btn.classList.replace('bg-red-500', 'bg-slate-800');
+            wrapper.classList.add('recording-pulse');
+            
+            let timeElapsed = 0;
+            updateDisplay(display, timeElapsed);
+            
+            timers[taskId] = setInterval(() => {
+                timeElapsed++;
+                updateDisplay(display, timeElapsed);
+            }, 1000);
+        }
+
+        function stopRecording(taskId) {
+            clearInterval(timers[taskId]);
+            timers[taskId] = null;
+            
+            if (mediaRecorders[taskId] && mediaRecorders[taskId].state !== 'inactive') {
+                mediaRecorders[taskId].stop();
+            }
+
+            const btn = document.getElementById(`btn-${taskId}`);
+            const wrapper = document.getElementById(`icon-wrapper-${taskId}`);
+            
+            if(btn) {
+                btn.innerText = "Re-record";
+                btn.classList.replace('bg-slate-800', 'bg-red-500');
+            }
+            if(wrapper) wrapper.classList.remove('recording-pulse');
+        }
+
+        function updateDisplay(el, seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            el.innerText = `${m}:${s}`;
+        }
+
+        // --- 3-State Logic Handlers ---
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3500);
+        }
+
+        function checkVocab() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+                
+                // Reset styles initially
+                select.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                feedback.classList.remove('state-amber', 'state-rose', 'state-emerald', 'hidden');
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Correct!';
+                    select.classList.add('state-emerald');
+                    feedback.classList.add('state-emerald');
+                    select.disabled = true;
+                    correctCount++;
+                    answeredCount++;
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    answeredCount++;
+                    if (attempts[key] >= 2) {
+                        select.disabled = true;
+                        select.classList.add('state-rose');
+                        feedback.classList.add('state-rose');
+                        feedback.innerHTML = `<i data-lucide="x-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Locked. The correct answer is <strong>${item.correct.toUpperCase()}</strong>.`;
+                    } else {
+                        select.classList.add('state-amber');
+                        feedback.classList.add('state-amber');
+                        feedback.innerHTML = `<i data-lucide="info" class="w-6 h-6 inline mr-2 align-middle"></i> Not quite. Hint: ${item.hint}`;
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                }
+            });
+            lucide.createIcons();
+            
+            if (answeredCount === 0) {
+                showToast("Please select at least one answer.");
+            } else if (correctCount === vocabData.length) {
+                showToast("Perfect! All vocabulary matched.");
+            } else {
+                showToast("Answers checked. Review the feedback.");
+            }
+        }
+
+        function checkTF() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                let userVal = "";
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                radios.forEach(r => {
+                    const label = r.closest('.option-label');
+                    label.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                    if(r.checked) userVal = r.value;
+                });
+
+                feedback.classList.remove('state-amber', 'state-rose', 'state-emerald', 'hidden');
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Correct! Reason: ${item.explanation}`;
+                    feedback.classList.add('state-emerald');
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        const label = r.closest('.option-label');
+                        label.classList.add('locked');
+                        if(r.checked) label.classList.add('state-emerald');
+                    });
+                    correctCount++;
+                    answeredCount++;
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    answeredCount++;
+                    if (attempts[key] >= 2) {
+                        feedback.innerHTML = `<i data-lucide="x-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Locked. The correct answer is <strong>${item.correct}</strong>.<br><span class="mt-2 block">Reason: ${item.explanation}</span>`;
+                        feedback.classList.add('state-rose');
+                        radios.forEach(r => {
+                            r.disabled = true;
+                            const label = r.closest('.option-label');
+                            label.classList.add('locked');
+                            if(r.checked) label.classList.add('state-rose');
+                        });
+                    } else {
+                        feedback.innerHTML = `<i data-lucide="info" class="w-6 h-6 inline mr-2 align-middle"></i> Incorrect. Hint: ${item.hint}`;
+                        feedback.classList.add('state-amber');
+                        radios.forEach(r => {
+                            if(r.checked) r.closest('.option-label').classList.add('state-amber');
+                        });
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                }
+            });
+            lucide.createIcons();
+            
+            if (answeredCount === 0) {
+                showToast("Please answer at least one T/F question.");
+            } else if (correctCount === tfData.length) {
+                showToast("Excellent! All T/F answers correct.");
+            } else {
+                showToast("Answers checked. Review the feedback.");
+            }
+        }
+
+        // --- UI Interactions ---
+
+        function toggleAnswer(elementId, btn, baseText) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Output";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = baseText;
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Are you sure you want to clear all your progress and stop timers/recordings?")) {
+                
+                for (let key in attempts) delete attempts[key];
+                
+                // Clear Timers and Recordings
+                for (let key in timers) {
+                    if (timers[key]) stopRecording(key.replace('timers-', '')); 
+                }
+                document.querySelectorAll('.recording-pulse').forEach(el => el.classList.remove('recording-pulse'));
+                
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+                
+                document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                    r.checked = false; 
+                    r.disabled = false;
+                    r.parentElement.querySelector('.inner-dot').classList.add('hidden');
+                });
+                document.querySelectorAll('.option-label').forEach(label => {
+                    label.classList.remove('state-amber', 'state-rose', 'state-emerald', 'locked', 'bg-fuchsia-100', 'border-fuchsia-800');
+                });
+                
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.classList.remove('state-amber', 'state-rose', 'state-emerald'); 
+                });
+                
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                    f.classList.add('hidden');
+                });
+
+                document.querySelectorAll('[id^="playback-container-"]').forEach(p => {
+                    p.classList.add('hidden');
+                });
+                document.querySelectorAll('audio').forEach(a => a.src = "");
+                
+                // Hide impact boxes
+                const impactBox = document.getElementById('task7-impact-box');
+                if(impactBox) impactBox.classList.add('hidden');
+                
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+                
+                document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                    const params = btn.getAttribute('onclick').match(/'([^']+)'/g);
+                    if(params && params.length >= 3) {
+                        btn.innerText = params[2].replace(/'/g, '');
+                    }
+                });
+                
+                // Reset timer displays
+                document.getElementById('timer-display-task5').innerText = "00:00";
+                document.getElementById('btn-task5').innerText = "Start Recording";
+                
+                document.getElementById('timer-display-task6').innerText = "00:00";
+                document.getElementById('btn-task6').innerText = "Start Recording";
+                
+                document.getElementById('timer-display-task7').innerText = "00:00";
+                document.getElementById('btn-task7').innerText = "Start Recording";
+                
+                document.getElementById('timer-display-task8').innerText = "00:00";
+                document.getElementById('btn-task8').innerText = "Start Final Recording";
+
+                stopAudio();
+                
+                showToast("All progress has been reset.");
+            }
+        }
+
+        // --- Audio TTS (For Presenter Script) ---
+        let isPlaying = false;
+        
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        function playAudio() {
+            if (!('speechSynthesis' in window)) {
+                showToast("Speech synthesis not supported in this browser.");
+                return;
+            }
+            if (isPlaying) return;
+            isPlaying = true;
+
+            // UI Update
+            document.getElementById('btn-play').classList.add('hidden');
+            document.getElementById('btn-stop').classList.remove('hidden');
+            document.getElementById('audio-status').innerText = "Playing audio...";
+            document.getElementById('audio-icon-wrapper').classList.add('audio-playing-icon');
+
+            window.speechSynthesis.cancel();
+
+            const dialogueLines = [
+                { speaker: 'Presenter', text: "Good afternoon, colleagues. Today, I want to present the results of our recent trial on post-operative recovery times. Please look at the first chart on the screen. As you can see, there is a SHARP increase in recovery speed for patients in Group A." },
+                { speaker: 'Presenter', text: "I want to emphasize this specific point: the data SUGGESTS that early mobilization is the primary driver of this trend. While Group B shows steady progress, the difference is statistically significant. Now, some might argue that the sample size was too small, but we have mitigated this by using a diverse demographic." },
+                { speaker: 'Presenter', text: "It is CRUCIAL that we do not simply list these numbers, but rather understand the story they tell. The NARRATIVE here is clear: changing our floor protocol could reduce hospital stays by 15 percent. I am ready to DEFEND these conclusions because the evidence is robust. Does anyone have any questions regarding our methodology or the PROJECTION for next quarter?" }
+            ];
+            
+            // Prioritize Edge Natural / English voices
+            const voices = window.speechSynthesis.getVoices();
+            const engVoices = voices.filter(v => v.lang.startsWith('en'));
+            const naturalVoices = engVoices.filter(v => v.name.includes('Natural') || v.name.includes('Online'));
+            
+            let voice1 = naturalVoices[0] || engVoices[0] || voices[0];
+
+            // Recursively chain utterances to fix Edge TTS cloud queuing issues
+            function speakLine(index) {
+                if (!isPlaying) return; // User stopped playback
+                if (index >= dialogueLines.length) {
+                    stopAudio();
+                    return;
+                }
+
+                const line = dialogueLines[index];
+                const utterance = new SpeechSynthesisUtterance(line.text);
+                
+                if (voice1) utterance.voice = voice1;
+
+                utterance.rate = 0.95; // Slightly slower for better natural clarity
+
+                utterance.onend = () => {
+                    // 300ms conversational pause before the next text chunk
+                    setTimeout(() => speakLine(index + 1), 300);
+                };
+                
+                utterance.onerror = (e) => {
+                    console.warn("Speech Synthesis Error:", e);
+                    stopAudio();
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+
+            // Start the sequence
+            speakLine(0);
+        }
+
+        function stopAudio() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            isPlaying = false;
+            
+            const btnPlay = document.getElementById('btn-play');
+            const btnStop = document.getElementById('btn-stop');
+            if(btnPlay && btnStop) {
+                btnPlay.classList.remove('hidden');
+                btnStop.classList.add('hidden');
+                document.getElementById('audio-status').innerText = "Listen to how the speaker explains the chart.";
+                document.getElementById('audio-icon-wrapper').classList.remove('audio-playing-icon');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT Strategies - Listening Lesson 1</title>
+    <!-- 1. Import Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 2. Import Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- 3. Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom class for the content sections for a simple fade-in */
+        .lesson-section {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Styling for the accordion button icon */
+        .accordion-btn span {
+            transition: transform 0.3s ease;
+        }
+        .accordion-btn[aria-expanded="true"] span {
+            transform: rotate(45deg);
+        }
+        /* Custom focus rings for accessibility */
+        .focus-ring {
+            @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+        }
+        /* Style for the active nav link */
+        .nav-link.active-nav {
+            @apply bg-indigo-800 text-white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <!-- Header & Navigation Bar -->
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <h1 class="text-3xl font-bold">TOEFL® Academy</h1>
+            <nav class="flex space-x-1 mt-4 md:mt-0">
+                <button class="nav-link active-nav" onclick="showSection('home')">Home</button>
+                <button class="nav-link" onclick="showSection('factOrMyth')">Fact or Myth?</button>
+                <button class="nav-link" onclick="showSection('formats')">Formats</button>
+                <button class="nav-link" onclick="showSection('qTypes')">Question Types</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto mt-8 mb-auto px-4 max-w-6xl">
+        <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+            <div class="p-8 md:p-12">
+                
+                <!-- Section 1: Home & Self-Assessment -->
+                <section id="home-section" class="lesson-section">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-6">Listening Lesson 1: General Introduction</h2>
+                    <p class="text-gray-700 leading-relaxed mb-8 text-xl">
+                        This first lesson will introduce you to the TOEFL iBT Listening section. By the end of this module, you will:
+                    </p>
+                    <ul class="list-disc list-inside space-y-3 text-gray-700 mb-10 text-lg">
+                        <li>Understand the question types you'll encounter.</li>
+                        <li>Recognize the different skills being tested.</li>
+                        <li>Be aware of your current listening strengths and challenges.</li>
+                    </ul>
+
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">Your Listening Self-Assessment</h3>
+                        <p class="text-gray-600 mb-6 text-lg">Before we begin, take a moment to reflect. What do you find most challenging when listening to academic English?</p>
+                        <textarea class="w-full h-40 p-3 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-base" placeholder="e.g., speakers talk too fast, I don't know the vocabulary, I lose focus during long lectures, it's hard to understand different accents..."></textarea>
+                    </div>
+                </section>
+
+                <!-- Section 2: Fact or Myth Quiz -->
+                <section id="factOrMyth-section" class="lesson-section hidden">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-6">Fact or Myth?</h2>
+                    <p class="text-gray-600 mb-8 text-xl">Test your knowledge! Read the statements and decide if they are facts about the TOEFL test or myths.</p>
+                    
+                    <div id="quiz-all-container" class="space-y-4">
+                        <!-- Questions will be injected here by JS -->
+                    </div>
+
+                    <div class="mt-8 text-center">
+                        <button id="check-answers-btn" onclick="checkAllAnswers()" class="px-10 py-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus-ring text-lg">
+                            Check Answers
+                        </button>
+                        <div id="quiz-score-display" class="mt-6 text-2xl font-bold text-center hidden"></div>
+                        <button id="reset-quiz-btn" onclick="resetQuiz()" class="px-10 py-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus-ring hidden mt-4 text-lg">
+                            Try Again
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Section 3: Formats (Lectures vs. Conversations) - UPDATED SECTION -->
+                <section id="formats-section" class="lesson-section hidden">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-6">Listening Formats</h2>
+                    <p class="text-gray-600 mb-8 text-xl">You will hear two main types of audio passages. A table is the clearest way to see how they compare.</p>
+
+                    <!-- New Comparison Table -->
+                    <div class="w-full overflow-x-auto rounded-lg shadow-md border border-gray-200">
+                        <table class="w-full min-w-full text-left text-lg">
+                            <thead class="bg-gray-100 border-b border-gray-200">
+                                <tr>
+                                    <th scope="col" class="p-5 md:p-6 font-semibold text-gray-700">Feature</th>
+                                    <th scope="col" class="p-5 md:p-6 font-semibold text-blue-900">
+                                        Lectures
+                                    </th>
+                                    <th scope="col" class="p-5 md:p-6 font-semibold text-purple-900">
+                                        Conversations
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <!-- Row 1: Setting -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-5 md:p-6 font-medium text-gray-800">Setting</td>
+                                    <td class="p-5 md:p-6 text-gray-700">Academic (e.g., in a classroom).</td>
+                                    <td class="p-5 md:p-6 text-gray-700">Campus-life (e.g., office, library).</td>
+                                </tr>
+                                <!-- Row 2: Participants -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-5 md:p-6 font-medium text-gray-800">Participants</td>
+                                    <td class="p-5 md:p-6 text-gray-700">Professor's monologue or a class discussion.</td>
+                                    <td class="p-5 md:p-6 text-gray-700">Two speakers (at least one student).</td>
+                                </tr>
+                                <!-- Row 3: Length -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-5 md:p-6 font-medium text-gray-800">Length</td>
+                                    <td class="p-5 md:p-6 text-gray-700">Approx. 3-5 minutes.</td>
+                                    <td class="p-5 md:p-6 text-gray-700">Approx. 3 minutes.</td>
+                                </tr>
+                                <!-- Row 4: Questions -->
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-5 md:p-6 font-medium text-gray-800">Questions</td>
+                                    <td class="p-5 md:p-6 text-gray-700">6 questions.</td>
+                                    <td class="p-5 md:p-6 text-gray-700">5 questions.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                <!-- END OF UPDATED SECTION -->
+
+                <!-- Section 4: Question Types (Accordion) -->
+                <section id="qTypes-section" class="lesson-section hidden">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-6">The 7 Question Types</h2>
+                    <p class="text-gray-600 mb-8 text-xl">The test uses 7 different types of questions to check your understanding. Click each type to learn more.</p>
+                    <div id="question-types-container" class="space-y-3">
+                        <!-- Accordion items will be injected here by JavaScript -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // --- Data for the App ---
+
+        // (From Presentation 1 in the PDF)
+        const quizQuestions = [
+            { 
+                q: "You can take notes during the Listening section.", 
+                a: true, 
+                info: "Fact! You will be provided with paper and a pencil (at a test center) or a whiteboard (at home)." 
+            },
+            { 
+                q: "Each lecture in the Listening section is followed by ten questions.", 
+                a: false, 
+                info: "Myth! Each lecture is followed by 6 questions. Conversations are followed by 5." 
+            },
+            { 
+                q: "You can listen to each lecture and conversation two times.", 
+                a: false, 
+                info: "Myth! You can only listen to each passage once, so note-taking is very important." 
+            },
+            { 
+                q: "If a lecture uses a special term, you might see it written on the screen.", 
+                a: true, 
+                info: "Fact! Uncommon names or specialized terms may be written on a (virtual) chalkboard to help you." 
+            },
+            { 
+                q: "A speaker's tone of voice can help you understand what they are thinking or feeling.", 
+                a: true, 
+                info: "Fact! Some 'Attitude' questions rely on understanding the speaker's tone." 
+            },
+            { 
+                q: "The conversations are always between a student and a professor.", 
+                a: false, 
+                info: "Myth! Conversations can also be between two students or a student and a university employee (like a librarian or administrator)." 
+            },
+            { 
+                q: "The questions (after the first one) follow the order of the information you hear.", 
+                a: true, 
+                info: "Fact! This helps you follow along and find answers in your notes." 
+            },
+            { 
+                q: "Some listening questions require you to make simple math calculations.", 
+                a: false, 
+                info: "Myth! You will never be asked to make calculations on the Listening section." 
+            },
+            { 
+                q: "All speakers use North American English accents.", 
+                a: false, 
+                info: "Myth! While many accents are North American, you may also hear accents from the U.K., Australia, or New Zealand." 
+            },
+            { 
+                q: "You need specialized academic knowledge (like biology or art history) to understand the lectures.", 
+                a: false, 
+                info: "Myth! All the information you need to answer the questions is provided in the lecture itself." 
+            }
+        ];
+
+        // (From Presentation 2 in the PDF)
+        const questionTypes = [
+            { 
+                name: "1. Gist-Content / Gist-Purpose", 
+                desc: "These questions focus on basic comprehension and ask for the main topic, idea, or purpose of the lecture or conversation.",
+                ex: "e.g., 'What is the speaker mainly discussing?' or 'What is the main purpose of the conversation?'"
+            },
+            { 
+                name: "2. Detail", 
+                desc: "These questions also focus on basic comprehension, asking about specific facts and key details that are explicitly stated in the passage.",
+                ex: "e.g., 'According to the professor, what is the problem with X?'"
+            },
+            { 
+                name: "3. Function", 
+                desc: "This focuses on pragmatic understanding. It asks about a statement's intended purpose (why the speaker said it). This often involves replaying a short audio clip.",
+                ex: "e.g., 'Why does the student say this? (replay)'"
+            },
+            { 
+                name: "4. Attitude", 
+                desc: "This also focuses on pragmatic understanding. It asks you to identify a speaker's feelings, opinions, or certainty, often based on their tone of voice. This may also involve a replay.",
+                ex: "e.g., 'What is the professor's attitude toward X?'"
+            },
+            { 
+                name: "5. Organization", 
+                desc: "This focuses on connecting information. It asks how the content is organized or about the relationship between two parts of the lecture.",
+                ex: "e.g., 'Why does the professor mention X?' or 'How is the discussion organized?'"
+            },
+            { 
+                name: "6. Connecting Content", 
+                desc: "This also focuses on connecting information. These questions ask you to make connections between ideas, identify steps in a process, classify items into categories, or make predictions. These can sometimes be chart or table questions.",
+                ex: "e.g., 'What can be inferred about X?' or completing a 'Yes/No' table."
+            },
+            { 
+                name: "7. Inference", 
+                desc: "This focuses on connecting information. It asks you to understand what a speaker means when it was not explicitly stated. You must figure out the meaning from the facts provided.",
+                ex: "e.g., 'What does the professor imply when she says this? (replay)'"
+            }
+        ];
+
+
+        // --- App Logic ---
+        
+        // Global variables for quiz
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // DOM elements
+        const sections = {
+            home: document.getElementById('home-section'),
+            factOrMyth: document.getElementById('factOrMyth-section'),
+            formats: document.getElementById('formats-section'),
+            qTypes: document.getElementById('qTypes-section')
+        };
+        const navLinks = document.querySelectorAll('.nav-link');
+        const quizAllContainer = document.getElementById('quiz-all-container');
+        const checkAnswersBtn = document.getElementById('check-answers-btn');
+        const resetQuizBtn = document.getElementById('reset-quiz-btn');
+        const quizScoreDisplay = document.getElementById('quiz-score-display');
+        const qTypesContainer = document.getElementById('question-types-container');
+
+        // --- Navigation Logic ---
+        function showSection(sectionId) {
+            // Hide all sections
+            Object.values(sections).forEach(section => section.classList.add('hidden'));
+            
+            // Deactivate all nav links
+            navLinks.forEach(link => link.classList.remove('active-nav'));
+            
+            // Show the target section
+            if (sections[sectionId]) {
+                sections[sectionId].classList.remove('hidden');
+            }
+            
+            // Activate the target nav link
+            const activeLink = document.querySelector(`.nav-link[onclick="showSection('${sectionId}')"]`);
+            if (activeLink) {
+                activeLink.classList.add('active-nav');
+            }
+        }
+
+        // --- Fact or Myth Quiz Logic (All at once) ---
+        function buildQuiz() {
+            quizAllContainer.innerHTML = '';
+            quizQuestions.forEach((qData, index) => {
+                const item = document.createElement('div');
+                item.className = 'quiz-item border-b border-gray-200 pb-4';
+                item.innerHTML = `
+                    <p class="text-xl font-semibold text-gray-800">${index + 1}. ${qData.q}</p>
+                    <div class="flex space-x-6 mt-3 ml-4">
+                        <label class="flex items-center space-x-2 text-gray-700 cursor-pointer text-lg">
+                            <input type="radio" name="q${index}" value="true" class="text-indigo-600 focus:ring-indigo-500 h-5 w-5">
+                            <span>Fact</span>
+                        </label>
+                        <label class="flex items-center space-x-2 text-gray-700 cursor-pointer text-lg">
+                            <input type="radio" name="q${index}" value="false" class="text-indigo-600 focus:ring-indigo-500 h-5 w-5">
+                            <span>Myth</span>
+                        </label>
+                    </div>
+                    <div id="feedback-${index}" class="feedback-area mt-3 ml-4 text-lg font-medium hidden rounded-lg p-3"></div>
+                `;
+                quizAllContainer.appendChild(item);
+            });
+        }
+
+        function checkAllAnswers() {
+            let score = 0;
+            quizQuestions.forEach((qData, index) => {
+                const correctAnswer = qData.a;
+                const selectedRadio = document.querySelector(`input[name="q${index}"]:checked`);
+                const feedbackEl = document.getElementById(`feedback-${index}`);
+
+                if (selectedRadio) {
+                    const userAnswer = selectedRadio.value === 'true';
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                        feedbackEl.textContent = `Correct! ${qData.info}`;
+                        feedbackEl.className = 'feedback-area mt-3 ml-4 text-lg font-medium rounded-lg p-3 bg-green-50 text-green-800';
+                    } else {
+                        feedbackEl.textContent = `Incorrect. ${qData.info}`;
+                        feedbackEl.className = 'feedback-area mt-3 ml-4 text-lg font-medium rounded-lg p-3 bg-red-50 text-red-800';
+                    }
+                } else {
+                    feedbackEl.textContent = 'Please select an answer.';
+                    feedbackEl.className = 'feedback-area mt-3 ml-4 text-lg font-medium rounded-lg p-3 bg-yellow-50 text-yellow-800';
+                }
+                feedbackEl.classList.remove('hidden');
+                
+                // Disable radio buttons after checking
+                document.querySelectorAll(`input[name="q${index}"]`).forEach(radio => radio.disabled = true);
+            });
+
+            quizScoreDisplay.textContent = `Your score: ${score} / ${quizQuestions.length}`;
+            quizScoreDisplay.classList.remove('hidden');
+            
+            checkAnswersBtn.classList.add('hidden');
+            resetQuizBtn.classList.remove('hidden');
+        }
+
+        function resetQuiz() {
+            buildQuiz(); // Re-builds the quiz, which clears selections and feedback
+            quizScoreDisplay.classList.add('hidden');
+            resetQuizBtn.classList.add('hidden');
+            checkAnswersBtn.classList.remove('hidden');
+        }
+
+        // --- Question Types Accordion Logic ---
+        function buildAccordion() {
+            qTypesContainer.innerHTML = ''; // Clear container
+            questionTypes.forEach(qType => {
+                const item = document.createElement('div');
+                item.className = 'border border-gray-200 rounded-lg';
+                item.innerHTML = `
+                    <button class="accordion-btn flex justify-between items-center w-full p-5 text-left text-gray-800 font-semibold bg-gray-50 hover:bg-gray-100 focus-ring rounded-lg text-xl" aria-expanded="false">
+                        ${qType.name}
+                        <span class="text-2xl text-indigo-500 font-light transform transition-transform">+</span>
+                    </button>
+                    <div class="accordion-content hidden p-6 border-t border-gray-200 bg-white">
+                        <p class="text-gray-700 mb-3 text-lg">${qType.desc}</p>
+                        <p class="text-gray-600 italic text-lg">${qType.ex}</p>
+                    </div>
+                `;
+                qTypesContainer.appendChild(item);
+            });
+
+            // Add event listeners for accordion
+            qTypesContainer.addEventListener('click', (e) => {
+                const btn = e.target.closest('.accordion-btn');
+                if (btn) {
+                    const content = btn.nextElementSibling;
+                    const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+                    
+                    btn.setAttribute('aria-expanded', !isExpanded);
+                    content.classList.toggle('hidden');
+                    btn.querySelector('span').textContent = isExpanded ? '+' : '−';
+                }
+            });
+        }
+
+        // --- App Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set Tailwind classes for nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.className = 'nav-link px-5 py-2 text-base font-medium text-blue-100 rounded-md hover:bg-indigo-600 hover:text-white transition-colors focus-ring';
+            });
+            // Re-apply active class to the default
+            document.querySelector('.nav-link[onclick="showSection(\'home\')"]').classList.add('active-nav');
+            
+            // Set Tailwind classes for quiz buttons
+            const commonQuizBtnClasses = ['w-full', 'px-6', 'py-3', 'text-white', 'font-semibold', 'rounded-lg', 'shadow-md', 'hover:shadow-lg', 'transition-all', 'duration-200', 'disabled:opacity-50', 'disabled:cursor-not-allowed', 'focus-ring'];
+            document.querySelectorAll('.quiz-btn').forEach(btn => {
+                btn.classList.add(...commonQuizBtnClasses);
+            });
+
+            // Initial setup
+            showSection('home');
+            buildQuiz();
+            buildAccordion();
+        });
+    </script>
+</body>
+</html>

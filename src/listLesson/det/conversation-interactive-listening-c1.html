@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Skill Building: Interactive Listening | CEFR C1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Cloze Input Styling */
+        .cloze-input {
+            border-bottom: 3px solid #94a3b8;
+            padding: 2px 4px;
+            color: #0f172a;
+            font-weight: 700;
+            text-align: left;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.7);
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem; /* text-xl */
+        }
+        .cloze-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            background: white;
+        }
+        .cloze-input.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .cloze-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+        .cloze-input.revealed {
+            border-color: #f59e0b; /* Amber */
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-xl">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base md:text-lg text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Conversation</span> <span>&gt;</span> 
+            <span>Listening</span> <span>&gt;</span> 
+            <span>CEFR C1</span> <span>&gt;</span> 
+            <span class="text-indigo-700 font-bold">Interactive Listening</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-violet-700 tracking-tight mb-3">
+                    Interactive Listening
+                </h1>
+                <p class="text-2xl text-slate-500 font-medium">Score Range: 120–135 | Focus: Pragmatic Competence & Synthesis</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-xl text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-indigo-600 p-8 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-2xl text-slate-700 leading-relaxed">
+                <i class="fas fa-headphones mr-3 text-indigo-600"></i> 
+                <strong>Instructions:</strong> Master the multi-stage simulation of real-world academic conversations. Read the strategies and complete the drills. You have <strong>2 attempts</strong> per exercise before the answers are revealed.
+            </p>
+        </div>
+
+        <!-- Section 1: Concept & Recognition (Cyan Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-3xl font-bold text-cyan-900">Steps 1-2: Deep-Dive & Analysis</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-3xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Step 1: Concept -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 1: The Deep-Dive Breakdown</h3>
+                        <div class="bg-cyan-50 p-8 rounded-xl border border-cyan-100 text-xl leading-relaxed text-slate-700 space-y-4">
+                            <p>The Interactive Listening task is a multi-stage simulation culminating in a written summary. At the C1 level, the "correct" answer isn't just grammatically sound, but <strong>pragmatically precise</strong>.</p>
+                            <ul class="list-disc pl-6 space-y-2">
+                                <li><strong>Subscore Impact:</strong> Comprehension & Conversation (Dialogue Phase), Literacy & Production (Summary Phase).</li>
+                                <li><strong>Linguistic Requirement:</strong> The algorithm seeks <em>Pragmatic Competence</em> (understanding intent), <em>Lexical Density</em> (sophisticated nouns), and <em>Cohesion</em> (advanced transitions).</li>
+                            </ul>
+                            <div class="bg-white p-6 rounded-lg border border-red-200 mt-6">
+                                <h4 class="font-bold text-red-800 mb-3"><i class="fas fa-exclamation-triangle mr-2"></i>Common Pitfalls:</h4>
+                                <ul class="list-disc pl-6 text-red-900 space-y-2">
+                                    <li><strong>The "Politeness Trap":</strong> Choosing an answer that sounds polite but doesn't logically advance the topic.</li>
+                                    <li><strong>Literalism:</strong> Failing to identify sarcasm, hesitation, or indirect requests.</li>
+                                    <li><strong>Summary Redundancy:</strong> Starting every sentence with "The student said..." or "The professor said...".</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Recognition Drill -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 2: The Recognition & Analysis Drill</h3>
+                        <p class="text-2xl text-slate-600 mb-6">Examine this interaction between a Registrar and a Student regarding a late enrollment:</p>
+                        
+                        <div class="bg-slate-50 p-8 rounded-xl border border-slate-200 mb-8 space-y-4 font-serif text-2xl">
+                            <p class="text-indigo-900"><strong>Student:</strong> "I was hoping you might overlook the deadline just this once?"</p>
+                            <p class="text-emerald-900"><strong>Registrar:</strong> "The system is automated; however, I can check if there's a manual override for exceptional circumstances."</p>
+                            <p class="text-indigo-900"><strong>Student:</strong> "That would be a huge relief, as my scholarship depends on this full-time status."</p>
+                            <p class="text-emerald-900"><strong>Registrar:</strong> "I'll need documentation for the delay. Can you provide a medical or employer note by tomorrow?"</p>
+                            <p class="text-indigo-900"><strong>Student:</strong> "I have the email from my doctor right here on my phone."</p>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="text-xl">
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th class="text-orange-700">Weak Approach (B1/B2)</th>
+                                        <th class="text-green-700">Strong Approach (C1/C2)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-bold">Response Selection</td>
+                                        <td>Picks the response with the most matching keywords from the previous sentence.</td>
+                                        <td>Picks the response that addresses the <strong>implied need</strong> of the speaker.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Contextual Awareness</td>
+                                        <td>Treats each turn as an isolated grammar puzzle.</td>
+                                        <td>Maintains a "mental map" of the entire narrative arc to ensure consistency.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Summary Style</td>
+                                        <td>Chronological list: "First he said A, then she said B."</td>
+                                        <td>Synthesized overview: "The dialogue centered on resolving a registration conflict via documentation."</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Vocabulary</td>
+                                        <td>Uses "help," "give," "tell."</td>
+                                        <td>Uses "facilitate," "provide," "articulate."</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Strategy & Warm-up (Blue Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-3xl font-bold text-blue-900">Steps 3-4: Strategy & Foundations</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white border-t border-blue-50 space-y-12">
+                    
+                    <!-- Step 3: Strategy -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 3: The Strategic Roadmap (Pro-Tips+)</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-brain mr-2"></i>The "Internal Echo"</h4>
+                                <p class="text-xl text-slate-700">Before looking at the options, mentally predict what a natural response would be. This prevents "distractor" options from confusing your logic.</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-language mr-2"></i>Prioritize Functional Language</h4>
+                                <p class="text-xl text-slate-700">Look for phrases like "That being said," or "On the contrary." The algorithm rewards complex organizational transitions.</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-compress-arrows-alt mr-2"></i>Nominalize Your Summary</h4>
+                                <p class="text-xl text-slate-700">Instead of "The student explained why he was late," write "The student provided a detailed justification for his tardiness." Increases lexical density.</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-pen-alt mr-2"></i>Use Modal Verbs</h4>
+                                <p class="text-xl text-slate-700">In the summary, use "The professor suggested that..." rather than "The professor said...". Demonstrates understanding of "Speaker Intent".</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Warm-up -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 4: Foundations Skill-Building Suite</h3>
+                        
+                        <!-- Drill A -->
+                        <div class="mb-10 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill A: Pragmatic Intent Matching</h4>
+                                <button onclick="checkDrillA()" class="text-lg font-bold text-blue-700 border-2 border-blue-200 bg-white px-4 py-2 rounded-xl hover:bg-blue-50 transition-colors">Check Drill A</button>
+                            </div>
+                            <div class="space-y-4 text-xl">
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <span class="font-serif italic w-full md:w-1/2">"It's not that I don't want to help, but my hands are tied."</span>
+                                    <div class="w-full md:w-1/2 flex items-center gap-4">
+                                        <select id="drill-a-1" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                                            <option value="">Select Intent...</option>
+                                            <option value="A">A) Softened Disagreement</option>
+                                            <option value="B">B) Expressing Institutional Constraint</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <span class="font-serif italic w-full md:w-1/2">"I'm not sure that's the most efficient route."</span>
+                                    <div class="w-full md:w-1/2 flex items-center gap-4">
+                                        <select id="drill-a-2" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+                                            <option value="">Select Intent...</option>
+                                            <option value="A">A) Softened Disagreement</option>
+                                            <option value="B">B) Expressing Institutional Constraint</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="feedback-drill-a" class="font-bold min-h-[2rem]"></div>
+                            </div>
+                        </div>
+
+                        <!-- Drill B -->
+                        <div class="mb-10 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill B: Sentence Scrambling (Connector)</h4>
+                                <button onclick="checkDrillB()" class="text-lg font-bold text-blue-700 border-2 border-blue-200 bg-white px-4 py-2 rounded-xl hover:bg-blue-50 transition-colors">Check Drill B</button>
+                            </div>
+                            <p class="text-xl text-slate-600 mb-4">Reorder to create a cohesive C1 summary sentence:</p>
+                            <p class="text-xl font-mono text-blue-900 bg-blue-100 p-4 rounded-lg mb-4">(the student’s / despite / initial / the professor / reluctance / eventually / proposed / a compromise)</p>
+                            <input type="text" id="drill-b" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 outline-none" placeholder="Type the reordered sentence here...">
+                            <div id="feedback-drill-b" class="mt-4 font-bold min-h-[2rem]"></div>
+                        </div>
+
+                        <!-- Drill C -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill C: Grammar Correction (Subjunctive)</h4>
+                                <button onclick="checkDrillC()" class="text-lg font-bold text-blue-700 border-2 border-blue-200 bg-white px-4 py-2 rounded-xl hover:bg-blue-50 transition-colors">Check Drill C</button>
+                            </div>
+                            <p class="text-xl text-slate-600 mb-4">Correct the following for a C1 summary:</p>
+                            <p class="text-xl font-serif text-red-900 bg-red-100 p-4 rounded-lg mb-4">"The advisor suggested that the student takes the chemistry course next semester."</p>
+                            <input type="text" id="drill-c" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 outline-none" placeholder="Type the corrected sentence here...">
+                            <div id="feedback-drill-c" class="mt-4 font-bold min-h-[2rem]"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Guided Practice (Emerald Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-3xl font-bold text-emerald-900">Step 5: Guided Practice</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-8">
+                    
+                    <div class="bg-emerald-50 p-8 rounded-xl border border-emerald-200 shadow-inner">
+                        <h4 class="font-bold text-emerald-900 text-2xl mb-4"><i class="fas fa-briefcase mr-2"></i>Scenario: Supervisor Meeting</h4>
+                        <p class="text-2xl text-slate-800 leading-relaxed mb-4"><strong>Prompt:</strong> Your supervisor says, <span class="font-serif italic">"This is the second time the data analysis has been delayed. We're at risk of missing the client's hard deadline."</span></p>
+                        
+                        <div class="bg-white p-6 rounded-lg border border-emerald-100 mt-6">
+                            <h5 class="font-bold text-emerald-800 text-xl mb-2">Mental Modeling Prompt:</h5>
+                            <p class="text-xl text-slate-700"><strong>Self-Question:</strong> Should I apologize, offer an excuse, or provide a solution?</p>
+                            <p class="text-xl text-slate-700 mt-2"><strong>Answer:</strong> A C1 response acknowledges the gravity, offers a succinct reason, and immediately pivots to a solution.</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <h4 class="font-bold text-emerald-800 text-2xl mb-6">Model Responses (Summary of the conversation):</h4>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="p-6 bg-red-50 border border-red-200 rounded-xl">
+                                <h5 class="font-bold text-red-800 text-xl mb-3">Passing (B2):</h5>
+                                <p class="text-xl text-slate-700">"The student and the boss talked about a late project. The boss was worried about the client. The student said sorry and promised to finish it by Friday."</p>
+                            </div>
+                            <div class="p-6 bg-emerald-100 border border-emerald-300 rounded-xl">
+                                <h5 class="font-bold text-emerald-900 text-xl mb-3">Exceptional (C1/C2):</h5>
+                                <p class="text-xl text-emerald-900 font-medium">"The conversation revolved around a recurring delay in data analysis that threatened a critical client deadline. While acknowledging the setback, the subordinate proposed a revised timeline and committed to a Friday completion to mitigate further risks."</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-6 bg-slate-50 border-l-4 border-emerald-500 rounded-r-xl">
+                            <p class="text-xl text-slate-700"><strong>Linguistic Spotlight:</strong> The C1 response uses Participial Phrases (<em>"While acknowledging the setback..."</em>) and Advanced Verbs (<em>"threatened," "mitigate"</em>). It avoids the "Subject-Verb-Object" repetition of the B2 response.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Simulation & Challenge (Violet Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-3xl font-bold text-violet-900">Step 6-8: Simulation & Challenge</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-violet-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Simulation Setup -->
+                    <div class="bg-violet-50 p-8 rounded-xl border border-violet-200">
+                        <h3 class="font-bold text-violet-900 text-3xl mb-4">Step 6: Technical Simulation</h3>
+                        <ul class="list-disc pl-6 space-y-3 text-xl text-slate-700">
+                            <li><strong>Setup:</strong> Use a split-screen. Play a high-level academic podcast (like BBC In Our Time) to simulate the listening phase.</li>
+                            <li><strong>Simulate Pressure:</strong> Use a countdown timer set to 4 minutes for the summary phase.</li>
+                            <li><strong>Analyze Production:</strong> Use dictation or a text editor to write your summaries. Ensure you use sophisticated vocabulary.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Independent Challenge -->
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-violet-800">Step 7: The Independent Triple-Threat Challenge</h3>
+                        </div>
+                        <p class="text-xl text-slate-600 mb-6">Write a synthesized, C1-level summary for each of the following scenarios.</p>
+
+                        <div class="space-y-8">
+                            <!-- Level 1 -->
+                            <div class="p-6 border-2 border-slate-200 rounded-xl hover:border-violet-300 transition-colors">
+                                <h4 class="font-bold text-violet-900 text-2xl mb-2">Level 1 (Standard)</h4>
+                                <p class="text-xl text-slate-700 mb-4 italic">A student asking a librarian for help finding primary sources for a history paper.</p>
+                                <textarea class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-violet-200 outline-none mb-4" placeholder="Write your C1 summary here..."></textarea>
+                                <button onclick="toggleAnswer('model-l1', this)" class="text-lg font-bold text-violet-600 underline">Show Hidden Model</button>
+                                <div id="model-l1" class="answer-box hidden mt-4 p-4 bg-violet-50 border border-violet-200 rounded-lg text-xl text-violet-900">
+                                    "The interaction involved a student seeking specialized primary sources, which the librarian facilitated by suggesting the university’s digital archives."
+                                </div>
+                            </div>
+
+                            <!-- Level 2 -->
+                            <div class="p-6 border-2 border-slate-200 rounded-xl hover:border-violet-400 transition-colors">
+                                <h4 class="font-bold text-violet-900 text-2xl mb-2">Level 2 (Complex)</h4>
+                                <p class="text-xl text-slate-700 mb-4 italic">A debate between two lab partners regarding a discrepancy in their experimental results.</p>
+                                <textarea class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-violet-200 outline-none mb-4" placeholder="Write your C1 summary here..."></textarea>
+                                <button onclick="toggleAnswer('model-l2', this)" class="text-lg font-bold text-violet-600 underline">Show Hidden Model</button>
+                                <div id="model-l2" class="answer-box hidden mt-4 p-4 bg-violet-50 border border-violet-200 rounded-lg text-xl text-violet-900">
+                                    "The dialogue focused on reconciling conflicting data points, ultimately resulting in a decision to recalibrate their equipment and re-run the trial."
+                                </div>
+                            </div>
+
+                            <!-- Level 3 -->
+                            <div class="p-6 border-2 border-slate-200 rounded-xl hover:border-violet-500 transition-colors shadow-sm">
+                                <h4 class="font-bold text-violet-900 text-2xl mb-2">Level 3 (Academic/Abstract)</h4>
+                                <p class="text-xl text-slate-700 mb-4 italic">A discussion with a professor regarding the ethical implications of AI in creative industries.</p>
+                                <textarea class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-violet-200 outline-none mb-4" placeholder="Write your C1 summary here..."></textarea>
+                                <button onclick="toggleAnswer('model-l3', this)" class="text-lg font-bold text-violet-600 underline">Show Hidden Model</button>
+                                <div id="model-l3" class="answer-box hidden mt-4 p-4 bg-violet-50 border border-violet-200 rounded-lg text-xl text-violet-900">
+                                    "The participants engaged in a nuanced critique of AI's role in the arts, weighing the benefits of efficiency against the potential erosion of human intellectual property."
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 8: Rubric -->
+                    <div class="mt-12 pt-10 border-t border-slate-200">
+                        <h3 class="text-3xl font-bold text-violet-800 mb-6">Step 8: The Comprehensive Performance Rubric</h3>
+                        <div class="overflow-x-auto rounded-xl border border-slate-300">
+                            <table class="text-xl w-full">
+                                <thead>
+                                    <tr class="bg-violet-50 text-violet-900">
+                                        <th class="p-4">Score</th>
+                                        <th class="p-4">Content</th>
+                                        <th class="p-4">Lexical Sophistication</th>
+                                        <th class="p-4">Grammatical Accuracy</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-green-700">5 (C1/C2)</td>
+                                        <td class="p-4">Comprehensive; captures nuance and speaker intent.</td>
+                                        <td class="p-4">Uses academic collocations and precise terminology.</td>
+                                        <td class="p-4">Flawless use of complex structures (subjunctive, inversion).</td>
+                                    </tr>
+                                    <tr class="bg-slate-50">
+                                        <td class="p-4 font-bold text-orange-600">3 (B2)</td>
+                                        <td class="p-4">Captures the main idea but misses subtle details.</td>
+                                        <td class="p-4">Uses common vocabulary accurately but lacks variety.</td>
+                                        <td class="p-4">Minor errors that do not impede communication.</td>
+                                    </tr>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-red-600">1 (A2/B1)</td>
+                                        <td class="p-4">Missing key parts of the interaction.</td>
+                                        <td class="p-4">Repetitive or overly simple word choices.</td>
+                                        <td class="p-4">Frequent errors in basic tense and agreement.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Reflection (Rose Theme) -->
+        <div class="mb-12 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-3xl font-bold text-rose-900">Step 9-10: AI Lab & Review</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-rose-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- AI Prompting -->
+                    <div class="bg-rose-50 p-8 rounded-xl border-l-4 border-rose-500 shadow-sm space-y-6">
+                        <h3 class="text-3xl font-bold text-rose-900 mb-4"><i class="fas fa-robot mr-3"></i>Step 9: The AI Tutor Prompting Lab</h3>
+                        
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">1. Simulation Prompt:</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-1">Act as a Duolingo English Test examiner. Generate a C1-level 'Listen and Respond' script between a [Professor and a Student] regarding [a complex ethical dilemma in biology]. Provide 5 turns of dialogue. For each turn, give me 4 options, only one of which is pragmatically and logically correct for a C1 level.</p>
+                                <button onclick="copyToClipboard('ai-prompt-1')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">2. Evaluator Prompt:</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-2">I will provide a summary of a DET Interactive Listening task. Evaluate it based on C1 criteria: Lexical Density, Cohesion, and Grammatical Range. Provide a predicted score (10–160) and suggest three 'C1-level' synonyms for the common words I used. [PASTE SUMMARY HERE]</p>
+                                <button onclick="copyToClipboard('ai-prompt-2')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reflection -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-rose-800 mb-6">Step 10: Metacognitive Review</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-2xl text-slate-700 font-medium mb-3">Linguistic Win:</label>
+                                <textarea placeholder="e.g., I successfully used a 'neither/nor' structure in my summary." class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-2xl text-slate-700 font-medium mb-3">Strategy Adjustment:</label>
+                                <textarea placeholder="e.g., Next time, I will spend less time on the first sentence to ensure I have time for a concluding synthesis." class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-xl font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data Configuration & State ---
+        let attempts = {
+            drillA: 0,
+            drillB: 0,
+            drillC: 0
+        };
+
+        const answersA = {
+            'drill-a-1': 'B',
+            'drill-a-2': 'A'
+        };
+
+        const targetB = "despite the student's initial reluctance, the professor eventually proposed a compromise";
+        const targetB_alt = "despite the professor's initial reluctance, the student eventually proposed a compromise"; // Allow both logical orders
+        
+        const targetC = "the advisor suggested that the student take the chemistry course next semester";
+
+        // --- Logic Handlers ---
+
+        function cleanString(str) {
+            return str.toLowerCase().replace(/[.,!?'"()]/g, '').trim().replace(/\s+/g, ' ');
+        }
+
+        function checkDrillA() {
+            const select1 = document.getElementById('drill-a-1');
+            const select2 = document.getElementById('drill-a-2');
+            const feedback = document.getElementById('feedback-drill-a');
+            
+            let correct = 0;
+            const total = 2;
+            const currentAttempt = attempts.drillA;
+
+            if (select1.value === answersA['drill-a-1']) {
+                select1.classList.add('border-green-500', 'bg-green-50');
+                select1.classList.remove('border-red-300');
+                correct++;
+            } else {
+                select1.classList.add('border-red-300');
+                select1.classList.remove('border-green-500', 'bg-green-50');
+                if (currentAttempt >= 1) select1.value = answersA['drill-a-1']; // Reveal
+            }
+
+            if (select2.value === answersA['drill-a-2']) {
+                select2.classList.add('border-green-500', 'bg-green-50');
+                select2.classList.remove('border-red-300');
+                correct++;
+            } else {
+                select2.classList.add('border-red-300');
+                select2.classList.remove('border-green-500', 'bg-green-50');
+                if (currentAttempt >= 1) select2.value = answersA['drill-a-2']; // Reveal
+            }
+
+            if (correct === total) {
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Both correct!</span>';
+                select1.disabled = true;
+                select2.disabled = true;
+                attempts.drillA = 2;
+            } else {
+                attempts.drillA++;
+                if (attempts.drillA >= 2) {
+                    feedback.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answers revealed.</span>';
+                    select1.disabled = true;
+                    select2.disabled = true;
+                } else {
+                    feedback.innerHTML = `<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>${correct}/${total} correct. 1 attempt left.</span>`;
+                }
+            }
+        }
+
+        function checkDrillB() {
+            const input = document.getElementById('drill-b');
+            const feedback = document.getElementById('feedback-drill-b');
+            const val = cleanString(input.value);
+            const currentAttempt = attempts.drillB;
+
+            if (val === cleanString(targetB) || val === cleanString(targetB_alt)) {
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Perfect synthesis!</span>';
+                input.classList.add('border-green-500', 'bg-green-50');
+                input.classList.remove('border-red-300');
+                input.disabled = true;
+                attempts.drillB = 2;
+            } else {
+                input.classList.add('border-red-300');
+                attempts.drillB++;
+                if (attempts.drillB >= 2) {
+                    feedback.innerHTML = `<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answer: "Despite the student's initial reluctance, the professor eventually proposed a compromise."</span>`;
+                    input.disabled = true;
+                } else {
+                    feedback.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Check your word order and punctuation. 1 attempt left.</span>';
+                }
+            }
+        }
+
+        function checkDrillC() {
+            const input = document.getElementById('drill-c');
+            const feedback = document.getElementById('feedback-drill-c');
+            const val = cleanString(input.value);
+            const currentAttempt = attempts.drillC;
+
+            // Looking specifically for "take" instead of "takes"
+            if (val === cleanString(targetC)) {
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Excellent! You correctly used the subjunctive mood ("take").</span>';
+                input.classList.add('border-green-500', 'bg-green-50');
+                input.classList.remove('border-red-300');
+                input.disabled = true;
+                attempts.drillC = 2;
+            } else {
+                input.classList.add('border-red-300');
+                attempts.drillC++;
+                if (attempts.drillC >= 2) {
+                    feedback.innerHTML = `<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answer: "The advisor suggested that the student <strong>take</strong> the chemistry course next semester."</span>`;
+                    input.disabled = true;
+                } else {
+                    feedback.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Look closely at the verb "takes". 1 attempt left.</span>';
+                }
+            }
+        }
+
+        // --- Utils ---
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Model";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Hidden Model";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '4000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('Prompt copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers and reset attempts?")) {
+                // Reset inputs
+                document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('border-green-500', 'bg-green-50', 'border-red-300');
+                });
+                document.querySelectorAll('select').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('border-green-500', 'bg-green-50', 'border-red-300');
+                });
+                
+                // Clear Feedback
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                
+                // Hide Models
+                document.querySelectorAll('.answer-box').forEach(el => {
+                    el.classList.add('hidden');
+                    el.classList.remove('visible');
+                });
+                document.querySelectorAll('button').forEach(btn => {
+                    if (btn.innerText.includes('Hide Model')) btn.innerText = "Show Hidden Model";
+                });
+
+                // Reset Logic
+                attempts = { drillA: 0, drillB: 0, drillC: 0 };
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup complete
+        });
+
+    </script>
+</body>
+</html>

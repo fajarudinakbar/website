@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Practice Test 2 - Reading Section</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #app {
+            flex-grow: 1;
+        }
+        /* Custom scrollbar for reading pane */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f0f9ff;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #7dd3fc;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #38bdf8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- App Container -->
+    <div id="app"></div>
+
+    <script>
+        // --- DATA STRUCTURE ---
+        const testData = {
+            module1: {
+                title: "Module 1",
+                sections: [
+                    {
+                        id: "m1_cloze",
+                        type: "cloze",
+                        title: "Complete the Words",
+                        text: "The rapid expansion of urban centers presents significant challenges for modern infrastructure. City %1% must %2% balance %3% growth %4% environmental %5% to %6% long-term %7%. One %8% concern %9% managing %10% traffic congestion and its associated pollution. Expanding public transportation networks offers a potential solution, but requires substantial financial investment.",
+                        blanks: [
+                            { id: 1, prefix: "plan", suffix: "", answer: "planners", explanation: "Refers to the professionals responsible for designing and organizing city infrastructure." },
+                            { id: 2, prefix: "caref", suffix: "", answer: "carefully", explanation: "An adverb modifying 'balance' to show deliberate and cautious action." },
+                            { id: 3, prefix: "econ", suffix: "", answer: "economic", explanation: "An adjective collocated with 'growth', referring to financial and business expansion." },
+                            { id: 4, prefix: "wi", suffix: "", answer: "with", explanation: "A preposition used here to link 'balance [something]' to '[something else]'." },
+                            { id: 5, prefix: "sustain", suffix: "", answer: "sustainability", explanation: "A core environmental concept meaning the ability to be maintained at a certain rate or level." },
+                            { id: 6, prefix: "ens", suffix: "", answer: "ensure", explanation: "A verb meaning to make certain that something will occur." },
+                            { id: 7, prefix: "viabi", suffix: "", answer: "viability", explanation: "A noun meaning ability to work successfully or survive long-term." },
+                            { id: 8, prefix: "prim", suffix: "", answer: "primary", explanation: "An adjective meaning of chief importance; principal." },
+                            { id: 9, prefix: "invo", suffix: "", answer: "involves", explanation: "A verb indicating what the concern includes or entails." },
+                            { id: 10, prefix: "incre", suffix: "", answer: "increased", explanation: "An adjective describing traffic congestion that has grown larger or greater." }
+                        ]
+                    },
+                    {
+                        id: "m1_email1",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Notice to Residents: Upcoming Façade Restoration",
+                        passageContent: `Dear Tenants,\n\nPlease be advised that comprehensive restoration of the building's exterior façade will commence on October 12th. Contractors will erect scaffolding around the perimeter, and work will proceed sequentially from the top floor downwards between 8:00 AM and 5:00 PM, Monday through Friday.\n\nDuring this period, we strongly recommend keeping all windows securely fastened to prevent dust infiltration and mitigate noise disturbances. Furthermore, access to the rooftop terrace will be strictly prohibited until the project's projected completion in late November. We apologize for any inconvenience this essential maintenance may cause and appreciate your steadfast cooperation.\n\nManagement`,
+                        questions: [
+                            {
+                                id: 11,
+                                text: "What is the primary purpose of this notice?",
+                                options: [
+                                    "To request that tenants assist with the building restoration.",
+                                    "To inform residents of impending exterior maintenance and related restrictions.",
+                                    "To announce a permanent closure of the rooftop terrace.",
+                                    "To ask tenants to move their vehicles away from the scaffolding."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The first sentence reveals the main purpose: 'Please be advised that comprehensive restoration of the building's exterior façade will commence...' and the rest details restrictions like window closure and terrace access."
+                            },
+                            {
+                                id: 12,
+                                text: "What action are residents advised to take?",
+                                options: [
+                                    "Vacate the building between 8:00 AM and 5:00 PM.",
+                                    "Keep their windows closed during the workday.",
+                                    "Contact the contractors regarding noise disturbances.",
+                                    "Remove their belongings from the rooftop terrace."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The text explicitly advises: '...we strongly recommend keeping all windows securely fastened to prevent dust infiltration and mitigate noise disturbances.'"
+                            },
+                            {
+                                id: 13,
+                                text: "What can be inferred about the rooftop terrace?",
+                                options: [
+                                    "It will be inaccessible to residents for over a month.",
+                                    "It is the starting point for the exterior façade restoration.",
+                                    "It will be permanently replaced by new scaffolding.",
+                                    "It is responsible for the recent dust infiltration issues."
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The text states the project begins 'October 12th' and terrace access is prohibited until 'late November,' which means it will be inaccessible for over a month."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m1_email2",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Text Message Chain: Customer Service",
+                        passageContent: `FlyRight Air: Your flight FR409 to Denver has been canceled due to severe meteorological conditions. We apologize for the disruption. Please tap the link to rebook or request a refund: flyright.com/rebook\n\nPassenger: This is unacceptable. I have a critical conference tomorrow morning. Are there any partner airlines flying out tonight?\n\nFlyRight Air: We comprehend your frustration. Unfortunately, all outbound flights from this terminal are currently grounded pending airspace clearance. We have proactively secured a complimentary hotel voucher for you, which has been dispatched to your email. We will prioritize your rebooking on the first available morning departure.`,
+                        questions: [
+                            {
+                                id: 14,
+                                text: "Why was the flight canceled?",
+                                options: [
+                                    "There was a mechanical failure with the aircraft.",
+                                    "The passenger requested a flight change.",
+                                    "Because of bad weather conditions.",
+                                    "The airline overbooked the flight to Denver."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The airline directly states the flight was canceled 'due to severe meteorological conditions,' which means bad weather."
+                            },
+                            {
+                                id: 15,
+                                text: "What does the passenger's message imply?",
+                                options: [
+                                    "They are anxious about missing an important professional event.",
+                                    "They prefer to fly with a different partner airline anyway.",
+                                    "They are demanding a full cash refund immediately.",
+                                    "They misunderstand the automated rebooking link."
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The passenger says, 'This is unacceptable. I have a critical conference tomorrow morning,' implying anxiety and urgency about missing a professional event."
+                            },
+                            {
+                                id: 16,
+                                text: "What compensation has the airline provided so far?",
+                                options: [
+                                    "A guaranteed seat on a partner airline.",
+                                    "A free overnight stay at a hotel.",
+                                    "A full cash refund and a travel voucher.",
+                                    "A free upgrade to first class for the morning departure."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The airline states: 'We have proactively secured a complimentary hotel voucher for you,' providing them with a free overnight stay."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m1_academic",
+                        type: "reading",
+                        title: "Read an Academic Passage",
+                        passageTitle: "The Rise of Impressionism",
+                        passageContent: `In the latter half of the nineteenth century, the traditional art establishment in France was dominated by the Académie des Beaux-Arts, which heavily favored realistic historical and mythological paintings. In stark defiance of these rigid conventions, a rogue collective of artists, later dubbed the Impressionists, began exhibiting their work independently in 1874. \n\nImpressionism represented a radical departure from classical techniques. Rather than striving for photographic realism meticulously crafted within a studio, these artists ventured outdoors—en plein air—to capture the fleeting, ephemeral qualities of light and atmosphere. They employed short, visible brushstrokes and juxtaposed complementary colors directly on the canvas, rather than blending them on a palette, to create a vibrant sense of immediacy and movement.\n\nInitially, critics derided this innovative style, arguing that the paintings appeared unfinished and chaotic. The term 'Impressionism' itself was originally coined as a pejorative insult by a reviewer scrutinizing Claude Monet's *Impression, Sunrise*. However, over time, the movement gained profound traction. By prioritizing subjective human perception and the transient effects of light over absolute objective detail, the Impressionists irrevocably altered the trajectory of modern art, paving the way for subsequent avant-garde movements like Post-Impressionism and Cubism.`,
+                        questions: [
+                            {
+                                id: 17,
+                                text: "What is the primary purpose of the passage?",
+                                options: [
+                                    "To argue that classical painting techniques are superior to modern ones.",
+                                    "To explain the origins and defining characteristics of the Impressionist art movement.",
+                                    "To detail the specific biography and life of Claude Monet.",
+                                    "To analyze the economic impact of independent art exhibitions in France."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The passage explores how the movement started in defiance of the Académie, details its unique techniques (outdoor painting, visible brushstrokes), and explains its lasting impact on modern art."
+                            },
+                            {
+                                id: 18,
+                                text: "According to paragraph 1, what type of art did the Académie des Beaux-Arts prefer?",
+                                options: [
+                                    "Landscapes painted entirely outdoors.",
+                                    "Abstract pieces that focused on light and color.",
+                                    "Detailed depictions of historical and mythological subjects.",
+                                    "Paintings that utilized unblended, short brushstrokes."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "Paragraph 1 explicitly states that the Académie 'heavily favored realistic historical and mythological paintings.'"
+                            },
+                            {
+                                id: 19,
+                                text: "The word 'ephemeral' in paragraph 2 is closest in meaning to:",
+                                options: [
+                                    "Permanent",
+                                    "Transitory",
+                                    "Luminous",
+                                    "Artificial"
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The word 'ephemeral' is used alongside 'fleeting' to describe the short-lived, temporary ('transitory') qualities of light and atmosphere that change quickly outdoors."
+                            },
+                            {
+                                id: 20,
+                                text: "What can be inferred about the term 'Impressionism' based on paragraph 3?",
+                                options: [
+                                    "It was chosen by the artists to describe their own subjective views.",
+                                    "It was not originally intended as a compliment by the art critics of the time.",
+                                    "It was exclusively applied to paintings featuring the sunrise.",
+                                    "It was universally embraced by the Académie des Beaux-Arts."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The text notes that the term was 'originally coined as a pejorative insult by a reviewer,' meaning it was initially used negatively, not as a compliment."
+                            },
+                            {
+                                id: 21,
+                                text: "How did the Impressionists achieve a 'vibrant sense of immediacy' in their paintings?",
+                                options: [
+                                    "By blending all their colors smoothly on a palette.",
+                                    "By focusing primarily on realistic historical events.",
+                                    "By applying unblended, complementary colors with short brushstrokes.",
+                                    "By working exclusively within the controlled environment of a studio."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "Paragraph 2 explains they achieved this by employing 'short, visible brushstrokes and juxtaposed complementary colors directly on the canvas, rather than blending them on a palette.'"
+                            }
+                        ]
+                    }
+                ]
+            },
+            module2: {
+                title: "Module 2",
+                sections: [
+                    {
+                        id: "m2_cloze",
+                        type: "cloze",
+                        title: "Complete the Words",
+                        text: "Advances in artificial intelligence have profoundly transformed contemporary academic research methodologies. Scholars %1% utilize %2% algorithms %3% analyze %4% datasets %5% unprecedented %6% and %7%. Furthermore, %8% software %9% streamlines %10% literature review process, allowing researchers to synthesize vast amounts of information efficiently. However, ethical considerations regarding data privacy and algorithmic bias require continuous scrutiny. Researchers must maintain rigorous oversight to ensure that these powerful technological tools are deployed responsibly and transparently.",
+                        blanks: [
+                            { id: 22, prefix: "curre", suffix: "", answer: "currently", explanation: "An adverb indicating what is happening at the present time." },
+                            { id: 23, prefix: "sophist", suffix: "", answer: "sophisticated", explanation: "An adjective describing advanced, highly developed algorithms." },
+                            { id: 24, prefix: "t", suffix: "", answer: "to", explanation: "A preposition forming the infinitive verb phrase 'to analyze'." },
+                            { id: 25, prefix: "mass", suffix: "", answer: "massive", explanation: "An adjective describing exceptionally large datasets." },
+                            { id: 26, prefix: "wi", suffix: "", answer: "with", explanation: "A preposition linking the action to the qualities of speed and precision." },
+                            { id: 27, prefix: "spe", suffix: "", answer: "speed", explanation: "A noun representing how fast the analysis happens." },
+                            { id: 28, prefix: "preci", suffix: "", answer: "precision", explanation: "A noun representing exactness and accuracy in the analysis." },
+                            { id: 29, prefix: "autom", suffix: "", answer: "automated", explanation: "An adjective describing software that runs with minimal human intervention." },
+                            { id: 30, prefix: "signifi", suffix: "", answer: "significantly", explanation: "An adverb meaning to a great or important degree." },
+                            { id: 31, prefix: "th", suffix: "", answer: "the", explanation: "A definite article specifying 'literature review process'." }
+                        ]
+                    },
+                    {
+                        id: "m2_email1",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Horizon Tech Repairs - Invoice #8920",
+                        passageContent: `Client: Sarah Jenkins\nDevice: Orion Book Pro (2024)\n\nServices Rendered:\n- Motherboard diagnostic: $45.00\n- Liquid damage mitigation & ultrasonic cleaning: $120.00\n- Replacement keyboard assembly: $85.00\nTotal Due: $250.00\n\nTerms & Conditions:\nPayment is required in full prior to device retrieval. Horizon Tech guarantees all replacement components for 90 days from the invoice date. Please note that this warranty is rendered null and void if the device sustains subsequent liquid exposure or if internal seals are tampered with by unauthorized personnel. Unclaimed devices will be recycled after 60 days.`,
+                        questions: [
+                            {
+                                id: 32,
+                                text: "What is the total cost of the physical replacement parts?",
+                                options: [
+                                    "$45.00",
+                                    "$85.00",
+                                    "$120.00",
+                                    "$250.00"
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The invoice lists '- Replacement keyboard assembly: $85.00', which is the only physical replacement part listed. The others are services (diagnostic and cleaning)."
+                            },
+                            {
+                                id: 33,
+                                text: "Under what circumstances would the repair warranty be invalidated?",
+                                options: [
+                                    "If the device is not picked up within 60 days.",
+                                    "If the client fails to pay the total due in full.",
+                                    "If the computer gets wet again or is opened by someone else.",
+                                    "If the client requests an additional motherboard diagnostic."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The terms state the warranty is null and void 'if the device sustains subsequent liquid exposure or if internal seals are tampered with by unauthorized personnel.'"
+                            },
+                            {
+                                id: 34,
+                                text: "What will happen if the client does not pick up the device within two months?",
+                                options: [
+                                    "The diagnostic fee will be refunded.",
+                                    "The device will be recycled.",
+                                    "The warranty period will be extended.",
+                                    "The client will be charged an additional fee."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The invoice clearly notes that 'Unclaimed devices will be recycled after 60 days,' which is equivalent to about two months."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m2_email2",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Advertisement: Elevate Fitness App",
+                        passageContent: `Elevate Fitness App: Unlock Your Ultimate Potential\n\nTired of plateauing? Elevate offers bespoke training regimens tailored to your specific physiological metrics and overarching goals. Unlike generic workout planners, our proprietary algorithm dynamically adapts your schedule based on your daily biometric feedback, ensuring optimal recovery and preventing overexertion.\n\nSubscribe to the Premium Tier today for just $14.99/month and gain exclusive access to one-on-one virtual consultations with certified nutritionists. Don't settle for mediocrity. Download Elevate now and experience a paradigm shift in your wellness journey. New users receive a complimentary 14-day trial—cancel anytime with zero hidden cancellation fees.`,
+                        questions: [
+                            {
+                                id: 35,
+                                text: "How does the Elevate app differentiate itself from standard fitness planners?",
+                                options: [
+                                    "It offers a longer complimentary trial period than competitors.",
+                                    "It adjusts workouts automatically based on the user's daily physical data.",
+                                    "It forces users to pay hidden cancellation fees.",
+                                    "It provides generic workout plans for all users regardless of metrics."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The ad claims, 'Unlike generic workout planners, our proprietary algorithm dynamically adapts your schedule based on your daily biometric feedback...'"
+                            },
+                            {
+                                id: 36,
+                                text: "What is a distinct benefit of subscribing to the Premium Tier?",
+                                options: [
+                                    "Access to personalized nutritional guidance.",
+                                    "A permanent waiver of the $14.99 monthly fee.",
+                                    "The ability to cancel the app at any time.",
+                                    "Prevention of overexertion during workouts."
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The text offers Premium users 'exclusive access to one-on-one virtual consultations with certified nutritionists.'"
+                            },
+                            {
+                                id: 37,
+                                text: "What does the phrase 'paradigm shift' suggest about the app?",
+                                options: [
+                                    "It will be a minor, gradual adjustment to the user's routine.",
+                                    "It focuses strictly on the user's dietary habits.",
+                                    "It is overly complicated and difficult for new users to navigate.",
+                                    "It will radically change the user's approach to health and fitness."
+                                ],
+                                correctAnswer: 3,
+                                explanation: "Contrasted with settling for 'mediocrity,' a 'paradigm shift' implies a profound, radical change in how users approach their wellness journey."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m2_academic",
+                        type: "reading",
+                        title: "Read an Academic Passage",
+                        passageTitle: "The Ecological Role of Keystone Species",
+                        passageContent: `In ecological networks, the stability of a biological community often hinges on the presence of a keystone species. Coined by zoologist Robert Paine in 1969, the term designates a species that exerts a disproportionately large impact on its environment relative to its sheer abundance or total biomass. \n\nA classic illustration of this phenomenon involves the sea otter in the kelp forest ecosystems of the Pacific Northwest. Sea otters are apex predators whose primary prey includes sea urchins. In regions where sea otter populations have been decimated by hunting or predation, sea urchin populations inevitably explode. Because urchins are voracious consumers of kelp, an unchecked urchin population can rapidly devour entire kelp forests, transforming a lush, biodiverse habitat into a barren 'urchin barren.' \n\nConversely, when sea otters are reintroduced, they regulate the urchin numbers, allowing the kelp to regenerate. This resurgence, in turn, provides crucial shelter and nourishment for a myriad of other marine organisms, from fish to crustaceans. Thus, the removal or restoration of a single keystone species can trigger a trophic cascade, demonstrating the intricate and highly interdependent nature of ecological food webs.`,
+                        questions: [
+                            {
+                                id: 38,
+                                text: "What is the main idea of the passage?",
+                                options: [
+                                    "Sea otters are the most abundant predator in the Pacific Northwest.",
+                                    "Certain species play a critical role in maintaining the overall balance and biodiversity of their ecosystems.",
+                                    "Kelp forests are resilient ecosystems that can survive regardless of predator populations.",
+                                    "Robert Paine was the first zoologist to study marine mammals."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The passage defines keystone species as having a 'disproportionately large impact on its environment,' and uses the sea otter to illustrate how a single species maintains the balance of an entire ecosystem."
+                            },
+                            {
+                                id: 39,
+                                text: "According to the passage, what happens immediately after sea otters are removed from a kelp forest?",
+                                options: [
+                                    "The population of sea urchins increases rapidly.",
+                                    "The kelp forest experiences a period of rapid regeneration.",
+                                    "Fish and crustaceans migrate to different environments.",
+                                    "Other apex predators take over the sea otters' role."
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The text explains that when sea otter populations are decimated, 'sea urchin populations inevitably explode,' which is the immediate next step."
+                            },
+                            {
+                                id: 40,
+                                text: "The word 'decimated' in paragraph 2 is closest in meaning to:",
+                                options: [
+                                    "Relocated",
+                                    "Protected",
+                                    "Severely reduced",
+                                    "Carefully monitored"
+                                ],
+                                correctAnswer: 2,
+                                explanation: "Used in the context of hunting or predation leading to an explosion of prey, 'decimated' means the predator population was drastically or severely reduced."
+                            },
+                            {
+                                id: 41,
+                                text: "Why does the author mention an 'urchin barren'?",
+                                options: [
+                                    "To describe a new habitat that supports a greater variety of fish.",
+                                    "To highlight the nutritional value of sea urchins to marine life.",
+                                    "To argue that sea urchins are a keystone species.",
+                                    "To illustrate the destructive environmental consequences of removing a keystone species."
+                                ],
+                                correctAnswer: 3,
+                                explanation: "The 'urchin barren' is the negative result of unchecked urchins devouring the kelp, illustrating exactly how destructive it is when the keystone species (sea otters) is removed."
+                            },
+                            {
+                                id: 42,
+                                text: "What can be inferred about kelp forests from the passage?",
+                                options: [
+                                    "They support a wide variety of marine life beyond just sea otters and urchins.",
+                                    "They can only grow in the Pacific Northwest.",
+                                    "They actively consume large numbers of sea urchins.",
+                                    "They are primarily threatened by changes in water temperature."
+                                ],
+                                correctAnswer: 0,
+                                explanation: "The passage states that the resurgence of kelp 'provides crucial shelter and nourishment for a myriad of other marine organisms, from fish to crustaceans,' implying it supports vast biodiversity."
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            currentModule: null,
+            flatSteps: [],
+            currentStepIndex: 0,
+            answers: {},
+            showResults: false,
+            showInstructions: false,
+            timeLeft: 900, // 15 minutes (900 seconds)
+            timerInterval: null,
+            isReviewMode: false
+        };
+
+        // --- LOGIC FUNCTIONS ---
+        function startTest() {
+            state.answers = {};
+            loadModule('module1');
+        }
+
+        function loadModule(moduleId) {
+            state.currentModule = moduleId;
+            state.showResults = false;
+            state.showInstructions = true;
+            state.timeLeft = 900; // 15 minutes per module
+            state.currentStepIndex = 0;
+
+            // Flatten steps
+            const steps = [];
+            testData[moduleId].sections.forEach(section => {
+                if (section.type === 'cloze') {
+                    steps.push({
+                        type: 'cloze',
+                        data: section,
+                        sectionId: section.id
+                    });
+                } else if (section.type === 'reading') {
+                    section.questions.forEach((q, idx) => {
+                        steps.push({
+                            type: 'reading',
+                            data: section,
+                            question: q,
+                            questionIndex: idx + 1,
+                            totalQuestions: section.questions.length,
+                            sectionId: section.id
+                        });
+                    });
+                }
+            });
+            state.flatSteps = steps;
+            
+            render();
+        }
+
+        function startTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                if (state.timeLeft > 0) {
+                    state.timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(state.timerInterval);
+                    handleModuleComplete();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function handleNext() {
+            if (state.currentStepIndex < state.flatSteps.length - 1) {
+                state.currentStepIndex++;
+                render();
+            } else {
+                if (state.isReviewMode) {
+                    endReview();
+                } else {
+                    handleModuleComplete();
+                }
+            }
+        }
+
+        function handleModuleComplete() {
+            stopTimer();
+            if (state.currentModule === 'module1') {
+                // Transition seamlessly to Module 2
+                loadModule('module2');
+            } else {
+                // Both modules complete
+                finishTest();
+            }
+        }
+
+        function handleBack() {
+            if (state.currentStepIndex > 0) {
+                state.currentStepIndex--;
+                render();
+            }
+        }
+
+        function handleBeginTest() {
+            state.showInstructions = false;
+            render();
+            startTimer();
+        }
+
+        function finishTest() {
+            stopTimer();
+            state.showResults = true;
+            render();
+        }
+
+        function startReview() {
+            state.isReviewMode = true;
+            state.showResults = false;
+            state.currentStepIndex = 0;
+
+            // Flatten ALL steps from both modules for the review phase
+            const steps = [];
+            Object.values(testData).forEach(moduleData => {
+                moduleData.sections.forEach(section => {
+                    if (section.type === 'cloze') {
+                        steps.push({ type: 'cloze', data: section, sectionId: section.id });
+                    } else if (section.type === 'reading') {
+                        section.questions.forEach((q, idx) => {
+                            steps.push({ type: 'reading', data: section, question: q, questionIndex: idx + 1, totalQuestions: section.questions.length, sectionId: section.id });
+                        });
+                    }
+                });
+            });
+            state.flatSteps = steps;
+            render();
+        }
+
+        function endReview() {
+            state.isReviewMode = false;
+            state.showResults = true;
+            render();
+        }
+
+        function handleClozeInput(id, value) {
+            state.answers[id] = value;
+        }
+
+        function handleRadioInput(qId, value) {
+            state.answers[qId] = value;
+        }
+
+        function resetApp() {
+            state.currentModule = null;
+            state.flatSteps = [];
+            state.answers = {};
+            state.showResults = false;
+            state.showInstructions = false;
+            state.isReviewMode = false;
+            stopTimer();
+            render();
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            let total = 0;
+
+            // Calculate across all modules for final score
+            Object.values(testData).forEach(moduleData => {
+                moduleData.sections.forEach(sec => {
+                    if (sec.type === 'cloze') {
+                        sec.blanks.forEach(b => {
+                            total++;
+                            const userInput = state.answers[b.id] ? state.answers[b.id].trim() : "";
+                            const fullWord = (b.prefix || "") + userInput + (b.suffix || "");
+                            if (fullWord.toLowerCase() === b.answer.toLowerCase()) {
+                                correct++;
+                            }
+                        });
+                    } else {
+                        sec.questions.forEach(q => {
+                            total++;
+                            if (state.answers[q.id] === q.correctAnswer) {
+                                correct++;
+                            }
+                        });
+                    }
+                });
+            });
+            return { correct, total };
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('timer-display');
+            if (el) el.innerText = formatTime(state.timeLeft);
+        }
+
+        function downloadPDF() {
+            const nameInput = document.getElementById('learner-name').value.trim();
+            const studentName = nameInput || "Learner";
+            
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : (correct/total);
+            const rawBand = (Math.round(percent * 10) / 2) + 1;
+            const bandScore = Math.min(6.0, Math.max(1.0, rawBand)).toFixed(1);
+            
+            let cefr = "";
+            if (bandScore >= 6.0) cefr = "CEFR C2";
+            else if (bandScore >= 5.0) cefr = "CEFR C1";
+            else if (bandScore >= 4.0) cefr = "CEFR B2";
+            else if (bandScore >= 3.0) cefr = "CEFR B1";
+            else if (bandScore >= 2.0) cefr = "CEFR A2";
+            else cefr = "CEFR A1";
+
+            let feedback = "";
+            if (bandScore >= 5.0) {
+                feedback = "Excellent work! Your ability to comprehend complex academic passages and practical notices is highly commendable. Keep engaging with authentic English materials to sustain this exceptional proficiency.";
+            } else if (bandScore >= 3.5) {
+                feedback = "Good job! You have demonstrated a solid grasp of reading strategies. To further refine your skills, practice deriving meaning from context clues and explore a wider variety of real-world texts.";
+            } else {
+                feedback = "Keep practicing! Developing reading fluency is a steady process. Focus on integrating shorter English texts into your daily routine and building your vocabulary to boost your comprehension.";
+            }
+
+            const dateStr = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Professional Visual Header
+            doc.setFillColor(2, 132, 199); // Tailwind Sky-600
+            doc.rect(0, 0, 210, 45, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(24);
+            doc.text("TOEFL iBT Practice Test 2 Score", 105, 22, { align: "center" });
+            
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text("Reading Section Performance Report", 105, 32, { align: "center" });
+
+            // Test Taker Info Section
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.text("Test Taker Information", 20, 65);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Name: ${studentName}`, 20, 75);
+            doc.text(`Date: ${dateStr}`, 20, 85);
+
+            // Score Box Design
+            doc.setFillColor(240, 249, 255); // Sky 50
+            doc.setDrawColor(186, 230, 253); // Sky 200
+            doc.setLineWidth(0.5);
+            doc.roundedRect(20, 100, 170, 40, 3, 3, 'FD');
+
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(2, 132, 199); // Sky 600
+            doc.text("Total Correct Answers:", 30, 115);
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.text(`${correct} / ${total}`, 90, 115);
+
+            doc.setTextColor(2, 132, 199); // Sky 600
+            doc.text("Predicted Band Score:", 30, 130);
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.text(`${bandScore}/6.0 (${cefr})`, 90, 130);
+
+            // Instructor Feedback
+            doc.setFont("helvetica", "bold");
+            doc.text("Instructor Feedback", 20, 160);
+            doc.setFont("helvetica", "normal");
+            const splitFeedback = doc.splitTextToSize(feedback, 170);
+            doc.text(splitFeedback, 20, 170);
+
+            // Footer branding
+            doc.setFontSize(10);
+            doc.setTextColor(148, 163, 184); // Slate 400
+            doc.text("Generated by EnglishTech Solutions", 105, 280, { align: "center" });
+
+            // Save the PDF file
+            const safeFileName = studentName.replace(/\s+/g, '_');
+            doc.save(`TOEFL_Reading_Score_${safeFileName}.pdf`);
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderWelcome() {
+            return `
+            <div class="h-full bg-slate-50 flex items-center justify-center p-4">
+                <div class="bg-white max-w-4xl w-full shadow-lg rounded-lg overflow-hidden border-t-8 border-sky-600">
+                    <div class="bg-sky-600 p-6 text-white text-center">
+                        <i data-lucide="monitor" class="w-12 h-12 mx-auto mb-4 opacity-90"></i>
+                        <h1 class="text-3xl font-bold font-sans">TOEFL iBT® Practice Test 2</h1>
+                        <p class="opacity-90 mt-2">Reading Section</p>
+                    </div>
+                    
+                    <div class="p-8 text-center">
+                        <div class="bg-sky-50 border-l-4 border-sky-500 p-5 mb-8 text-left text-sm text-slate-700 space-y-3 rounded-r shadow-sm">
+                            <h3 class="font-bold text-sky-900 text-base flex items-center">
+                                <i data-lucide="info" class="w-5 h-5 mr-2"></i> Important Notes
+                            </h3>
+                            <p>
+                                <strong>This is a guided practice lesson focused on reading strategy,</strong> not a full simulation test. For a full simulation to see exactly how the real test looks and operates, please visit the <a href="https://www.ets.org/toefl/test-takers/ibt/prepare/sample-test-jan-2026-1.html" target="_blank" class="text-sky-600 font-semibold hover:underline">official TOEFL sample test</a>.
+                            </p>
+                            <p>
+                                <strong>Structure:</strong> This practice test consists of two sequential modules. You will have 15 minutes to complete Module 1, and an additional 15 minutes to complete Module 2. Your final predicted band score will be calculated at the very end.
+                            </p>
+                        </div>
+                        
+                        <div class="flex justify-center mt-8">
+                            <button onclick="startTest()" class="px-8 py-4 bg-sky-600 text-white font-bold text-lg rounded-xl shadow-md hover:bg-sky-700 transition-colors flex items-center">
+                                Begin Practice Test <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-slate-100 p-4 text-center text-xs text-slate-400">
+                        Simulated interface for educational purposes.
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderResults() {
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : (correct/total);
+            
+            // Calculate Predicted Score (1.0 to 6.0 scale, 0.5 increments)
+            const rawBand = (Math.round(percent * 10) / 2) + 1;
+            const bandScore = Math.min(6.0, Math.max(1.0, rawBand)).toFixed(1);
+            
+            // Map to CEFR Level based on TOEFL iBT technical manual mapping
+            let cefr = "";
+            if (bandScore >= 6.0) cefr = "CEFR C2";
+            else if (bandScore >= 5.0) cefr = "CEFR C1";
+            else if (bandScore >= 4.0) cefr = "CEFR B2";
+            else if (bandScore >= 3.0) cefr = "CEFR B1";
+            else if (bandScore >= 2.0) cefr = "CEFR A2";
+            else cefr = "CEFR A1";
+
+            const scoreColor = bandScore >= 4.0 ? 'text-green-600' : 'text-orange-500';
+
+            return `
+            <div class="h-full bg-slate-50 pt-24 pb-12 px-4 overflow-y-auto custom-scroll">
+                <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                    <div class="bg-sky-600 p-8 text-white text-center">
+                        <h2 class="text-3xl font-bold mb-2">Test Completed</h2>
+                        <p class="text-sky-100">Here is your performance report</p>
+                    </div>
+                    
+                    <div class="p-8">
+                        <div class="flex flex-col md:flex-row justify-center items-center gap-12 mb-8">
+                            <div class="text-center">
+                                <div class="text-6xl font-bold text-sky-600 mb-2">${correct}</div>
+                                <div class="text-slate-500 uppercase tracking-widest text-sm font-semibold">Correct Answers</div>
+                            </div>
+                            <div class="w-px h-24 bg-slate-200 hidden md:block"></div>
+                            <div class="text-center">
+                                <div class="text-6xl font-bold mb-2 ${scoreColor}">${bandScore}<span class="text-3xl text-slate-400 font-medium">/6.0</span></div>
+                                <div class="text-slate-500 uppercase tracking-widest text-sm font-semibold mb-2">Predicted Band Score</div>
+                                <div class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-600 rounded-full inline-block">${cefr}</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 mb-8 bg-sky-50 p-6 rounded-lg border border-sky-100 flex flex-col items-center">
+                            <h3 class="text-lg font-bold text-sky-900 mb-3">Download Your Score Report</h3>
+                            <input type="text" id="learner-name" placeholder="Enter your full name" class="px-4 py-2 border border-slate-300 rounded mb-4 w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                            <button onclick="downloadPDF()" class="px-6 py-3 bg-green-600 text-white font-bold rounded shadow hover:bg-green-700 transition-colors flex items-center justify-center">
+                                <i data-lucide="download" class="w-5 h-5 mr-2"></i> Save as PDF
+                            </button>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row justify-center border-t border-slate-100 pt-8 gap-4">
+                            <button onclick="startReview()" class="px-8 py-3 bg-white text-sky-700 border-2 border-sky-700 font-bold rounded shadow hover:bg-sky-50 transition-colors flex items-center justify-center">
+                                <i data-lucide="search" class="w-4 h-4 mr-2"></i> Review Answers
+                            </button>
+                            <button onclick="resetApp()" class="px-8 py-3 bg-sky-700 text-white font-bold rounded shadow hover:bg-sky-800 transition-colors flex items-center justify-center">
+                                <i data-lucide="home" class="w-4 h-4 mr-2"></i> Return to Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderHeader() {
+            const isInstructionPhase = state.showInstructions;
+            let navButtons = '';
+
+            if (isInstructionPhase) {
+                navButtons = `
+                    <button onclick="handleBeginTest()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors">
+                        Begin
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            } else {
+                const backBtn = state.currentStepIndex > 0 
+                    ? `<button onclick="handleBack()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors mr-2">
+                        <i data-lucide="chevron-left" class="mr-1 w-5 h-5"></i> Back
+                       </button>` 
+                    : '';
+                
+                const nextText = state.currentStepIndex === state.flatSteps.length - 1 ? (state.isReviewMode ? 'Return to Results' : 'Finish') : 'Next';
+                
+                navButtons = `
+                    ${backBtn}
+                    <button onclick="handleNext()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors">
+                        ${nextText}
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            }
+
+            return `
+            <header class="bg-sky-600 h-16 flex items-center justify-between px-6 shadow-md z-50 fixed w-full top-0">
+                <div class="flex items-center space-x-4">
+                    ${isInstructionPhase ? '<span class="text-white text-lg font-sans font-semibold">Reading Section</span>' : '<div class="text-sky-100 opacity-90"></div>'}
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="flex space-x-2">
+                        ${navButtons}
+                    </div>
+                </div>
+            </header>
+            `;
+        }
+
+        function renderSubHeader() {
+            if (state.showInstructions) return '';
+            
+            const totalSteps = state.flatSteps.length;
+            const moduleName = state.isReviewMode ? 'Full Review' : (state.currentModule === 'module1' ? 'Module 1' : 'Module 2');
+            const displayText = `Reading | ${moduleName} | Question ${state.currentStepIndex + 1} of ${totalSteps}`;
+
+            let rightSide = '';
+            if (state.isReviewMode) {
+                rightSide = `<div class="text-sky-700 font-bold bg-sky-100 px-3 py-1 rounded flex items-center"><i data-lucide="search" class="w-4 h-4 mr-2"></i> Review Mode</div>`;
+            } else {
+                rightSide = `<div class="flex items-center text-slate-500 font-mono bg-slate-100 px-3 py-1 rounded">
+                    <i data-lucide="clock" class="mr-2 w-4 h-4 text-sky-600"></i>
+                    <span id="timer-display" class="font-bold">${formatTime(state.timeLeft)}</span>
+                </div>`;
+            }
+
+            return `
+            <div class="fixed top-16 w-full bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center text-slate-700 text-sm font-sans z-40 shadow-sm">
+                <span class="font-semibold text-lg">${displayText}</span>
+                ${rightSide}
+            </div>
+            `;
+        }
+
+        function renderInstructions() {
+            const title = state.currentModule === 'module1' ? 'Reading Section - Module 1' : 'Reading Section - Module 2';
+            const intro = state.currentModule === 'module1' 
+                ? "You are about to begin Module 1. You will have 15 minutes to answer all questions. Once you finish or time runs out, you will automatically proceed to Module 2."
+                : "You are about to begin Module 2. You will have 15 minutes to answer all questions. Your final predicted score will be calculated after completing this module.";
+
+            return `
+            <div class="pt-24 px-8 max-w-5xl mx-auto h-full overflow-y-auto custom-scroll pb-10">
+                <h1 class="text-3xl text-slate-800 mb-6 font-sans font-bold">${title}</h1>
+                
+                <p class="text-sky-900 font-semibold bg-sky-100 border-l-4 border-sky-600 p-4 rounded mb-8 text-lg leading-relaxed shadow-sm">
+                    ${intro}
+                </p>
+
+                <p class="text-slate-700 text-lg mb-8 leading-relaxed">
+                    In an actual test, you will answer up to 50 reading questions to demonstrate how well you 
+                    understand academic and non-academic texts in English. There are three types of tasks in the reading section of the test:
+                </p>
+
+                <div class="border border-slate-300 rounded overflow-hidden shadow-sm">
+                    <div class="grid grid-cols-[30%_70%] bg-sky-200 border-b border-slate-300 text-sky-900">
+                        <div class="p-4 font-bold border-r border-slate-300">Type of Task</div>
+                        <div class="p-4 font-bold">Description</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-[30%_70%] border-b border-slate-300 bg-white">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Complete the Words</div>
+                        <div class="p-4 text-slate-600">Fill in the missing letters in a paragraph.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] border-b border-slate-300 bg-slate-50">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Read in Daily Life</div>
+                        <div class="p-4 text-slate-600">Answer questions about everyday reading material.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] bg-white">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Read an Academic Passage</div>
+                        <div class="p-4 text-slate-600">Answer questions about academic passages.</div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderCloze(step) {
+            const { data } = step;
+            const parts = data.text.split(/%\d+%/);
+            
+            let content = '';
+            parts.forEach((part, idx) => {
+                content += part;
+                const blank = data.blanks[idx];
+                if (blank) {
+                    const val = state.answers[blank.id] || '';
+                    
+                    if (state.isReviewMode) {
+                        const fullUserWord = (blank.prefix || "") + val.trim() + (blank.suffix || "");
+                        const isCorrect = fullUserWord.toLowerCase() === blank.answer.toLowerCase();
+                        
+                        if (isCorrect) {
+                            content += `<span class="inline-block px-1 mx-1 bg-green-100 text-green-700 font-bold border border-green-300 rounded">${fullUserWord}</span>`;
+                        } else {
+                            content += `<span class="inline-block px-1 mx-1 bg-red-50 text-red-500 line-through decoration-2 decoration-red-500 border border-red-200 rounded">${fullUserWord || "(empty)"}</span>
+                                        <span class="inline-block px-1 mx-1 bg-green-100 text-green-700 font-bold border border-green-300 rounded shadow-sm">${blank.answer}</span>`;
+                        }
+                    } else {
+                        const prefixLen = blank.prefix ? blank.prefix.length : 0;
+                        const suffixLen = blank.suffix ? blank.suffix.length : 0;
+                        const missingLength = blank.answer.length - prefixLen - suffixLen;
+                        
+                        const safeVal = val.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+                        
+                        // Dynamically width the single robust input
+                        const inputWidth = Math.max(missingLength * 1.2, 2.5);
+                        
+                        content += `
+                        <span class="inline-flex items-baseline mx-0.5 whitespace-nowrap">
+                            ${blank.prefix ? `<span class="text-sky-800 font-bold tracking-wide">${blank.prefix}</span>` : ''}
+                            <input 
+                                type="text" 
+                                value="${safeVal}" 
+                                maxlength="${missingLength}"
+                                placeholder="${'_'.repeat(missingLength)}"
+                                oninput="handleClozeInput(${blank.id}, this.value)"
+                                class="mx-0.5 border-b-[3px] border-slate-300 focus:border-sky-500 bg-transparent focus:bg-sky-50 text-sky-700 font-mono text-xl tracking-[0.2em] font-bold text-center focus:outline-none transition-colors"
+                                style="width: ${inputWidth}rem;"
+                                aria-label="Blank ${blank.id}"
+                                autocomplete="off"
+                                autocorrect="off"
+                                autocapitalize="none"
+                                spellcheck="false"
+                            />
+                            ${blank.suffix ? `<span class="text-sky-800 font-bold tracking-wide">${blank.suffix}</span>` : ''}
+                        </span>`;
+                    }
+                }
+            });
+
+            let explanationBlock = '';
+            if (state.isReviewMode) {
+                let explanationsHtml = '';
+                data.blanks.forEach(blank => {
+                    const userVal = state.answers[blank.id] ? state.answers[blank.id].trim() : "";
+                    const fullUserWord = (blank.prefix || "") + userVal + (blank.suffix || "");
+                    const isCorrect = fullUserWord.toLowerCase() === blank.answer.toLowerCase();
+                    const icon = isCorrect ? '<i data-lucide="check" class="w-4 h-4 text-green-600 mt-1 mr-2 flex-shrink-0"></i>' : '<i data-lucide="x" class="w-4 h-4 text-red-500 mt-1 mr-2 flex-shrink-0"></i>';
+                    explanationsHtml += `<li class="flex items-start">${icon}<div><strong class="text-sky-800">${blank.answer}:</strong> ${blank.explanation}</div></li>`;
+                });
+                
+                explanationBlock = `
+                <div class="mt-8 bg-sky-50 border border-sky-100 rounded-lg p-6">
+                    <h4 class="font-bold text-sky-900 mb-4 flex items-center">
+                        <i data-lucide="lightbulb" class="w-5 h-5 mr-2"></i> Vocabulary Context Explanations
+                    </h4>
+                    <ul class="space-y-3 text-slate-700 text-base">
+                        ${explanationsHtml}
+                    </ul>
+                </div>`;
+            }
+
+            return `
+            <div class="pt-32 px-4 md:px-12 max-w-5xl mx-auto pb-12">
+                <h2 class="text-center text-2xl font-sans font-bold text-slate-800 mb-12">
+                    ${data.title}
+                </h2>
+                
+                <div class="bg-white p-8 leading-loose text-lg text-slate-800 font-sans text-justify shadow-md border border-slate-200 rounded-lg">
+                    ${content}
+                </div>
+                ${explanationBlock}
+            </div>
+            `;
+        }
+
+        function renderReading(step) {
+            const { data, question } = step;
+            
+            const paragraphs = data.passageContent.split('\n').map(line => `<p class="mb-5">${line}</p>`).join('');
+            
+            const options = question.options.map((opt, idx) => {
+                const isChecked = state.answers[question.id] === idx ? 'checked' : '';
+                
+                if (state.isReviewMode) {
+                    const isUserAns = state.answers[question.id] === idx;
+                    const isCorrectAns = question.correctAnswer === idx;
+                    let optionClass = "p-3 rounded border border-slate-200 text-slate-700";
+                    let icon = "";
+                    
+                    if (isCorrectAns) {
+                        optionClass = "p-3 rounded border-2 border-green-500 bg-green-50 text-green-800 font-bold shadow-sm";
+                        icon = '<i data-lucide="check-circle" class="w-5 h-5 ml-auto text-green-600 flex-shrink-0"></i>';
+                    } else if (isUserAns && !isCorrectAns) {
+                        optionClass = "p-3 rounded border-2 border-red-300 bg-red-50 text-red-800";
+                        icon = '<i data-lucide="x-circle" class="w-5 h-5 ml-auto text-red-500 flex-shrink-0"></i>';
+                    } else {
+                        optionClass = "p-3 rounded border border-slate-100 bg-white opacity-60";
+                    }
+                    
+                    return `
+                    <label class="flex items-start cursor-default bg-white p-4 rounded-lg mb-3 shadow-sm ${optionClass}">
+                        <div class="relative flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <input 
+                                type="radio" 
+                                disabled
+                                ${isChecked}
+                                class="peer appearance-none w-5 h-5 border-2 border-slate-400 rounded-full checked:border-sky-600 checked:border-4 transition-all opacity-60 mr-4"
+                            />
+                        </div>
+                        <span class="text-slate-700 font-sans text-lg flex-grow pr-2">${opt}</span>
+                        ${icon}
+                    </label>
+                    `;
+                } else {
+                    return `
+                    <label class="flex items-start cursor-pointer group bg-white p-4 rounded-lg border border-slate-200 hover:border-sky-400 hover:bg-sky-50 transition-all shadow-sm">
+                        <div class="relative flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <input 
+                                type="radio" 
+                                name="q-${question.id}" 
+                                ${isChecked}
+                                onchange="handleRadioInput(${question.id}, ${idx})"
+                                class="peer appearance-none w-5 h-5 border-2 border-slate-400 rounded-full checked:border-sky-600 checked:border-4 transition-all"
+                            />
+                        </div>
+                        <span class="ml-4 text-slate-700 font-sans text-lg group-hover:text-sky-900">
+                            ${opt}
+                        </span>
+                    </label>
+                    `;
+                }
+            }).join('');
+
+            let explanationBlock = '';
+            if (state.isReviewMode) {
+                const isUserAnsCorrect = state.answers[question.id] === question.correctAnswer;
+                const correctnessBadge = isUserAnsCorrect 
+                    ? '<span class="text-green-600 font-bold text-sm flex items-center bg-green-50 px-2 py-1 rounded mb-3 w-max border border-green-200"><i data-lucide="check" class="w-4 h-4 mr-1"></i> Correct</span>' 
+                    : '<span class="text-red-500 font-bold text-sm flex items-center bg-red-50 px-2 py-1 rounded mb-3 w-max border border-red-200"><i data-lucide="x" class="w-4 h-4 mr-1"></i> Incorrect</span>';
+                    
+                explanationBlock = `
+                <div class="mt-6 p-5 bg-sky-50 rounded-lg border border-sky-100 text-slate-700 shadow-sm">
+                    ${correctnessBadge}
+                    <div class="flex items-start">
+                        <i data-lucide="lightbulb" class="w-5 h-5 mr-3 text-sky-600 flex-shrink-0 mt-0.5"></i>
+                        <div>
+                            <strong class="text-sky-900 block mb-1">Strategy & Context:</strong>
+                            ${question.explanation}
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            return `
+            <div class="pt-28 h-screen flex flex-col md:flex-row overflow-hidden bg-slate-50">
+                <div class="w-full md:w-1/2 h-full overflow-y-auto border-r border-slate-300 p-8 bg-white custom-scroll shadow-inner">
+                    <h2 class="text-2xl font-bold mb-6 font-sans text-sky-800 border-b border-slate-100 pb-4">${data.passageTitle}</h2>
+                    <div class="prose max-w-none text-slate-800 font-sans leading-relaxed text-lg">
+                        ${paragraphs}
+                    </div>
+                </div>
+                
+                <div class="w-full md:w-1/2 h-full overflow-y-auto p-8 bg-slate-50 custom-scroll">
+                    <div class="max-w-xl mx-auto pb-12">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+                            <h3 class="text-xl font-bold text-slate-800 font-sans">${question.text}</h3>
+                        </div>
+                        <div class="space-y-4">
+                            ${options}
+                        </div>
+                        ${explanationBlock}
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // MAIN RENDER LOOP
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!state.currentModule) {
+                app.innerHTML = renderWelcome();
+            } else if (state.showResults) {
+                app.innerHTML = renderResults();
+            } else {
+                let mainContent = '';
+                if (state.showInstructions) {
+                    mainContent = renderInstructions();
+                } else {
+                    const step = state.flatSteps[state.currentStepIndex];
+                    if (step.type === 'cloze') {
+                        mainContent = renderCloze(step);
+                    } else if (step.type === 'reading') {
+                        mainContent = renderReading(step);
+                    }
+                }
+                
+                app.innerHTML = renderHeader() + renderSubHeader() + mainContent;
+            }
+
+            lucide.createIcons();
+        }
+
+        render();
+    </script>
+</body>
+</html>

@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to the IELTS Exam</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Scroll margin for sticky nav */
+        section { scroll-margin-top: 5rem; }
+
+        /* Neo-Brutalist Components */
+        .neo-card {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .neo-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            font-weight: 800;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+
+        /* Nav Links */
+        .nav-link {
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            padding-bottom: 0.25rem;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #0f172a;
+            font-weight: 900;
+            border-bottom-color: #545be0;
+        }
+
+        /* Neo-Tabs */
+        .tab-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-weight: 800;
+            white-space: nowrap;
+            border: 3px solid #0f172a;
+            background-color: #ffffff;
+            color: #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.1s;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        .tab-btn:hover {
+            background-color: #e7e9ff;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        .tab-btn.active {
+            background-color: #545be0;
+            color: #ffffff;
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+
+        /* Neo-Brutalist Toggle */
+        .toggle-bg {
+            background-color: #ffffff;
+            border: 3px solid #0f172a;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+        .toggle-bg:after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            background: #0f172a;
+            width: 20px;
+            height: 20px;
+            border-radius: 0; /* Square toggle for brutalism */
+            transition: 0.3s;
+        }
+        input:checked + .toggle-bg:after {
+            transform: translateX(100%);
+            left: calc(100% - 28px);
+            background: #ffffff;
+            border: 2px solid #0f172a;
+        }
+        input:checked + .toggle-bg {
+            background-color: #4ade80;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 250px;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        /* Neo Tables */
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 3px solid #0f172a;
+            background-color: #ffffff;
+        }
+        .score-table th {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 3px solid #0f172a;
+            border-right: 3px solid #0f172a;
+        }
+        .score-table td {
+            padding: 0.75rem;
+            border-bottom: 2px solid #0f172a;
+            border-right: 2px solid #0f172a;
+            font-weight: 700;
+        }
+        .score-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .score-table tr:hover {
+            background-color: #e7e9ff;
+        }
+
+        /* 5-Step List */
+        .step-box {
+            width: 3rem;
+            height: 3rem;
+            background-color: #ffffff;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.25rem;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Sticky Nav -->
+    <nav id="navbar" class="bg-[#facc15] border-b-4 border-dark sticky top-0 z-50 shadow-neo-sm">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-xl md:text-2xl font-black text-dark uppercase tracking-tight flex items-center gap-2">
+                    <i data-lucide="compass" class="w-6 h-6"></i> IELTS Guide
+                </h1>
+                <div class="hidden md:flex space-x-6 text-sm font-bold text-slate-800 uppercase tracking-wide">
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#choose-test" class="nav-link">Modules</a>
+                    <a href="#anatomy" class="nav-link">Anatomy</a>
+                    <a href="#scoring" class="nav-link">Scoring</a>
+                    <a href="#questions" class="nav-link">Questions</a>
+                    <a href="#prepare" class="nav-link">Prep</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-4 md:p-6 lg:p-8 space-y-24 mt-8 mb-20">
+
+        <!-- Hero Section -->
+        <section id="about" class="text-center pt-8">
+            <div class="inline-block bg-brand-500 text-white px-3 py-1 border-3 border-dark font-black uppercase text-xs md:text-sm mb-6 shadow-[2px_2px_0_0_#0f172a]">
+                Comprehensive Overview
+            </div>
+            <h2 class="text-4xl md:text-6xl lg:text-7xl font-black text-dark leading-tight uppercase tracking-tighter text-balance" style="text-shadow: 3px 3px 0px #cbd5e1;">
+                The Global Standard for <br> <span class="bg-[#4ade80] px-2 inline-block border-4 border-dark mt-2 shadow-neo-sm text-white" style="text-shadow: 2px 2px 0px #0f172a;">English Proficiency</span>
+            </h2>
+            <p class="mt-6 max-w-3xl mx-auto text-lg md:text-xl font-bold text-slate-700 bg-white p-4 border-3 border-dark shadow-neo-sm text-pretty">
+                The International English Language Testing System (IELTS) is your key to unlocking opportunities for study, work, and migration in English-speaking countries worldwide.
+            </p>
+            
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <div class="neo-card p-6 md:p-8 bg-[#eff6ff]">
+                    <div class="bg-white w-16 h-16 mx-auto border-3 border-dark flex items-center justify-center shadow-[4px_4px_0_0_#0f172a] mb-6">
+                        <i data-lucide="graduation-cap" class="w-8 h-8 text-brand-600"></i>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-black uppercase mb-3 text-balance">Study Abroad</h3>
+                    <p class="text-sm md:text-base font-medium text-slate-700 text-pretty">Required by thousands of universities and colleges globally.</p>
+                </div>
+                <div class="neo-card p-6 md:p-8 bg-[#fdf4ff]">
+                    <div class="bg-white w-16 h-16 mx-auto border-3 border-dark flex items-center justify-center shadow-[4px_4px_0_0_#0f172a] mb-6">
+                        <i data-lucide="briefcase" class="w-8 h-8 text-[#c084fc]"></i>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-black uppercase mb-3 text-balance">Professional Work</h3>
+                    <p class="text-sm md:text-base font-medium text-slate-700 text-pretty">A prerequisite for professional registration in fields like medicine, law, and engineering.</p>
+                </div>
+                <div class="neo-card p-6 md:p-8 bg-[#ecfdf5]">
+                    <div class="bg-white w-16 h-16 mx-auto border-3 border-dark flex items-center justify-center shadow-[4px_4px_0_0_#0f172a] mb-6">
+                        <i data-lucide="plane" class="w-8 h-8 text-[#10b981]"></i>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-black uppercase mb-3 text-balance">Global Migration</h3>
+                    <p class="text-sm md:text-base font-medium text-slate-700 text-pretty">Trusted by governments in the UK, Australia, Canada, and New Zealand.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Choose Test -->
+        <section id="choose-test">
+            <div class="neo-card p-6 md:p-10 bg-white">
+                <div class="text-center border-b-4 border-dark pb-8 mb-8">
+                    <h2 class="text-3xl md:text-4xl font-black uppercase text-balance">Which Test Is Right for You?</h2>
+                    <p class="mt-4 max-w-3xl mx-auto font-bold text-slate-700 text-pretty">Your goal determines your test. Use the toggle to compare the two main modules and find the one that matches your ambition. Remember to always confirm the requirement with the organization you are applying to.</p>
+                </div>
+                
+                <div class="flex justify-center items-center gap-4 mb-8">
+                    <span id="gtLabel" class="font-black text-dark text-lg uppercase">General Training</span>
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="testTypeToggle" class="hidden">
+                        <div class="w-14 h-8 toggle-bg"></div>
+                    </label>
+                    <span id="acLabel" class="font-black text-slate-400 text-lg uppercase">Academic</span>
+                </div>
+
+                <div class="min-h-[250px]">
+                    <!-- General Training Card -->
+                    <div id="gt-card" class="bg-[#f0fdf4] border-3 border-dark p-6 md:p-8 shadow-inner">
+                        <h3 class="font-black text-2xl mb-3 text-dark uppercase flex items-center gap-2"><i data-lucide="globe-2" class="w-6 h-6 text-[#22c55e]"></i> IELTS General Training</h3>
+                        <p class="text-base font-bold text-slate-700 mb-6 pb-4 border-b-2 border-slate-300 text-pretty">Focuses on everyday English skills for practical social and workplace contexts.</p>
+                        
+                        <h4 class="font-black text-dark uppercase mb-4 tracking-wide">This module is for you if your goal is:</h4>
+                        <ul class="space-y-4 text-base font-medium text-slate-800">
+                            <li class="flex items-start gap-3">
+                                <div class="bg-white border-2 border-dark p-1 shrink-0 shadow-[2px_2px_0_0_#0f172a]"><i data-lucide="map-pin" class="w-4 h-4"></i></div>
+                                <div class="text-pretty"><strong class="text-dark">Migration:</strong> To live in an English-speaking country like Australia, Canada, New Zealand, or the UK.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="bg-white border-2 border-dark p-1 shrink-0 shadow-[2px_2px_0_0_#0f172a]"><i data-lucide="briefcase" class="w-4 h-4"></i></div>
+                                <div class="text-pretty"><strong class="text-dark">Work Experience:</strong> To get a job or undertake work-related training abroad.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="bg-white border-2 border-dark p-1 shrink-0 shadow-[2px_2px_0_0_#0f172a]"><i data-lucide="school" class="w-4 h-4"></i></div>
+                                <div class="text-pretty"><strong class="text-dark">Below-Degree Study:</strong> To enroll in secondary education or a non-degree level vocational course.</div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Academic Card -->
+                    <div id="ac-card" class="hidden bg-[#eff6ff] border-3 border-dark p-6 md:p-8 shadow-inner">
+                        <h3 class="font-black text-2xl mb-3 text-dark uppercase flex items-center gap-2"><i data-lucide="book-open" class="w-6 h-6 text-brand-600"></i> IELTS Academic</h3>
+                         <p class="text-base font-bold text-slate-700 mb-6 pb-4 border-b-2 border-slate-300 text-pretty">Assesses whether you are ready to begin studying or training in an environment where English is the language of instruction.</p>
+                        
+                        <h4 class="font-black text-dark uppercase mb-4 tracking-wide">This module is required for:</h4>
+                        <ul class="space-y-4 text-base font-medium text-slate-800">
+                            <li class="flex items-start gap-3">
+                                <div class="bg-white border-2 border-dark p-1 shrink-0 shadow-[2px_2px_0_0_#0f172a]"><i data-lucide="graduation-cap" class="w-4 h-4"></i></div>
+                                <div class="text-pretty"><strong class="text-dark">Higher Education:</strong> To apply for undergraduate or postgraduate courses at universities worldwide.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="bg-white border-2 border-dark p-1 shrink-0 shadow-[2px_2px_0_0_#0f172a]"><i data-lucide="stethoscope" class="w-4 h-4"></i></div>
+                                <div class="text-pretty"><strong class="text-dark">Professional Registration:</strong> To join a professional body in an English-speaking country, especially in fields like medicine, nursing, law, and engineering.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Anatomy -->
+        <section id="anatomy">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-black uppercase text-balance bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm">Anatomy of the Test</h2>
+                <p class="mt-6 max-w-2xl mx-auto font-bold text-slate-700 text-pretty bg-white p-4 border-2 border-dark shadow-sm">The full test takes 2 hours and 45 minutes. Listening, Reading, and Writing are completed back-to-back. The Speaking test is a separate interview.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                <div class="neo-card p-6 bg-[#f0fdf4]">
+                    <div class="bg-white w-14 h-14 mx-auto border-2 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a] mb-4">
+                        <i data-lucide="headphones" class="w-6 h-6 text-[#22c55e]"></i>
+                    </div>
+                    <h3 class="text-xl font-black uppercase mb-1">Listening</h3>
+                    <p class="font-black text-white bg-dark inline-block px-2 py-1 text-sm mb-4">~30 mins</p>
+                    <p class="text-sm font-bold text-slate-700 text-pretty border-t-2 border-dark pt-4">4 sections, 40 questions. Audio is played only once.</p>
+                </div>
+                <div class="neo-card p-6 bg-[#eff6ff]">
+                    <div class="bg-white w-14 h-14 mx-auto border-2 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a] mb-4">
+                        <i data-lucide="book-open" class="w-6 h-6 text-brand-600"></i>
+                    </div>
+                    <h3 class="text-xl font-black uppercase mb-1">Reading</h3>
+                    <p class="font-black text-white bg-dark inline-block px-2 py-1 text-sm mb-4">60 mins</p>
+                    <p class="text-sm font-bold text-slate-700 text-pretty border-t-2 border-dark pt-4">3 sections, 40 questions. No extra transfer time.</p>
+                </div>
+                <div class="neo-card p-6 bg-[#fdf4ff]">
+                    <div class="bg-white w-14 h-14 mx-auto border-2 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a] mb-4">
+                        <i data-lucide="pen-tool" class="w-6 h-6 text-[#c084fc]"></i>
+                    </div>
+                    <h3 class="text-xl font-black uppercase mb-1">Writing</h3>
+                    <p class="font-black text-white bg-dark inline-block px-2 py-1 text-sm mb-4">60 mins</p>
+                    <p class="text-sm font-bold text-slate-700 text-pretty border-t-2 border-dark pt-4">2 tasks. Task 2 is worth double the marks.</p>
+                </div>
+                <div class="neo-card p-6 bg-[#fff7ed]">
+                    <div class="bg-white w-14 h-14 mx-auto border-2 border-dark flex items-center justify-center shadow-[2px_2px_0_0_#0f172a] mb-4">
+                        <i data-lucide="mic" class="w-6 h-6 text-[#ea580c]"></i>
+                    </div>
+                    <h3 class="text-xl font-black uppercase mb-1">Speaking</h3>
+                    <p class="font-black text-white bg-dark inline-block px-2 py-1 text-sm mb-4">11 to 14 mins</p>
+                    <p class="text-sm font-bold text-slate-700 text-pretty border-t-2 border-dark pt-4">3 parts. A one-on-one interview with an examiner.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Scoring -->
+        <section id="scoring">
+            <div class="neo-card p-6 md:p-10 bg-white">
+                <div class="text-center border-b-4 border-dark pb-8 mb-8">
+                    <h2 class="text-3xl md:text-4xl font-black uppercase text-balance">Understanding the 9-Band Score</h2>
+                    <p class="mt-4 max-w-3xl mx-auto font-bold text-slate-700 text-pretty">IELTS uses a 9-band scale to identify proficiency levels, from non-user (Band 1) to expert (Band 9). There is no pass or fail. Your overall score is an average of the four sections.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-12">
+                    
+                    <!-- Calculator -->
+                    <div class="bg-[#f2f3ff] p-6 md:p-8 border-3 border-dark shadow-inner">
+                        <h3 class="text-xl md:text-2xl font-black text-dark uppercase mb-6 flex items-center gap-2 border-b-2 border-dark pb-2">
+                            <i data-lucide="calculator" class="w-6 h-6"></i> Calculate Your Score
+                        </h3>
+                        
+                        <div class="grid grid-cols-2 gap-4 md:gap-6 mb-8">
+                            <div>
+                                <label for="listening_score" class="block text-sm font-black uppercase tracking-wide text-dark mb-2">Listening</label>
+                                <input type="number" id="listening_score" step="0.5" min="0" max="9" class="text-input text-center" placeholder="0 to 9">
+                            </div>
+                            <div>
+                                <label for="reading_score" class="block text-sm font-black uppercase tracking-wide text-dark mb-2">Reading</label>
+                                <input type="number" id="reading_score" step="0.5" min="0" max="9" class="text-input text-center" placeholder="0 to 9">
+                            </div>
+                            <div>
+                                <label for="writing_score" class="block text-sm font-black uppercase tracking-wide text-dark mb-2">Writing</label>
+                                <input type="number" id="writing_score" step="0.5" min="0" max="9" class="text-input text-center" placeholder="0 to 9">
+                            </div>
+                            <div>
+                                <label for="speaking_score" class="block text-sm font-black uppercase tracking-wide text-dark mb-2">Speaking</label>
+                                <input type="number" id="speaking_score" step="0.5" min="0" max="9" class="text-input text-center" placeholder="0 to 9">
+                            </div>
+                        </div>
+                        
+                        <button id="calculateBtn" class="neo-btn w-full bg-brand-500 text-white font-black text-lg py-4 flex items-center justify-center gap-2">
+                            <i data-lucide="equal" class="w-5 h-5"></i> Calculate Overall Band
+                        </button>
+                        
+                        <div id="result" class="mt-6 text-center p-6 bg-white border-3 border-dark shadow-[4px_4px_0_0_#0f172a] hidden">
+                            <p class="text-sm font-bold text-slate-600 uppercase tracking-wide mb-1">Average: <span id="average_score" class="text-dark"></span></p>
+                            <p class="text-lg md:text-xl font-black text-dark uppercase mt-2 border-t-2 border-slate-200 pt-3">
+                                Overall Band: <br>
+                                <span id="overall_score" class="text-4xl md:text-5xl text-brand-600 mt-2 block" style="text-shadow: 2px 2px 0px #0f172a;"></span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart -->
+                    <div class="bg-[#fdf4ff] p-6 md:p-8 border-3 border-dark shadow-inner flex flex-col">
+                        <h3 class="text-xl md:text-2xl font-black text-dark uppercase mb-6 flex items-center gap-2 border-b-2 border-dark pb-2">
+                            <i data-lucide="pie-chart" class="w-6 h-6"></i> Writing Weighting
+                        </h3>
+                        <div class="chart-container flex-1">
+                            <canvas id="writingWeightChart"></canvas>
+                        </div>
+                        <p class="text-center text-sm md:text-base font-bold text-slate-800 mt-6 bg-white p-3 border-2 border-dark text-pretty">
+                            Writing Task 2 contributes twice as much to your final Writing score as Task 1. Allocate your time accordingly!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12">
+                 <div class="text-center mb-8">
+                    <h3 class="text-2xl md:text-3xl font-black uppercase bg-[#4ade80] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm text-balance">From Raw Score to Band Score</h3>
+                    <p class="mt-4 max-w-2xl mx-auto font-bold text-slate-700 bg-white p-4 border-2 border-dark shadow-sm text-pretty">For Listening and Reading, your band score is determined by the number of correct answers out of 40. These tables show the typical conversion.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                    <!-- Listening Table -->
+                    <div>
+                        <h4 class="text-lg md:text-xl font-black text-center mb-4 text-dark uppercase flex items-center justify-center gap-2">
+                            <i data-lucide="headphones" class="w-5 h-5 text-[#22c55e]"></i> Listening
+                        </h4>
+                        <table class="score-table">
+                            <thead>
+                                <tr><th>Correct</th><th>Band</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>39 to 40</td><td class="text-brand-600">9.0</td></tr>
+                                <tr><td>37 to 38</td><td class="text-brand-600">8.5</td></tr>
+                                <tr><td>35 to 36</td><td class="text-brand-600">8.0</td></tr>
+                                <tr><td>32 to 34</td><td class="text-brand-600">7.5</td></tr>
+                                <tr><td>30 to 31</td><td class="text-brand-600">7.0</td></tr>
+                                <tr><td>26 to 29</td><td class="text-brand-600">6.5</td></tr>
+                                <tr><td>23 to 25</td><td class="text-brand-600">6.0</td></tr>
+                                <tr><td>18 to 22</td><td class="text-brand-600">5.5</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Reading Academic -->
+                    <div>
+                        <h4 class="text-lg md:text-xl font-black text-center mb-4 text-dark uppercase flex items-center justify-center gap-2">
+                            <i data-lucide="book-open" class="w-5 h-5 text-brand-600"></i> Reading (AC)
+                        </h4>
+                        <table class="score-table">
+                            <thead>
+                                <tr><th>Correct</th><th>Band</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>39 to 40</td><td class="text-brand-600">9.0</td></tr>
+                                <tr><td>37 to 38</td><td class="text-brand-600">8.5</td></tr>
+                                <tr><td>35 to 36</td><td class="text-brand-600">8.0</td></tr>
+                                <tr><td>33 to 34</td><td class="text-brand-600">7.5</td></tr>
+                                <tr><td>30 to 32</td><td class="text-brand-600">7.0</td></tr>
+                                <tr><td>27 to 29</td><td class="text-brand-600">6.5</td></tr>
+                                <tr><td>23 to 26</td><td class="text-brand-600">6.0</td></tr>
+                                <tr><td>19 to 22</td><td class="text-brand-600">5.5</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Reading GT -->
+                    <div>
+                        <h4 class="text-lg md:text-xl font-black text-center mb-4 text-dark uppercase flex items-center justify-center gap-2">
+                            <i data-lucide="globe-2" class="w-5 h-5 text-[#ea580c]"></i> Reading (GT)
+                        </h4>
+                        <table class="score-table">
+                            <thead>
+                                <tr><th>Correct</th><th>Band</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>40</td><td class="text-brand-600">9.0</td></tr>
+                                <tr><td>39</td><td class="text-brand-600">8.5</td></tr>
+                                <tr><td>37 to 38</td><td class="text-brand-600">8.0</td></tr>
+                                <tr><td>36</td><td class="text-brand-600">7.5</td></tr>
+                                <tr><td>34 to 35</td><td class="text-brand-600">7.0</td></tr>
+                                <tr><td>32 to 33</td><td class="text-brand-600">6.5</td></tr>
+                                <tr><td>30 to 31</td><td class="text-brand-600">6.0</td></tr>
+                                <tr><td>27 to 29</td><td class="text-brand-600">5.5</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question Types -->
+        <section id="questions" class="neo-card p-6 md:p-10 bg-white">
+            <div class="text-center border-b-4 border-dark pb-8 mb-8">
+                <h2 class="text-3xl md:text-4xl font-black uppercase text-balance">Mastering the Question Types</h2>
+                <p class="mt-4 max-w-3xl mx-auto font-bold text-slate-700 text-pretty">Each section of the test uses different question types to assess your skills. Understanding them is key to a high score. Select a section to explore.</p>
+            </div>
+            
+            <div>
+                <div class="flex justify-center flex-wrap gap-3 mb-8">
+                    <button class="tab-btn active" data-tab="listening-tab">
+                        <i data-lucide="headphones" class="w-4 h-4"></i> Listening
+                    </button>
+                    <button class="tab-btn" data-tab="reading-tab">
+                        <i data-lucide="book-open" class="w-4 h-4"></i> Reading
+                    </button>
+                    <button class="tab-btn" data-tab="writing-tab">
+                        <i data-lucide="pen-tool" class="w-4 h-4"></i> Writing
+                    </button>
+                    <button class="tab-btn" data-tab="speaking-tab">
+                        <i data-lucide="mic" class="w-4 h-4"></i> Speaking
+                    </button>
+                </div>
+
+                <div class="bg-slate-50 border-3 border-dark p-6 md:p-8 shadow-inner min-h-[300px]">
+                    <!-- Listening Content -->
+                    <div id="listening-tab" class="tab-content">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h5 class="font-black text-xl mb-4 text-dark border-b-2 border-dark pb-2 uppercase flex items-center gap-2"><i data-lucide="list-checks" class="w-5 h-5"></i> Question Types</h5>
+                                <ul class="list-disc pl-6 space-y-2 font-bold text-slate-700">
+                                    <li>Multiple Choice</li>
+                                    <li>Matching</li>
+                                    <li>Plan, Map, Diagram Labelling</li>
+                                    <li>Form Completion</li>
+                                    <li>Note Completion</li>
+                                    <li>Table Completion</li>
+                                    <li>Flow-chart Completion</li>
+                                    <li>Summary Completion</li>
+                                    <li>Sentence Completion</li>
+                                    <li>Short Answer Questions</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] h-fit">
+                                <h5 class="font-black text-lg text-dark uppercase mb-3 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-[#facc15] fill-current"></i> Technique Spotlight</h5>
+                                <p class="font-bold text-slate-800 text-pretty"><strong>Map Labelling:</strong> Before the audio begins, study the map. Identify the starting point and any existing labels. As you listen, follow the directional language (e.g., "turn left," "go past the library") to locate the answers.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reading Content -->
+                    <div id="reading-tab" class="tab-content hidden">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h5 class="font-black text-xl mb-4 text-dark border-b-2 border-dark pb-2 uppercase flex items-center gap-2"><i data-lucide="list-checks" class="w-5 h-5"></i> Question Types</h5>
+                                <ul class="list-disc pl-6 space-y-2 font-bold text-slate-700">
+                                    <li>Multiple Choice</li>
+                                    <li>Identifying Info (True / False / Not Given)</li>
+                                    <li>Identifying Views (Yes / No / Not Given)</li>
+                                    <li>Matching Information</li>
+                                    <li>Matching Headings</li>
+                                    <li>Matching Features</li>
+                                    <li>Matching Sentence Endings</li>
+                                    <li>Sentence Completion</li>
+                                    <li>Note / Table / Flow-chart Completion</li>
+                                    <li>Diagram Label Completion</li>
+                                    <li>Short Answer Questions</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] h-fit">
+                                <h5 class="font-black text-lg text-dark uppercase mb-3 flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-[#facc15] fill-current"></i> Technique Spotlight</h5>
+                                <p class="font-bold text-slate-800 text-pretty"><strong>True / False / Not Given:</strong> Locate the specific information in the text. If the text agrees, it is <strong>True</strong>. If it says the opposite, it is <strong>False</strong>. If you cannot find the information, it is <strong>Not Given</strong>. Be careful with synonyms and qualifying words.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Writing Content -->
+                    <div id="writing-tab" class="tab-content hidden">
+                        <div class="space-y-6">
+                            <p class="font-bold text-slate-700 bg-brand-100 p-4 border-2 border-dark inline-block text-pretty">You are assessed on Task Achievement, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                    <h5 class="font-black text-lg text-dark uppercase mb-3 border-b-2 border-slate-200 pb-2">Task 1: Describe / Letter</h5>
+                                    <p class="font-bold text-slate-800 text-pretty">For Academic, objectively summarize a graph or chart. For General, write a letter for a specific purpose, adopting the correct tone.</p>
+                                </div>
+                                <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                    <h5 class="font-black text-lg text-dark uppercase mb-3 border-b-2 border-slate-200 pb-2">Task 2: Essay</h5>
+                                    <p class="font-bold text-slate-800 text-pretty">Present a clear and well-supported argument in response to the prompt. A strong structure is key: Introduction, Body Paragraphs, and Conclusion.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Speaking Content -->
+                    <div id="speaking-tab" class="tab-content hidden">
+                        <div class="space-y-6">
+                            <p class="font-bold text-slate-700 bg-brand-100 p-4 border-2 border-dark inline-block text-pretty">You are assessed on Fluency & Coherence, Lexical Resource, Grammatical Range & Accuracy, and Pronunciation.</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                    <h5 class="font-black text-lg text-dark uppercase mb-3 border-b-2 border-slate-200 pb-2">Part 1: Intro</h5>
+                                    <p class="font-bold text-slate-800 text-sm md:text-base text-pretty">A warm-up conversation on familiar topics like your home, work, or hobbies.</p>
+                                </div>
+                                <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                    <h5 class="font-black text-lg text-dark uppercase mb-3 border-b-2 border-slate-200 pb-2">Part 2: Long Turn</h5>
+                                    <p class="font-bold text-slate-800 text-sm md:text-base text-pretty">You speak for 1 to 2 minutes on a topic given on a card. You have one minute to prepare.</p>
+                                </div>
+                                <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                    <h5 class="font-black text-lg text-dark uppercase mb-3 border-b-2 border-slate-200 pb-2">Part 3: Discussion</h5>
+                                    <p class="font-bold text-slate-800 text-sm md:text-base text-pretty">A more abstract discussion related to the topic in Part 2, exploring issues in more depth.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Preparation Steps -->
+        <section id="prepare" class="neo-card p-6 md:p-10 bg-[#fefce8]">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-black uppercase text-balance border-b-4 border-dark pb-4 inline-block">Your 5-Step Path to Success</h2>
+                <p class="mt-6 max-w-2xl mx-auto font-bold text-slate-700 text-pretty">A structured preparation plan is the most effective way to achieve your target score. Follow this proven roadmap.</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-stretch justify-center gap-4 md:gap-2">
+                
+                <div class="flex-1 text-center p-4 bg-white border-3 border-dark shadow-[4px_4px_0_0_#0f172a] relative z-10">
+                    <div class="step-box">1</div>
+                    <h4 class="font-black uppercase mt-4 mb-2 text-lg">Understand</h4>
+                    <p class="text-sm font-bold text-slate-600 text-pretty">Learn the test format, timings, and question types.</p>
+                </div>
+                
+                <div class="hidden md:flex items-center justify-center text-dark -mx-2 z-0">
+                    <i data-lucide="arrow-right" class="w-8 h-8"></i>
+                </div>
+                 
+                <div class="flex-1 text-center p-4 bg-white border-3 border-dark shadow-[4px_4px_0_0_#0f172a] relative z-10">
+                    <div class="step-box bg-brand-100">2</div>
+                    <h4 class="font-black uppercase mt-4 mb-2 text-lg">Assess</h4>
+                    <p class="text-sm font-bold text-slate-600 text-pretty">Take a practice test to find your baseline score and weaknesses.</p>
+                </div>
+                
+                <div class="hidden md:flex items-center justify-center text-dark -mx-2 z-0">
+                    <i data-lucide="arrow-right" class="w-8 h-8"></i>
+                </div>
+                 
+                <div class="flex-1 text-center p-4 bg-white border-3 border-dark shadow-[4px_4px_0_0_#0f172a] relative z-10">
+                    <div class="step-box bg-brand-200">3</div>
+                    <h4 class="font-black uppercase mt-4 mb-2 text-lg">Strategize</h4>
+                    <p class="text-sm font-bold text-slate-600 text-pretty">Focus on improving your weak areas with targeted learning.</p>
+                </div>
+                
+                <div class="hidden md:flex items-center justify-center text-dark -mx-2 z-0">
+                    <i data-lucide="arrow-right" class="w-8 h-8"></i>
+                </div>
+                
+                <div class="flex-1 text-center p-4 bg-white border-3 border-dark shadow-[4px_4px_0_0_#0f172a] relative z-10">
+                    <div class="step-box bg-brand-300">4</div>
+                    <h4 class="font-black uppercase mt-4 mb-2 text-lg">Practice</h4>
+                    <p class="text-sm font-bold text-slate-600 text-pretty">Use official materials and practice under timed conditions.</p>
+                </div>
+                
+                <div class="hidden md:flex items-center justify-center text-dark -mx-2 z-0">
+                    <i data-lucide="arrow-right" class="w-8 h-8"></i>
+                </div>
+                
+                <div class="flex-1 text-center p-4 bg-[#4ade80] border-3 border-dark shadow-[4px_4px_0_0_#0f172a] relative z-10">
+                    <div class="step-box bg-white">5</div>
+                    <h4 class="font-black uppercase mt-4 mb-2 text-lg">Review</h4>
+                    <p class="text-sm font-bold text-slate-800 text-pretty">Analyze every mistake to understand why it was wrong.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t-4 border-dark mt-12 py-10 px-6 text-center">
+        <p class="text-sm md:text-base font-bold text-dark max-w-3xl mx-auto bg-[#f2f3ff] p-4 border-2 border-dark shadow-neo-sm text-pretty">
+            This interactive guide is based on the "Introduction to IELTS" report. IELTS is jointly owned by the British Council, IDP Education, and Cambridge University Press & Assessment.
+        </p>
+    </footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // --- Toggle Logic ---
+        const testTypeToggle = document.getElementById('testTypeToggle');
+        const gtCard = document.getElementById('gt-card');
+        const acCard = document.getElementById('ac-card');
+        const gtLabel = document.getElementById('gtLabel');
+        const acLabel = document.getElementById('acLabel');
+
+        testTypeToggle.addEventListener('change', function() {
+            const isAcademic = this.checked;
+            gtCard.classList.toggle('hidden', isAcademic);
+            acCard.classList.toggle('hidden', !isAcademic);
+
+            if (isAcademic) {
+                acLabel.classList.remove('text-slate-400');
+                acLabel.classList.add('text-dark');
+                gtLabel.classList.remove('text-dark');
+                gtLabel.classList.add('text-slate-400');
+            } else {
+                gtLabel.classList.remove('text-slate-400');
+                gtLabel.classList.add('text-dark');
+                acLabel.classList.remove('text-dark');
+                acLabel.classList.add('text-slate-400');
+            }
+        });
+
+        // --- Score Calculator Logic ---
+        const calculateBtn = document.getElementById('calculateBtn');
+        calculateBtn.addEventListener('click', function() {
+            const scores = [
+                parseFloat(document.getElementById('listening_score').value) || 0,
+                parseFloat(document.getElementById('reading_score').value) || 0,
+                parseFloat(document.getElementById('writing_score').value) || 0,
+                parseFloat(document.getElementById('speaking_score').value) || 0
+            ];
+
+            // Validate inputs are within 0-9 range
+            const validScores = scores.map(s => Math.min(Math.max(s, 0), 9));
+
+            const sum = validScores.reduce((a, b) => a + b, 0);
+            const average = sum / 4;
+            
+            const remainder = average % 1;
+            let finalScore;
+            
+            if (remainder >= 0 && remainder < 0.25) {
+                finalScore = Math.floor(average);
+            } else if (remainder >= 0.25 && remainder < 0.75) {
+                finalScore = Math.floor(average) + 0.5;
+            } else {
+                finalScore = Math.ceil(average);
+            }
+
+            document.getElementById('average_score').textContent = average.toFixed(2);
+            document.getElementById('overall_score').textContent = finalScore.toFixed(1);
+            document.getElementById('result').classList.remove('hidden');
+        });
+
+        // --- Tabs Logic ---
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const tabId = this.getAttribute('data-tab');
+                tabContents.forEach(content => {
+                    content.classList.toggle('hidden', content.id !== tabId);
+                });
+            });
+        });
+
+        // --- Scroll Spy Logic ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('main section');
+        const navbar = document.getElementById('navbar');
+        
+        const observerOptions = {
+            root: null,
+            rootMargin: `-${navbar.offsetHeight}px 0px 0px 0px`,
+            threshold: 0.4
+        };
+
+        const sectionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+        
+        // --- Chart.js Initialization (Brutalist Style) ---
+        const ctx = document.getElementById('writingWeightChart').getContext('2d');
+        const writingWeightChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Task 2 (Essay)', 'Task 1'],
+                datasets: [{
+                    label: 'Writing Score Weight',
+                    data: [66.6, 33.3],
+                    backgroundColor: [
+                        '#737df5', // brand-500
+                        '#cbd5e1'  // slate-300
+                    ],
+                    borderColor: '#0f172a', // Brutalist dark border
+                    borderWidth: 4,
+                    hoverOffset: 4,
+                    hoverBorderColor: '#0f172a'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: "'Plus Jakarta Sans', sans-serif",
+                                weight: 'bold',
+                                size: 14
+                            },
+                            color: '#0f172a'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 14 },
+                        bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 14, weight: 'bold' },
+                        padding: 12,
+                        cornerRadius: 0, // Square tooltip
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += `~${Math.round(context.parsed)}% of score`;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                cutout: '55%'
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

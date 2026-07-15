@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Writing Task 1 - Dynamic Charts: Line Graphs</title>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs text-slate-400 mb-6 flex gap-2 font-medium uppercase tracking-wider">
+            <span>IELTS Academic</span> <span>&gt;</span> 
+            <span>Writing Task 1</span> <span>&gt;</span> 
+            <span>Band 6.5 - 8.0</span> <span>&gt;</span> 
+            <span class="text-indigo-600 font-bold">Describing Trends</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-slate-800 tracking-tight mb-2">
+                    Dynamic Charts: Line Graphs
+                </h1>
+                <p class="text-slate-500 font-medium">Topic: Vocabulary for Change, Overview Strategy, Data Selection</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-red-500 transition-colors font-medium hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-4 border-indigo-500 p-4 mb-8 rounded-r-lg">
+            <p class="text-slate-700">
+                <i class="fas fa-info-circle mr-2 text-indigo-500"></i> 
+                <strong>Instructions:</strong> Complete the 10-step process below to master Describing Trends. Use the "Check" buttons to verify your vocabulary and grammar.
+            </p>
+        </div>
+
+        <!-- Part 1: Preparation (Cyan Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-cyan-100 shadow-sm">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 bg-cyan-50 hover:bg-cyan-100 border-l-4 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-cyan-200 text-cyan-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-lg font-bold text-cyan-900">Step 1-3: Preparation & Vocabulary</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part1" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 1 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-cyan-800"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Step 1</span> Contextual Warm-Up</h3>
+                            <button onclick="toggleAnswer('ans-t1', this)" class="text-xs font-bold text-cyan-600 border border-cyan-200 bg-white px-3 py-1 rounded hover:bg-cyan-50">Show Sample Ideas</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Why do news reports and academic papers use line graphs? What specific information do they highlight better than a paragraph of text?</p>
+                        <textarea class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 outline-none" placeholder="Write your thoughts here..."></textarea>
+                        <div id="ans-t1" class="answer-box hidden mt-3 p-4 bg-cyan-50 rounded-lg border border-cyan-100 text-sm text-slate-700">
+                            <strong>Sample Ideas:</strong>
+                            <ul class="list-disc pl-5 mt-1 space-y-1">
+                                <li>To visualize changes over a specific period clearly.</li>
+                                <li>To compare the performance or growth of different categories simultaneously.</li>
+                                <li>To identify peaks, lows, and general trends instantly without reading data tables.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 (Interactive Vocab) -->
+                    <div>
+                        <h3 class="font-bold text-cyan-800 mb-3"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Step 2 & 3</span> Essential Vocabulary</h3>
+                        <p class="text-sm text-slate-500 mb-3">Match the "Movement Verbs" to their definitions. Precision is key for Band 7+.</p>
+                        <div id="vocab-container" class="space-y-3">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="checkVocab()" class="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check Vocabulary
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div>
+                         <div class="flex justify-between items-center mb-3">
+                             <h3 class="font-bold text-cyan-800"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Step 3.5</span> Grammar Check</h3>
+                             <button onclick="toggleAnswer('ans-t3', this)" class="text-xs font-bold text-cyan-600 border border-cyan-200 bg-white px-3 py-1 rounded hover:bg-cyan-50">Show Strategy</button>
+                          </div>
+                          <p class="text-sm text-slate-600 mb-2">If a graph shows data from 2010 to 2020, which verb tense is primary? What if the graph goes up to 2050?</p>
+                          <textarea placeholder="Write your answer..." class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 outline-none h-20"></textarea>
+                          <div id="ans-t3" class="answer-box hidden mt-3 p-4 bg-cyan-50 rounded-lg border border-cyan-100 text-sm text-slate-700">
+                            <strong>Strategy:</strong>
+                            <ul class="list-disc pl-5 mt-1">
+                                <li><strong>Past Simple:</strong> For finished time periods (e.g., 2010-2020). Example: "Sales <em>increased</em>."</li>
+                                <li><strong>Future Forms:</strong> For predictions (e.g., 2030-2050). Example: "Sales <em>are projected to rise</em>."</li>
+                                <li><strong>Present Perfect:</strong> If the data continues up to "now" (e.g., "since 2010").</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Reading Passage (Blue Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-blue-100 shadow-sm">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-200 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-book-reader"></i></div>
+                    <span class="text-lg font-bold text-blue-900">Step 4-5: Model Analysis (Awareness)</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-6 bg-white prose prose-slate max-w-none text-justify leading-relaxed text-sm md:text-base border-t border-blue-50">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Sample Task: Internet Usage (2000-2015)</h3>
+                    
+                    <div class="bg-slate-50 p-4 rounded mb-6 border border-slate-200 relative h-64 md:h-80 w-full">
+                        <canvas id="modelChart"></canvas>
+                    </div>
+
+                    <h4 class="font-bold text-blue-700">Model Answer</h4>
+                    
+                    <p class="mb-3">
+                        <strong>(Introduction)</strong> The line graph illustrates the proportion of the population in the USA, Canada, and Mexico who accessed the Internet between 2000 and 2015.
+                    </p>
+                    
+                    <p class="mb-3">
+                        <strong>(Overview)</strong> Overall, internet usage increased significantly in all three nations over the 15-year period. While Canada and the USA maintained the highest rates of connectivity throughout the timeframe, Mexico experienced the most dramatic growth relative to its starting point.
+                    </p>
+                    
+                    <p class="mb-3">
+                        <strong>(Body Paragraph 1: High usage countries)</strong> In 2000, the USA had the highest internet penetration at approximately 70%, closely followed by Canada at 60%. Over the subsequent decade, both figures rose steadily, with Canada overtaking the USA in 2005. By 2015, internet usage in Canada had peaked at nearly 95%, whereas the USA reached a plateau of around 88% in the final years.
+                    </p>
+                    
+                    <p class="mb-3">
+                         <strong>(Body Paragraph 2: Comparisons/Exceptions)</strong> In contrast, Mexico began the period with a much lower rate of only 20%. However, connectivity surged between 2005 and 2010, doubling to 40%. This upward trend continued, and by the end of the period, just over half of the Mexican population (55%) was online, significantly narrowing the gap with its North American neighbors.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Understanding (Emerald Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-emerald-100 shadow-sm">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 bg-emerald-50 hover:bg-emerald-100 border-l-4 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-emerald-200 text-emerald-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-lg font-bold text-emerald-900">Step 6-7: Controlled Practice</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 4 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-emerald-800"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Step 5</span> Guided Analysis</h3>
+                            <button onclick="toggleAnswer('ans-t4', this)" class="text-xs font-bold text-emerald-600 border border-emerald-200 bg-white px-3 py-1 rounded hover:bg-emerald-50">Show Analysis</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Look at the "Overview" paragraph in the Model Answer above. Does it mention specific numbers (e.g., 70%, 2005)? Why or why not?</p>
+                        <textarea class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none h-20"></textarea>
+                        <div id="ans-t4" class="answer-box hidden mt-3 p-4 bg-emerald-50 rounded-lg border border-emerald-100 text-sm text-slate-700">
+                            <strong>Analysis:</strong>
+                            <ul class="list-disc pl-5 mt-1 space-y-1">
+                                <li>No, it does NOT mention specific numbers.</li>
+                                <li><strong>Reason:</strong> The Overview paragraph summarizes the <em>main trends</em> (Overall increase, who was highest, who grew fastest). Specific data belongs in the Body Paragraphs.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 5 (Interactive MCQ) -->
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Step 6</span> Micro-Practice: Prepositions</h3>
+                        <p class="text-sm text-slate-500 mb-3">Select the correct preposition for describing data changes.</p>
+                        <div id="mcq-container" class="space-y-6">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="checkMCQ()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check Prepositions
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 6 (Interactive T/F) -->
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Step 7</span> Macro-Practice: Task 1 Rules</h3>
+                        <p class="text-sm text-slate-500 mb-3">Identify True/False statements about writing Task 1.</p>
+                        <div id="tf-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="checkTF()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check Rules
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Discussion (Orange Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-orange-100 shadow-sm">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 bg-orange-50 hover:bg-orange-100 border-l-4 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-orange-200 text-orange-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-lg font-bold text-orange-900">Step 8: Pre-Task Planning</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 8: Cause/Effect -->
+                    <div>
+                         <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-orange-800"><span class="bg-orange-100 px-2 py-0.5 rounded text-sm mr-2">Step 8a</span> Paraphrasing the Introduction</h3>
+                            <button onclick="toggleAnswer('ans-t8', this)" class="text-xs font-bold text-orange-600 border border-orange-200 bg-white px-3 py-1 rounded hover:bg-orange-50">Show Sample</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2"><strong>Original Prompt:</strong> "The graph below shows the amount of electricity consumed by four different sectors in the UK from 1980 to 2020."</p>
+                        <textarea class="w-full p-2 border border-orange-200 rounded text-sm focus:ring-2 focus:ring-orange-400 outline-none" placeholder="Rewrite the introduction using synonyms..."></textarea>
+                        <div id="ans-t8" class="answer-box hidden mt-2 text-sm text-slate-700 bg-orange-50 p-3 rounded border border-orange-100">
+                            <strong>Sample Paraphrase:</strong> "The line chart illustrates electricity usage across four distinct industries in the United Kingdom over a 40-year period commencing in 1980."
+                        </div>
+                    </div>
+
+                    <!-- Task 9 & 10 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-orange-800"><span class="bg-orange-100 px-2 py-0.5 rounded text-sm mr-2">Step 8b</span> Grouping Information</h3>
+                            <button onclick="toggleAnswer('ans-t9', this)" class="text-xs font-bold text-orange-600 border border-orange-200 bg-white px-3 py-1 rounded hover:bg-orange-50">Show Logic</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">You have 4 sectors: Residential (up), Industrial (down), Transport (up), Service (up). How would you divide your two Body Paragraphs?</p>
+                        <textarea class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-400 outline-none h-24" placeholder="Body Paragraph 1 will discuss... Body Paragraph 2 will discuss..."></textarea>
+                        <div id="ans-t9" class="answer-box hidden mt-2 text-sm text-slate-700 bg-orange-50 p-3 rounded border border-orange-100">
+                             <strong>Sample Grouping Strategy:</strong><br>
+                             <strong>BP1:</strong> Describe the sectors that increased (Residential, Transport, Service).<br>
+                             <strong>BP2:</strong> Describe the sector that decreased (Industrial) to provide contrast.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Advanced (Violet Theme) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-violet-100 shadow-sm">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 bg-violet-50 hover:bg-violet-100 border-l-4 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-violet-200 text-violet-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-lg font-bold text-violet-900">Step 9-10: Real Test Simulation</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 12 & 13 -->
+                    <div>
+                         <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-violet-800"><span class="bg-violet-100 px-2 py-0.5 rounded text-sm mr-2">Step 9</span> The Simulation Task</h3>
+                            <button onclick="toggleAnswer('ans-t12', this)" class="text-xs font-bold text-violet-600 border border-violet-200 bg-white px-3 py-1 rounded hover:bg-violet-50">Show Band 9 Outline</button>
+                        </div>
+                        <div class="bg-slate-50 p-6 border border-slate-200 rounded mb-3">
+                            <p class="font-bold text-slate-800">WRITING TASK 1</p>
+                            <p class="text-sm text-slate-600 mt-1 mb-4">You should spend about 20 minutes on this task.</p>
+                            <p class="text-sm text-slate-700 mt-2 italic mb-4">The graph below shows the number of visitors to a Caribbean island from 2010 to 2017. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p>
+                            
+                            <!-- Simulation Chart -->
+                            <div class="bg-white p-2 rounded border border-slate-200 relative h-64 md:h-80 w-full">
+                                <canvas id="simulationChart"></canvas>
+                            </div>
+                        </div>
+                        <textarea class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-violet-400 outline-none h-48" placeholder="Type your 150-word report here..."></textarea>
+                         <div id="ans-t12" class="answer-box hidden mt-3 p-4 bg-violet-50 rounded-lg border border-violet-100 text-sm text-slate-700">
+                            <strong>Outline Structure:</strong>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li><strong>Intro:</strong> Paraphrase "number of visitors" and dates.</li>
+                                <li><strong>Overview:</strong> Total visitors grew; Cruise ship visitors became the most popular type by the end.</li>
+                                <li><strong>Details 1 (Island Stay):</strong> Started higher (0.7m), plateaued until 2013, finished lower than ships.</li>
+                                <li><strong>Details 2 (Cruise Ships):</strong> Started lower (0.5m), fluctuated, then surged dramatically after 2015 to overtake island stayers.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                      <!-- Task 15: Summary -->
+                      <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-violet-800"><span class="bg-violet-100 px-2 py-0.5 rounded text-sm mr-2">Step 10</span> Reflection & Checklist</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Before submitting, check your writing against the band descriptors:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
+                            <label class="flex items-center gap-2"><input type="checkbox"> Did I write an Overview?</label>
+                            <label class="flex items-center gap-2"><input type="checkbox"> Did I avoid personal opinions?</label>
+                            <label class="flex items-center gap-2"><input type="checkbox"> Did I use specific data to support points?</label>
+                            <label class="flex items-center gap-2"><input type="checkbox"> Did I vary my vocabulary (soar, rocket, dip)?</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-sm font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data Configuration Section ---
+        
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { 
+                id: "v1", word: "1. To Fluctuate", correct: "b", 
+                options: { a: "To stay exactly the same.", b: "To rise and fall irregularly.", c: "To reach the highest point.", d: "To fall rapidly." } 
+            },
+            { 
+                id: "v2", word: "2. To Plummet", correct: "d", 
+                options: { a: "To increase gradually.", b: "To remain stable.", c: "To rise steadily.", d: "To fall vertically or sharply." } 
+            },
+            { 
+                id: "v3", word: "3. To Plateau", correct: "a", 
+                options: { a: "To reach a state of little change.", b: "To go down significantly.", c: "To move up and down.", d: "To start at a low point." } 
+            },
+            { 
+                id: "v4", word: "4. To Surge", correct: "c", 
+                options: { a: "To decrease slowly.", b: "To stop changing.", c: "To increase suddenly.", d: "To change direction." } 
+            }
+        ];
+
+        // 2. MCQ DATA
+        const mcqData = [
+            { id: "m1", question: "1. The price of oil increased ______ $50 to $80 per barrel.", correct: "b", options: ["a. at", "b. from", "c. by", "d. in"] },
+            { id: "m2", question: "2. There was a significant rise ______ the number of students.", correct: "a", options: ["a. in", "b. of", "c. on", "d. at"] },
+            { id: "m3", question: "3. Sales rose ______ 20% compared to last year. (Focus on margin)", correct: "c", options: ["a. to", "b. at", "c. by", "d. from"] }
+        ];
+
+        // 3. TF DATA
+        const tfData = [
+            { id: "tf1", text: "1. You should always give your personal opinion in Task 1.", correct: "False" },
+            { id: "tf2", text: "2. The 'Overview' is the most important paragraph for Band 7+.", correct: "True" },
+            { id: "tf3", text: "3. You must mention every single number shown on the graph.", correct: "False" },
+            { id: "tf4", text: "4. You should use bullet points to list the data.", correct: "False" }
+        ];
+
+        // --- Charts Initialization ---
+        function initCharts() {
+            // Chart 1: Internet Usage (Model Answer)
+            const ctx1 = document.getElementById('modelChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['2000', '2005', '2010', '2015'],
+                    datasets: [
+                        { label: 'Canada', data: [60, 80, 90, 95], borderColor: '#ef4444', backgroundColor: '#ef4444', tension: 0.3, pointRadius: 4 },
+                        { label: 'USA', data: [70, 78, 85, 88], borderColor: '#3b82f6', backgroundColor: '#3b82f6', tension: 0.3, pointRadius: 4 },
+                        { label: 'Mexico', data: [20, 25, 40, 55], borderColor: '#22c55e', backgroundColor: '#22c55e', tension: 0.3, pointRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Internet Usage (% of Population)' },
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: { min: 0, max: 100, title: { display: true, text: 'Percentage (%)' } }
+                    }
+                }
+            });
+
+            // Chart 2: Visitors (Simulation)
+            const ctx2 = document.getElementById('simulationChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: ['2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017'],
+                    datasets: [
+                        { label: 'Total Visitors', data: [1.2, 1.5, 1.5, 1.8, 2.0, 2.5, 3.0, 3.5], borderColor: '#334155', borderDash: [5, 5], tension: 0.2, pointRadius: 3 },
+                        { label: 'Cruise Ships', data: [0.5, 0.6, 0.8, 0.7, 0.6, 1.2, 1.6, 2.0], borderColor: '#8b5cf6', backgroundColor: '#8b5cf6', tension: 0.2, pointRadius: 4 },
+                        { label: 'Staying on Island', data: [0.7, 0.9, 0.7, 1.1, 1.4, 1.3, 1.4, 1.5], borderColor: '#f59e0b', backgroundColor: '#f59e0b', tension: 0.2, pointRadius: 4 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Visitors to Caribbean Island (Millions)' },
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: { min: 0, title: { display: true, text: 'Millions' } }
+                    }
+                }
+            });
+        }
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            if(vocabData.length === 0) return;
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="">Select meaning...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col md:flex-row md:items-center gap-3 p-3 bg-white rounded-lg border border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <div class="md:w-1/3 font-bold text-cyan-900">${item.word}</div>
+                    <div class="md:w-2/3 flex items-center gap-2">
+                        <select id="${item.id}" class="flex-1 p-2 text-sm border border-slate-200 rounded bg-cyan-50 focus:ring-1 focus:ring-cyan-500 outline-none cursor-pointer">${optionsHtml}</select>
+                        <span id="feedback-${item.id}" class="w-6 flex justify-center"></span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderMCQ() {
+            const container = document.getElementById('mcq-container');
+            container.innerHTML = mcqData.map(item => `
+                <div class="space-y-2">
+                    <p class="font-medium text-emerald-900 text-sm">${item.question}</p>
+                    <div class="space-y-1">
+                        ${item.options.map((opt, idx) => {
+                            const val = ['a','b','c','d'][idx];
+                            return `<label class="flex items-center gap-2 p-2 rounded hover:bg-emerald-50 cursor-pointer text-sm">
+                                <input type="radio" name="${item.id}" value="${val}" class="accent-emerald-600"> <span>${opt}</span>
+                            </label>`;
+                        }).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-sm font-bold h-5"></div>
+                </div>`).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-emerald-50 last:border-0" id="row-${item.id}">
+                    <span class="text-sm text-slate-700 mb-2 sm:mb-0 w-full sm:w-2/3">${item.text}</span>
+                    <div class="flex items-center gap-4 text-sm font-medium">
+                        <label class="flex items-center gap-1 cursor-pointer hover:text-emerald-600"><input type="radio" name="${item.id}" value="True" class="accent-emerald-600"> True</label>
+                        <label class="flex items-center gap-1 cursor-pointer hover:text-emerald-600"><input type="radio" name="${item.id}" value="False" class="accent-emerald-600"> False</label>
+                        <span id="feedback-${item.id}" class="ml-1 w-6"></span>
+                    </div>
+                </div>`).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    select.classList.add('border-green-500', 'bg-green-50');
+                    select.classList.remove('border-red-300');
+                    select.disabled = true;
+                } else {
+                    feedback.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    select.classList.add('border-red-300');
+                }
+            });
+        }
+
+        function checkMCQ() {
+            mcqData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-green-600">Correct!</span>';
+                    radios.forEach(r => r.disabled = true);
+                } else if (userVal !== "") {
+                    feedback.innerHTML = '<span class="text-red-500">Incorrect.</span>';
+                }
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    radios.forEach(r => r.disabled = true);
+                } else if (userVal !== "") {
+                    feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                }
+            });
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                if(elementId.includes('t3')) btn.innerText = "Show Strategy";
+                else if(elementId.includes('t1')) btn.innerText = "Show Sample Ideas";
+                else if(elementId.includes('t12')) btn.innerText = "Show Band 9 Outline";
+                else btn.innerText = "Show Answer";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '2000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers?")) {
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                document.querySelectorAll('select').forEach(s => { s.value = ""; s.disabled = false; s.classList.remove('border-green-500', 'bg-green-50', 'border-red-300'); });
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderMCQ();
+            renderTF();
+            initCharts();
+        });
+
+    </script>
+</body>
+</html>

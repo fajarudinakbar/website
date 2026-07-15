@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 (GSE 50) Reading - The Digital Resident</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* AI Prompt Box Style */
+        .ai-prompt-box {
+            background-color: #f0f9ff;
+            border-left: 8px solid #0284c7;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* Document Styling */
+        .official-doc {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 0);
+            background-size: 20px 20px;
+            background-color: #ffffff;
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-2xl">
+
+    <div class="max-w-7xl mx-auto bg-white p-8 md:p-14 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base text-slate-500 mb-8 flex gap-3 font-semibold uppercase tracking-wider">
+            <span>Professional English</span> <span>&gt;</span> 
+            <span>Reading</span> <span>&gt;</span> 
+            <span>B1 Level (GSE 50)</span> <span>&gt;</span> 
+            <span class="text-cyan-700 font-bold">The Digital Resident</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-8 mb-12">
+            <div>
+                <h1 class="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-700 to-blue-600 tracking-tight mb-4 leading-tight">
+                    The Digital Resident
+                </h1>
+                <p class="text-3xl text-slate-500 font-medium">Topic: Administrative Procedures for Medical Residents in Japan</p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-4 text-xl text-slate-500 hover:text-red-600 transition-colors font-bold hover:bg-red-50 rounded-xl border border-transparent hover:border-red-200">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-cyan-600 p-8 mb-12 rounded-r-2xl shadow-sm">
+            <p class="text-2xl text-slate-700 leading-relaxed font-medium">
+                <i class="fas fa-book-open mr-4 text-cyan-600"></i> 
+                <strong>Instructions:</strong> Complete the <strong>Preparation</strong> tasks first. Then read the official documents in Section 2 and answer the comprehension and analysis questions. Correct answers will appear after 2 incorrect attempts for multiple-choice tasks.
+            </p>
+        </div>
+
+        <!-- Section 1: Preparation (Cyan Theme) -->
+        <div class="mb-8 rounded-3xl overflow-hidden border border-cyan-100 shadow-lg">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-10 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-cyan-200 text-cyan-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-4xl font-bold text-cyan-900">Preparation (Tasks 1–2)</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-4xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 5000px;">
+                <div class="p-12 bg-white space-y-16">
+                    
+                    <!-- Task 1 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-cyan-800">Task 1: Warm-Up Thinking</h3>
+                            <button onclick="toggleAnswer('ans-t1', this)" class="text-xl font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-6 py-3 rounded-xl hover:bg-cyan-50 transition-colors shadow-sm">Show Sample Ideas</button>
+                        </div>
+                        <div class="space-y-6">
+                            <ul class="list-disc pl-8 space-y-3 text-2xl text-slate-700 font-medium">
+                                <li>What is the most stressful part of moving to a new country for a medical job?</li>
+                                <li>Do you prefer managing your bills manually (paper) or automatically (digital)? Why?</li>
+                                <li>In your home country, how many days do you usually have to register your address after moving?</li>
+                            </ul>
+                            <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none" placeholder="Write your ideas here..."></textarea>
+                            <div id="ans-t1" class="answer-box hidden mt-6 p-8 bg-cyan-50 border-2 border-cyan-200 rounded-2xl text-2xl text-slate-700">
+                                <strong>Sample Ideas:</strong>
+                                <ul class="list-disc pl-8 mt-4 space-y-3">
+                                    <li>The most stressful part is usually navigating the bureaucracy in a language I might not fully understand, while also adjusting to a demanding new hospital role.</li>
+                                    <li>I prefer automatic digital payments because it gives me peace of mind. During long shifts, I don't have time to visit convenience stores.</li>
+                                    <li>In my home country, we usually have about 30 days to update our address on our national ID.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 1.1 -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Task 1.1: AI Support for Warm-Up</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-4 uppercase tracking-wider text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-6 rounded-xl border border-sky-200 font-mono text-2xl leading-relaxed">"I am a medical professional who has just moved to Japan. Based on standard Japanese administrative rules for foreign residents, provide a concise summary of the three most important documents I need to bring to City Hall and the specific deadline for registration. Keep the tone professional and the English at a B1 level."</p>
+                        </div>
+                        <div class="space-y-6 mt-8">
+                            <p class="text-2xl text-slate-700 font-medium">Draft your expected findings before comparing it to the AI's response.</p>
+                            <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none" placeholder="Draft your ideas..."></textarea>
+                             <div class="mt-6">
+                                <button onclick="toggleAnswer('sample-ai-1', this)" class="text-xl font-bold text-cyan-600 underline hover:text-cyan-800">Show AI Sample Response</button>
+                                <div id="sample-ai-1" class="answer-box hidden mt-4 p-6 bg-slate-50 rounded-2xl border border-slate-200 text-2xl text-slate-700 italic">
+                                    "Welcome to Japan. To register your new address, you must visit City Hall within 14 days of moving in. You need to bring three very important documents: 1) Your Passport, 2) Your Residence Card (Zairyu Card), and 3) Your lease agreement or proof of your new address. Doing this quickly is essential to start your professional life here."
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 2: Vocab MCQ -->
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-cyan-800">Task 2: Vocabulary in Context</h3>
+                            <button onclick="checkVocab()" class="text-xl font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-8 py-4 rounded-xl hover:bg-cyan-50 transition-colors shadow-sm">Check Vocabulary</button>
+                        </div>
+                        <p class="text-2xl text-slate-700 mb-6">Read the sentences taken from the text. Choose the correct meaning of each CAPITALIZED word.</p>
+                        <div id="vocab-container" class="space-y-8">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Reading Passages (Blue Theme) -->
+        <div class="mb-8 rounded-3xl overflow-hidden border border-blue-100 shadow-lg">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-10 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-blue-200 text-blue-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-file-alt"></i></div>
+                    <span class="text-4xl font-bold text-blue-900">Reading Passages</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-4xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-12 bg-slate-50">
+                    
+                    <!-- Reading Container -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                        
+                        <!-- Document A -->
+                        <div class="official-doc p-10 rounded-xl border border-slate-300 shadow-lg relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-2 bg-blue-600"></div>
+                            <div class="flex items-center gap-4 mb-6 pb-4 border-b-2 border-slate-200">
+                                <i class="fas fa-building text-4xl text-blue-800"></i>
+                                <div>
+                                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Document A</h2>
+                                    <p class="text-lg text-slate-500 font-semibold uppercase tracking-wider">Resident Registration (Juminhyo)</p>
+                                </div>
+                            </div>
+                            <div class="prose prose-slate text-2xl leading-relaxed text-justify text-slate-700">
+                                <p>All foreign medical professionals moving to Japan must visit their local City Hall within 14 days of moving into their new <strong>PREMISES</strong>. This registration is <strong>MANDATORY</strong>.</p>
+                                <p>You must bring your passport and Residence Card. Failure to <strong>COMPLY</strong> with this deadline may result in administrative fines.</p>
+                                <p>Once registered, you will receive a Resident Record, which is required to open a bank account or sign a mobile phone contract.</p>
+                            </div>
+                        </div>
+
+                        <!-- Document B -->
+                        <div class="official-doc p-10 rounded-xl border border-slate-300 shadow-lg relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-2 bg-yellow-500"></div>
+                            <div class="flex items-center gap-4 mb-6 pb-4 border-b-2 border-slate-200">
+                                <i class="fas fa-bolt text-4xl text-yellow-600"></i>
+                                <div>
+                                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Document B</h2>
+                                    <p class="text-lg text-slate-500 font-semibold uppercase tracking-wider">Utility Contract Summary (Electricity & Water)</p>
+                                </div>
+                            </div>
+                            <div class="prose prose-slate text-2xl leading-relaxed text-justify text-slate-700">
+                                <p>Welcome to Tokyo Power Grid. To ensure continuous service, please select a payment method upon moving in. We offer three primary options:</p>
+                                <ul class="list-disc pl-6 space-y-2 font-medium">
+                                    <li><strong>Convenience Store Payment:</strong> A paper invoice is sent to your mailbox monthly.</li>
+                                    <li><strong>DIRECT DEBIT:</strong> Funds are automatically withdrawn from your Japanese bank account on the 25th of each month.</li>
+                                    <li><strong>Credit Card:</strong> Online registration is required.</li>
+                                </ul>
+                                <p class="mt-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-900 rounded-r text-xl">
+                                    <strong>Please note:</strong> If your account falls into <strong>ARREARS</strong> for more than 60 days, we reserve the right to <strong>TERMINATE</strong> your service. For medical residents working night shifts, we highly recommend setting up automatic payments to avoid missed deadlines.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Comprehension (Emerald Theme) -->
+        <div class="mb-8 rounded-3xl overflow-hidden border border-emerald-100 shadow-lg">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-10 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-emerald-200 text-emerald-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-4xl font-bold text-emerald-900">Comprehension (Tasks 3–5)</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-12 bg-white space-y-16">
+                    
+                    <!-- Task 3 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-emerald-800">Task 3: General Understanding (Gist)</h3>
+                            <button onclick="toggleAnswer('ans-t3', this)" class="text-xl font-bold text-emerald-700 border-2 border-emerald-200 bg-white px-6 py-3 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm">Show Sample Answers</button>
+                        </div>
+                        <div class="space-y-6">
+                            <ul class="list-decimal pl-8 space-y-3 text-2xl text-slate-700 font-medium">
+                                <li>What are the two main topics covered in the reading passages?</li>
+                                <li>Who is the intended audience for these documents?</li>
+                                <li>What is the primary goal of the "Utility Contract Summary"?</li>
+                            </ul>
+                            <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:emerald-200 focus:border-emerald-500 outline-none" placeholder="Your answers..."></textarea>
+                            <div id="ans-t3" class="answer-box hidden mt-6 p-8 bg-emerald-50 rounded-2xl border-2 border-emerald-200 text-2xl text-slate-700">
+                                <ul class="list-disc pl-8 space-y-3">
+                                    <li><strong>Topic 1 & 2:</strong> City hall address registration and utility payment options.</li>
+                                    <li><strong>Audience:</strong> Foreign medical professionals or residents moving to Japan.</li>
+                                    <li><strong>Goal:</strong> To inform residents how to set up payment for electricity and avoid having their service stopped.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 4 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-emerald-800">Task 4: Detail and Meaning</h3>
+                            <button onclick="toggleAnswer('ans-t4', this)" class="text-xl font-bold text-emerald-700 border-2 border-emerald-200 bg-white px-6 py-3 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm">Show Sample Answers</button>
+                        </div>
+                        <div class="space-y-6">
+                            <ul class="list-decimal pl-8 space-y-3 text-2xl text-slate-700 font-medium">
+                                <li>How many days does a resident have to register their address at City Hall?</li>
+                                <li>What are the three payment methods available for electricity?</li>
+                                <li>What specific document do you need from City Hall before you can open a bank account?</li>
+                            </ul>
+                            <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:emerald-200 focus:border-emerald-500 outline-none" placeholder="Your answers..."></textarea>
+                            <div id="ans-t4" class="answer-box hidden mt-6 p-8 bg-emerald-50 rounded-2xl border-2 border-emerald-200 text-2xl text-slate-700">
+                                <ul class="list-disc pl-8 space-y-3">
+                                    <li><strong>Deadline:</strong> 14 days.</li>
+                                    <li><strong>Payment Methods:</strong> Convenience Store Payment, Direct Debit, and Credit Card.</li>
+                                    <li><strong>Required Document:</strong> A Resident Record (Juminhyo).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 5 (True/False) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-emerald-800">Task 5: Opinion Check (True/False)</h3>
+                            <button onclick="checkTF()" class="text-xl font-bold text-emerald-700 border-2 border-emerald-200 bg-white px-8 py-4 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm">Check Answers</button>
+                        </div>
+                        <div id="tf-container" class="space-y-6 text-2xl">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Analysis (Orange Theme) -->
+        <div class="mb-8 rounded-3xl overflow-hidden border border-orange-100 shadow-lg">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-10 bg-orange-50 hover:bg-orange-100 border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-orange-200 text-orange-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-4xl font-bold text-orange-900">Analysis (Tasks 6–7)</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-12 bg-white space-y-16">
+                    
+                    <!-- Task 6 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-orange-800">Task 6: Cause and Effect Thinking</h3>
+                            <button onclick="toggleAnswer('ans-t6', this)" class="text-xl font-bold text-orange-700 border-2 border-orange-200 bg-white px-6 py-3 rounded-xl hover:bg-orange-50 transition-colors shadow-sm">Show Sample</button>
+                        </div>
+                        <p class="text-2xl text-slate-700 mb-6 font-medium">Identify the logical relationship between these statements from the text:</p>
+                        <div class="space-y-8 bg-slate-50 p-8 rounded-2xl border border-slate-200">
+                            <div class="space-y-4">
+                                <span class="block font-bold text-2xl text-orange-900">Cause: A resident fails to register their address within 14 days...</span>
+                                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                                    <span class="font-bold text-2xl text-slate-600">Effect:</span> 
+                                    <input type="text" class="flex-1 p-4 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-orange-500 text-xl w-full">
+                                </div>
+                            </div>
+                            <div class="h-px bg-slate-300 w-full my-4"></div>
+                            <div class="space-y-4">
+                                <span class="block font-bold text-2xl text-orange-900">Cause: A medical resident works many night shifts...</span>
+                                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                                    <span class="font-bold text-2xl text-slate-600">Effect:</span> 
+                                    <input type="text" class="flex-1 p-4 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-orange-500 text-xl w-full">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ans-t6" class="answer-box hidden mt-8 p-8 bg-orange-50 rounded-2xl border-2 border-orange-200 text-2xl text-slate-800">
+                            <ul class="list-none space-y-6">
+                                <li><strong>Effect 1:</strong> ...they may have to pay administrative fines and will be unable to open a bank account. <em>(Logic: Legal failure leads to financial and practical penalties).</em></li>
+                                <li><strong>Effect 2:</strong> ...they might forget to check their physical mailbox, so they should use automatic payment methods. <em>(Logic: A difficult schedule requires a more reliable payment system).</em></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 6.1 -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-orange-800 mb-6">Task 6.1: AI-Guided Extension</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-4 uppercase tracking-wider text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-6 rounded-xl border border-sky-200 font-mono text-2xl leading-relaxed">"Explain the logical necessity of obtaining a 'Resident Record' (Juminhyo) before attempting to open a bank account in Japan. How do these two administrative steps depend on each other? Provide the explanation in 4 simple sentences for a B1 English learner."</p>
+                        </div>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none mt-6" placeholder="Your explanation..."></textarea>
+                    </div>
+
+                    <!-- Task 7 -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-orange-800 mb-6">Task 7: Speaking – Personal Position</h3>
+                        <div class="space-y-6">
+                            <ul class="list-decimal pl-8 space-y-3 text-2xl text-slate-700 font-medium">
+                                <li>If you were a busy doctor, would you choose credit card payment or direct debit for your utilities? Why?</li>
+                                <li>Do you think 14 days is enough time to complete registration when starting a new medical residency?</li>
+                            </ul>
+                            <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none" placeholder="Jot down your speaking points..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Task 7.1 -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-orange-800 mb-6">Task 7.1: AI as Practice Partner</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-4 uppercase tracking-wider text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-6 rounded-xl border border-sky-200 font-mono text-2xl leading-relaxed">"Act as a clerk at the City Hall 'Foreign Resident' desk. I am a doctor who has just arrived in Japan. Ask me for my documents (Passport and Residence Card) and ask me when exactly I moved into my new apartment. Provide a brief warning about what happens if I miss the 14-day deadline. Use B1-level English."</p>
+                        </div>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none mt-6" placeholder="Write your side of the dialogue..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Case Studies (Violet Theme) -->
+        <div class="mb-8 rounded-3xl overflow-hidden border border-violet-100 shadow-lg">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-10 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-violet-200 text-violet-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-4xl font-bold text-violet-900">Case Studies (Tasks 8–9)</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-12 bg-white space-y-16">
+                    
+                    <!-- Task 8 -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-violet-800 mb-6">Task 8: Discussion – Contextual Skills</h3>
+                        <p class="text-2xl text-slate-700 mb-6 font-medium leading-relaxed">In a "Digital Resident" era, should all city hall procedures be done via smartphone? What are the risks for a medical professional if administrative data is only stored digitally?</p>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none" placeholder="Your discussion points..."></textarea>
+                    </div>
+
+                    <!-- Task 9 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-violet-800">Task 9: Case Study – Decision Making</h3>
+                            <button onclick="toggleAnswer('ans-t9', this)" class="text-xl font-bold text-violet-700 border-2 border-violet-200 bg-white px-6 py-3 rounded-xl hover:bg-violet-50 transition-colors shadow-sm">Show Evaluation</button>
+                        </div>
+                        <div class="bg-violet-50 p-8 rounded-2xl border-2 border-violet-100 mb-6">
+                            <p class="text-2xl text-violet-900 font-bold mb-4">Scenario:</p>
+                            <p class="text-2xl text-slate-800 mb-6 leading-relaxed">You are a resident surgeon. You have been on duty for 36 hours. You get home and find a final notice for your water bill in the mailbox. You are exhausted and need to sleep before your next shift in 8 hours.</p>
+                            <ul class="list-none space-y-4 text-2xl text-slate-700">
+                                <li><i class="fas fa-store text-violet-600 mr-3"></i><strong>Option A:</strong> Go to the convenience store immediately to pay so service isn't terminated.</li>
+                                <li><i class="fas fa-laptop-house text-violet-600 mr-3"></i><strong>Option B:</strong> Sleep now and try to set up an online payment later, even though the system is confusing.</li>
+                            </ul>
+                        </div>
+                        <p class="text-2xl text-slate-700 mb-4 font-medium">Discuss which option is more responsible for a medical professional.</p>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-40" placeholder="I would choose Option... because..."></textarea>
+                        <div id="ans-t9" class="answer-box hidden mt-6 p-8 bg-white border-2 border-violet-200 rounded-2xl text-2xl text-slate-700">
+                            <strong>Analysis:</strong> Both options carry risks. Option A prevents utility termination but sacrifices crucial rest needed for patient safety. Option B prioritizes medical readiness but risks losing essential utilities. The professional choice is likely Option B (sleep), paired with delegating the task or resolving it immediately upon waking, highlighting the critical need to set up direct debit *before* such situations arise.
+                        </div>
+                    </div>
+
+                    <!-- Task 9.1 -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-violet-800 mb-6">Task 9.1: AI Role Play Comparison</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-4 uppercase tracking-wider text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-6 rounded-xl border border-sky-200 font-mono text-2xl leading-relaxed">"Simulate a debate. AI: You argue that manual paper-based payments are safer for residents because they provide a physical receipt for tax purposes. Student: I will argue that automatic digital payments are essential for medical professionals to prevent service termination during busy rotations. Let's exchange one point each in 3 sentences."</p>
+                        </div>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none mt-6" placeholder="Your argument for digital payments..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Reflection (Rose Theme) -->
+        <div class="mb-10 rounded-3xl overflow-hidden border border-rose-100 shadow-lg">
+            <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-10 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-rose-200 text-rose-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform">6</div>
+                    <span class="text-4xl font-bold text-rose-900">Summary & Reflection (Task 10)</span>
+                </div>
+                <i id="icon-part6" class="fas fa-chevron-down text-rose-600 text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part6" class="accordion-content">
+                <div class="p-12 bg-white space-y-10">
+                    <div>
+                        <h3 class="text-3xl font-bold text-rose-800 mb-6">Task 10: Final Reflection</h3>
+                        <p class="text-2xl text-slate-700 mb-6 font-medium leading-relaxed">Write 5-6 sentences about your plan to manage your administrative life as a resident. Use at least three CAPITALIZED words from Task 2 (e.g., MANDATORY, COMPLY, DIRECT DEBIT). Explain how you will ensure you meet all deadlines.</p>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-64" placeholder="Your reflection paragraph..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-10 border-t-2 border-slate-100 text-center">
+            <p class="text-slate-500 text-xl font-bold tracking-wide">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-cyan-600 hover:text-cyan-800 transition-colors underline decoration-2 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        const attempts = {};
+
+        // Task 2: Vocab Data
+        const vocabData = [
+            { 
+                id: "v1", 
+                sentence: "All foreign medical professionals must visit City Hall within 14 days of moving into their new <strong>PREMISES</strong>.", 
+                correct: "b", 
+                options: { 
+                    a: "A professional medical license.", 
+                    b: "The land and buildings used by a person or business.", 
+                    c: "A type of high-speed train." 
+                } 
+            },
+            { 
+                id: "v2", 
+                sentence: "This registration is <strong>MANDATORY</strong>.", 
+                correct: "b", 
+                options: { 
+                    a: "Something that is optional or extra.", 
+                    b: "Something that is required by law or rule.", 
+                    c: "Something that is free of charge." 
+                } 
+            },
+            { 
+                id: "v3", 
+                sentence: "Failure to <strong>COMPLY</strong> with this deadline may result in administrative fines.", 
+                correct: "a", 
+                options: { 
+                    a: "To follow a rule, order, or request.", 
+                    b: "To argue against a new policy.", 
+                    c: "To forget an appointment." 
+                } 
+            },
+            { 
+                id: "v4", 
+                sentence: "<strong>DIRECT DEBIT:</strong> Funds are automatically withdrawn from your Japanese bank account.", 
+                correct: "b", 
+                options: { 
+                    a: "A system where you pay cash at a desk.", 
+                    b: "An arrangement where a bank moves money from your account to a company.", 
+                    c: "A way to borrow money from a friend." 
+                } 
+            },
+            { 
+                id: "v5", 
+                sentence: "If your account falls into <strong>ARREARS</strong> for more than 60 days...", 
+                correct: "c", 
+                options: { 
+                    a: "The state of being ahead of schedule with work.", 
+                    b: "The state of having paid too much money.", 
+                    c: "The state of being late in paying money that is owed." 
+                } 
+            },
+            { 
+                id: "v6", 
+                sentence: "We reserve the right to <strong>TERMINATE</strong> your service.", 
+                correct: "a", 
+                options: { 
+                    a: "To bring something to an end or stop it.", 
+                    b: "To improve the quality of a service.", 
+                    c: "To move a service to a new location." 
+                } 
+            }
+        ];
+
+        // Task 5: True/False Data
+        const tfData = [
+            { 
+                id: "tf1", 
+                text: "1. Registering at City Hall is a choice, not a requirement.", 
+                correct: "False", 
+                explanation: "The text says it is \"MANDATORY\" and failure to do so results in fines." 
+            },
+            { 
+                id: "tf2", 
+                text: "2. You can pay your electricity bill at a convenience store using a paper invoice.", 
+                correct: "True", 
+                explanation: "It is listed as Option 1: \"Convenience Store Payment: A paper invoice is sent to your mailbox monthly.\"" 
+            },
+            { 
+                id: "tf3", 
+                text: "3. If you miss a payment by one week, your electricity will be cut off immediately.", 
+                correct: "False", 
+                explanation: "Service may be terminated if the account is in arrears for \"more than 60 days.\"" 
+            },
+            { 
+                id: "tf4", 
+                text: "4. The text suggests that medical residents should use automatic payments because of their work schedules.", 
+                correct: "True", 
+                explanation: "It \"highly recommends\" automatic payments for those working night shifts to avoid missed deadlines." 
+            }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col gap-6 p-8 bg-cyan-50/50 rounded-2xl border-2 border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <p class="text-2xl text-slate-800 font-medium italic border-l-8 border-cyan-400 pl-6">"${item.sentence}"</p>
+                    <div class="flex flex-col gap-4 pl-4">
+                        ${Object.entries(item.options).map(([key, val]) => `
+                            <label class="flex items-center gap-4 p-5 bg-white rounded-xl border-2 border-slate-200 cursor-pointer hover:bg-cyan-50 hover:border-cyan-300 transition-all">
+                                <input type="radio" name="${item.id}" value="${key}" class="w-6 h-6 accent-cyan-600 shrink-0">
+                                <span class="text-2xl text-slate-700"><strong>${key}.</strong> ${val}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-2xl font-bold min-h-[32px] mt-2 pl-4"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col gap-4 p-8 border-b-2 border-emerald-100 last:border-0 bg-white rounded-xl mb-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+                        <span class="text-2xl text-slate-800 font-medium w-full xl:w-2/3">${item.text}</span>
+                        <div class="flex items-center gap-8 text-2xl font-bold bg-slate-50 p-4 rounded-xl shrink-0">
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-emerald-700">
+                                <input type="radio" name="${item.id}" value="True" class="w-7 h-7 accent-emerald-600"> True
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-emerald-700">
+                                <input type="radio" name="${item.id}" value="False" class="w-7 h-7 accent-emerald-600"> False
+                            </label>
+                            <span id="feedback-${item.id}" class="w-10 flex justify-center text-3xl"></span>
+                        </div>
+                    </div>
+                    <div id="explain-${item.id}" class="hidden mt-4 p-6 bg-emerald-100 text-emerald-900 text-2xl rounded-xl border-2 border-emerald-200 font-medium"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-3"></i>Correct!</span>';
+                    radios.forEach(r => r.disabled = true);
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-600"><i class="fas fa-info-circle mr-3"></i>Answer: ${item.correct}) ${item.options[item.correct]}</span>`;
+                    } else {
+                        feedback.innerHTML = '<span class="text-orange-600"><i class="fas fa-times-circle mr-3"></i>Try again</span>';
+                    }
+                }
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-600"></i>';
+                    radios.forEach(r => r.disabled = true);
+                    explainDiv.innerHTML = `<strong>Reason:</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-600 text-xl px-3 py-1 bg-red-100 rounded-lg">Ans: ${item.correct}</span>`;
+                        explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct}</strong><br><strong>Reason:</strong> ${item.explanation}`;
+                        explainDiv.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                    }
+                }
+            });
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = btn.innerText.includes("AI") ? "Show AI Sample Response" : "Show Sample";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                for (const key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                
+                // Clear Feedback & Explanations
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('[id^="explain-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.add('hidden');
+                });
+                
+                // Hide Answers
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+                
+                // Reset Buttons
+                document.querySelectorAll('button').forEach(btn => {
+                   if(btn.innerText.includes("Hide")) {
+                       btn.innerText = btn.innerText.includes("AI") ? "Show AI Sample Response" : "Show Sample";
+                   }
+                });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderTF();
+        });
+
+    </script>
+</body>
+</html>

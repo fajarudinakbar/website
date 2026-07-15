@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coherence and Cohesion in Academic Writing</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Print Styling */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; font-size: 12pt; }
+            .shadow-md { box-shadow: none; border: 1px solid #ccc; }
+            input, textarea, select { border: none; border-bottom: 1px solid #000; background: transparent; }
+        }
+        
+        /* Feedback State Classes */
+        .correct-answer { border-color: #22c55e !important; background-color: #f0fdf4 !important; }
+        .incorrect-answer { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .feedback-text { display: none; margin-top: 1rem; font-size: 1rem; font-weight: 500; }
+        
+        /* Custom larger checkbox/radio */
+        input[type=checkbox], input[type=radio] {
+            transform: scale(1.5);
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 text-lg">
+
+    <!-- Header -->
+    <header class="bg-indigo-700 text-white p-8 shadow-lg">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-3xl md:text-5xl font-bold mb-3"><i class="fas fa-link mr-3"></i>Coherence and Cohesion</h1>
+            <p class="text-indigo-100 text-xl">Level B2 | Lesson 5: Coherence and Cohesion in Academic Writing</p>
+        </div>
+    </header>
+
+    <!-- Student Info -->
+    <div class="max-w-5xl mx-auto mt-8 px-4">
+        <div class="bg-white p-8 rounded-xl shadow-md border-l-8 border-indigo-500">
+            <label class="block text-lg font-bold text-gray-800 mb-2">Student Name:</label>
+            <input type="text" id="studentName" placeholder="Enter your full name" class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-indigo-500 outline-none">
+        </div>
+    </div>
+
+    <main class="max-w-5xl mx-auto p-4 space-y-10">
+
+        <!-- Part 1: Understanding Coherence -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-6 border-b-2 border-indigo-100 pb-3">Part 1: Understanding Coherence</h2>
+            <p class="mb-4 text-lg text-gray-700">Coherence refers to how ideas are logically organised and easy to follow in a paragraph or text.</p>
+            
+            <h3 class="font-bold text-2xl mb-4">Task 1. Choose the best definition of coherence.</h3>
+            <div class="space-y-4">
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t1" value="a" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">a. Using many linking words</span>
+                </label>
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t1" value="b" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">b. Having clear and logical organisation of ideas</span>
+                </label>
+                <label class="flex items-start p-4 border-2 rounded-xl hover:bg-gray-50 cursor-pointer transition">
+                    <input type="radio" name="t1" value="c" class="mt-1 h-6 w-6 text-indigo-600 focus:ring-indigo-500">
+                    <span class="ml-4 text-lg">c. Writing long and complex sentences</span>
+                </label>
+            </div>
+            <div id="t1-feedback" class="feedback-text text-indigo-700 bg-indigo-50 p-4 rounded-lg border border-indigo-200"></div>
+            <button onclick="checkTask1()" class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 1</button>
+        </section>
+
+        <!-- Part 2: Understanding Cohesion -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 2: Understanding Cohesion</h2>
+            <p class="mb-4 text-lg text-gray-700">Cohesion refers to the language tools used to connect sentences and ideas (linking words, reference words, repetition).</p>
+
+            <h3 class="font-bold text-2xl mb-4">Task 2. Decide if each example shows Coherence (CO) or Cohesion (CE).</h3>
+            
+            <div class="space-y-4" id="task2">
+                <!-- Item 1 -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <span class="mb-2 md:mb-0 text-lg w-full md:w-3/4">1. Ideas move from cause to effect in a clear order.</span>
+                    <select id="t2_q1" class="md:ml-4 p-3 text-lg border-2 rounded-lg bg-white min-w-[150px]">
+                        <option value="">Select...</option>
+                        <option value="CO">Coherence (CO)</option>
+                        <option value="CE">Cohesion (CE)</option>
+                    </select>
+                </div>
+                <!-- Item 2 -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <span class="mb-2 md:mb-0 text-lg w-full md:w-3/4">2. The word “this” refers to the previous sentence.</span>
+                    <select id="t2_q2" class="md:ml-4 p-3 text-lg border-2 rounded-lg bg-white min-w-[150px]">
+                        <option value="">Select...</option>
+                        <option value="CO">Coherence (CO)</option>
+                        <option value="CE">Cohesion (CE)</option>
+                    </select>
+                </div>
+                <!-- Item 3 -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <span class="mb-2 md:mb-0 text-lg w-full md:w-3/4">3. The paragraph focuses on one main idea.</span>
+                    <select id="t2_q3" class="md:ml-4 p-3 text-lg border-2 rounded-lg bg-white min-w-[150px]">
+                        <option value="">Select...</option>
+                        <option value="CO">Coherence (CO)</option>
+                        <option value="CE">Cohesion (CE)</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="checkTask2()" class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 2</button>
+        </section>
+
+        <!-- Part 3: Analysing Cohesion -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 3: Analysing Cohesion</h2>
+            
+            <div class="bg-gray-50 p-6 rounded-xl border-l-4 border-gray-400 mb-6">
+                <h4 class="font-bold text-gray-700 mb-2">Paragraph A</h4>
+                <p class="leading-relaxed text-lg">
+                    "Employee training improves workplace performance. Well-trained employees can complete tasks more efficiently and accurately. <strong>As a result</strong>, organisations benefit from higher productivity. <strong>This</strong> improvement also increases employee confidence. <strong>Therefore</strong>, training programmes play an important role in organisational success."
+                </p>
+            </div>
+            
+            <h3 class="font-bold text-2xl mb-4">Task 3. Identify three cohesive devices used in the paragraph.</h3>
+            <textarea id="t3_answer" class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" rows="2" placeholder="List the linking words or reference words here..."></textarea>
+            
+            <div id="t3-feedback" class="feedback-text text-green-800 bg-green-50 p-4 rounded-xl border border-green-200 mt-4 text-lg">
+                <strong>Sample Answer:</strong> as a result, this, therefore
+            </div>
+            <button onclick="toggleFeedback('t3-feedback')" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-eye mr-2"></i> See Sample Answer</button>
+        </section>
+
+        <!-- Part 4: Identifying Logical Flow -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 4: Identifying Logical Flow</h2>
+            
+            <div class="bg-gray-50 p-6 rounded-xl border-l-4 border-gray-400 mb-6">
+                <h4 class="font-bold text-gray-700 mb-2">Paragraph B</h4>
+                <p class="leading-relaxed text-lg">
+                    "Customer satisfaction affects business success. Satisfied customers are more likely to return and recommend a company. For example, positive service experiences increase customer loyalty. However, many organisations fail to invest in customer service training. This lack of investment can damage long-term relationships with customers."
+                </p>
+            </div>
+            
+            <h3 class="font-bold text-2xl mb-4">Task 4. Identify the function of the words in the text.</h3>
+            
+            <div class="space-y-6">
+                <div>
+                    <p class="text-lg font-medium mb-2">1. Which word shows <strong>contrast</strong>?</p>
+                    <select id="t4_q1" class="w-full p-3 text-lg border-2 rounded-lg bg-gray-50">
+                        <option value="">Select word...</option>
+                        <option value="example">For example</option>
+                        <option value="however">However</option>
+                        <option value="this">This</option>
+                        <option value="and">And</option>
+                    </select>
+                </div>
+                <div>
+                    <p class="text-lg font-medium mb-2">2. Which word shows <strong>example</strong>?</p>
+                    <select id="t4_q2" class="w-full p-3 text-lg border-2 rounded-lg bg-gray-50">
+                        <option value="">Select word...</option>
+                        <option value="example">For example</option>
+                        <option value="however">However</option>
+                        <option value="this">This</option>
+                        <option value="and">And</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="checkTask4()" class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 4</button>
+        </section>
+
+        <!-- Part 5: Reordering for Coherence -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 5: Reordering for Coherence</h2>
+            <p class="mb-4 text-lg">Put the sentences in the correct order to form a logical paragraph.</p>
+            
+            <div class="space-y-4 mb-6">
+                <div class="bg-red-50 p-4 rounded-xl border border-red-100 flex items-center">
+                    <span class="font-bold text-red-600 text-xl mr-3">A.</span> 
+                    <span class="text-lg">As a result, managers must develop new communication strategies.</span>
+                </div>
+                <div class="bg-green-50 p-4 rounded-xl border border-green-100 flex items-center">
+                    <span class="font-bold text-green-600 text-xl mr-3">B.</span> 
+                    <span class="text-lg">Remote work has become common in many organisations.</span>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex items-center">
+                    <span class="font-bold text-blue-600 text-xl mr-3">C.</span> 
+                    <span class="text-lg">Digital tools now allow employees to work from different locations.</span>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-100 flex items-center">
+                    <span class="font-bold text-yellow-600 text-xl mr-3">D.</span> 
+                    <span class="text-lg">These changes have affected how teams collaborate.</span>
+                </div>
+            </div>
+            
+            <h3 class="font-bold text-2xl mb-4">Task 5. Assign the order (1st, 2nd, 3rd, 4th).</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col">
+                    <label class="font-bold mb-1">Sentence A is:</label>
+                    <select id="t5_q1" class="p-3 text-lg border-2 rounded-lg bg-white">
+                        <option value="">Select order...</option>
+                        <option value="1">1st</option>
+                        <option value="2">2nd</option>
+                        <option value="3">3rd</option>
+                        <option value="4">4th</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label class="font-bold mb-1">Sentence B is:</label>
+                    <select id="t5_q2" class="p-3 text-lg border-2 rounded-lg bg-white">
+                        <option value="">Select order...</option>
+                        <option value="1">1st</option>
+                        <option value="2">2nd</option>
+                        <option value="3">3rd</option>
+                        <option value="4">4th</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label class="font-bold mb-1">Sentence C is:</label>
+                    <select id="t5_q3" class="p-3 text-lg border-2 rounded-lg bg-white">
+                        <option value="">Select order...</option>
+                        <option value="1">1st</option>
+                        <option value="2">2nd</option>
+                        <option value="3">3rd</option>
+                        <option value="4">4th</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label class="font-bold mb-1">Sentence D is:</label>
+                    <select id="t5_q4" class="p-3 text-lg border-2 rounded-lg bg-white">
+                        <option value="">Select order...</option>
+                        <option value="1">1st</option>
+                        <option value="2">2nd</option>
+                        <option value="3">3rd</option>
+                        <option value="4">4th</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="checkTask5()" class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 5</button>
+        </section>
+
+        <!-- Part 6: Improving Weak Cohesion -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 6: Improving Weak Cohesion</h2>
+            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
+                <strong class="text-red-600 block mb-2"><i class="fas fa-times-circle mr-2"></i>Weak Flow:</strong>
+                <p class="italic">"Leadership affects employee performance. Leadership styles are different. Leadership styles affect motivation. Motivation affects productivity."</p>
+            </div>
+            
+            <h3 class="font-bold text-2xl mb-4">Task 6. Rewrite the paragraph using cohesive devices to improve flow.</h3>
+            <textarea class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Rewrite here..."></textarea>
+            
+            <div id="t6-feedback" class="feedback-text text-green-800 bg-green-50 p-4 rounded-xl border border-green-200 mt-4 text-lg">
+                <strong>Sample Answer:</strong> "Leadership affects employee performance because different leadership styles influence motivation. Higher motivation often leads to increased productivity."
+            </div>
+            <button onclick="toggleFeedback('t6-feedback')" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-eye mr-2"></i> See Sample Answer</button>
+        </section>
+
+        <!-- Part 7: Linking Sentences -->
+        <section class="bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-100 pb-3">Part 7: Linking Sentences Clearly</h2>
+            <h3 class="font-bold text-2xl mb-4">Task 7. Choose the best linker.</h3>
+            
+            <div class="space-y-8">
+                <!-- Question 1 -->
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <p class="text-lg font-medium mb-4">1. Many companies invest in digital marketing. ________, they can reach customers more efficiently.</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="t7_q1" value="a" class="h-6 w-6 text-indigo-600">
+                            <span class="text-lg">a. However</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="t7_q1" value="b" class="h-6 w-6 text-indigo-600">
+                            <span class="text-lg">b. As a result</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="t7_q1" value="c" class="h-6 w-6 text-indigo-600">
+                            <span class="text-lg">c. For example</span>
+                        </label>
+                    </div>
+                    <div id="t7_q1-feedback" class="feedback-text mt-4"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <p class="text-lg font-medium mb-4">2. Employee training is important. ________, it requires time and financial resources.</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="t7_q2" value="a" class="h-6 w-6 text-indigo-600">
+                            <span class="text-lg">a. Therefore</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="t7_q2" value="b" class="h-6 w-6 text-indigo-600">
+                            <span class="text-lg">b. For instance</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="t7_q2" value="c" class="h-6 w-6 text-indigo-600">
+                            <span class="text-lg">c. However</span>
+                        </label>
+                    </div>
+                    <div id="t7_q2-feedback" class="feedback-text mt-4"></div>
+                </div>
+            </div>
+            
+            <button onclick="checkTask7()" class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-check mr-2"></i> Check Task 7</button>
+        </section>
+
+        <!-- Production Section -->
+        <section class="bg-white p-8 rounded-xl shadow-md border-l-8 border-green-500">
+            <h2 class="text-3xl font-bold text-green-700 mb-6 border-b-2 border-green-100 pb-3">Production Tasks</h2>
+
+            <!-- Part 8 -->
+            <div class="mb-10">
+                <h3 class="font-bold text-2xl mb-4">Task 8. Linking Paragraphs</h3>
+                <div class="bg-gray-50 p-4 rounded-lg mb-4 text-lg">
+                    <p><strong>Paragraph 1 topic:</strong> Causes of employee stress</p>
+                    <p><strong>Paragraph 2 topic:</strong> Effects of employee stress</p>
+                </div>
+                <p class="text-lg mb-2">Write one sentence that links Paragraph 1 to Paragraph 2.</p>
+                <textarea class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" rows="2" placeholder="Write linking sentence..."></textarea>
+                <div id="t8-feedback" class="feedback-text text-green-800 bg-green-50 p-4 rounded-xl border border-green-200 mt-4 text-lg">
+                    <strong>Sample Answer:</strong> "These causes lead to several negative effects on employees and organisations."
+                </div>
+                <button onclick="toggleFeedback('t8-feedback')" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-eye mr-2"></i> See Sample Answer</button>
+            </div>
+
+            <!-- Part 9 -->
+            <div class="mb-10 border-t-2 border-gray-100 pt-8">
+                <h3 class="font-bold text-2xl mb-4">Task 9. Writing a Coherent Paragraph</h3>
+                <p class="text-lg mb-2">Write a paragraph (4–5 sentences) on: <strong>The benefits of effective communication in management</strong>.</p>
+                <p class="text-sm text-gray-500 mb-4">Requirement: Use at least three cohesive devices.</p>
+                <textarea class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" rows="5" placeholder="Write your paragraph here..."></textarea>
+                <div id="t9-feedback" class="feedback-text text-green-800 bg-green-50 p-4 rounded-xl border border-green-200 mt-4 text-lg">
+                    <strong>Sample Paragraph:</strong> "Effective communication is essential in management. Clear instructions help employees understand their roles and responsibilities. As a result, tasks are completed more efficiently. For example, regular meetings can reduce misunderstandings. Therefore, strong communication practices improve overall organisational performance."
+                </div>
+                <button onclick="toggleFeedback('t9-feedback')" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-eye mr-2"></i> See Sample Paragraph</button>
+            </div>
+
+            <!-- Part 10 -->
+            <div class="border-t-2 border-gray-100 pt-8">
+                <h3 class="font-bold text-2xl mb-4">Task 10. Reflection</h3>
+                <p class="text-lg mb-2">Why are coherence and cohesion important for the reader in academic writing?</p>
+                <textarea class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" rows="3" placeholder="Explain briefly..."></textarea>
+                <div id="t10-feedback" class="feedback-text text-green-800 bg-green-50 p-4 rounded-xl border border-green-200 mt-4 text-lg">
+                    <strong>Sample Answer:</strong> "Coherence and cohesion help the reader follow ideas easily and understand how sentences and paragraphs are connected."
+                </div>
+                <button onclick="toggleFeedback('t10-feedback')" class="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-lg font-bold transition shadow-md no-print w-full md:w-auto"><i class="fas fa-eye mr-2"></i> See Sample Answer</button>
+            </div>
+        </section>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row justify-end items-center gap-6 py-8 no-print">
+            <button onclick="window.print()" class="bg-gray-700 hover:bg-gray-800 text-white font-bold py-4 px-10 rounded-full shadow-xl transition duration-300 flex items-center text-xl">
+                <i class="fas fa-file-pdf mr-3"></i> Save as PDF
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-10 mt-12 text-center text-base no-print">
+        <p><a href="http://fajarudinakbar.online" target="_blank" class="hover:text-white transition-colors underline decoration-dotted underline-offset-4">Designed by fajarudinakbar.online</a></p>
+    </footer>
+
+    <script>
+        // State to track attempts
+        const attempts = {
+            t1: 0,
+            t2: 0,
+            t4: 0,
+            t5: 0,
+            t7_q1: 0,
+            t7_q2: 0
+        };
+
+        // Generic helper for Radio Button Tasks
+        function checkRadioTask(taskKey, groupName, correctVal, feedbackId) {
+            const selected = document.querySelector(`input[name="${groupName}"]:checked`);
+            const feedback = document.getElementById(feedbackId);
+            
+            // Clear previous styles
+            document.querySelectorAll(`input[name="${groupName}"]`).forEach(el => {
+                el.parentElement.classList.remove('bg-green-100', 'border-green-500', 'bg-red-100', 'border-red-500');
+                el.parentElement.style.fontWeight = 'normal';
+                el.parentElement.style.color = 'inherit';
+            });
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            if (selected.value === correctVal) {
+                // Correct
+                selected.parentElement.parentElement.classList.add('bg-green-100', 'border-green-500'); // Note: Extra parentElement for label wrapper
+                feedback.innerHTML = "<i class='fas fa-check-circle'></i> Correct!";
+                feedback.className = "feedback-text text-green-800 bg-green-50 p-4 rounded-lg border border-green-200 block";
+                feedback.style.display = "block";
+            } else {
+                // Incorrect
+                attempts[taskKey]++;
+                
+                if (attempts[taskKey] >= 2) {
+                    // Show Correct Answer
+                    const correctEl = document.querySelector(`input[name="${groupName}"][value="${correctVal}"]`);
+                    if (correctEl) {
+                        correctEl.parentElement.parentElement.classList.add('bg-green-100', 'border-green-500');
+                        correctEl.parentElement.style.fontWeight = 'bold';
+                    }
+                    
+                    selected.parentElement.parentElement.classList.add('bg-red-100', 'border-red-500');
+                    
+                    feedback.innerHTML = "<i class='fas fa-info-circle'></i> Incorrect. The correct answer is highlighted.";
+                    feedback.className = "feedback-text text-indigo-800 bg-indigo-50 p-4 rounded-lg border border-indigo-200 block";
+                    feedback.style.display = "block";
+                } else {
+                    // Try Again
+                    selected.parentElement.parentElement.classList.add('bg-red-100', 'border-red-500');
+                    const remaining = 2 - attempts[taskKey];
+                    feedback.innerHTML = `<i class='fas fa-times-circle'></i> Incorrect. Try again. (${remaining} attempt${remaining !== 1 ? 's' : ''} remaining)`;
+                    feedback.className = "feedback-text text-red-800 bg-red-50 p-4 rounded-lg border border-red-200 block";
+                    feedback.style.display = "block";
+                }
+            }
+        }
+        
+        // Simplified version for Task 1 style (label is direct parent)
+        function checkRadioTaskSimple(taskKey, groupName, correctVal, feedbackId) {
+             const selected = document.querySelector(`input[name="${groupName}"]:checked`);
+            const feedback = document.getElementById(feedbackId);
+            
+            // Clear previous styles
+            document.querySelectorAll(`input[name="${groupName}"]`).forEach(el => {
+                el.parentElement.classList.remove('bg-green-100', 'border-green-500', 'bg-red-100', 'border-red-500');
+                el.parentElement.style.fontWeight = 'normal';
+                el.parentElement.style.color = 'inherit';
+            });
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            if (selected.value === correctVal) {
+                // Correct
+                selected.parentElement.classList.add('bg-green-100', 'border-green-500');
+                feedback.innerHTML = "<i class='fas fa-check-circle'></i> Correct!";
+                feedback.className = "feedback-text text-green-800 bg-green-50 p-4 rounded-lg border border-green-200 block";
+                feedback.style.display = "block";
+            } else {
+                // Incorrect
+                attempts[taskKey]++;
+                
+                if (attempts[taskKey] >= 2) {
+                    // Show Correct Answer
+                    const correctEl = document.querySelector(`input[name="${groupName}"][value="${correctVal}"]`);
+                    if (correctEl) {
+                        correctEl.parentElement.classList.add('bg-green-100', 'border-green-500');
+                        correctEl.parentElement.style.fontWeight = 'bold';
+                    }
+                    
+                    selected.parentElement.classList.add('bg-red-100', 'border-red-500');
+                    
+                    feedback.innerHTML = "<i class='fas fa-info-circle'></i> Incorrect. The correct answer is highlighted.";
+                    feedback.className = "feedback-text text-indigo-800 bg-indigo-50 p-4 rounded-lg border border-indigo-200 block";
+                    feedback.style.display = "block";
+                } else {
+                    // Try Again
+                    selected.parentElement.classList.add('bg-red-100', 'border-red-500');
+                    const remaining = 2 - attempts[taskKey];
+                    feedback.innerHTML = `<i class='fas fa-times-circle'></i> Incorrect. Try again. (${remaining} attempt${remaining !== 1 ? 's' : ''} remaining)`;
+                    feedback.className = "feedback-text text-red-800 bg-red-50 p-4 rounded-lg border border-red-200 block";
+                    feedback.style.display = "block";
+                }
+            }
+        }
+
+        // Task 1
+        function checkTask1() {
+            checkRadioTaskSimple('t1', 't1', 'b', 't1-feedback');
+        }
+
+        // Task 2
+        function checkTask2() {
+            const correctMap = {
+                't2_q1': 'CO',
+                't2_q2': 'CE',
+                't2_q3': 'CO'
+            };
+            checkSelectTask(correctMap, 't2');
+        }
+
+        // Task 4
+        function checkTask4() {
+             const correctMap = {
+                't4_q1': 'however',
+                't4_q2': 'example'
+            };
+            checkSelectTask(correctMap, 't4');
+        }
+
+        // Task 5 (Ordering: B, C, D, A -> 1, 2, 3, 4)
+        // A is 4th, B is 1st, C is 2nd, D is 3rd
+        function checkTask5() {
+             const correctMap = {
+                't5_q1': '4', // A
+                't5_q2': '1', // B
+                't5_q3': '2', // C
+                't5_q4': '3'  // D
+            };
+            checkSelectTask(correctMap, 't5');
+        }
+
+        // Task 7
+        function checkTask7() {
+            checkRadioTask('t7_q1', 't7_q1', 'b', 't7_q1-feedback'); // As a result
+            checkRadioTask('t7_q2', 't7_q2', 'c', 't7_q2-feedback'); // However
+        }
+        
+        // Helper for group select checks
+        function checkSelectTask(correctMap, taskKey) {
+             let allCorrect = true;
+            for (const [id, val] of Object.entries(correctMap)) {
+                if (document.getElementById(id).value !== val) allCorrect = false;
+            }
+
+            if (allCorrect) {
+                for (const [id, val] of Object.entries(correctMap)) checkSelect(id, val);
+            } else {
+                attempts[taskKey]++;
+                if (attempts[taskKey] >= 2) {
+                    for (const [id, val] of Object.entries(correctMap)) {
+                        const el = document.getElementById(id);
+                        el.value = val;
+                        checkSelect(id, val);
+                    }
+                } else {
+                    for (const [id, val] of Object.entries(correctMap)) checkSelect(id, val);
+                    alert(`Incorrect. Please try again. (${2 - attempts[taskKey]} attempts remaining)`);
+                }
+            }
+        }
+
+        // Generic Toggle for Text Feedback
+        function toggleFeedback(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'none' || el.style.display === '' ? 'block' : 'none';
+        }
+
+        // Helper function for Select/Dropdown validation
+        function checkSelect(id, correctVal) {
+            const el = document.getElementById(id);
+            if (el.value === correctVal) {
+                el.classList.add('correct-answer');
+                el.classList.remove('incorrect-answer');
+            } else {
+                el.classList.add('incorrect-answer');
+                el.classList.remove('correct-answer');
+            }
+        }
+    </script>
+</body>
+</html>

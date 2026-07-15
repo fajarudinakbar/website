@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Speaking Task 2: PPF Strategy</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Space Grotesk for that Brutalist feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Space Grotesk"', 'sans-serif'],
+                    },
+                    colors: {
+                        brutal: {
+                            yellow: '#FFE600',
+                            pink: '#FF90E8',
+                            blue: '#3B82F6',
+                            orange: '#FF5722',
+                            green: '#4ADE80',
+                            cyan: '#06B6D4',
+                            purple: '#A855F7',
+                            white: '#FFFFFF',
+                            black: '#000000',
+                            bg: '#F0F0F0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #e5e5f7;
+            background-image: radial-gradient(#000000 1px, transparent 1px);
+            background-size: 20px 20px;
+            scroll-behavior: smooth;
+        }
+        
+        /* Hard Shadows */
+        .neo-shadow {
+            box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+        }
+        .neo-shadow-sm {
+            box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+        }
+        .neo-shadow-hover {
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .neo-shadow-hover:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px 0px rgba(0,0,0,1);
+        }
+        .neo-shadow-hover:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+        }
+
+        /* Form Elements */
+        .brutal-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 3px solid #000;
+            background-color: #fff;
+            font-weight: 600;
+            color: #000;
+            transition: all 0.2s;
+            outline: none;
+        }
+        .brutal-input:focus {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+            background-color: #fffbea;
+        }
+        .brutal-input.correct {
+            background-color: #4ADE80;
+            border-color: #000;
+        }
+        .brutal-input.incorrect {
+            background-color: #FF90E8;
+            border-color: #000;
+        }
+
+        /* Selects */
+        .brutal-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right .7em top 50%;
+            background-size: .65em auto;
+            padding-right: 2rem;
+        }
+
+        /* Checkbox */
+        .brutal-checkbox {
+            appearance: none;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid #000;
+            background: #fff;
+            position: relative;
+            cursor: pointer;
+        }
+        .brutal-checkbox:checked {
+            background: #000;
+        }
+        .brutal-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: #FFE600;
+            font-size: 1.2rem;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Accordion Logic */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
+            visibility: hidden;
+        }
+        .accordion-content.active {
+            max-height: 5000px; /* Large enough for content */
+            transition: max-height 0.5s ease-in-out;
+            visibility: visible;
+        }
+
+        /* Answer Feedback Boxes */
+        .answer-box {
+            display: none;
+            border: 3px solid #000;
+            padding: 1rem;
+            margin-top: 1rem;
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+        }
+        .answer-box.visible {
+            display: block;
+            animation: slamDown 0.2s font-bold forwards;
+        }
+        @keyframes slamDown {
+            0% { transform: scale(1.05); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Record Button Pulse */
+        @keyframes brutalPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.8), 4px 4px 0px 0px rgba(0,0,0,1); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 87, 34, 0), 4px 4px 0px 0px rgba(0,0,0,1); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0), 4px 4px 0px 0px rgba(0,0,0,1); }
+        }
+        .recording {
+            background-color: #FF5722 !important;
+            color: #fff !important;
+            animation: brutalPulse 1.5s infinite;
+        }
+
+        /* Brutal Audio Player Wrapper */
+        .brutal-audio-wrapper {
+            background-color: #FF90E8;
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+            padding: 0.5rem;
+        }
+        audio {
+            width: 100%;
+            height: 40px;
+            outline: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-brutal-black p-4 sm:p-8 md:p-12 text-sm md:text-base selection:bg-brutal-pink selection:text-black">
+
+    <div class="max-w-5xl mx-auto bg-brutal-white border-4 border-black neo-shadow p-6 sm:p-10 lg:p-12 relative">
+        
+        <!-- Breadcrumbs -->
+        <div class="inline-flex items-center gap-2 bg-brutal-yellow border-2 border-black px-3 py-1 font-bold uppercase tracking-widest text-xs mb-8 neo-shadow-sm">
+            <span>IELTS</span> <i class="fas fa-arrow-right"></i> 
+            <span>Speaking</span> <i class="fas fa-arrow-right"></i> 
+            <span>Task 2</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-8 mb-12">
+            <div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none mb-4" style="-webkit-text-stroke: 1px black;">
+                    The <span class="bg-brutal-pink px-2 neo-shadow border-4 border-black inline-block transform -rotate-2">PPF</span> Strategy
+                </h1>
+                <p class="text-lg sm:text-xl font-bold bg-brutal-bg inline-block px-2 border-2 border-black mt-2">Skill Focus: Part 2 (The Long Turn)</p>
+                <div class="flex flex-wrap gap-3 mt-6">
+                    <span class="bg-brutal-cyan border-2 border-black px-4 py-2 font-bold text-sm uppercase neo-shadow-sm"><i class="fas fa-layer-group mr-2"></i>Level: B1</span>
+                    <span class="bg-brutal-green border-2 border-black px-4 py-2 font-bold text-sm uppercase neo-shadow-sm"><i class="fas fa-running mr-2"></i>Leisure & Hobbies</span>
+                </div>
+            </div>
+            
+            <button onclick="resetAll()" class="bg-brutal-bg hover:bg-brutal-orange hover:text-white border-4 border-black px-6 py-3 font-black uppercase neo-shadow-hover whitespace-nowrap self-start">
+                <i class="fas fa-skull mr-2"></i> Reset
+            </button>
+        </div>
+
+        <div class="bg-brutal-blue text-white border-4 border-black p-6 mb-12 neo-shadow relative overflow-hidden">
+            <i class="fas fa-bullhorn absolute -right-6 -bottom-6 text-8xl opacity-20 text-black"></i>
+            <h2 class="text-2xl font-black uppercase tracking-wider mb-2 border-b-4 border-black inline-block">Rule Book</h2>
+            <p class="text-base md:text-lg font-bold relative z-10 leading-relaxed mt-2">
+                In Speaking Part 2, talk for 1-2 minutes. The <span class="bg-brutal-yellow text-black px-1 border-2 border-black">Past, Present, Future (PPF)</span> strategy stops you from running out of ideas. Expand across three time zones.
+            </p>
+        </div>
+
+        <div class="mb-8 border-4 border-black bg-brutal-cyan neo-shadow">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 md:p-6 hover:bg-opacity-80 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-brutal-white border-4 border-black w-12 h-12 flex items-center justify-center font-black text-xl neo-shadow-sm"><i class="fas fa-fire"></i></div>
+                    <span class="text-2xl md:text-3xl font-black uppercase tracking-tight">1. Warm-up & Setup</span>
+                </div>
+                <i id="icon-part1" class="fas fa-arrow-down text-3xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            
+            <div id="content-part1" class="accordion-content active bg-brutal-white border-t-4 border-black">
+                <div class="p-6 md:p-8 space-y-10">
+                    <div>
+                        <p class="text-lg font-bold mb-6 bg-brutal-yellow border-2 border-black p-3 inline-block shadow-[2px_2px_0px_rgba(0,0,0,1)]">Think about a hobby. Answer briefly:</p>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block font-black text-lg mb-2 uppercase tracking-wide">1. When did it start?</label>
+                                <input type="text" class="brutal-input neo-shadow-sm" placeholder="e.g., I started at ten...">
+                            </div>
+                            <div>
+                                <label class="block font-black text-lg mb-2 uppercase tracking-wide">2. How often now?</label>
+                                <input type="text" class="brutal-input neo-shadow-sm" placeholder="e.g., Every weekend...">
+                            </div>
+                            <div>
+                                <label class="block font-black text-lg mb-2 uppercase tracking-wide">3. In 5 years?</label>
+                                <input type="text" class="brutal-input neo-shadow-sm" placeholder="e.g., I hope to be pro...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8 border-4 border-black bg-brutal-pink neo-shadow">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 md:p-6 hover:bg-opacity-80 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-brutal-white border-4 border-black w-12 h-12 flex items-center justify-center font-black text-xl neo-shadow-sm"><i class="fas fa-clock"></i></div>
+                    <span class="text-2xl md:text-3xl font-black uppercase tracking-tight">2. Strategy Breakdown</span>
+                </div>
+                <i id="icon-part2" class="fas fa-arrow-down text-3xl transition-transform duration-300"></i>
+            </button>
+            
+            <div id="content-part2" class="accordion-content bg-brutal-white border-t-4 border-black">
+                <div class="p-6 md:p-8">
+                    <p class="text-lg font-bold mb-8">Split your answer into three distinct zones to naturally force wider grammar usage.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Past -->
+                        <div class="bg-brutal-yellow border-4 border-black p-5 neo-shadow flex flex-col">
+                            <h4 class="text-2xl font-black uppercase mb-2 border-b-4 border-black pb-1">Past</h4>
+                            <p class="font-bold mb-4 flex-grow">Origins and how it began.</p>
+                            <div class="bg-white border-2 border-black p-3 font-mono text-sm font-bold">"I started this when..."</div>
+                        </div>
+                        <!-- Present -->
+                        <div class="bg-brutal-blue text-white border-4 border-black p-5 neo-shadow flex flex-col">
+                            <h4 class="text-2xl font-black uppercase mb-2 border-b-4 border-black border-white pb-1">Present</h4>
+                            <p class="font-bold mb-4 flex-grow">Current habits and feelings.</p>
+                            <div class="bg-black border-2 border-white text-white p-3 font-mono text-sm font-bold">"Nowadays, I usually..."</div>
+                        </div>
+                        <!-- Future -->
+                        <div class="bg-brutal-green border-4 border-black p-5 neo-shadow flex flex-col">
+                            <h4 class="text-2xl font-black uppercase mb-2 border-b-4 border-black pb-1">Future</h4>
+                            <p class="font-bold mb-4 flex-grow">Intentions and predictions.</p>
+                            <div class="bg-white border-2 border-black p-3 font-mono text-sm font-bold">"In the future, I hope..."</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8 border-4 border-black bg-brutal-yellow neo-shadow">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 md:p-6 hover:bg-opacity-80 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-brutal-white border-4 border-black w-12 h-12 flex items-center justify-center font-black text-xl neo-shadow-sm"><i class="fas fa-search"></i></div>
+                    <span class="text-2xl md:text-3xl font-black uppercase tracking-tight">3. Analysis Task</span>
+                </div>
+                <i id="icon-part3" class="fas fa-arrow-down text-3xl transition-transform duration-300"></i>
+            </button>
+            
+            <div id="content-part3" class="accordion-content bg-brutal-white border-t-4 border-black">
+                <div class="p-6 md:p-8 space-y-8">
+                    
+                    <div class="bg-brutal-bg border-4 border-black p-6 neo-shadow-sm relative">
+                        <span class="absolute -top-3 left-4 bg-black text-white px-2 py-1 text-xs font-black uppercase tracking-widest">Transcript</span>
+                        <p class="text-lg md:text-xl font-medium leading-relaxed font-serif">
+                            "I’d like to talk about playing the piano. <span class="bg-brutal-yellow font-bold border-b-4 border-black">I first started learning when I was only seven years old</span> because my mother wanted me to try music. <span class="bg-brutal-blue text-white font-bold px-1 border-b-4 border-black">However, these days, I find it very relaxing.</span> I usually practice for thirty minutes every evening. <span class="bg-brutal-green font-bold border-b-4 border-black">Looking ahead, I’m planning to take a formal exam</span> next year."
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-black text-2xl mb-6 uppercase"><i class="fas fa-crosshairs mr-2"></i> Identify the Time</h3>
+                        <div class="space-y-4">
+                            <div class="bg-white border-4 border-black p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 neo-shadow-sm">
+                                <span class="font-bold text-lg">1. "I first started learning..."</span>
+                                <select id="s4-q1" class="brutal-input brutal-select md:w-48 neo-shadow-sm">
+                                    <option value="">Select...</option>
+                                    <option value="past">Past</option>
+                                    <option value="present">Present</option>
+                                    <option value="future">Future</option>
+                                </select>
+                            </div>
+                            <div class="bg-white border-4 border-black p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 neo-shadow-sm">
+                                <span class="font-bold text-lg">2. "However, these days..."</span>
+                                <select id="s4-q2" class="brutal-input brutal-select md:w-48 neo-shadow-sm">
+                                    <option value="">Select...</option>
+                                    <option value="past">Past</option>
+                                    <option value="present">Present</option>
+                                    <option value="future">Future</option>
+                                </select>
+                            </div>
+                            <div class="bg-white border-4 border-black p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 neo-shadow-sm">
+                                <span class="font-bold text-lg">3. "Looking ahead, I’m planning..."</span>
+                                <select id="s4-q3" class="brutal-input brutal-select md:w-48 neo-shadow-sm">
+                                    <option value="">Select...</option>
+                                    <option value="past">Past</option>
+                                    <option value="present">Present</option>
+                                    <option value="future">Future</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="check-s4" class="bg-black text-white hover:bg-brutal-pink hover:text-black border-4 border-black px-8 py-4 font-black uppercase text-xl neo-shadow-hover w-full md:w-auto transition-colors" onclick="checkStep4()">
+                        Check Analysis
+                    </button>
+
+                    <div id="res-s4" class="answer-box bg-brutal-white">
+                        <div id="s4-feedback-title" class="text-2xl font-black uppercase tracking-tight"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8 border-4 border-black bg-brutal-green neo-shadow">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 md:p-6 hover:bg-opacity-80 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-brutal-white border-4 border-black w-12 h-12 flex items-center justify-center font-black text-xl neo-shadow-sm"><i class="fas fa-dumbbell"></i></div>
+                    <span class="text-2xl md:text-3xl font-black uppercase tracking-tight">4. Transformation</span>
+                </div>
+                <i id="icon-part4" class="fas fa-arrow-down text-3xl transition-transform duration-300"></i>
+            </button>
+            
+            <div id="content-part4" class="accordion-content bg-brutal-white border-t-4 border-black">
+                <div class="p-6 md:p-8 space-y-8">
+                    
+                    <p class="text-lg font-bold">Transform sentences into the required tense.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-brutal-bg border-4 border-black p-5 neo-shadow-sm">
+                            <p class="text-xl font-black mb-2">1. "I play tennis."</p>
+                            <span class="bg-black text-white px-2 py-1 text-xs font-bold uppercase mb-3 inline-block">Change to: Past Simple</span>
+                            <input type="text" id="s6-q1" class="brutal-input text-lg mt-2" placeholder="Rewrite..." data-ans="I played tennis">
+                        </div>
+                        <div class="bg-brutal-bg border-4 border-black p-5 neo-shadow-sm">
+                            <p class="text-xl font-black mb-2">2. "I don't have time."</p>
+                            <span class="bg-black text-white px-2 py-1 text-xs font-bold uppercase mb-3 inline-block">Change to: Future (going to)</span>
+                            <input type="text" id="s6-q2" class="brutal-input text-lg mt-2" placeholder="Rewrite..." data-ans="I am going to have time|I'm going to have time|I am not going to have time">
+                        </div>
+                        <div class="bg-brutal-bg border-4 border-black p-5 neo-shadow-sm">
+                            <p class="text-xl font-black mb-2">3. "I take lessons on Sundays."</p>
+                            <span class="bg-black text-white px-2 py-1 text-xs font-bold uppercase mb-3 inline-block">Change to: Past Habit (Used to)</span>
+                            <input type="text" id="s6-q3" class="brutal-input text-lg mt-2" placeholder="Rewrite..." data-ans="I used to take lessons on Sundays|I used to take lessons">
+                        </div>
+                    </div>
+
+                    <button id="check-s6" class="bg-brutal-green hover:bg-black hover:text-white border-4 border-black px-8 py-4 font-black uppercase text-xl neo-shadow-hover w-full md:w-auto transition-colors" onclick="checkStep6()">
+                        Check Grammar
+                    </button>
+
+                    <div id="res-s6" class="answer-box bg-brutal-white">
+                        <div id="s6-feedback-title" class="text-2xl font-black uppercase tracking-tight"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8 border-4 border-black bg-brutal-orange neo-shadow">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 md:p-6 hover:bg-opacity-80 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-brutal-white border-4 border-black w-12 h-12 flex items-center justify-center font-black text-xl neo-shadow-sm"><i class="fas fa-microphone-alt"></i></div>
+                    <span class="text-2xl md:text-3xl font-black uppercase tracking-tight">5. Test Simulator</span>
+                </div>
+                <i id="icon-part5" class="fas fa-arrow-down text-3xl transition-transform duration-300"></i>
+            </button>
+            
+            <div id="content-part5" class="accordion-content bg-brutal-white border-t-4 border-black">
+                <div class="p-6 md:p-8 space-y-10">
+                    
+                    <!-- Task Card -->
+                    <div class="bg-brutal-yellow border-4 border-black p-6 md:p-8 neo-shadow mx-auto max-w-2xl transform rotate-1">
+                        <h4 class="font-black text-2xl md:text-3xl uppercase mb-4 text-center border-b-4 border-black pb-2">Describe a sport you enjoy</h4>
+                        <ul class="font-bold text-lg space-y-2 mb-6 list-square pl-6">
+                            <li>What the sport is</li>
+                            <li>How long you have been interested in it</li>
+                            <li>Who you play it with</li>
+                        </ul>
+                        <div class="bg-black text-white p-3 font-bold text-center">Explain why you enjoy it & future plans.</div>
+                    </div>
+
+                    <!-- AI Planning -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" id="plan-past" class="brutal-input bg-brutal-yellow placeholder-black" placeholder="Past keywords...">
+                        <input type="text" id="plan-present" class="brutal-input bg-brutal-cyan placeholder-black" placeholder="Present keywords...">
+                        <input type="text" id="plan-future" class="brutal-input bg-brutal-pink placeholder-black" placeholder="Future keywords...">
+                    </div>
+                    <button class="w-full bg-black text-white border-4 border-black px-4 py-3 font-bold uppercase neo-shadow-hover hover:bg-brutal-purple" onclick="copyPlanningPrompt()">
+                        <i class="fa-solid fa-robot mr-2"></i> Copy to AI for Script Generation
+                    </button>
+
+                    <hr class="border-t-4 border-black">
+
+                    <!-- Simulator -->
+                    <div>
+                        <h3 class="font-black text-2xl uppercase mb-4 text-center">Live Simulation (2 Mins)</h3>
+                        
+                        <div class="flex justify-center items-center gap-6 mb-6 bg-brutal-bg border-4 border-black p-4 neo-shadow-sm">
+                            <button id="recordBtn" class="bg-brutal-white border-4 border-black w-16 h-16 rounded-full flex items-center justify-center neo-shadow-hover transition-colors" onclick="toggleRecord(this)">
+                                <i class="fas fa-microphone text-2xl"></i>
+                            </button>
+                            <span class="timer-display hidden text-4xl font-black font-mono tracking-widest">02:00</span>
+                        </div>
+
+                        <textarea id="simulation-script" class="brutal-input h-48 md:h-64 font-medium text-lg leading-relaxed bg-brutal-white" placeholder="Click the mic to speak, or paste your transcript here..."></textarea>
+                        
+                        <div id="audio-playback-container" class="hidden mt-4 brutal-audio-wrapper">
+                            <h4 class="font-black uppercase text-sm mb-2"><i class="fas fa-play-circle mr-2"></i>Review Your Recording</h4>
+                            <audio id="audio-playback" controls></audio>
+                        </div>
+                        
+                        <button class="w-full mt-4 bg-brutal-blue text-white border-4 border-black px-4 py-4 font-black text-lg uppercase neo-shadow-hover hover:bg-black" onclick="copySimulationPrompt()">
+                            <i class="fa-solid fa-check-double mr-2"></i> Copy Transcript for AI Evaluation
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="border-4 border-black bg-brutal-purple text-white neo-shadow">
+            <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-5 md:p-6 hover:bg-opacity-80 transition-colors text-left group">
+                <div class="flex items-center gap-4">
+                    <div class="bg-brutal-white text-black border-4 border-black w-12 h-12 flex items-center justify-center font-black text-xl neo-shadow-sm"><i class="fas fa-brain"></i></div>
+                    <span class="text-2xl md:text-3xl font-black uppercase tracking-tight">6. Reflection</span>
+                </div>
+                <i id="icon-part6" class="fas fa-arrow-down text-3xl transition-transform duration-300"></i>
+            </button>
+            
+            <div id="content-part6" class="accordion-content bg-brutal-white text-black border-t-4 border-black">
+                <div class="p-6 md:p-8 space-y-6">
+                    
+                    <label class="flex items-center gap-4 cursor-pointer p-4 border-4 border-black bg-brutal-bg neo-shadow-sm hover:bg-brutal-yellow transition-colors">
+                        <input type="checkbox" class="brutal-checkbox shrink-0">
+                        <span class="text-xl font-bold">I spoke for at least 1 minute 30 seconds.</span>
+                    </label>
+                    
+                    <label class="flex items-center gap-4 cursor-pointer p-4 border-4 border-black bg-brutal-bg neo-shadow-sm hover:bg-brutal-cyan transition-colors">
+                        <input type="checkbox" class="brutal-checkbox shrink-0">
+                        <span class="text-xl font-bold">I successfully used Past, Present, and Future.</span>
+                    </label>
+
+                    <div class="mt-8">
+                        <label class="block font-black text-2xl uppercase mb-2">Action Plan for next time:</label>
+                        <input type="text" class="brutal-input text-lg" placeholder="I will try to use the phrase...">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Accordion Logic ---
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // --- Reset Logic ---
+        function resetAll() {
+            if(confirm("NUKE EVERYTHING? This clears all answers.")) {
+                attemptsS4 = 0;
+                attemptsS6 = 0;
+                
+                document.querySelectorAll('input[type="text"], textarea').forEach(i => {
+                    i.value = "";
+                    i.classList.remove('correct', 'incorrect');
+                });
+                
+                document.querySelectorAll('select').forEach(s => {
+                    s.value = "";
+                    s.classList.remove('correct', 'incorrect');
+                });
+
+                document.querySelectorAll('input[type="checkbox"]').forEach(r => r.checked = false);
+
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.remove('visible'); 
+                    el.className = 'answer-box bg-brutal-white'; // reset colors
+                });
+
+                document.querySelectorAll('button[id^="check-"]').forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                });
+                
+                const audioContainer = document.getElementById('audio-playback-container');
+                if (audioContainer) audioContainer.classList.add('hidden');
+                const audioPlayback = document.getElementById('audio-playback');
+                if (audioPlayback) audioPlayback.src = "";
+
+                // Stop recording if active
+                const recBtn = document.getElementById('recordBtn');
+                if(recBtn.classList.contains('recording')) {
+                    stopRecording(recBtn, document.querySelector('.timer-display'));
+                }
+            }
+        }
+
+        // --- Variables for Tracking ---
+        let attemptsS4 = 0;
+        let attemptsS6 = 0;
+        const MAX_ATTEMPTS = 2;
+
+        // --- Step 4 (Analysis) Check ---
+        function checkStep4() {
+            const answers = { 's4-q1': 'past', 's4-q2': 'present', 's4-q3': 'future' };
+            let correct = 0;
+            const btn = document.getElementById('check-s4');
+            const res = document.getElementById('res-s4');
+            const title = document.getElementById('s4-feedback-title');
+            
+            for (const [id, ans] of Object.entries(answers)) {
+                const el = document.getElementById(id);
+                el.classList.remove('correct', 'incorrect');
+                
+                if (el.value === ans) {
+                    correct++;
+                    el.classList.add('correct');
+                } else if(el.value !== "") {
+                    el.classList.add('incorrect');
+                }
+            }
+
+            res.className = 'answer-box visible'; // Reset base classes then make visible
+            
+            if (correct === 3) {
+                res.classList.add('bg-brutal-green');
+                title.innerHTML = 'NAILED IT. Perfect Analysis.';
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+            } else {
+                attemptsS4++;
+                if (attemptsS4 >= MAX_ATTEMPTS) {
+                    res.classList.add('bg-brutal-pink');
+                    title.innerHTML = 'MAX ATTEMPTS. ANSWERS REVEALED.';
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                    for (const [id, ans] of Object.entries(answers)) {
+                        const el = document.getElementById(id);
+                        el.value = ans;
+                        el.classList.remove('incorrect');
+                        el.classList.add('correct');
+                    }
+                } else {
+                    res.classList.add('bg-brutal-yellow');
+                    title.innerHTML = `TRY AGAIN. (Attempt ${attemptsS4}/${MAX_ATTEMPTS})`;
+                }
+            }
+        }
+
+        // --- Step 6 (Transformations) Check ---
+        function checkStep6() {
+            const inputs = document.querySelectorAll('#s6-q1, #s6-q2, #s6-q3');
+            let correctCount = 0;
+            const btn = document.getElementById('check-s6');
+            const res = document.getElementById('res-s6');
+            const title = document.getElementById('s6-feedback-title');
+
+            inputs.forEach(input => {
+                const userVal = input.value.trim().toLowerCase().replace(/[.,!]/g, ''); 
+                const correctOpts = input.getAttribute('data-ans').toLowerCase().split('|');
+                
+                input.classList.remove('correct', 'incorrect');
+                
+                const isMatch = correctOpts.some(opt => userVal === opt || (userVal.length > 5 && userVal.includes(opt)));
+
+                if(isMatch && userVal.length > 0) {
+                    correctCount++;
+                    input.classList.add('correct');
+                } else if(userVal.length > 0) {
+                    input.classList.add('incorrect');
+                }
+            });
+
+            res.className = 'answer-box visible';
+
+            if (correctCount === inputs.length) {
+                res.classList.add('bg-brutal-green');
+                title.innerHTML = 'FLAWLESS GRAMMAR.';
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+            } else {
+                attemptsS6++;
+                if (attemptsS6 >= MAX_ATTEMPTS) {
+                    res.classList.add('bg-brutal-pink');
+                    title.innerHTML = 'MAX ATTEMPTS. MODELS REVEALED.';
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                    inputs.forEach(input => {
+                        input.value = input.getAttribute('data-ans').split('|')[0];
+                        input.classList.remove('incorrect');
+                        input.classList.add('correct');
+                    });
+                } else {
+                    res.classList.add('bg-brutal-yellow');
+                    title.innerHTML = `CHECK SPELLING. (Attempt ${attemptsS6}/${MAX_ATTEMPTS})`;
+                }
+            }
+        }
+
+        // --- STREAMING_CHUNK: Copy and Simulator APIs ---
+        function copyPlanningPrompt() {
+            const past = document.getElementById('plan-past').value;
+            const present = document.getElementById('plan-present').value;
+            const future = document.getElementById('plan-future').value;
+            
+            if(!past && !present && !future) {
+                alert("WRITE SOME KEYWORDS FIRST.");
+                return;
+            }
+
+            const prompt = `IELTS Speaking Part 2 preparation. Topic: A sport I enjoy. \nNotes: \n- Past: ${past || 'N/A'} \n- Present: ${present || 'N/A'} \n- Future: ${future || 'N/A'} \nExpand these into a natural B2/C1 IELTS response using chronological PPF structure.`;
+            
+            navigator.clipboard.writeText(prompt).then(() => {
+                alert("PROMPT COPIED TO CLIPBOARD.");
+            });
+        }
+
+        function copySimulationPrompt() {
+            const script = document.getElementById('simulation-script').value.trim();
+            if(!script) {
+                alert("NO SCRIPT FOUND. SPEAK OR TYPE FIRST.");
+                return;
+            }
+            const prompt = `Act as an expert IELTS examiner. Evaluate this Part 2 transcript: \n\n"${script}" \n\nCheck for: \n1. PPF Structure usage \n2. Lexical Resource \n3. Grammatical Range \nGive a band score and 2 harsh, actionable tips.`;
+            
+            navigator.clipboard.writeText(prompt).then(() => {
+                alert("EVALUATION PROMPT COPIED.");
+            });
+        }
+
+        // --- Speech and Timer ---
+        let recognition;
+        let timerInterval;
+        let mediaRecorder;
+        let audioChunks = [];
+        let audioBlobUrl = null;
+
+        window.toggleRecord = async function(btn) {
+            const timerDisplay = document.querySelector('.timer-display');
+            const textArea = document.getElementById('simulation-script');
+
+            if (btn.classList.contains('recording')) {
+                stopRecording(btn, timerDisplay);
+            } else {
+                await startRecording(btn, textArea, timerDisplay);
+            }
+        };
+
+        async function startRecording(btn, textArea, timerDisplay) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Browser doesn't support Speech API. Just type it in.");
+                return;
+            }
+
+            // Audio playback setup
+            const audioPlaybackContainer = document.getElementById('audio-playback-container');
+            audioPlaybackContainer.classList.add('hidden');
+            if (audioBlobUrl) {
+                URL.revokeObjectURL(audioBlobUrl);
+                audioBlobUrl = null;
+            }
+            audioChunks = [];
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) audioChunks.push(event.data);
+                };
+            } catch (err) {
+                alert("MICROPHONE ACCESS DENIED. Enable it to record audio.");
+                return;
+            }
+
+            textArea.value = "";
+            textArea.placeholder = "LISTENING... Speak loud and clear.";
+            
+            btn.classList.add('recording');
+            btn.innerHTML = `<i class="fas fa-stop text-2xl text-white"></i>`;
+            timerDisplay.classList.remove('hidden');
+
+            let timeLeft = 120; // 2 minutes
+            timerDisplay.textContent = formatTime(timeLeft);
+            
+            if(timerInterval) clearInterval(timerInterval);
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = formatTime(timeLeft);
+                if (timeLeft <= 0) {
+                    stopRecording(btn, timerDisplay);
+                    textArea.value += "\n\n[TIME UP]";
+                }
+            }, 1000);
+
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            let final_transcript = '';
+
+            recognition.onresult = (event) => {
+                let interim_transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        final_transcript += event.results[i][0].transcript;
+                    } else {
+                        interim_transcript += event.results[i][0].transcript;
+                    }
+                }
+                textArea.value = final_transcript + interim_transcript;
+                textArea.scrollTop = textArea.scrollHeight;
+            };
+
+            recognition.onerror = (event) => {
+                if (event.error !== 'no-speech') {
+                    stopRecording(btn, timerDisplay);
+                    textArea.placeholder = "MIC ERROR. TYPE IT INSTEAD.";
+                }
+            };
+            
+            recognition.start();
+            mediaRecorder.start();
+        }
+
+        function stopRecording(btn, timerDisplay) {
+            btn.classList.remove('recording');
+            btn.innerHTML = `<i class="fas fa-microphone text-2xl"></i>`;
+            
+            if(timerInterval) clearInterval(timerInterval);
+
+            if (recognition) {
+                recognition.stop();
+                recognition = null;
+            }
+
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType });
+                    audioBlobUrl = URL.createObjectURL(audioBlob);
+                    
+                    const audioPlayback = document.getElementById('audio-playback');
+                    audioPlayback.src = audioBlobUrl;
+                    document.getElementById('audio-playback-container').classList.remove('hidden');
+                    
+                    // Stop mic tracks to clear browser recording indicator
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                };
+                mediaRecorder.stop();
+            }
+        }
+        
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `0${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>TOEIC Reading Overview</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .text-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            margin-top: 0.5rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+
+        /* Option Labels (Radios) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+            font-weight: 700;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #0f172a;
+            cursor: pointer;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        
+        .option-label.correct-lock {
+            background-color: #4ade80 !important;
+            border-color: #0f172a;
+            color: #0f172a !important;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        .option-label.incorrect-lock {
+            background-color: #f87171 !important;
+            border-color: #0f172a;
+            color: #ffffff !important;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        .option-label.incorrect-lock span {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-6 md:p-8 text-sm md:text-base">
+
+    <div class="max-w-6xl mx-auto bg-white p-5 sm:p-8 lg:p-10 border-4 border-dark shadow-neo">
+        
+        <div class="text-xs sm:text-sm md:text-base text-dark mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">TOEIC</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Reading</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-[#facc15] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">B1-B2</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Question Types</span>
+        </div>
+
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-dark uppercase tracking-tight mb-3 md:mb-4 text-balance">
+                    Reading Section Overview
+                </h1>
+                <p class="text-lg sm:text-xl md:text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-1 border-2 border-dark text-pretty">
+                    Topic: Navigating Parts 5, 6, and 7
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-2 px-5 py-3 text-sm md:text-base text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-[#fefce8] border-3 border-dark p-5 md:p-6 mb-8 md:mb-12 shadow-neo-sm flex items-start gap-4">
+            <div class="bg-[#facc15] p-2 border-2 border-dark shrink-0">
+                <i data-lucide="info" class="w-6 h-6 text-dark"></i>
+            </div>
+            <p class="text-base md:text-lg text-dark font-bold leading-relaxed text-pretty">
+                <span class="uppercase font-black text-xl mr-2">Instructions:</span> This worksheet uses the 10 Step Drill Master approach to build reading stamina across all question types. Complete the tasks sequentially. For interactive quizzes, you have <strong class="text-brand-600">two attempts</strong> before the correct answer, explanation, and citation source are revealed. 
+            </p>
+        </div>
+
+        <div class="space-y-6 md:space-y-8">
+
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            5
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 5: Incomplete Sentences</span>
+                    </div>
+                    <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <div class="bg-indigo-50 border-3 border-dark p-5 shadow-neo-sm">
+                            <h4 class="font-black uppercase text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> Real Test Format: Part 5</h4>
+                            <p class="font-medium text-slate-800 text-pretty mb-4">In the real test, you will read a sentence with a missing word or phrase. You must select the best answer to complete the sentence. <strong>Four options (A, B, C, D) are printed below each sentence.</strong> These questions test your knowledge of vocabulary and grammar.</p>
+                            
+                            <div class="bg-indigo-100 p-4 border-2 border-indigo-900">
+                                <h5 class="font-black text-indigo-900 uppercase text-sm mb-1">Strategy: The 2 Pass Method</h5>
+                                <ul class="list-disc pl-5 font-medium text-slate-800 space-y-1">
+                                    <li>Time management is an important part of doing the reading test.</li>
+                                    <li>You should spend no more than about 30 to 45 seconds on each Part 5 and 6 question.</li>
+                                    <li>On the first pass, quickly answer the easy questions.</li>
+                                    <li>On the second pass, go back and spend a bit more time on the more challenging questions.</li>
+                                    <li>If you do not know the answer, guess and move on.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#38bdf8] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 1</span> Pattern Identification
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t1', this, 'Show Pattern Analysis')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Pattern Analysis</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">A common TOEIC Part 5 trap involves <strong>Word Families</strong>. First, decide what part of speech is needed (noun, verb, adjective, etc.) by looking at the surrounding sentence. You can use suffixes (word endings) to help identify the part of speech. Look at this example: <br><br><em>The manager relies on Susan because she always completes her work __________.</em><br><br>Explain how to quickly identify the correct grammatical structure for the blank without needing to read the entire sentence.</p>
+                            <textarea class="text-input text-base font-medium" placeholder="To solve this quickly, I would look at..."></textarea>
+                            
+                            <div id="ans-t1" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="eye" class="w-5 h-5 inline mr-1 text-[#eab308]"></i>Pattern Analysis:</strong>
+                                <p class="font-medium text-base text-pretty">In Word Family questions, look at the surrounding words. The blank comes after a complete clause and describes the verb "completes". Verbs are modified by adverbs. Therefore, the adverb form (e.g., "reliably") is the only grammatically correct choice. Looking closely at suffixes quickly eliminates incorrect parts of speech.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border-3 border-dark shadow-neo p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#38bdf8] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 2</span> Part 5 Speed Drill
+                            </h3>
+                            <p class="text-base font-bold text-slate-700 mb-4 bg-yellow-100 border-2 border-dark p-3 inline-block shadow-[2px_2px_0_0_#0f172a]">
+                                <i data-lucide="timer" class="w-4 h-4 inline text-dark mr-1"></i> You have 60 seconds to identify the correct grammatical structure or vocabulary word for all 5 items. Remember your 2 Pass Method!
+                            </p>
+                            
+                            <div id="part5-mcq-container" class="space-y-6">
+                                </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkMCQ('part5-mcq-container', part5McqData, part5Attempts)" class="neo-btn w-full md:w-auto bg-[#38bdf8] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Answers
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#eff6ff]">
+                <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            6
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 6: Text Completion</span>
+                    </div>
+                    <div id="icon-wrapper-part6" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part6" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-6">
+
+                        <div class="bg-indigo-50 border-3 border-dark p-5 shadow-neo-sm mb-4">
+                            <h4 class="font-black uppercase text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> Real Test Format: Part 6</h4>
+                            <p class="font-medium text-slate-800 text-pretty mb-4">In the real test, you will read a short text (like a letter or memo) that has four blanks. You must select the best word, phrase, or <strong>entire sentence</strong> to complete the text. Four options are printed for each blank.</p>
+                            
+                            <div class="bg-indigo-100 p-4 border-2 border-indigo-900">
+                                <h5 class="font-black text-indigo-900 uppercase text-sm mb-1">Strategy: Verb Forms and Contextual Clues</h5>
+                                <ul class="list-disc pl-5 font-medium text-slate-800 space-y-1">
+                                    <li>Some questions provide four options that feature different tenses of the same verb.</li>
+                                    <li>Look at the sentence to decide what tense is required, and then choose the correct option.</li>
+                                    <li>Sometimes the sentence may not give enough information to choose the correct answer.</li>
+                                    <li>In this case look at the rest of the text to find the correct option.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white border-3 border-dark shadow-neo p-5 md:p-6 mb-8">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#60a5fa] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 3 & 4</span> Contextual Analysis Drill
+                            </h3>
+                            
+                            <div class="bg-slate-50 p-6 border-3 border-dark shadow-inner mb-6 text-base md:text-lg text-slate-800 font-medium leading-relaxed">
+                                <p><strong>To:</strong> All Staff</p>
+                                <p><strong>From:</strong> IT Department</p>
+                                <p><strong>Date:</strong> November 1</p>
+                                <p><strong>Subject:</strong> System Update</p>
+                                <hr class="border-t-2 border-slate-300 my-4">
+                                <p class="mb-4">Please note that the company servers will be undergoing scheduled maintenance this weekend. The system will go offline on Friday at 10:00 PM and will remain unavailable until Sunday morning. <strong>(1) _________ .</strong> We apologize for any <strong>(2) _________</strong> this may cause.</p>
+                                <p>Please ensure you save all your work locally before the shutdown. If you experience issues logging in on Monday, please <strong>(3) _________</strong> the IT helpdesk immediately.</p>
+                            </div>
+                            
+                            <div id="part6-mcq-container" class="space-y-6">
+                                </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkMCQ('part6-mcq-container', part6McqData, part6Attempts)" class="neo-btn w-full md:w-auto bg-[#60a5fa] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Answers
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('part7single')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            7a
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 7: Single Passages</span>
+                    </div>
+                    <div id="icon-wrapper-part7single" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part7single" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+
+                        <div class="bg-indigo-50 border-3 border-dark p-5 shadow-neo-sm">
+                            <h4 class="font-black uppercase text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> Real Test Format: Part 7 (Single)</h4>
+                            <p class="font-medium text-slate-800 text-pretty mb-4">In the real test, you will read a variety of single texts (emails, articles, notices, advertisements). Each text is followed by 2 to 4 questions. You must select the best answer based solely on the information provided in the text.</p>
+                            
+                            <div class="bg-indigo-100 p-4 border-2 border-indigo-900">
+                                <h5 class="font-black text-indigo-900 uppercase text-sm mb-1">Strategy: Question Prioritization</h5>
+                                <ul class="list-disc pl-5 font-medium text-slate-800 space-y-1">
+                                    <li>You should spend no more than about 60 to 90 seconds on each Part 7 question.</li>
+                                    <li>To save time, do not start reading the passage until you know exactly what you need to find.</li>
+                                    <li>Answer questions in the most efficient order.</li>
+                                    <li>Do specific information questions first.</li>
+                                    <li>Pick out key words (nouns and verbs) in the question.</li>
+                                    <li>Scan the passage for the key words or ideas, then choose the best answer choice.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white border-3 border-dark shadow-neo p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 5 & 6</span> Comprehension Check
+                            </h3>
+                            
+                            <div class="bg-slate-50 p-6 border-3 border-dark shadow-inner mb-6 text-base md:text-lg text-slate-800 font-medium leading-relaxed">
+                                <h4 class="font-black text-xl text-center uppercase mb-4">Notice of Office Relocation</h4>
+                                <p class="mb-4">Starting December 1, Greenfield Financial will be moving its headquarters from 14th Street to a larger facility at 89 West Avenue. The new location features a larger client reception area and expanded parking. Our phone numbers and email addresses will remain the same.</p>
+                                <p>The office will be closed on November 30 to facilitate the move. We look forward to serving you at our new location.</p>
+                            </div>
+                            
+                            <div id="part7-single-mcq-container" class="space-y-6">
+                                </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkMCQ('part7-single-mcq-container', part7SingleMcqData, part7SingleAttempts)" class="neo-btn w-full md:w-auto bg-[#4ade80] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Answers
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#ffedd5]">
+                <button onclick="toggleAccordion('part7multi')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            7b
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 7: Multiple Passages</span>
+                    </div>
+                    <div id="icon-wrapper-part7multi" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part7multi" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+
+                        <div class="bg-indigo-50 border-3 border-dark p-5 shadow-neo-sm">
+                            <h4 class="font-black uppercase text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> Real Test Format: Part 7 (Multiple)</h4>
+                            <p class="font-medium text-slate-800 text-pretty mb-4">In the real test, you will read sets of two or three related texts (for example, a schedule followed by an email). You must answer 5 questions per set. Many of these questions require you to cross-reference and synthesize information from more than one text.</p>
+                            
+                            <div class="bg-indigo-100 p-4 border-2 border-indigo-900">
+                                <h5 class="font-black text-indigo-900 uppercase text-sm mb-1">Strategy: Managing Complex Questions</h5>
+                                <ul class="list-disc pl-5 font-medium text-slate-800 space-y-1">
+                                    <li>Vocabulary questions should be answered quickly.</li>
+                                    <li>If you do not know the word or words, guess and move on.</li>
+                                    <li>Doing specific information and vocabulary questions first will help prepare you for main idea or inference questions.</li>
+                                    <li>Negative specific information questions (like "Which of the following is NOT true?") can be the most time consuming.</li>
+                                    <li>Leave them until last, when you may have already got information to help you with the answers.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#fb923c] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 7 & 8</span> Information Synthesis
+                            </h3>
+                            
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <button onclick="playTTS('anchor-text-multi')" class="neo-btn bg-[#fb923c] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#ea580c]">
+                                    <i data-lucide="volume-2" class="w-5 h-5 fill-current"></i> Read Aloud
+                                </button>
+                                <button onclick="stopTTS()" class="neo-btn bg-[#f87171] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#ef4444]">
+                                    <i data-lucide="square" class="w-5 h-5 fill-current"></i> Stop
+                                </button>
+                            </div>
+                            
+                            <div id="anchor-text-multi" class="space-y-6 text-base md:text-lg text-slate-800 font-medium leading-relaxed text-justify mb-8">
+                                
+                                <div class="bg-slate-50 p-5 border-3 border-dark shadow-neo-sm relative">
+                                    <div class="absolute -top-4 -left-4 bg-brand-200 px-3 py-1 border-2 border-dark font-black text-sm uppercase shadow-[2px_2px_0_0_#0f172a]">Text 1: Memo</div>
+                                    <div class="mt-4" data-speaker="narrator">
+                                        <p><strong>To:</strong> All Staff</p>
+                                        <p><strong>From:</strong> Julian Bates, Facilities Management</p>
+                                        <p><strong>Date:</strong> October 12</p>
+                                        <p><strong>Subject:</strong> 3rd Floor Office Renovations</p>
+                                        <hr class="border-t-2 border-slate-300 my-3">
+                                        <p class="mb-3">Please be advised that the planned renovations for the 3rd floor marketing wing will commence on Monday, October 20. The construction crew will be upgrading the flooring, painting the walls, and installing new modular workstations. This project is expected to last for exactly two weeks.</p>
+                                        <p class="mb-3">All personnel currently seated on the 3rd floor must pack up their personal belongings and empty their filing cabinets by the end of the day on Friday, October 17. Boxes will be provided by the facilities team starting Wednesday.</p>
+                                        <p>While the renovation is underway, affected employees will be relocated temporarily to the grand conference room on the 1st floor. We apologize for any inconvenience this mandatory update may cause and thank you for your cooperation as we improve our workspace.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-slate-50 p-5 border-3 border-dark shadow-neo-sm relative mt-10">
+                                    <div class="absolute -top-4 -left-4 bg-brand-300 px-3 py-1 border-2 border-dark font-black text-sm uppercase shadow-[2px_2px_0_0_#0f172a]">Text 2: E-mail</div>
+                                    <div class="mt-4" data-speaker="narrator">
+                                        <p><strong>To:</strong> Julian Bates &lt;jbates@corpmail.com&gt;</p>
+                                        <p><strong>From:</strong> Sarah Jenkins &lt;sjenkins@corpmail.com&gt;</p>
+                                        <p><strong>Date:</strong> October 13</p>
+                                        <p><strong>Subject:</strong> Re: 3rd Floor Office Renovations</p>
+                                        <hr class="border-t-2 border-slate-300 my-3">
+                                        <p class="mb-3">Dear Mr. Bates,</p>
+                                        <p class="mb-3">I am writing regarding the upcoming renovations in the marketing wing. I will be out of the office attending the regional sales summit from Thursday, October 16 through Tuesday, October 21. Because of this, I will not be able to pack my desk on the deadline specified in your memo.</p>
+                                        <p class="mb-3">Would it be possible for me to receive my boxes earlier so I can pack my desk before I leave on Wednesday afternoon? Furthermore, as my team relies heavily on cloud-based design software, I wanted to confirm if the temporary workspace will be equipped with high speed internet access.</p>
+                                        <p>Thank you for accommodating my request.</p>
+                                        <p>Best regards,<br>Sarah Jenkins<br>Senior Marketing Coordinator</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            
+                            <div id="part7-multi-mcq-container" class="space-y-6">
+                                </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkMCQ('part7-multi-mcq-container', part7MultiMcqData, part7MultiAttempts)" class="neo-btn w-full md:w-auto bg-[#fb923c] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Answers
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#fae8ff]">
+                <button onclick="toggleAccordion('application')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            <i data-lucide="briefcase" class="w-6 h-6 md:w-8 md:h-8"></i>
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Workplace Application</span>
+                    </div>
+                    <div id="icon-wrapper-application" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-application" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <div class="bg-white border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#e879f9] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 9</span> Workplace Transformation
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t9', this, 'Show Transformation')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Transformation</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">In the Part 7 memo, Mr. Bates writes: <em>"All personnel currently seated on the 3rd floor must pack up their personal belongings and empty their filing cabinets by the end of the day on Friday."</em> Rewrite this directive to sound softer and more polite, as if it were a gentle reminder to your colleagues.</p>
+                            <textarea class="text-input h-24 text-base font-medium" placeholder="Please remember to..."></textarea>
+                            
+                            <div id="ans-t9" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="check-square" class="w-5 h-5 inline mr-1 text-[#22c55e]"></i>Sample Polite Transformation:</strong>
+                                <ul class="list-disc pl-6 mt-2 space-y-2 font-medium text-base">
+                                    <li>"We kindly request that all 3rd floor staff pack their belongings and empty their cabinets by Friday."</li>
+                                    <li>"Please remember to pack up your personal items by the end of the day on Friday."</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#e879f9] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 10</span> Strategic Reflection
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t10', this, 'Show Reflection Insight')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Reflection Insight</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">Reflecting on the Reading section, how does explicitly teaching students to identify document types (e.g., distinguishing a formal memo from a casual email) improve their scanning speed in Part 7?</p>
+                            <textarea class="text-input text-base font-medium" placeholder="Identifying document types helps because..."></textarea>
+                            
+                            <div id="ans-t10" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="lightbulb" class="w-5 h-5 inline mr-1 text-[#eab308]"></i>Reflection Insight:</strong>
+                                <p class="font-medium text-base text-pretty">Different document types have predictable structures. Memos usually state the problem immediately in the first paragraph, while emails often have a specific request near the end. By recognizing the format, students know exactly where to scan for specific information, reducing reading fatigue and saving crucial time.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center mb-6">
+            <p class="text-dark text-sm md:text-base font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <div id="confirm-modal" class="fixed inset-0 bg-dark/50 hidden items-center justify-center z-[100] p-4">
+        <div class="bg-white border-4 border-dark shadow-[8px_8px_0_0_#0f172a] p-6 max-w-sm w-full transform transition-all translate-y-4 opacity-0" id="confirm-modal-content">
+            <h3 class="font-black text-xl text-dark mb-2 uppercase flex items-center gap-2"><i data-lucide="alert-circle" class="w-6 h-6 text-[#ef4444]"></i> Reset Progress</h3>
+            <p class="text-slate-800 font-medium mb-6">Are you sure you want to clear all your progress? This cannot be undone.</p>
+            <div class="flex gap-3 justify-end">
+                <button onclick="closeConfirmModal()" class="neo-btn bg-white text-dark px-4 py-2 text-sm">Cancel</button>
+                <button onclick="executeReset()" class="neo-btn bg-[#ef4444] text-white px-4 py-2 text-sm">Yes, Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-6 py-4 shadow-[6px_6px_0_0_#0f172a] transition-all duration-300 translate-y-24 opacity-0 z-50 flex items-center gap-3 font-black text-sm md:text-base uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="info" class="w-6 h-6 shrink-0 text-brand-600"></i> <span id="toast-msg">Notification</span>
+    </div>
+
+    <script>
+        // --- Init Lucide Icons & Setup Voice ---
+        let voices = [];
+        let speechQueue = [];
+        let isSpeaking = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            // Render specific MCQ sections
+            renderMCQ('part5-mcq-container', part5McqData);
+            renderMCQ('part6-mcq-container', part6McqData);
+            renderMCQ('part7-single-mcq-container', part7SingleMcqData);
+            renderMCQ('part7-multi-mcq-container', part7MultiMcqData);
+            
+            // Pre-load voices for TTS
+            if (typeof window !== 'undefined' && window.speechSynthesis) {
+                voices = window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => {
+                    voices = window.speechSynthesis.getVoices();
+                };
+            }
+        });
+
+        // --- Data Configuration Section ---
+        
+        // PART 5 MCQ DATA
+        const part5McqData = [
+            { 
+                id: "p5_m1", 
+                question: "1. All employees must _______ their time sheets to human resources by Friday afternoon.", 
+                correct: "a", 
+                explanation: "After a modal verb ('must'), use the base form of the verb.",
+                options: ["a. submit", "b. submits", "c. submitting", "d. submission"] 
+            },
+            { 
+                id: "p5_m2", 
+                question: "2. The newly installed inventory software is _______ than the old system we used.", 
+                correct: "c", 
+                explanation: "The word 'than' indicates a comparative adjective is needed.",
+                options: ["a. efficient", "b. efficiently", "c. more efficient", "d. efficiency"] 
+            },
+            { 
+                id: "p5_m3", 
+                question: "3. Mr. Park has been the lead project manager _______ the past five years.", 
+                correct: "b", 
+                explanation: "Use 'for' to indicate a duration or period of time (five years). Use 'since' for a specific starting point.",
+                options: ["a. since", "b. for", "c. in", "d. during"] 
+            },
+            { 
+                id: "p5_m4", 
+                question: "4. Please read the safety manual _______ before operating the heavy machinery on the factory floor.", 
+                correct: "d", 
+                explanation: "An adverb is needed to modify the verb phrase 'read the manual'.",
+                options: ["a. care", "b. careful", "c. caring", "d. carefully"] 
+            },
+            { 
+                id: "p5_m5", 
+                question: "5. The international marketing campaign was highly _______ and increased overall sales by 20 percent.", 
+                correct: "c", 
+                explanation: "After an adverb ('highly'), an adjective is needed to describe the noun phrase ('marketing campaign').",
+                options: ["a. success", "b. succeed", "c. successful", "d. successfully"] 
+            }
+        ];
+        let part5Attempts = {};
+
+        // PART 6 MCQ DATA
+        const part6McqData = [
+            { 
+                id: "p6_m1", 
+                question: "1. Choose the best sentence to fill in blank (1).", 
+                correct: "b", 
+                explanation: "The surrounding context discusses the system going offline. Option B logically follows by explaining the direct consequence of the outage to the user.",
+                options: ["a. You must change your password.", "b. During this time, you will not have access to your email.", "c. The new software is highly efficient.", "d. Please submit your weekly timesheets."] 
+            },
+            { 
+                id: "p6_m2", 
+                question: "2. Choose the best word for blank (2).", 
+                correct: "b", 
+                explanation: "The phrase 'apologize for any...' is a standard business collocation followed by 'inconvenience'.",
+                options: ["a. convenience", "b. inconvenience", "c. development", "d. replacement"] 
+            },
+            { 
+                id: "p6_m3", 
+                question: "3. Choose the best word for blank (3).", 
+                correct: "a", 
+                explanation: "This is an imperative sentence ('please...'). It requires the base form of the verb.",
+                options: ["a. contact", "b. contacts", "c. contacted", "d. contacting"] 
+            }
+        ];
+        let part6Attempts = {};
+
+        // PART 7 (SINGLE) MCQ DATA
+        const part7SingleMcqData = [
+            { 
+                id: "p7s_m1", 
+                question: "1. What is the main purpose of the notice?", 
+                correct: "b", 
+                explanation: "The notice states that 'Greenfield Financial will be moving its headquarters... to a larger facility'.",
+                options: ["a. To announce a new branch opening", "b. To inform clients of an address change", "c. To advertise a parking facility", "d. To introduce new staff"] 
+            },
+            { 
+                id: "p7s_m2", 
+                question: "2. What will happen on November 30?", 
+                correct: "b", 
+                explanation: "The text explicitly states: 'The office will be closed on November 30 to facilitate the move.'",
+                options: ["a. A new phone system will be installed", "b. The office will be closed", "c. A client reception will be held", "d. A staff meeting is scheduled"] 
+            },
+            { 
+                id: "p7s_m3", 
+                question: "3. What is mentioned as a feature of the new office?", 
+                correct: "b", 
+                explanation: "The text notes: 'The new location features a larger client reception area and expanded parking.'",
+                options: ["a. Longer business hours", "b. A larger parking area", "c. Lower service fees", "d. A new phone number"] 
+            }
+        ];
+        let part7SingleAttempts = {};
+
+        // PART 7 (MULTI) MCQ DATA
+        const part7MultiMcqData = [
+            { 
+                id: "p7m_m1", 
+                question: "1. What is the main purpose of the memo?", 
+                correct: "b", 
+                explanation: "The subject line is '3rd Floor Office Renovations' and the first paragraph details the construction upgrades.",
+                options: ["a. To announce new hires", "b. To explain building improvements", "c. To schedule a meeting", "d. To request new furniture"] 
+            },
+            { 
+                id: "p7m_m2", 
+                question: "2. When must the 3rd floor staff finish packing?", 
+                correct: "b", 
+                explanation: "Paragraph 2 of the memo states: 'must pack up their personal belongings... by the end of the day on Friday, October 17.'",
+                options: ["a. October 12", "b. October 17", "c. October 20", "d. October 21"] 
+            },
+            { 
+                id: "p7m_m3", 
+                question: "3. Where will the affected staff work temporarily?", 
+                correct: "c", 
+                explanation: "Paragraph 3 of the memo states: 'affected employees will be relocated temporarily to the grand conference room'.",
+                options: ["a. At home", "b. On the 4th floor", "c. In the conference room", "d. At a different branch"] 
+            },
+            { 
+                id: "p7m_m4", 
+                question: "4. Why did Sarah Jenkins write the email?", 
+                correct: "b", 
+                explanation: "In her email, Sarah states, 'I will be out of the office... Because of this, I will not be able to pack my desk on the deadline'.",
+                options: ["a. She needs a new computer", "b. She will be absent on the deadline", "c. She wants to cancel the renovation", "d. She cannot find the conference room"] 
+            },
+            { 
+                id: "p7m_m5", 
+                question: "5. What does Sarah Jenkins ask about the temporary workspace?", 
+                correct: "a", 
+                explanation: "She asks, 'I wanted to confirm if the temporary workspace will be equipped with high speed internet access.'",
+                options: ["a. If it has internet access", "b. How large the desks are", "c. Who will supervise it", "d. When it will be cleaned"] 
+            }
+        ];
+        let part7MultiAttempts = {};
+
+        // --- Render Functions ---
+
+        function renderMCQ(containerId, dataArray) {
+            const container = document.getElementById(containerId);
+            if(!container) return;
+            
+            let html = '';
+            dataArray.forEach(item => {
+                if (containerId === 'part5-mcq-container') part5Attempts[item.id] = 0;
+                else if (containerId === 'part6-mcq-container') part6Attempts[item.id] = 0;
+                else if (containerId === 'part7-single-mcq-container') part7SingleAttempts[item.id] = 0;
+                else if (containerId === 'part7-multi-mcq-container') part7MultiAttempts[item.id] = 0;
+
+                html += `
+                    <div class="p-5 bg-brand-50 border-3 border-dark">
+                        <p class="font-black text-dark text-lg mb-4 text-balance">${item.question}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            ${item.options.map(opt => {
+                                const val = opt.charAt(0).toLowerCase();
+                                return `
+                                <label class="option-label group">
+                                    <input type="radio" name="${item.id}" value="${val}">
+                                    <span class="group-hover:text-brand-700 transition-colors">${opt}</span>
+                                </label>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div id="feedback-${item.id}"></div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // --- TTS Logic with Smart Script Handling ---
+        function getVoiceForRole(role) {
+            if (voices.length === 0) voices = window.speechSynthesis.getVoices();
+            
+            let targetVoice = voices.find(v => v.name.includes('Online (Natural)') && v.lang === 'en-US') ||
+                              voices.find(v => v.lang === 'en-US') || 
+                              voices[0];
+
+            if (!targetVoice) targetVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+            return targetVoice;
+        }
+
+        function processNextUtterance() {
+            if (speechQueue.length === 0) {
+                isSpeaking = false;
+                return;
+            }
+
+            isSpeaking = true;
+            const item = speechQueue.shift();
+            const utterance = new SpeechSynthesisUtterance(item.text);
+            
+            utterance.voice = getVoiceForRole(item.role);
+            utterance.rate = 0.95; 
+            utterance.pitch = 1.0;
+            
+            utterance.onend = () => {
+                setTimeout(processNextUtterance, 300); 
+            };
+
+            utterance.onerror = (e) => {
+                console.error("Speech Synthesis Error:", e);
+                isSpeaking = false;
+                speechQueue = [];
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function playTTS(elementId) {
+            if (typeof window.speechSynthesis === 'undefined') {
+                showToast("Text-to-speech is not supported in this browser.");
+                return;
+            }
+            
+            stopTTS(); 
+            
+            const container = document.getElementById(elementId);
+            if (!container) return;
+
+            const parts = container.querySelectorAll('[data-speaker]');
+            
+            if (parts.length > 0) {
+                parts.forEach(part => {
+                    let text = part.textContent.trim();
+                    if (text.length > 0) {
+                        speechQueue.push({
+                            role: 'narrator',
+                            text: text
+                        });
+                    }
+                });
+            } else {
+                speechQueue.push({
+                    role: 'narrator',
+                    text: container.innerText || container.textContent
+                });
+            }
+
+            if (speechQueue.length > 0) {
+                showToast("Reading text aloud...");
+                processNextUtterance();
+            }
+        }
+
+        function stopTTS() {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                speechQueue = [];
+                isSpeaking = false;
+            }
+        }
+
+        function toggleTranscript(elementId) {
+            const el = document.getElementById(elementId);
+            const btn = document.getElementById(`btn-transcript-${elementId}`);
+            
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                if(btn) {
+                    btn.innerHTML = `<i data-lucide="eye-off" class="w-5 h-5"></i> Hide Script`;
+                    btn.classList.add('bg-brand-200');
+                }
+            } else {
+                el.classList.add('hidden');
+                if(btn) {
+                    btn.innerHTML = `<i data-lucide="file-text" class="w-5 h-5"></i> Show Script`;
+                    btn.classList.remove('bg-brand-200');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        // --- Interaction Handlers ---
+
+        function buildExplanationHTML(isCorrect, item, attemptNumber) {
+            if (isCorrect || attemptNumber >= 2) {
+                let statusHtml = isCorrect 
+                    ? `<span class="text-dark bg-[#4ade80] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black"><i data-lucide="check" class="w-4 h-4"></i> Correct!</span>`
+                    : `<span class="text-white bg-[#ef4444] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black"><i data-lucide="x" class="w-4 h-4"></i> Out of Attempts. Answer: ${item.correct.toUpperCase()}</span>`;
+                
+                return `
+                    <div class="mt-3 p-4 bg-[#f0fdf4] border-2 border-dark shadow-inner text-sm md:text-base animate-[fadeIn_0.3s_ease]">
+                        <div class="mb-3">${statusHtml}</div>
+                        <p class="mt-2 font-black text-dark uppercase mb-1">Explanation:</p>
+                        <p class="font-medium text-slate-800 leading-relaxed">${item.explanation}</p>
+                    </div>
+                `;
+            } else {
+                return `<span class="text-dark bg-[#facc15] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black mt-2 animate-[fadeIn_0.3s_ease]"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Incorrect. Try again. (Attempt ${attemptNumber}/2)</span>`;
+            }
+        }
+
+        function checkMCQ(containerId, dataArray, attemptsDict) {
+            let allAnswered = true;
+            dataArray.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                if(radios.length === 0) return; 
+
+                let userVal = "";
+                let selectedRadio = null;
+                
+                radios.forEach(r => { 
+                    if(r.checked) { userVal = r.value; selectedRadio = r; }
+                });
+
+                if (userVal === "") {
+                    allAnswered = false;
+                    return; 
+                }
+                
+                if (radios[0].disabled) return;
+
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const isCorrect = userVal === item.correct;
+
+                if (!isCorrect) attemptsDict[item.id]++;
+
+                radios.forEach(r => r.closest('.option-label').classList.remove('incorrect-lock'));
+
+                if (isCorrect || attemptsDict[item.id] >= 2) {
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        const label = r.closest('.option-label');
+                        if (r.value === item.correct) {
+                            label.classList.add('correct-lock');
+                        } else if (r.checked && !isCorrect) {
+                            label.classList.add('incorrect-lock');
+                        }
+                    });
+                    feedback.innerHTML = buildExplanationHTML(isCorrect, item, attemptsDict[item.id]);
+                } else {
+                    selectedRadio.closest('.option-label').classList.add('incorrect-lock');
+                    feedback.innerHTML = buildExplanationHTML(isCorrect, item, attemptsDict[item.id]);
+                }
+            });
+            
+            if(!allAnswered) showToast("Please answer all questions before checking.");
+            lucide.createIcons();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        function toggleAnswer(elementId, btn, baseText) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Output";
+                btn.classList.add('bg-brand-200');
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = baseText;
+                btn.classList.remove('bg-brand-200');
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            const modal = document.getElementById('confirm-modal');
+            const content = document.getElementById('confirm-modal-content');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirm-modal');
+            const content = document.getElementById('confirm-modal-content');
+            content.classList.add('translate-y-4', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function executeReset() {
+            closeConfirmModal();
+            
+            stopTTS();
+
+            Object.keys(part5Attempts).forEach(k => part5Attempts[k] = 0);
+            Object.keys(part6Attempts).forEach(k => part6Attempts[k] = 0);
+            Object.keys(part7SingleAttempts).forEach(k => part7SingleAttempts[k] = 0);
+            Object.keys(part7MultiAttempts).forEach(k => part7MultiAttempts[k] = 0);
+            
+            document.querySelectorAll('textarea').forEach(t => t.value = "");
+            
+            document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                r.checked = false; 
+                r.disabled = false; 
+            });
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.classList.remove('correct-lock', 'incorrect-lock', 'tf-selected');
+                if(label.querySelector('input[type="radio"]')?.name.startsWith('tf')) {
+                    label.classList.add('hover:shadow-[3px_3px_0_0_#0f172a]', 'hover:-translate-y-0.5');
+                }
+            });
+            
+            document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+            
+            document.querySelectorAll('.answer-box').forEach(el => { 
+                el.classList.add('hidden'); 
+                el.classList.remove('visible'); 
+            });
+            
+            document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                const params = btn.getAttribute('onclick').match(/'([^']+)'/g);
+                if(params && params.length >= 2) {
+                    btn.innerText = params[1].replace(/'/g, '');
+                }
+                btn.classList.remove('bg-brand-200');
+            });
+            
+            showToast("All progress has been reset.");
+        }
+
+    </script>
+</body>
+</html>

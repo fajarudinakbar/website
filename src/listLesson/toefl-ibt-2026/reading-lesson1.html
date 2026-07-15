@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Reading: Lesson 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base font settings and transition for the whole page */
+        html {
+            font-family: 'Inter', sans-serif;
+            transition: font-size 0.2s ease-in-out;
+            scroll-behavior: smooth;
+        }
+        /* Make the layout full height */
+        body {
+            height: 100vh;
+            overflow: hidden; /* Prevent body scrollbars */
+        }
+        .main-container {
+            height: 100%; /* Full viewport height */
+        }
+        /* Allow main content to scroll */
+        #app-content {
+            overflow-y: auto;
+            flex-grow: 1; /* Ensure it takes available space */
+        }
+        /* Hide sections by default */
+        .section {
+            display: none;
+        }
+        /* Show the active section */
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Style for the active navigation button */
+        .nav-btn.active-nav {
+            background-color: #2563eb; /* Tailwind's bg-blue-600 */
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        /* Feedback message base styles */
+        .feedback {
+            display: none;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .feedback.correct {
+            display: block;
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+        .feedback.incorrect {
+            display: block;
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        /* Disabled button style */
+        .disabled-btn {
+            background-color: #f3f4f6 !important;
+            color: #9ca3af !important;
+            border-color: #e5e7eb !important;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        /* Helper for hiding elements */
+        .hidden-content {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="main-container w-full flex flex-col">
+        
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200 z-20 px-6 py-4 flex justify-between items-center flex-shrink-0">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-blue-700">TOEFL iBT® Reading: Lesson 1</h1>
+                <p class="text-sm text-gray-600 hidden sm:block">An interactive guide to understanding the updated Reading section.</p>
+            </div>
+            <!-- Font Size Controller -->
+            <div class="flex items-center gap-2 flex-shrink-0 ml-4">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:inline">Font Size</span>
+                <button id="decrease-font" title="Decrease font size" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-lg font-bold flex items-center justify-center text-gray-600 transition-colors">-</button>
+                <button id="increase-font" title="Increase font size" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-lg font-bold flex items-center justify-center text-gray-600 transition-colors">+</button>
+            </div>
+        </header>
+
+        <!-- Main Layout: Sidebar + Content -->
+        <div class="flex flex-1 overflow-hidden flex-col md:flex-row">
+            
+            <!-- Sidebar Navigation -->
+            <nav id="main-nav" class="bg-white border-b md:border-b-0 md:border-r border-gray-200 p-4 flex flex-col gap-2 md:w-64 flex-shrink-0 overflow-y-auto z-10 shadow-sm md:shadow-none">
+                <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-2 hidden md:block">Navigation</div>
+                <button data-section="intro" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Introduction</button>
+                <button data-section="part1" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Part 1: Warm-Up</button>
+                <button data-section="part2" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Part 2: The Test</button>
+                <button data-section="part3" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Part 3: Key Skills</button>
+                <button data-section="part4" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Part 4: Practice</button>
+                <button data-section="part5" class="nav-btn w-full text-left px-4 py-3 text-sm font-medium text-gray-700 bg-white rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">Part 5: Skill Building</button>
+            </nav>
+
+            <!-- Main Content Area -->
+            <main id="app-content" class="flex-1 bg-gray-50 overflow-y-auto p-6 sm:p-8 md:p-10 scroll-smooth">
+                
+                <!-- Introduction Section -->
+                <section id="intro" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Welcome!</h2>
+                    <p class="mb-4">This interactive lesson will guide you through the updated TOEFL iBT® Reading section. You will learn about the question types, the skills you need to succeed, and strategies to improve your reading abilities.</p>
+                    <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md shadow-sm">
+                        <p><strong class="font-semibold">Learning Objectives:</strong></p>
+                        <ul class="list-disc list-inside mt-2">
+                            <li>Understand the question types in the updated Reading section.</li>
+                            <li>Understand the skills tested in the updated Reading section.</li>
+                            <li>Understand what you can do to succeed on the tasks.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Part 1: Warm-Up Activity -->
+                <section id="part1" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 1: Warm-Up Activity</h2>
+                    <p class="mb-6 text-gray-600">Think about the following questions. There are no right or wrong answers. This is a chance for you to reflect on your own reading habits.</p>
+                    <div class="space-y-6">
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <label class="block text-lg font-semibold text-gray-800 mb-3">a. How often do you read something in English? What kinds of things do you read?</label>
+                            <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50" rows="3" placeholder="e.g., I read news articles online every day..."></textarea>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <label class="block text-lg font-semibold text-gray-800 mb-3">b. What for you is challenging about reading in English?</label>
+                            <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50" rows="3" placeholder="e.g., Understanding complex vocabulary..."></textarea>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <label class="block text-lg font-semibold text-gray-800 mb-3">c. What do you enjoy about reading in English? What do you not enjoy?</label>
+                            <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50" rows="3" placeholder="e.g., I enjoy discovering new ideas..."></textarea>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <label class="block text-lg font-semibold text-gray-800 mb-3">d. Do you ever look up new words in a dictionary when you read?</label>
+                            <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50" rows="3" placeholder="e.g., Yes, because it helps me learn..."></textarea>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <label class="block text-lg font-semibold text-gray-800 mb-3">e. Imagine your life one year from now. What will you be reading in English?</label>
+                            <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50" rows="3" placeholder="e.g., University textbooks..."></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 2: What's included? -->
+                <section id="part2" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 2: What's in the Updated Reading Section?</h2>
+                    <p class="mb-4 text-gray-600">Listen to the description, then complete the information below by filling in the blanks. Click "Check Answers" when you're done.</p>
+                    
+                    <div class="flex flex-wrap items-center gap-4 mb-6">
+                        <a href="https://drive.google.com/file/d/1vbW6uHVVnVbAvPsc_P85ItbhCJhDF32M/view?usp=sharing" target="_blank" class="inline-flex items-center px-5 py-2 font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                            Play Audio
+                        </a>
+                        <button id="script-toggle-btn" class="px-5 py-2 font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            Show Script
+                        </button>
+                    </div>
+
+                    <div id="audio-script" class="hidden-content bg-white p-5 rounded-lg border border-gray-200 mb-6 shadow-sm prose max-w-none">
+                        <h4 class="font-bold text-gray-800 mb-2">Audio Script</h4>
+                        <p>For a Complete the Words task, you will have to complete 10 words. The reading passage will be a short paragraph.</p>
+                        <p>For a Read in Daily Life Passage task, you will have to answer up to 3 questions. The reading passage will be a 15- to 150-word text. It could be a non-linear text, such as a sign, social media post, advertisement, or other type of text you would encounter in daily life.</p>
+                        <p>For a Read an Academic Passage task, you will have to answer up to 5 questions. The reading passage will be a text of approximately 200 words. It will be typical of an expository text found in a secondary or higher education context.</p>
+                    </div>
+
+                    <form id="part2-form" class="space-y-6 text-lg leading-loose bg-white p-6 md:p-8 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="pb-6 border-b border-gray-100">
+                            For a <strong>Complete the Words</strong> task, you will have to complete <input type="text" id="q2-1" class="w-16 text-center border-b-2 border-gray-300 focus:border-blue-500 outline-none font-medium text-blue-600 bg-gray-50 rounded-sm"> <span id="q2-1-correct" class="text-green-600 font-semibold ml-1"></span> words. The reading passage will be a <input type="text" id="q2-2" class="w-40 text-center border-b-2 border-gray-300 focus:border-blue-500 outline-none font-medium text-blue-600 bg-gray-50 rounded-sm"> <span id="q2-2-correct" class="text-green-600 font-semibold ml-1"></span>.
+                        </div>
+                        <div class="pb-6 border-b border-gray-100">
+                            For a <strong>Read in Daily Life Passage</strong> task, you will have to answer up to <input type="text" id="q2-3" class="w-12 text-center border-b-2 border-gray-300 focus:border-blue-500 outline-none font-medium text-blue-600 bg-gray-50 rounded-sm"> <span id="q2-3-correct" class="text-green-600 font-semibold ml-1"></span> questions. The reading passage will be a <input type="text" id="q2-4" class="w-32 text-center border-b-2 border-gray-300 focus:border-blue-500 outline-none font-medium text-blue-600 bg-gray-50 rounded-sm"> <span id="q2-4-correct" class="text-green-600 font-semibold ml-1"></span> word text.
+                        </div>
+                        <div>
+                            For a <strong>Read an Academic Passage</strong> task, you will have to answer up to <input type="text" id="q2-5" class="w-12 text-center border-b-2 border-gray-300 focus:border-blue-500 outline-none font-medium text-blue-600 bg-gray-50 rounded-sm"> <span id="q2-5-correct" class="text-green-600 font-semibold ml-1"></span> questions. The reading passage will be a text of approximately <input type="text" id="q2-6" class="w-24 text-center border-b-2 border-gray-300 focus:border-blue-500 outline-none font-medium text-blue-600 bg-gray-50 rounded-sm"> <span id="q2-6-correct" class="text-green-600 font-semibold ml-1"></span> words.
+                        </div>
+                        
+                        <div class="pt-4">
+                            <button type="button" id="check-part2-btn" class="px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">Check Answers</button>
+                            <div id="part2-feedback" class="feedback"></div>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Part 3: What skills are needed? -->
+                <section id="part3" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 3: What Skills Are Needed?</h2>
+                    <p class="mb-6 text-gray-600">The TOEFL Reading section tests several key skills. Here are three of the most important ones.</p>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <h3 class="text-lg font-bold text-blue-700 mb-2">1. Identifying Main Ideas</h3>
+                            <p class="text-gray-600 text-sm">Understand the overall purpose and key arguments of a text. Questions may ask what the author was trying to accomplish.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <h3 class="text-lg font-bold text-blue-700 mb-2">2. Scanning for Info</h3>
+                            <p class="text-gray-600 text-sm">Quickly locate specific facts, figures, or statements within the passage to answer questions about details.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <h3 class="text-lg font-bold text-blue-700 mb-2">3. Context Clues</h3>
+                            <p class="text-gray-600 text-sm">Infer the meaning of unfamiliar vocabulary by reading surrounding sentences and understanding the context.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 4: Practice Passage & Questions -->
+                <section id="part4" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 4: Practice Passage & Questions</h2>
+                    <p class="mb-4 text-gray-600">Read the sample passage. Then, think about which skill from Part 3 is most useful for answering each question.</p>
+                    
+                    <article class="bg-white p-6 md:p-8 rounded-xl border border-gray-200 shadow-sm mb-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Academic Passage</h3>
+                        <div class="prose max-w-none text-gray-700 leading-relaxed">
+                            <p class="mb-4">Very young children cannot recognize themselves in a mirror; they usually achieve this milestone around eighteen months of age. The ability to recognize oneself in the mirror is considered to be a key component of self-awareness and consciousness for humans. But what about animals?</p>
+                            <p class="mb-4">For many years, scientists have known that members of the great ape family could recognize themselves in mirrors. They measured this by the mirror test, which involved putting a colored mark on an ape's body and then showing the ape its reflection in a mirror. If the ape tried to remove the mark on its own body, the scientists knew that the ape was recognizing its reflection.</p>
+                            <p>Apes are close relatives of humans, but in recent years, scientists have discovered that other animals also pass the mirror test. Elephants and dolphins have shown signs of self-recognition. These, like apes, are highly intelligent animals. But in a more recent experiment, a type of fish called the cleaner fish tried to scrape a mark off its body when it saw itself in the mirror. This suggests that even less intelligent animals may possess more self-awareness than previously suspected.</p>
+                        </div>
+                    </article>
+
+                    <div id="part4-questions" class="space-y-6">
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <p class="font-semibold text-gray-800 mb-3">a. A test question asks you what the word "milestone" in the first sentence is closest in meaning to. From Part 3, what skill is probably most useful?</p>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <button data-question="a" data-answer="1" class="part4-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">Skill 1: Identifying main ideas</button>
+                                <button data-question="a" data-answer="2" class="part4-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">Skill 2: Scanning for information</button>
+                                <button data-question="a" data-answer="3" class="part4-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">Skill 3: Guessing meaning from context</button>
+                            </div>
+                            <div id="q4a-feedback" class="feedback"></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <p class="font-semibold text-gray-800 mb-3">b. A test question asks you why scientists put colored marks on animals' bodies. From Part 3, what skill is probably most useful?</p>
+                             <div class="flex flex-col sm:flex-row gap-3">
+                                <button data-question="b" data-answer="1" class="part4-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">Skill 1: Identifying main ideas</button>
+                                <button data-question="b" data-answer="2" class="part4-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">Skill 2: Scanning for information</button>
+                                <button data-question="b" data-answer="3" class="part4-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">Skill 3: Guessing meaning from context</button>
+                            </div>
+                            <div id="q4b-feedback" class="feedback"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 5: Practice Questions -->
+                <section id="part5" class="section">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 5: Practice Questions</h2>
+                    <p class="mb-6 text-gray-600">Read the passage (same as above) again if needed. Then, answer the questions to test your skills.</p>
+
+                    <div id="part5-questions" class="space-y-8">
+                        <!-- Question 1 -->
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <p class="text-lg font-semibold mb-4 text-gray-800">1. In the first paragraph, the word "milestone" is closest in meaning to...</p>
+                            <div class="grid sm:grid-cols-2 gap-3">
+                                <button data-question="1" data-answer="A" class="part5-btn text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">A) a difficult task</button>
+                                <button data-question="1" data-answer="B" class="part5-btn text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">B) a key achievement</button>
+                                <button data-question="1" data-answer="C" class="part5-btn text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">C) a scientific discovery</button>
+                                <button data-question="1" data-answer="D" class="part5-btn text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">D) a common behavior</button>
+                            </div>
+                            <div id="q51-feedback" class="feedback"></div>
+                        </div>
+                        <!-- Question 2 -->
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <p class="text-lg font-semibold mb-4 text-gray-800">2. According to the passage, why did scientists put a colored mark on an ape's body?</p>
+                            <div class="space-y-3">
+                                 <button data-question="2" data-answer="A" class="part5-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">A) To see if the ape was intelligent</button>
+                                 <button data-question="2" data-answer="B" class="part5-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">B) To decorate the ape for the experiment</button>
+                                 <button data-question="2" data-answer="C" class="part5-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">C) To test if the ape recognized its own reflection</button>
+                                 <button data-question="2" data-answer="D" class="part5-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">D) To compare apes with other animals</button>
+                            </div>
+                            <div id="q52-feedback" class="feedback"></div>
+                        </div>
+                        <!-- Question 3 -->
+                        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <p class="text-lg font-semibold mb-4 text-gray-800">3. What does the passage suggest about animal self-awareness?</p>
+                            <div class="space-y-3">
+                                 <button data-question="3" data-answer="A" class="part5-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">A) Only apes are self-aware</button>
+                                 <button data-question="3" data-answer="B" class="part5-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">B) Self-awareness is limited to highly intelligent animals</button>
+                                 <button data-question="3" data-answer="C" class="part5-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">C) Many different types of animals might be self-aware</button>
+                                 <button data-question="3" data-answer="D" class="part5-btn w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">D) Fish are more self-aware than dolphins</button>
+                            </div>
+                            <div id="q53-feedback" class="feedback"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="mt-12 mb-6 text-center text-sm text-gray-400">
+                    Designed by <a href="https://linkedin.com/in/fajarudinakbar" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-600 hover:underline">Fajarudin Akbar</a>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- STATE & CONSTANTS ---
+            const mainNav = document.getElementById('main-nav');
+            const sections = document.querySelectorAll('.section');
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const scriptToggleButton = document.getElementById('script-toggle-btn');
+            const checkPart2Button = document.getElementById('check-part2-btn');
+            const part4QuestionsContainer = document.getElementById('part4-questions');
+            const part5QuestionsContainer = document.getElementById('part5-questions');
+            const appContent = document.getElementById('app-content');
+            const increaseFontButton = document.getElementById('increase-font');
+            const decreaseFontButton = document.getElementById('decrease-font');
+
+            const correctAnswersPart2 = {
+                'q2-1': '10',
+                'q2-2': 'short paragraph',
+                'q2-3': '3',
+                'q2-4': '15-150',
+                'q2-5': '5',
+                'q2-6': '200'
+            };
+
+            const correctAnswersPart4 = {
+                'a': 3, // Correct answer for question 'a' is Skill 3
+                'b': 2  // Correct answer for question 'b' is Skill 2
+            };
+            
+            const feedbackMessagesPart4 = {
+                a: {
+                    correct: '<strong>Correct!</strong> To find the meaning of "milestone," you need to look at the context of the sentence.',
+                    incorrect: '<strong>Not quite.</strong> The correct answer is Skill 3. The passage provides clues around the word "milestone".'
+                },
+                b: {
+                    correct: '<strong>Correct!</strong> The reason for the colored marks is a specific detail mentioned directly in the second paragraph.',
+                    incorrect: '<strong>Not quite.</strong> The correct answer is Skill 2. This requires scanning for a specific piece of information.'
+                }
+            };
+
+            // UPDATED: Keys changed to '1', '2', '3' to avoid conflict with Part 4
+            const correctAnswersPart5 = {
+                '1': 'B',
+                '2': 'C',
+                '3': 'C'
+            };
+
+            // UPDATED: Keys changed to '1', '2', '3' to match new HTML data-attributes
+            const feedbackMessagesPart5 = {
+                 '1': {
+                    correct: '<strong>Correct!</strong> "Milestone" refers to a significant stage or event in development.',
+                    incorrect: '<strong>Not quite.</strong> The passage mentions that children "achieve this milestone," suggesting it is a positive and important stage.'
+                },
+                '2': {
+                    correct: '<strong>Correct!</strong> The passage states, "If the ape tried to remove the mark... the scientists knew that the ape was recognizing its reflection."',
+                    incorrect: '<strong>Try again.</strong> Review the second paragraph about the purpose of the mirror test.'
+                },
+                '3': {
+                    correct: '<strong>Correct!</strong> The passage mentions apes, elephants, dolphins, and even fish, suggesting self-awareness is widespread.',
+                    incorrect: '<strong>Re-read the last paragraph.</strong> The passage concludes by mentioning that even "less intelligent animals" might possess self-awareness.'
+                }
+            };
+
+            // --- FUNCTIONS ---
+
+            function showSection(sectionId) {
+                sections.forEach(section => section.classList.remove('active'));
+                const activeSection = document.getElementById(sectionId);
+                if (activeSection) activeSection.classList.add('active');
+                
+                navButtons.forEach(btn => {
+                    if (btn.dataset.section === sectionId) {
+                        btn.classList.add('active-nav');
+                        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    } else {
+                        btn.classList.remove('active-nav');
+                    }
+                });
+
+                appContent.scrollTop = 0;
+            }
+
+            function toggleScript() {
+                const scriptEl = document.getElementById('audio-script');
+                if (scriptEl.classList.contains('hidden-content')) {
+                    scriptEl.classList.remove('hidden-content');
+                    scriptToggleButton.textContent = 'Hide Script';
+                } else {
+                    scriptEl.classList.add('hidden-content');
+                    scriptToggleButton.textContent = 'Show Script';
+                }
+            }
+            
+            function adjustFontSize(amount) {
+                const root = document.documentElement;
+                const computedStyle = window.getComputedStyle(root);
+                let currentSize = parseFloat(computedStyle.fontSize);
+                let newSize = Math.max(14, Math.min(24, currentSize + amount));
+                root.style.fontSize = `${newSize}px`;
+            }
+
+            function checkPart2() {
+                let allCorrect = true;
+                for (const [id, answer] of Object.entries(correctAnswersPart2)) {
+                    const input = document.getElementById(id);
+                    if (!input) continue;
+
+                    const correctAnswerEl = document.getElementById(id + '-correct');
+                    if(correctAnswerEl) correctAnswerEl.textContent = '';
+                    
+                    const userAnswer = input.value.trim().toLowerCase();
+                    const correctAnswerText = answer.toLowerCase();
+                    
+                    let isCorrect;
+                    if (id === 'q2-4') {
+                        isCorrect = (userAnswer === '15-150' || userAnswer === '15 to 150');
+                    } else {
+                        isCorrect = (userAnswer === correctAnswerText);
+                    }
+
+                    input.classList.remove('border-gray-300', 'border-green-500', 'border-red-500', 'text-green-700', 'text-red-700');
+                    
+                    if (isCorrect) {
+                        input.classList.add('border-green-500', 'text-green-700');
+                    } else {
+                        input.classList.add('border-red-500', 'text-red-700');
+                        allCorrect = false;
+                        if(correctAnswerEl) correctAnswerEl.textContent = `(${answer})`;
+                    }
+                }
+                const feedbackEl = document.getElementById('part2-feedback');
+                if (allCorrect) {
+                    feedbackEl.className = 'feedback correct';
+                    feedbackEl.textContent = 'Excellent! All answers are correct.';
+                } else {
+                    feedbackEl.className = 'feedback incorrect';
+                    feedbackEl.textContent = 'Some answers were incorrect. Correct answers are shown in parenthesis.';
+                }
+            }
+
+            function checkPart4(questionId, chosenAnswer, buttonEl) {
+                const correctAnswer = correctAnswersPart4[questionId];
+                const isCorrect = chosenAnswer === correctAnswer;
+                
+                // UPDATED: Scoped selector to #part4-questions to prevent conflict with other parts
+                const buttons = document.querySelectorAll(`#part4-questions button[data-question="${questionId}"]`);
+                
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.add('disabled-btn');
+                    btn.classList.remove('hover:bg-gray-50');
+
+                    if (parseInt(btn.dataset.answer, 10) === correctAnswer) {
+                        btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                        btn.classList.remove('border-gray-200');
+                    }
+                });
+                
+                if (!isCorrect) {
+                    buttonEl.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                    buttonEl.classList.remove('border-gray-200');
+                }
+
+                const feedbackContainer = document.getElementById(`q4${questionId}-feedback`);
+                feedbackContainer.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+                feedbackContainer.innerHTML = feedbackMessagesPart4[questionId][isCorrect ? 'correct' : 'incorrect'];
+            }
+
+            function checkPart5(questionId, chosenAnswer, buttonEl) {
+                const correctAnswer = correctAnswersPart5[questionId];
+                const isCorrect = chosenAnswer === correctAnswer;
+                const buttons = document.querySelectorAll(`#part5-questions button[data-question="${questionId}"]`);
+                
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.classList.add('disabled-btn');
+                    btn.classList.remove('hover:bg-gray-50');
+
+                    if (btn.dataset.answer === correctAnswer) {
+                        btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                        btn.classList.remove('border-gray-200');
+                    }
+                });
+                
+                if (!isCorrect) {
+                    buttonEl.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                    buttonEl.classList.remove('border-gray-200');
+                }
+
+                const feedbackContainer = document.getElementById(`q5${questionId}-feedback`);
+                feedbackContainer.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+                feedbackContainer.innerHTML = feedbackMessagesPart5[questionId][isCorrect ? 'correct' : 'incorrect'];
+            }
+
+            // --- EVENT LISTENERS ---
+
+            mainNav.addEventListener('click', (e) => {
+                if (e.target.matches('.nav-btn')) {
+                    showSection(e.target.dataset.section);
+                }
+            });
+
+            part4QuestionsContainer.addEventListener('click', (e) => {
+                if (e.target.matches('.part4-btn') && !e.target.disabled) {
+                    const questionId = e.target.dataset.question;
+                    const answer = parseInt(e.target.dataset.answer, 10);
+                    if (questionId && !isNaN(answer)) {
+                        checkPart4(questionId, answer, e.target);
+                    }
+                }
+            });
+            
+             part5QuestionsContainer.addEventListener('click', (e) => {
+                if (e.target.matches('.part5-btn') && !e.target.disabled) {
+                    const questionId = e.target.dataset.question;
+                    const answer = e.target.dataset.answer;
+                    if (questionId && answer) {
+                        checkPart5(questionId, answer, e.target);
+                    }
+                }
+            });
+
+            increaseFontButton.addEventListener('click', () => adjustFontSize(1));
+            decreaseFontButton.addEventListener('click', () => adjustFontSize(-1));
+
+            scriptToggleButton.addEventListener('click', toggleScript);
+            checkPart2Button.addEventListener('click', checkPart2);
+
+            // --- INITIAL SETUP ---
+            showSection('intro');
+        });
+    </script>
+
+</body>
+</html>

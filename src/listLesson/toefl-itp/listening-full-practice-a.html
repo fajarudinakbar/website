@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL ITP Listening - Practice Test A</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Smooth detail expansion */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-headphones text-blue-600 text-2xl"></i>
+                <h1 class="font-bold text-slate-700 text-lg md:text-xl">TOEFL ITP Listening Practice</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="progress-display" class="hidden text-sm font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-100">
+                    Question <span id="current-q-num">1</span> of 50
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="w-full bg-slate-200 h-1.5">
+        <div id="progress-bar" class="bg-blue-600 h-1.5 transition-all duration-300 w-0"></div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-4xl mx-auto w-full p-4 md:p-6 flex flex-col">
+        
+        <!-- View: Intro (Home Page) -->
+        <div id="view-intro" class="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto mt-8 fade-in text-center">
+            <div class="mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 text-blue-600 mb-4">
+                    <i class="fa-solid fa-volume-high text-3xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">Listening Comprehension Practice</h2>
+                <p class="text-slate-500 font-medium">TOEFL ITP Section 1 Simulation</p>
+            </div>
+
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed max-w-lg mx-auto">
+                This practice test is designed to simulate the listening section of the TOEFL ITP exam. You will listen to conversations and talks, then answer questions to test your ability to understand spoken English in academic settings.
+            </p>
+            
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 mb-6 text-left mx-auto max-w-lg">
+                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-blue-500"></i> Test Overview
+                </h3>
+                <ul class="space-y-3 text-slate-700">
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                        <span><strong>Part A:</strong> Short Conversations (Q1-30)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                        <span><strong>Part B:</strong> Longer Conversations (Q31-38)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                        <span><strong>Part C:</strong> Short Talks (Q39-50)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Audio Link Section -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8 max-w-lg mx-auto">
+                <div class="flex flex-col items-center gap-2">
+                    <p class="text-sm font-bold text-blue-800">
+                        <i class="fa-solid fa-circle-play mr-1"></i> Step 1: Prepare Audio
+                    </p>
+                    <p class="text-xs text-blue-600 mb-2">Open the audio file in a new tab and keep it playing.</p>
+                    <a href="https://drive.google.com/file/d/1IZ118UsFjktI9IQUJsbZ5LqQoECsZIIh/view?usp=drive_link" 
+                       target="_blank"
+                       class="px-5 py-2 bg-white text-blue-600 border border-blue-300 rounded-full font-bold text-sm hover:bg-blue-100 transition shadow-sm flex items-center gap-2">
+                        <i class="fa-brands fa-google-drive"></i> Open Audio Track
+                    </a>
+                </div>
+            </div>
+
+            <button onclick="attemptNavigation(0)" class="w-full md:w-auto md:px-12 bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-lg transition shadow-md flex items-center justify-center gap-2 mx-auto text-lg">
+                Step 2: Start Practice Test <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- View: Part Intro -->
+        <div id="view-part-intro" class="hidden fade-in max-w-2xl mx-auto mt-12">
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center border-t-4 border-blue-600">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 text-blue-600 mb-5">
+                    <i class="fa-solid fa-layer-group text-2xl"></i>
+                </div>
+                <h2 id="part-intro-title" class="text-2xl font-bold text-slate-900 mb-4">Part Title</h2>
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-100 mb-8">
+                    <p id="part-intro-text" class="text-lg text-slate-700 leading-relaxed font-serif italic">
+                        Description goes here...
+                    </p>
+                </div>
+                <button id="btn-start-part" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition flex items-center gap-2 mx-auto">
+                    Continue to Questions <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- View: Test -->
+        <div id="view-test" class="hidden fade-in flex flex-col gap-6">
+            
+            <!-- Question Box -->
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mt-8">
+                <div class="mb-2">
+                    <span id="part-badge" class="bg-slate-200 text-slate-600 text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">Part A</span>
+                </div>
+                <!-- Question Text is now generic/hidden to simulate real test -->
+                <h2 id="question-text" class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <!-- Content injected by JS -->
+                </h2>
+                <div id="options-container" class="space-y-3">
+                    <!-- Options injected here -->
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-4">
+                <button onclick="prevQuestion()" id="btn-prev" class="px-6 py-3 rounded-lg font-bold text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center gap-2">
+                    <i class="fa-solid fa-chevron-left"></i> Previous
+                </button>
+                <button onclick="nextQuestion()" id="btn-next" class="px-8 py-3 bg-slate-800 text-white rounded-lg font-bold hover:bg-slate-900 transition shadow-lg flex items-center gap-2">
+                    Next <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- View: Results -->
+        <div id="view-results" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-center text-slate-800">Test Results</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-slate-100 p-6 rounded-xl text-center">
+                        <div class="text-sm text-slate-500 uppercase tracking-wide font-bold">Raw Score</div>
+                        <div class="text-4xl font-bold text-slate-900"><span id="score-raw">0</span> / 50</div>
+                    </div>
+                    <div class="bg-blue-600 p-6 rounded-xl text-center text-white">
+                        <div class="text-sm text-blue-100 uppercase tracking-wide font-bold">TOEFL Scaled Score</div>
+                        <div class="text-5xl font-bold" id="score-scaled">31</div>
+                        <div class="text-xs text-blue-200 mt-2">Based on ITP Vol 1 Scoring Table</div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold border-b pb-4 mb-6 text-slate-700">Detailed Review & Explanations</h3>
+                <div id="review-container" class="space-y-6">
+                    <!-- Review items injected here -->
+                </div>
+
+                <button onclick="location.reload()" class="mt-8 w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 shadow-md transition">
+                    <i class="fa-solid fa-rotate"></i> Retake Test
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        // --- DATA ---
+        // Part Descriptions extracted from TOEFL ITP Practice Tests Level 1 Vol 1
+        const partDescriptions = {
+            'A': {
+                title: "Part A: Short Conversations",
+                text: "In Part A, you will hear short conversations between two people. After each conversation, you will hear a question about the conversation. The conversations and questions will not be repeated. After you hear a question, read the four possible answers and choose the best answer."
+            },
+            'B': {
+                title: "Part B: Longer Conversations",
+                text: "In this part of the test, you will hear longer conversations. After each conversation, you will hear several questions. The conversations and questions will not be repeated. After you hear a question, read the four possible answers and choose the best answer."
+            },
+            'C': {
+                title: "Part C: Short Talks",
+                text: "In this part of the test, you will hear several short talks. After each talk, you will hear some questions. The talks and questions will not be repeated. After you hear a question, read the four possible answers and choose the best answer."
+            }
+        };
+
+        // Full digitization of Test A Listening with Explanations
+        const testData = [
+            // PART A
+            {
+                id: 1, part: 'A',
+                script: "Man: Did you buy your ticket from a travel agent or from the airline?\nWoman: Does it matter? They're all the same price.\nNarrator: What does the woman mean?",
+                question: "What does the woman mean?",
+                options: ["There are many different airline fares available.", "Travel agents are all the same.", "It matters where tickets are issued.", "It makes no difference where the tickets are purchased."],
+                answer: 3,
+                explanation: "When the woman asks 'Does it matter?' and states 'They're all the same price,' she implies that the source of the ticket is irrelevant to the cost. Thus, it makes no difference where it is purchased."
+            },
+            {
+                id: 2, part: 'A',
+                script: "Man: When do you think your apples will be ready to pick?\nWoman: You can always tell whether an apple's ripe by its color.\nNarrator: What does the woman imply about the apples?",
+                question: "What does the woman imply about the apples?",
+                options: ["They should be picked before they're ripe.", "They should have been picked already.", "They'll get picked when they turn a certain color.", "They won't be picked until next year."],
+                answer: 2,
+                explanation: "The woman links the ripeness of the apple directly to its color ('tell... by its color'). This implies they will be picked once they reach that specific color."
+            },
+            {
+                id: 3, part: 'A',
+                script: "Woman: My lease is about to expire and I've decided to get a larger place. Do you know of any two-bedroom apartments for rent?\nMan: Have you checked the off-campus listings at the housing office?\nNarrator: What does the man imply?",
+                question: "What does the man imply?",
+                options: ["A two-bedroom apartment may be too expensive.", "The woman should not move off campus.", "The woman should pay the rent by check.", "The university has a list of rental properties."],
+                answer: 3,
+                explanation: "The man suggests checking the 'housing office' for 'listings'. This implies that the university (where the housing office is) maintains a list of available rental properties."
+            },
+            {
+                id: 4, part: 'A',
+                script: "Man: Judy looks terrific these days, better than I've ever seen.\nWoman: I think it's her new haircut. Short hair really flatters her.\nNarrator: What does the woman mean?",
+                question: "What does the woman mean?",
+                options: ["The man often flatters Judy.", "Judy is thinking about getting her hair cut.", "She hasn't seen Judy's new haircut.", "She agrees with the man about Judy's appearance."],
+                answer: 3,
+                explanation: "The woman confirms Judy looks good ('really flatters her') and attributes it to the haircut. She is agreeing with the man's observation that Judy looks terrific."
+            },
+            {
+                id: 5, part: 'A',
+                script: "Man: How about if I come over to pick you up at 6:45 for the movie?\nWoman: Make it 7. I won't have finished with dinner until then.\nNarrator: What will the woman probably be doing at 6:45?",
+                question: "What will the woman probably be doing at 6:45?",
+                options: ["Watching a movie.", "Talking on the phone.", "Picking up her friends.", "Eating dinner."],
+                answer: 3,
+                explanation: "She says she won't be finished with dinner until 7:00. Therefore, at 6:45 (before 7:00), she will still be eating dinner."
+            },
+            {
+                id: 6, part: 'A',
+                script: "Man: I'm moving next week and I have so much to do. I'll never get it all done.\nWoman: Don't forget to tell the post office to forward your mail. You don't want to miss any important letters.\nNarrator: What does the woman suggest the man do?",
+                question: "What does the woman suggest the man do?",
+                options: ["Notify the post office of his new address.", "Check to see if the mail has arrived.", "Send the letter by special delivery.", "Answer the letters after he moves."],
+                answer: 0,
+                explanation: "To 'forward your mail' means to provide the post office with a new address so they can send your mail there. This matches option A."
+            },
+            {
+                id: 7, part: 'A',
+                script: "Woman: Is that a new pair of glasses?\nMan: I'm making do with this old pair until my good ones are fixed.\nNarrator: What does the man imply?",
+                question: "What does the man imply?",
+                options: ["He doesn't like his new glasses.", "His regular glasses are being repaired.", "He thinks his eyesight is improving.", "He's decided to go without glasses."],
+                answer: 1,
+                explanation: "The man refers to his 'good ones' being 'fixed' (repaired). He is wearing an old pair temporarily."
+            },
+            {
+                id: 8, part: 'A',
+                script: "Man: I've spent the whole morning at the library looking for the information we need, you know, for the assignment that's due Friday?\nWoman: I'm stuck, too. Maybe Dr. Boyd will have some suggestions.\nNarrator: What will the speakers probably do?",
+                question: "What will the speakers probably do?",
+                options: ["Talk to Dr. Boyd about an assignment.", "Return their books to the library.", "Meet Dr. Boyd at the library.", "Make an appointment with their teacher on Friday."],
+                answer: 0,
+                explanation: "Both students are 'stuck' (confused) about the assignment. The woman suggests Dr. Boyd might have suggestions. Thus, they will likely talk to him for help."
+            },
+            {
+                id: 9, part: 'A',
+                script: "Woman: I thought you didn't have time to go to the bank.\nMan: The machine only had milk.\nNarrator: What does the man imply?",
+                question: "What does the man imply?",
+                options: ["There is no orange juice in the machine.", "He doesn't like orange juice.", "He prefers milk to orange juice.", "The machine is broken."],
+                answer: 0,
+                explanation: "If the machine 'only had milk', it implies it was out of orange juice."
+            },
+            {
+                id: 10, part: 'A',
+                script: "Man: Not many people know that I'm going to get this promotion.\nWoman: Your secret is safe with me.\nNarrator: What does the woman mean?",
+                question: "What does the woman mean?",
+                options: ["The man shouldn't take the new job.", "She's sorry the man isn't being promoted.", "It isn't easy to keep secrets at work.", "She won't tell anyone about the man's promotion."],
+                answer: 3,
+                explanation: "The idiom 'your secret is safe with me' means the speaker will not reveal the information to anyone else."
+            },
+            {
+                id: 11, part: 'A',
+                script: "Woman: The weather's so nice, I think I'm going to eat my lunch outside. Care to join me?\nMan: I'm meeting Bill in the cafeteria at noon. How about tomorrow?\nNarrator: What does the man mean?",
+                question: "What does the man mean?",
+                options: ["He has made other plans for lunch.", "He has already eaten his lunch.", "He'd like to ask Bill to join them.", "He's meeting Bill in the cafeteria tomorrow."],
+                answer: 0,
+                explanation: "The man declines the invitation because he is 'meeting Bill'. This indicates he has other plans for lunch today."
+            },
+            {
+                id: 12, part: 'A',
+                script: "Man: Listen, Eleanor, I shouldn't have said what I said yesterday. It just didn't come out right.\nWoman: Well, I shouldn't have let it get to me.\nNarrator: What is the woman doing?",
+                question: "What is the woman doing?",
+                options: ["Complaining about the man's behavior.", "Repeating an insensitive remark.", "Denying her involvement in an argument.", "Accepting the man's apology."],
+                answer: 3,
+                explanation: "The man apologizes for his words ('shouldn't have said'). The woman responds conciliatorily ('shouldn't have let it get to me'), indicating she accepts the apology and shares blame."
+            },
+            {
+                id: 13, part: 'A',
+                script: "Man: Are you just about finished? I need to get ahold of George before we leave.\nWoman: Just one more quick call, then it's all yours.\nNarrator: What does the woman mean?",
+                question: "What does the woman mean?",
+                options: ["The man may use the telephone soon.", "The man should hurry.", "She'll call George for the man.", "She's waiting for a call."],
+                answer: 0,
+                explanation: "By saying 'then it's all yours' regarding the phone, she means the man can use it very soon (after her one quick call)."
+            },
+            {
+                id: 14, part: 'A',
+                script: "Woman: I can't decide whether to take Professor Brown's class or Professor Thomson's.\nMan: I can tell you this about Thomson: she knows how to get your attention and hold it.\nNarrator: What does the man imply about Professor Thomson?",
+                question: "What does the man imply about Professor Thomson?",
+                options: ["She's difficult to understand.", "She gives longer assignments than Professor Brown.", "Her lectures are interesting.", "Her class meets more often than Professor Brown's."],
+                answer: 2,
+                explanation: "If a professor can 'get your attention and hold it', it means they are engaging and interesting."
+            },
+            {
+                id: 15, part: 'A',
+                script: "Man: I heard you were worried about your history final. How did it go?\nWoman: Well, the essay part was about what I expected. But the multiple choice section wasn't bad, I was really surprised.\nNarrator: What does the woman mean?",
+                question: "What does the woman mean?",
+                options: ["The exam had more sections than she expected.", "She was surprised that the exam was so difficult.", "Part of the exam was easier than she expected.", "She didn't have time to study for the exam."],
+                answer: 2,
+                explanation: "She says the multiple choice section 'wasn't bad' (was easy) and she was 'surprised'. This implies that part was easier than she anticipated."
+            },
+            {
+                id: 16, part: 'A',
+                script: "Woman: You've been sitting at that desk for three hours!\nMan: In half an hour I'm going to take a break for lunch.\nNarrator: What does the man mean?",
+                question: "What does the man mean?",
+                options: ["He's only finished half of his lunch.", "He's going to eat soon.", "He'll continue to work until he finishes.", "He'll start working half an hour from now."],
+                answer: 1,
+                explanation: "He plans to take a break 'in half an hour'. This means he will eat soon (in 30 minutes)."
+            },
+            {
+                id: 17, part: 'A',
+                script: "Man: I thought you didn't have time to go to the bank.\nWoman: It was close, but I made it.\nNarrator: What does the woman mean?",
+                question: "What does the woman mean?",
+                options: ["The bank was closed when she got there.", "The bank stayed open later than usual.", "She was able to do her banking.", "She didn't have enough time to go to the bank."],
+                answer: 2,
+                explanation: "The phrase 'I made it' implies success. She arrived before the bank closed and was able to do her banking."
+            },
+            {
+                id: 18, part: 'A',
+                script: "Man: Could you please check the list again? I sent in my registration application and fees for the conference last month.\nWoman: Let me... oh, you did. Yes, here's your name. O.K. You can go ahead to the next table for your information kit.\nNarrator: What can be inferred from the conversation?",
+                question: "What can be inferred from the conversation?",
+                options: ["The man has to sign his name.", "The woman will give the man an information kit.", "The woman can't find the list.", "The man has already paid to attend the conference."],
+                answer: 3,
+                explanation: "The man mentions sending fees 'last month' and the woman confirms 'Yes, here's your name'. This confirms his payment was received."
+            },
+            {
+                id: 19, part: 'A',
+                script: "Man: How do I get to the museum café?\nWoman: I'm sorry, I'm new here myself.\nNarrator: What does the woman mean?",
+                question: "What does the woman mean?",
+                options: ["She doesn't know the way.", "The café is near the information desk.", "The man should get his own map.", "The café isn't marked on the map."],
+                answer: 0,
+                explanation: "By stating she is 'new here', she implies she does not have the knowledge to direct him, meaning she doesn't know the way."
+            },
+            {
+                id: 20, part: 'A',
+                script: "Woman: I'd be glad to drop you off downtown on my way home.\nMan: Well... if you're sure it's not out of your way.\nNarrator: What does the man mean?",
+                question: "What does the man mean?",
+                options: ["He'd like to get a ride from the woman.", "He lives very near the woman.", "He doesn't want to go downtown.", "He thinks the woman is going the wrong way."],
+                answer: 0,
+                explanation: "The man hesitates only to be polite ('if you're sure'). He accepts the offer implicitly by checking the convenience, meaning he wants the ride."
+            },
+            {
+                id: 21, part: 'A',
+                script: "Woman: I've got to go to the dentist tomorrow at three. Do you think I could make up the hours I'll miss another day?\nMan: I'll see what I can do.\nNarrator: What does the man mean?",
+                question: "What does the man mean?",
+                options: ["He'll see the woman at the dentist's office.", "He'll miss seeing the woman at work.", "He'll try to make arrangements for the woman.", "He'll schedule a different dental appointment."],
+                answer: 2,
+                explanation: "'I'll see what I can do' is a common idiom meaning 'I will try to help you' or 'I will try to arrange that', likely regarding her work schedule."
+            },
+            {
+                id: 22, part: 'A',
+                script: "Woman: I can't seem to shake this cold.\nMan: Sometimes the only thing that helps is taking it easy.\nNarrator: What does the man mean?",
+                question: "What does the man mean?",
+                options: ["The woman should avoid getting cold.", "It's easy to get sick in cold weather.", "The woman should get more rest.", "Dressing warmly can prevent illness."],
+                answer: 2,
+                explanation: "'Taking it easy' means to rest and relax. The man advises rest to help with the cold."
+            },
+            {
+                id: 23, part: 'A',
+                script: "Man: I forgot to get a new pen for tomorrow's calligraphy class. Do you know when the campus store opens in the morning?\nWoman: I'd try the mall tonight - your class starts early.\nNarrator: What does the woman imply?",
+                question: "What does the woman imply?",
+                options: ["The man won't be ready for tonight's class.", "The man will not be able to go to the store before class.", "She'll take the man to the mall tonight.", "The class schedule has been changed."],
+                answer: 1,
+                explanation: "The woman points out the class starts 'early', implying the campus store might not be open yet. Therefore, he won't be able to buy it there before class and should go to the mall tonight."
+            },
+            {
+                id: 24, part: 'A',
+                script: "Man: I just tried Richard's house and nobody answered.\nWoman: That's odd. He left here at noon, so he should've arrived at least 30 minutes ago.\nNarrator: What can be inferred from the conversation?",
+                question: "What can be inferred from the conversation?",
+                options: ["Richard often goes home early.", "The woman expected Richard to be at home.", "Richard should not leave work early.", "The woman called Richard 30 minutes ago."],
+                answer: 1,
+                explanation: "The woman says 'That's odd' and calculates he 'should've arrived'. This shows she expected him to be there."
+            },
+            {
+                id: 25, part: 'A',
+                script: "Man: That little grocery store on the corner looks as though it's seen better days.\nWoman: I'm afraid it's only a matter of time before it closes down.\nNarrator: What does the woman mean?",
+                question: "What does the woman mean?",
+                options: ["She doesn't have time to buy groceries now.", "The store will probably go out of business soon.", "She hopes the store hasn't already closed.", "The store on the corner has inconvenient hours."],
+                answer: 1,
+                explanation: "To 'see better days' means to be in poor condition. 'Only a matter of time before it closes down' implies it will likely go out of business soon."
+            },
+            {
+                id: 26, part: 'A',
+                script: "Man: I can't seem to get the TV to come on. It must be broken.\nWoman: Have you checked to see if it's plugged in?\nNarrator: What does the woman imply?",
+                question: "What does the woman imply?",
+                options: ["The man's house has no electricity.", "The TV's plug might be broken.", "The man can't afford to fix the TV.", "The TV might not need to be fixed."],
+                answer: 3,
+                explanation: "By suggesting he check the plug, she implies the problem might be simple (no power) rather than the TV actually being broken. Thus, it might not need repair."
+            },
+            {
+                id: 27, part: 'A',
+                script: "Woman: I'd like to get a chair with wheels because I need to be able to get from the computer to the phone more easily.\nMan: I'll take it up with Gary in office furnishings, but I can't make any promises.\nNarrator: What will the man do?",
+                question: "What will the man do?",
+                options: ["Get a new computer for the woman.", "Ask Gary to move the woman's furniture.", "Find out if a bigger office is available.", "Request a new chair for the woman."],
+                answer: 3,
+                explanation: "To 'take it up with Gary' means to discuss the request with him. The request is for a 'chair with wheels'."
+            },
+            {
+                id: 28, part: 'A',
+                script: "Woman: So you think your supervisor approves of your work?\nMan: She didn't come right out and pat me on the back, but I did get that impression.\nNarrator: What does the man imply?",
+                question: "What does the man imply?",
+                options: ["The supervisor hasn't explained what he needs to do.", "His work is viewed favorably.", "He's impressed by his supervisor.", "His back problems have affected his work recently."],
+                answer: 1,
+                explanation: "Although the supervisor didn't explicitly praise him ('pat on the back'), he got the impression she approves. 'Approves' means viewing the work favorably."
+            },
+            {
+                id: 29, part: 'A',
+                script: "Woman: Are we all set for the meeting downstairs? I told them we'd need a slide projector...\nMan: I took care of it on my way back from lunch.\nNarrator: What does the man imply?",
+                question: "What does the man imply?",
+                options: ["The slide projector has been repaired.", "The room is ready for the meeting.", "He'll take care of the slide projector after lunch.", "Everyone is waiting for the meeting to begin."],
+                answer: 1,
+                explanation: "By saying 'I took care of it', the man means he arranged for the projector. This implies the room/equipment is ready."
+            },
+            {
+                id: 30, part: 'A',
+                script: "Man: Do you think the blue jacket would look better with these pants?\nWoman: In this heat, I don't think you'll be comfortable in anything but the cotton one.\nNarrator: What does the woman suggest the man do?",
+                question: "What does the woman suggest the man do?",
+                options: ["Wear a blue jacket.", "Dress warmly.", "Wear something cool.", "Wear cotton pants."],
+                answer: 2,
+                explanation: "The woman prioritizes comfort 'in this heat' and suggests the 'cotton one' (presumably cooler). She is suggesting he wear something cool."
+            },
+            // PART B
+            {
+                id: 31, part: 'B',
+                script: "Woman: Good morning, Steve. What can I do for you?\nMan: Well, I've decided I want to transfer to a smaller college.\nWoman: I know you've had a rough time adjusting, Steve, but I'm sorry to hear you want to leave.\nMan: What I need to do now is find a new college and I was hoping you might have some ideas.",
+                question: "Why does Steve visit the counselor?",
+                options: ["To get help in finding a new college.", "To change his major.", "To fill out an application for college.", "To find out how to change dormitories."],
+                answer: 0,
+                explanation: "Steve explicitly states: 'What I need to do now is find a new college and I was hoping you might have some ideas.'"
+            },
+            {
+                id: 32, part: 'B',
+                script: "Woman: ...The main one is how many of your credits will be accepted by your new college.\nMan: You mean they won't all be transferable?\nWoman: Not necessarily. It'll depend on what courses you've taken here...",
+                question: "What is the one possible problem the counselor points out to Steve?",
+                options: ["A small school does not offer a wide range of courses.", "His tuition will not be refunded.", "Changing majors involves a lot of paperwork.", "He may not be able to transfer all his credits."],
+                answer: 3,
+                explanation: "The counselor warns him about 'how many of your credits will be accepted', implying they might not all transfer."
+            },
+            {
+                id: 33, part: 'B',
+                script: "Man: ...maybe if my roommate and I had hit it off better... that's really bothering me more than anything else.",
+                question: "What is Steve's main problem in adjusting to his college?",
+                options: ["He doesn't like his professors.", "His classes are too difficult.", "He can't transfer his credits from his previous school.", "He doesn't get along with his roommate."],
+                answer: 3,
+                explanation: "He mentions the issue with his roommate is 'really bothering me more than anything else'. 'Hit it off' means to get along."
+            },
+            {
+                id: 34, part: 'B',
+                script: "Woman: ...Did you talk to someone at the residence office? It might be that changing roommates would make all the difference.\nMan: I might just do that!",
+                question: "Where will Steve probably go to get his problem solved?",
+                options: ["The registrar's office.", "The admissions office.", "The housing office.", "The math department."],
+                answer: 2,
+                explanation: "The woman suggests the 'residence office' (which is the Housing Office) to solve the roommate problem."
+            },
+            {
+                id: 35, part: 'B',
+                script: "Man: Diane, first let me congratulate you on your latest thriller's success. Tales of Deception has topped the best-seller list for the past twenty-seven weeks straight.",
+                question: "Why does the man congratulate the woman?",
+                options: ["She has won a literary award.", "She has been profiled in a literary journal.", "Her novel has sold very well.", "Her contract with a publisher has been extended."],
+                answer: 2,
+                explanation: "Being on the 'best-seller list' for 27 weeks means the book has sold very well."
+            },
+            {
+                id: 36, part: 'B',
+                script: "Woman: Well, since my main character is a police detective, I needed to immerse myself in that role – to find out how an officer thinks...",
+                question: "Who is the main character in Tales of Deception?",
+                options: ["A criminal.", "A poet.", "A radio announcer.", "A police officer."],
+                answer: 3,
+                explanation: "She explicitly states: 'my main character is a police detective' (officer)."
+            },
+            {
+                id: 37, part: 'B',
+                script: "Man: ...Tell me about your work habits.\nWoman: I keep at it all the time. I get up at six every morning...",
+                question: "Why does the man ask the woman about her work habits?",
+                options: ["To learn more about her research findings.", "To learn how she writes so many books.", "To find out how she learned to write poetry.", "To find ways to improve his own writing."],
+                answer: 1,
+                explanation: "Earlier the man remarked on how she writes 'so fast' and has 'two new books out'. He asks about habits to understand how she produces so much work."
+            },
+            {
+                id: 38, part: 'B',
+                script: "Woman: Ideas flash through my mind all day long. That's why I carry a little notebook around with me.",
+                question: "Why does the woman carry a notebook?",
+                options: ["To take notes for newspaper articles.", "To keep track of the number of hours she spends writing.", "To record ideas she has when she is not at her desk.", "To document evidence for a police investigation."],
+                answer: 2,
+                explanation: "She carries it to catch ideas that 'flash through my mind' when she is not writing."
+            },
+            // PART C
+            {
+                id: 39, part: 'C',
+                script: "Man: As we head into hurricane season, we'd like to take this opportunity to go over some precautionary measures you can take...",
+                question: "What is the talk mainly about?",
+                options: ["Preparing for a hurricane.", "Damage caused by a hurricane.", "Coastal weather patterns.", "Evacuation procedures."],
+                answer: 0,
+                explanation: "The speaker discusses 'precautionary measures' for the 'hurricane season', which refers to preparation."
+            },
+            {
+                id: 40, part: 'C',
+                script: "Man: The following guidelines have been established by the National Weather Service.",
+                question: "What organization provided the information for the announcement?",
+                options: ["The navy.", "A government weather agency.", "State police headquarters.", "A local shelter."],
+                answer: 1,
+                explanation: "The National Weather Service is a government weather agency."
+            },
+            {
+                id: 41, part: 'C',
+                script: "Man: Before hurricane season even begins, stock up on batteries, candles, bottled water, nonperishable food...",
+                question: "What should people do before hurricane season begins?",
+                options: ["Cover windows.", "Buy a supply of food and water.", "Locate the nearest shelter.", "Leave coastal areas."],
+                answer: 1,
+                explanation: "'Stock up on... bottled water, nonperishable food' means buying a supply of food and water."
+            },
+            {
+                id: 42, part: 'C',
+                script: "Man: Also the National Weather Service recommends that you fill up your car with fuel in case you need to evacuate. Gas stations may be closed...",
+                question: "Why should people fill their cars with fuel before a hurricane?",
+                options: ["Gas stations might not be open.", "Fuel might increase in price.", "They may need to drive neighbors to shelters.", "There may be long lines at the gas stations."],
+                answer: 0,
+                explanation: "The speaker warns that 'Gas stations may be closed by the time you need to leave'."
+            },
+            {
+                id: 43, part: 'C',
+                script: "Speaker: ...In a sense, rural free delivery was the most important communications revolution in United States history. Rural Americans were not lifted out of the relatively isolated communities...",
+                question: "What does the speaker mainly discuss?",
+                options: ["The economic impact of mail delivery on rural areas.", "A comparison of urban and rural mail delivery.", "Government mail delivery in cities.", "The introduction of mail delivery in rural areas."],
+                answer: 3,
+                explanation: "The lecture focuses on 'rural free delivery' (RFD), which is the introduction of mail delivery to rural areas."
+            },
+            {
+                id: 44, part: 'C',
+                script: "Speaker: In the early decades of the century, mail carriers were privately employed – they did not work for the government.",
+                question: "What is true of mail delivery in the early nineteenth century?",
+                options: ["It was paid for by the United States Congress.", "It was run by private companies.", "It was regulated by the government.", "It was mainly for farmers."],
+                answer: 1,
+                explanation: "If carriers were 'privately employed' and didn't work for the government, it was run by private companies."
+            },
+            {
+                id: 45, part: 'C',
+                script: "Speaker: So farmers still had a problem – they had to go to a post office to collect their mail, which, by the way, wasn't always nearby.",
+                question: "According to the speaker, what problem did farmers face with early mail service?",
+                options: ["Many post office locations were inconvenient.", "Bad roads delayed mail delivery.", "The postal rates were too high.", "There were not enough mail carriers to deliver mail."],
+                answer: 0,
+                explanation: "If the post office 'wasn't always nearby', the location was inconvenient."
+            },
+            {
+                id: 46, part: 'C',
+                script: "Speaker: Farmers' requests to have mail brought to their homes were at first met with outrage. What could be more ridiculous, many urban residents asked...",
+                question: "How did many city residents react when farmers first requested mail delivery?",
+                options: ["They were indifferent to it.", "They thought it should have been done long before.", "They thought it was unnecessary.", "They thought it had to be accepted despite its cost."],
+                answer: 2,
+                explanation: "City residents felt it was 'ridiculous', implying they thought it was unnecessary."
+            },
+            {
+                id: 47, part: 'C',
+                script: "Speaker: Today I'd like to explain the Mohs' scale... This scale is based on the simple fact that harder minerals scratch softer ones... an unidentified mineral sample can be identified.",
+                question: "What is the lecture mainly about?",
+                options: ["The properties of quartz crystals.", "A method of identifying minerals.", "The life of Friedrich Mohs.", "A famous collection of minerals."],
+                answer: 1,
+                explanation: "The Mohs' scale is described as a method where an 'unidentified mineral sample can be identified'."
+            },
+            {
+                id: 48, part: 'C',
+                script: "Speaker: ...The hardness of any mineral depends on the strength of the bonds... the stronger the bond, the harder the mineral.",
+                question: "What aspect of a mineral is the Mohs' scale used to identify?",
+                options: ["Its estimated value.", "Its crystalline structure.", "Its chemical composition.", "Its relative hardness."],
+                answer: 3,
+                explanation: "The entire lecture defines the scale based on 'hardness' (scratching)."
+            },
+            {
+                id: 49, part: 'C',
+                script: "Speaker: I'd like you each to take a mineral sample from the basket at the front of the room and classify it according to its place on the Mohs' scale.",
+                question: "What does the teacher ask the class to do?",
+                options: ["Collect some minerals as homework.", "Identify the tools he is using.", "Apply the information given in the talk.", "Pass their papers to the front of the room."],
+                answer: 2,
+                explanation: "By asking them to take a sample and 'classify it', the teacher is asking them to apply the theory (Mohs' scale) just discussed."
+            },
+            {
+                id: 50, part: 'C',
+                script: "Speaker: ...Because bond strength may differ in various angles of a crystal, the hardness may vary slightly depending on the direction in which the mineral sample is scratched...",
+                question: "According to the teacher, when might the hardness of the same mineral seem to vary?",
+                options: ["When it is scratched in different directions.", "When greater pressure is applied.", "When its surface is scratched too frequently.", "When the tester uses the wrong tools."],
+                answer: 0,
+                explanation: "The teacher explicitly mentions hardness varies 'depending on the direction in which the mineral sample is scratched'."
+            }
+        ];
+
+        // --- STATE ---
+        let currentIdx = 0;
+        let userAnswers = {};
+
+        // --- DOM ELEMENTS ---
+        const viewIntro = document.getElementById('view-intro');
+        const viewPartIntro = document.getElementById('view-part-intro');
+        const viewTest = document.getElementById('view-test');
+        const viewResults = document.getElementById('view-results');
+        
+        const partIntroTitle = document.getElementById('part-intro-title');
+        const partIntroText = document.getElementById('part-intro-text');
+        const btnStartPart = document.getElementById('btn-start-part');
+
+        const progressBar = document.getElementById('progress-bar');
+        const progressDisplay = document.getElementById('progress-display');
+        const currentQNum = document.getElementById('current-q-num');
+        
+        const partBadge = document.getElementById('part-badge');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        // --- LOGIC ---
+
+        function attemptNavigation(targetIdx) {
+            // Case 1: Start of test
+            if (targetIdx === 0 && viewPartIntro.classList.contains('hidden')) {
+                showPartIntro('A', 0);
+                return;
+            }
+
+            // Case 2: Transition between parts (A -> B or B -> C)
+            // If targetIdx is valid and belongs to a different part than the previous one
+            if (targetIdx > 0 && targetIdx < testData.length) {
+                const currentPart = testData[targetIdx - 1].part;
+                const nextPart = testData[targetIdx].part;
+                
+                if (currentPart !== nextPart) {
+                    showPartIntro(nextPart, targetIdx);
+                    return;
+                }
+            }
+
+            // Normal navigation
+            loadQuestion(targetIdx);
+        }
+
+        function showPartIntro(partId, nextIdx) {
+            const partInfo = partDescriptions[partId];
+            
+            // Hide other views
+            viewIntro.classList.add('hidden');
+            viewTest.classList.add('hidden');
+            
+            // Setup Part Intro Content
+            partIntroTitle.innerText = partInfo.title;
+            partIntroText.innerText = partInfo.text;
+            
+            // Setup Continue Button
+            btnStartPart.onclick = () => {
+                viewPartIntro.classList.add('hidden');
+                loadQuestion(nextIdx);
+            };
+
+            // Show Part Intro
+            viewPartIntro.classList.remove('hidden');
+            progressDisplay.classList.add('hidden'); // Hide progress on intro screen
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = testData[idx];
+
+            // Update Views
+            viewIntro.classList.add('hidden');
+            viewPartIntro.classList.add('hidden');
+            viewTest.classList.remove('hidden');
+            progressDisplay.classList.remove('hidden');
+
+            // Update Header
+            currentQNum.innerText = idx + 1;
+            progressBar.style.width = `${((idx + 1) / testData.length) * 100}%`;
+            
+            // Update UI content
+            partBadge.innerText = `Part ${q.part}`;
+            
+            // HIDE QUESTION TEXT for realistic TOEFL simulation (Audio only)
+            questionText.innerHTML = `<span class="text-slate-400 font-normal italic text-base"><i class="fa-solid fa-ear-listen mr-2"></i>Listen to the audio question...</span>`;
+            
+            // Generate Options
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, optIdx) => {
+                const isSelected = userAnswers[q.id] === optIdx;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 rounded-lg border-2 transition-all flex items-start gap-3 group ${
+                    isSelected 
+                    ? 'border-blue-600 bg-blue-50' 
+                    : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
+                }`;
+                btn.onclick = () => selectAnswer(optIdx);
+                
+                const badge = document.createElement('span');
+                badge.className = `w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition ${
+                    isSelected ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-600'
+                }`;
+                badge.innerText = String.fromCharCode(65 + optIdx);
+                
+                const text = document.createElement('span');
+                text.className = 'mt-1 text-lg text-slate-700';
+                text.innerText = opt;
+
+                btn.appendChild(badge);
+                btn.appendChild(text);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Update Navigation
+            btnPrev.disabled = (idx === 0);
+            if (idx === testData.length - 1) {
+                btnNext.innerHTML = 'Finish Test <i class="fa-solid fa-check"></i>';
+                btnNext.onclick = finishTest;
+            } else {
+                btnNext.innerHTML = 'Next <i class="fa-solid fa-chevron-right"></i>';
+                btnNext.onclick = nextQuestion;
+            }
+        }
+
+        function selectAnswer(optIdx) {
+            const qId = testData[currentIdx].id;
+            userAnswers[qId] = optIdx;
+            loadQuestion(currentIdx); // Re-render to show selection
+        }
+
+        function nextQuestion() {
+            if (currentIdx < testData.length - 1) {
+                attemptNavigation(currentIdx + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                // Just load previous question, skip intros when going back
+                loadQuestion(currentIdx - 1);
+            }
+        }
+
+        function calculateScaledScore(raw) {
+            // Mapping from TOEFL ITP Vol 1 Page 124
+            if (raw >= 48) return 68;
+            if (raw >= 45) return 62;
+            if (raw >= 42) return 58;
+            if (raw >= 39) return 56;
+            if (raw >= 36) return 54;
+            if (raw >= 33) return 52;
+            if (raw >= 30) return 50;
+            if (raw >= 27) return 49;
+            if (raw >= 24) return 47;
+            if (raw >= 21) return 46;
+            if (raw >= 18) return 44;
+            if (raw >= 15) return 41;
+            if (raw >= 12) return 37;
+            if (raw >= 9) return 32;
+            if (raw >= 6) return 29;
+            if (raw >= 3) return 27;
+            return 25; // Below 3
+        }
+
+        function finishTest() {
+            let rawScore = 0;
+            testData.forEach(q => {
+                if (userAnswers[q.id] === q.answer) rawScore++;
+            });
+
+            const scaledScore = calculateScaledScore(rawScore);
+
+            document.getElementById('score-raw').innerText = rawScore;
+            document.getElementById('score-scaled').innerText = scaledScore;
+
+            // Generate Review Section
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            testData.forEach((q, idx) => {
+                const isCorrect = userAnswers[q.id] === q.answer;
+                const userOptIdx = userAnswers[q.id];
+                
+                const item = document.createElement('div');
+                item.className = `p-6 rounded-lg border-2 ${isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`;
+                
+                let reviewHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="font-bold text-slate-700">Question ${idx + 1}</div>
+                        ${isCorrect 
+                            ? '<span class="text-green-600 font-bold"><i class="fa-solid fa-check-circle"></i> Correct</span>' 
+                            : '<span class="text-red-600 font-bold"><i class="fa-solid fa-times-circle"></i> Incorrect</span>'}
+                    </div>
+                    <p class="mb-3 text-lg font-medium text-slate-800">${q.question}</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
+                        <div class="${isCorrect ? 'text-green-800' : 'text-red-800'}">
+                            <span class="font-bold">Your Answer:</span> ${userOptIdx !== undefined ? q.options[userOptIdx] : 'No Answer'}
+                        </div>
+                        <div class="text-slate-700">
+                            <span class="font-bold">Correct Answer:</span> ${q.options[q.answer]}
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded border border-slate-200 mb-3">
+                        <details class="group">
+                            <summary class="flex justify-between items-center font-medium cursor-pointer list-none text-slate-700 hover:text-blue-600">
+                                <span><i class="fa-solid fa-align-left mr-2"></i> Show Full Transcript</span>
+                                <span class="transition transform group-open:rotate-180">
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </span>
+                            </summary>
+                            <div class="text-slate-600 italic font-serif mt-3 whitespace-pre-line leading-relaxed border-t pt-2 border-slate-100">
+                                ${q.script}
+                            </div>
+                        </details>
+                    </div>
+                `;
+
+                // Adding Explanation Box
+                if (q.explanation) {
+                    reviewHTML += `
+                        <div class="bg-blue-100 border-l-4 border-blue-500 p-4 rounded text-slate-800 text-sm">
+                            <span class="font-bold block mb-1 text-blue-800"><i class="fa-solid fa-lightbulb"></i> Explanation:</span>
+                            ${q.explanation}
+                        </div>
+                    `;
+                }
+
+                item.innerHTML = reviewHTML;
+                reviewContainer.appendChild(item);
+            });
+
+            viewTest.classList.add('hidden');
+            viewResults.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+    </script>
+</body>
+</html>

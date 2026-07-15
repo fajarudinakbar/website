@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 (GSE 50) Listening The Transactional Exchange</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* AI Prompt Box Style */
+        .ai-prompt-box {
+            background-color: #f0f9ff;
+            border-left: 8px solid #0284c7;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        @media (min-width: 768px) {
+            .ai-prompt-box {
+                padding: 2rem;
+            }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg md:text-xl lg:text-2xl">
+
+    <div class="max-w-7xl mx-auto bg-white p-6 sm:p-8 md:p-14 rounded-2xl md:rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-sm md:text-base text-slate-500 mb-6 md:mb-8 flex flex-wrap gap-2 md:gap-3 font-semibold uppercase tracking-wider">
+            <span>Professional English</span> <span>&gt;</span> 
+            <span>Listening</span> <span>&gt;</span> 
+            <span>B1 Level (GSE 50)</span> <span>&gt;</span> 
+            <span class="text-cyan-700 font-bold">The Transactional Exchange</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 md:gap-8 mb-8 md:mb-12">
+            <div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-700 to-blue-600 tracking-tight mb-4 leading-tight">
+                    The Transactional Exchange
+                </h1>
+                <p class="text-xl sm:text-2xl md:text-3xl text-slate-500 font-medium">Topic: At the Konbini and Pharmacy</p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="resetAll()" class="w-full md:w-auto justify-center flex items-center gap-3 px-4 py-3 md:px-6 md:py-4 text-base md:text-xl text-slate-500 hover:text-red-600 transition-colors font-bold hover:bg-red-50 rounded-xl border border-transparent hover:border-red-200">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-cyan-600 p-6 md:p-8 mb-8 md:mb-12 rounded-r-2xl shadow-sm">
+            <p class="text-lg sm:text-xl md:text-2xl text-slate-700 leading-relaxed font-medium">
+                <i class="fas fa-headphones mr-2 md:mr-4 text-cyan-600"></i> 
+                <strong>Instructions:</strong> Complete the <strong>Preparation</strong> tasks first. Then listen to the audio script and answer the comprehension and analysis questions. Correct answers will appear after 2 incorrect attempts for multiple choice tasks.
+            </p>
+        </div>
+
+        <!-- Section 1: Preparation (Cyan Theme) -->
+        <div class="mb-8 rounded-2xl md:rounded-3xl overflow-hidden border border-cyan-100 shadow-lg">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 sm:p-8 md:p-10 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-6">
+                    <div class="bg-cyan-200 text-cyan-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-xl md:text-3xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-2xl sm:text-3xl md:text-4xl font-bold text-cyan-900">Preparation (Tasks 1 to 2)</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-2xl md:text-4xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 5000px;">
+                <div class="p-6 sm:p-8 md:p-12 space-y-10 md:space-y-16 bg-white">
+                    
+                    <!-- Task 1 -->
+                    <div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                            <h3 class="text-2xl md:text-3xl font-bold text-cyan-800">Task 1: Warm Up Thinking</h3>
+                            <button onclick="toggleAnswer('ans-t1', this)" class="text-base md:text-xl font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-4 py-2 md:px-6 md:py-3 rounded-xl hover:bg-cyan-50 transition-colors shadow-sm whitespace-nowrap">Show Sample Ideas</button>
+                        </div>
+                        <div class="space-y-6">
+                            <ul class="list-disc pl-6 md:pl-8 space-y-3 text-lg md:text-2xl text-slate-700 font-medium">
+                                <li>Do you use digital payment apps (like Apple Pay or PayPay) more often than cash? Why?</li>
+                                <li>In your country, is it common to pay for plastic bags at the grocery store?</li>
+                                <li>What is the most difficult part of shopping in a language you are still learning?</li>
+                            </ul>
+                            <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none" placeholder="Write your ideas here..."></textarea>
+                            <div id="ans-t1" class="answer-box hidden mt-6 p-6 md:p-8 bg-cyan-50 border-2 border-cyan-200 rounded-2xl text-lg md:text-2xl text-slate-700">
+                                <strong>Sample Ideas:</strong>
+                                <ul class="list-disc pl-6 md:pl-8 mt-4 space-y-3">
+                                    <li>I use digital apps much more often now because it is faster and I do not have to carry loose coins.</li>
+                                    <li>Yes, in my country we have to pay a small fee for plastic bags to encourage people to bring reusable ones.</li>
+                                    <li>The hardest part is understanding rapid questions at the register, like asking about point cards or receipts, before I even finish packing my items.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 1.1 -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-bold text-cyan-800 mb-6">Task 1.1: AI Support for Warm Up</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-3 md:mb-4 uppercase tracking-wider text-base md:text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-4 md:p-6 rounded-xl border border-sky-200 font-mono text-base md:text-2xl leading-relaxed">"I am an international resident in Japan. Explain the logic behind 'Point Cards' (pointo kaado) in Japanese retail. Provide a B1 level summary of how they work and whether they are worth using for a medical professional on a short term contract."</p>
+                        </div>
+                        <div class="space-y-6 mt-6 md:mt-8">
+                            <p class="text-lg md:text-2xl text-slate-700 font-medium">Draft your expected findings before comparing it to the AI's response.</p>
+                            <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none" placeholder="Your draft..."></textarea>
+                             <div class="mt-4 md:mt-6">
+                                <button onclick="toggleAnswer('sample-ai-1', this)" class="text-base md:text-xl font-bold text-cyan-600 underline hover:text-cyan-800">Show AI Sample Response</button>
+                                <div id="sample-ai-1" class="answer-box hidden mt-4 p-5 md:p-6 bg-slate-50 rounded-2xl border border-slate-200 text-lg md:text-2xl text-slate-700 italic">
+                                    "Point cards are loyalty programs used by almost all Japanese stores. When you buy things, you earn points that you can use later as cash. They are free to get. If you are a medical professional staying for more than a few months, they are worth using because you can save money on your daily grocery and pharmacy shopping."
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 2: Vocab MCQ -->
+                    <div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 md:mb-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-cyan-800">Task 2: Vocabulary in Context</h3>
+                            <button onclick="checkVocab()" class="text-base md:text-xl font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-4 py-2 md:px-8 md:py-4 rounded-xl hover:bg-cyan-50 transition-colors shadow-sm whitespace-nowrap">Check Vocabulary</button>
+                        </div>
+                        <p class="text-lg md:text-2xl text-slate-700 mb-6">Read the sentences taken from the text. Choose the correct meaning of each CAPITALIZED word.</p>
+                        <div id="vocab-container" class="space-y-6 md:space-y-8">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Listening Script (Blue Theme) -->
+        <div class="mb-8 rounded-2xl md:rounded-3xl overflow-hidden border border-blue-100 shadow-lg">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 sm:p-8 md:p-10 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-6">
+                    <div class="bg-blue-200 text-blue-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-xl md:text-3xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-headphones"></i></div>
+                    <span class="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-900">Listening Script</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-2xl md:text-4xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-6 sm:p-8 md:p-12 bg-white">
+                    
+                    <!-- Native Audio Generator Section -->
+                    <div class="mb-8 md:mb-10 p-5 md:p-6 bg-slate-800 rounded-2xl shadow-xl flex flex-col lg:flex-row items-center gap-4 md:gap-6 text-white" id="audio-section">
+                        <!-- Ready State -->
+                        <div id="audio-uninitialized" class="w-full flex flex-col lg:flex-row items-center justify-between gap-4 md:gap-6">
+                            <div class="text-center lg:text-left">
+                                <p class="text-lg md:text-xl font-bold mb-1">Audio: At the Konbini and Pharmacy</p>
+                                <p class="text-slate-400 text-sm md:text-base">Click to play the audio using native browser voices.</p>
+                            </div>
+                            <button onclick="playAudio()" class="w-full lg:w-auto justify-center px-4 py-3 md:px-6 md:py-3 bg-blue-500 hover:bg-blue-400 rounded-xl font-bold transition-all shadow-lg shrink-0 flex items-center gap-3">
+                                <i class="fas fa-play text-lg md:text-xl"></i> <span>Play Audio</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Playing State -->
+                        <div id="audio-playing" class="hidden w-full flex-col lg:flex-row items-center justify-between gap-4 md:gap-6">
+                            <div class="flex items-center gap-4">
+                                <i class="fas fa-volume-up fa-beat text-2xl md:text-3xl text-blue-400"></i>
+                                <div class="text-left">
+                                    <p class="text-lg md:text-xl font-bold mb-1">Audio: At the Konbini and Pharmacy</p>
+                                    <p class="text-blue-300 text-sm md:text-base">Playing audio...</p>
+                                </div>
+                            </div>
+                            <button onclick="stopAudio()" class="w-full lg:w-auto justify-center px-4 py-3 md:px-6 md:py-3 bg-red-500 hover:bg-red-400 rounded-xl font-bold transition-all shadow-lg shrink-0 flex items-center gap-3">
+                                <i class="fas fa-stop text-lg md:text-xl"></i> <span>Stop Audio</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Script -->
+                    <div class="border-2 border-blue-200 rounded-2xl overflow-hidden shadow-sm">
+                        <button onclick="toggleScript()" class="w-full flex items-center justify-between p-4 md:p-6 bg-blue-50 text-blue-900 text-xl md:text-2xl font-bold hover:bg-blue-100 transition-colors">
+                            <span>Read Audio Script</span>
+                            <i id="script-icon" class="fas fa-chevron-down text-xl md:text-3xl transform transition-transform duration-300"></i>
+                        </button>
+                        <div id="script-content" class="hidden p-6 md:p-10 bg-white prose prose-slate max-w-none text-justify leading-relaxed md:leading-loose text-lg md:text-2xl">
+                            <p><strong>Staff:</strong> "Welcome! Do you have a <strong>MEMBERSHIP</strong> card for our store to collect points?"</p>
+                            <p><strong>Customer:</strong> "No, I do not have one yet. I just moved here to work at the university hospital."</p>
+                            <p><strong>Staff:</strong> "I see. Understood. Would you like a plastic bag? There is a small 3 yen <strong>CHARGE</strong> for each bag."</p>
+                            <p><strong>Customer:</strong> "No, thank you. I have my own bag. However, could you please pack the medical supplies and the hot food <strong>SEPARATELY</strong>?"</p>
+                            <p><strong>Staff:</strong> "Certainly. Your total is 1,250 yen. How would you like to pay?"</p>
+                            <p><strong>Customer:</strong> "I would like to use a digital wallet on my phone."</p>
+                            <p><strong>Staff:</strong> "Please <strong>SCAN</strong> your QR code on the reader now. ... Thank you. The <strong>TRANSACTION</strong> is complete. Here is your <strong>RECEIPT</strong>. Have a nice day!"</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Comprehension (Emerald Theme) -->
+        <div class="mb-8 rounded-2xl md:rounded-3xl overflow-hidden border border-emerald-100 shadow-lg">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 sm:p-8 md:p-10 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-6">
+                    <div class="bg-emerald-200 text-emerald-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-xl md:text-3xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-900">Comprehension (Tasks 3 to 5)</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-2xl md:text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-6 sm:p-8 md:p-12 space-y-10 md:space-y-16 bg-white">
+                    
+                    <!-- Task 3 -->
+                    <div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 md:mb-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-emerald-800">Task 3: General Understanding</h3>
+                            <button onclick="toggleAnswer('ans-t3', this)" class="text-base md:text-xl font-bold text-emerald-700 border-2 border-emerald-200 bg-white px-4 py-2 md:px-6 md:py-3 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm whitespace-nowrap">Show Sample Answers</button>
+                        </div>
+                        <div class="space-y-6">
+                            <ul class="list-decimal pl-6 md:pl-8 space-y-3 text-lg md:text-2xl text-slate-700 font-medium">
+                                <li>Where does this conversation most likely take place?</li>
+                                <li>What is the customer's profession?</li>
+                                <li>Does the customer pay with physical cash or a digital method?</li>
+                            </ul>
+                            <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none" placeholder="Your answers..."></textarea>
+                            <div id="ans-t3" class="answer-box hidden mt-6 p-6 md:p-8 bg-emerald-50 rounded-2xl border-2 border-emerald-200 text-lg md:text-2xl text-slate-700">
+                                <ul class="list-disc pl-6 md:pl-8 space-y-3">
+                                    <li><strong>Location:</strong> At a convenience store or pharmacy.</li>
+                                    <li><strong>Profession:</strong> Working at a university hospital (likely a medical professional).</li>
+                                    <li><strong>Payment:</strong> A digital method (digital wallet on a phone).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 4 -->
+                    <div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 md:mb-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-emerald-800">Task 4: Detail and Meaning</h3>
+                            <button onclick="toggleAnswer('ans-t4', this)" class="text-base md:text-xl font-bold text-emerald-700 border-2 border-emerald-200 bg-white px-4 py-2 md:px-6 md:py-3 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm whitespace-nowrap">Show Sample Answers</button>
+                        </div>
+                        <div class="space-y-6">
+                            <ul class="list-decimal pl-6 md:pl-8 space-y-3 text-lg md:text-2xl text-slate-700 font-medium">
+                                <li>How much does a plastic bag cost at this store?</li>
+                                <li>Why does the customer refuse the plastic bag?</li>
+                                <li>What two types of items does the customer want to be packed in different bags?</li>
+                            </ul>
+                            <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none" placeholder="Your answers..."></textarea>
+                            <div id="ans-t4" class="answer-box hidden mt-6 p-6 md:p-8 bg-emerald-50 rounded-2xl border-2 border-emerald-200 text-lg md:text-2xl text-slate-700">
+                                <ul class="list-disc pl-6 md:pl-8 space-y-3">
+                                    <li><strong>Bag Cost:</strong> 3 yen.</li>
+                                    <li><strong>Reason:</strong> The customer already has their own bag.</li>
+                                    <li><strong>Items:</strong> Medical supplies and hot food.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 5 (True/False) -->
+                    <div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 md:mb-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-emerald-800">Task 5: Opinion Check (True or False)</h3>
+                            <button onclick="checkTF()" class="text-base md:text-xl font-bold text-emerald-700 border-2 border-emerald-200 bg-white px-4 py-2 md:px-8 md:py-4 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm whitespace-nowrap">Check Answers</button>
+                        </div>
+                        <div id="tf-container" class="space-y-4 md:space-y-6 text-lg md:text-2xl">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Analysis (Orange Theme) -->
+        <div class="mb-8 rounded-2xl md:rounded-3xl overflow-hidden border border-orange-100 shadow-lg">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 sm:p-8 md:p-10 bg-orange-50 hover:bg-orange-100 border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-6">
+                    <div class="bg-orange-200 text-orange-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-xl md:text-3xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-900">Analysis (Tasks 6 to 7)</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 text-2xl md:text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-6 sm:p-8 md:p-12 space-y-10 md:space-y-16 bg-white">
+                    
+                    <!-- Task 6 -->
+                    <div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 md:mb-8">
+                            <h3 class="text-2xl md:text-3xl font-bold text-orange-800">Task 6: Cause and Effect</h3>
+                            <button onclick="toggleAnswer('ans-t6', this)" class="text-base md:text-xl font-bold text-orange-700 border-2 border-orange-200 bg-white px-4 py-2 md:px-6 md:py-3 rounded-xl hover:bg-orange-50 transition-colors shadow-sm whitespace-nowrap">Show Sample</button>
+                        </div>
+                        <p class="text-lg md:text-2xl text-slate-700 mb-4 md:mb-6 font-medium">Identify the logical relationship between these statements from the script:</p>
+                        <div class="space-y-6 md:space-y-8 bg-slate-50 p-5 md:p-8 rounded-2xl border border-slate-200">
+                            <div class="space-y-3 md:space-y-4">
+                                <span class="block font-bold text-lg md:text-2xl text-orange-900">Cause: The customer does not have a membership card...</span>
+                                <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+                                    <span class="font-bold text-lg md:text-2xl text-slate-600">Effect:</span> 
+                                    <input type="text" class="flex-1 p-3 md:p-4 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-orange-500 text-base md:text-xl w-full">
+                                </div>
+                            </div>
+                            <div class="h-px bg-slate-300 w-full my-3 md:my-4"></div>
+                            <div class="space-y-3 md:space-y-4">
+                                <span class="block font-bold text-lg md:text-2xl text-orange-900">Cause: The customer chooses to use a digital wallet...</span>
+                                <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+                                    <span class="font-bold text-lg md:text-2xl text-slate-600">Effect:</span> 
+                                    <input type="text" class="flex-1 p-3 md:p-4 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-orange-500 text-base md:text-xl w-full">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ans-t6" class="answer-box hidden mt-6 md:mt-8 p-6 md:p-8 bg-orange-50 rounded-2xl border-2 border-orange-200 text-lg md:text-2xl text-slate-800">
+                            <ul class="list-none space-y-4 md:space-y-6">
+                                <li><strong>Effect 1:</strong> ...he will not be able to collect points for this specific purchase. <em>(Logic: No card means no access to the loyalty system).</em></li>
+                                <li><strong>Effect 2:</strong> ...he must use his phone to scan a QR code rather than using physical cash. <em>(Logic: The choice of technology dictates the physical action required).</em></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 6.1 -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-bold text-orange-800 mb-4 md:mb-6">Task 6.1: AI Guided Extension</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-3 md:mb-4 uppercase tracking-wider text-base md:text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-4 md:p-6 rounded-xl border border-sky-200 font-mono text-base md:text-2xl leading-relaxed">"Evaluate the logic of the service staff's questions in the script. Why is the question about the membership card usually asked before the plastic bag or payment method in Japanese service culture? Explain in 3 to 4 simple sentences for a B1 learner."</p>
+                        </div>
+                        <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none mt-4 md:mt-6" placeholder="Your explanation..."></textarea>
+                    </div>
+
+                    <!-- Task 7 -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-bold text-orange-800 mb-4 md:mb-6">Task 7: Speaking Personal Position</h3>
+                        <div class="space-y-6">
+                            <ul class="list-decimal pl-6 md:pl-8 space-y-3 text-lg md:text-2xl text-slate-700 font-medium">
+                                <li>When you are in a rush after a long hospital shift, do you prefer self checkout machines or talking to a staff member?</li>
+                                <li>Is it important for medical professionals to be polite to service staff even when they are tired? Why?</li>
+                            </ul>
+                            <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none" placeholder="Jot down your speaking points..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Task 7.1 -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-bold text-orange-800 mb-4 md:mb-6">Task 7.1: AI as Practice Partner</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-3 md:mb-4 uppercase tracking-wider text-base md:text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-4 md:p-6 rounded-xl border border-sky-200 font-mono text-base md:text-2xl leading-relaxed">"Act as a clerk at a Japanese pharmacy. I am a foreign doctor buying some bandages and a bottle of water. Start the interaction by welcoming me, ask if I have a point card, and then ask if I want a bag. If I say yes to the bag, remind me of the small fee. Keep the level at B1 English."</p>
+                        </div>
+                        <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none mt-4 md:mt-6" placeholder="Write your side of the dialogue..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Case Studies (Violet Theme) -->
+        <div class="mb-8 rounded-2xl md:rounded-3xl overflow-hidden border border-violet-100 shadow-lg">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 sm:p-8 md:p-10 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-6">
+                    <div class="bg-violet-200 text-violet-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-xl md:text-3xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-2xl sm:text-3xl md:text-4xl font-bold text-violet-900">Case Studies (Tasks 8 to 9)</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-2xl md:text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-6 sm:p-8 md:p-12 space-y-10 md:space-y-16 bg-white">
+                    
+                    <!-- Task 8 -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-bold text-violet-800 mb-4 md:mb-6">Task 8: Discussion Contextual Skills</h3>
+                        <p class="text-lg md:text-2xl text-slate-700 mb-4 md:mb-6 font-medium leading-relaxed">Efficiency vs. Politeness in Japan, service interactions are very structured. How can you show you are a competent communicator in English when you do not know the specific local phrases for things like point cards or taped items?</p>
+                        <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none" placeholder="Your discussion points..."></textarea>
+                    </div>
+
+                    <!-- Task 9 -->
+                    <div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 md:mb-6">
+                            <h3 class="text-2xl md:text-3xl font-bold text-violet-800">Task 9: Case Study Decision Making</h3>
+                            <button onclick="toggleAnswer('ans-t9', this)" class="text-base md:text-xl font-bold text-violet-700 border-2 border-violet-200 bg-white px-4 py-2 md:px-6 md:py-3 rounded-xl hover:bg-violet-50 transition-colors shadow-sm whitespace-nowrap">Show Evaluation</button>
+                        </div>
+                        <div class="bg-violet-50 p-5 md:p-8 rounded-2xl border-2 border-violet-100 mb-6">
+                            <p class="text-lg md:text-2xl text-violet-900 font-bold mb-3 md:mb-4">Scenario:</p>
+                            <p class="text-lg md:text-2xl text-slate-800 mb-4 md:mb-6 leading-relaxed">You are at the pharmacy. Your digital wallet app crashes exactly when you are supposed to SCAN the code. There is a long line of people behind you.</p>
+                            <ul class="list-none space-y-3 md:space-y-4 text-lg md:text-2xl text-slate-700">
+                                <li class="flex items-start gap-3"><i class="fas fa-door-open text-violet-600 mt-1"></i><span><strong>Option A:</strong> Apologize, cancel the transaction, and leave the store to fix your phone.</span></li>
+                                <li class="flex items-start gap-3"><i class="fas fa-money-bill-wave text-violet-600 mt-1"></i><span><strong>Option B:</strong> Quickly look for cash in your bag, even if it takes an extra minute, to finish the purchase.</span></li>
+                            </ul>
+                        </div>
+                        <p class="text-lg md:text-2xl text-slate-700 mb-4 font-medium">Discuss which option is the more professional choice in this public setting.</p>
+                        <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-32 md:h-40" placeholder="I would choose Option... because..."></textarea>
+                        <div id="ans-t9" class="answer-box hidden mt-4 md:mt-6 p-6 md:p-8 bg-white border-2 border-violet-200 rounded-2xl text-lg md:text-2xl text-slate-700">
+                            <strong>Analysis:</strong> Option B is generally more practical and standard if you actually have the cash, as canceling an order creates administrative work for the staff. However, if finding the cash takes too long, Option A shows respect for the time of the other waiting customers. Communicating clearly is the most professional part of either choice.
+                        </div>
+                    </div>
+
+                    <!-- Task 9.1 -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-bold text-violet-800 mb-4 md:mb-6">Task 9.1: AI Role Play Comparison</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-3 md:mb-4 uppercase tracking-wider text-base md:text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-4 md:p-6 rounded-xl border border-sky-200 font-mono text-base md:text-2xl leading-relaxed">"Let's simulate a debate. AI: You argue that Option A is better because it respects the time of the people waiting in line. Student: I will argue that Option B is better because the customer likely needs the medical supplies immediately. Let's exchange one point each in 3 sentences."</p>
+                        </div>
+                        <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none mt-4 md:mt-6" placeholder="Your argument..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Reflection (Rose Theme) -->
+        <div class="mb-10 rounded-2xl md:rounded-3xl overflow-hidden border border-rose-100 shadow-lg">
+            <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-6 sm:p-8 md:p-10 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-6">
+                    <div class="bg-rose-200 text-rose-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-xl md:text-3xl shadow-sm group-hover:scale-110 transition-transform">6</div>
+                    <span class="text-2xl sm:text-3xl md:text-4xl font-bold text-rose-900">Summary and Reflection (Task 10)</span>
+                </div>
+                <i id="icon-part6" class="fas fa-chevron-down text-rose-600 text-2xl md:text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part6" class="accordion-content">
+                <div class="p-6 sm:p-8 md:p-12 space-y-8 md:space-y-10 bg-white">
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-bold text-rose-800 mb-4 md:mb-6">Task 10: Final Reflection</h3>
+                        <p class="text-lg md:text-2xl text-slate-700 mb-4 md:mb-6 font-medium leading-relaxed">Write 5 to 6 sentences about your experience with daily transactions in a foreign language. Use at least three CAPITALIZED words from Task 2 (for example: TRANSACTION, SCAN, RECEIPT). Reflect on how survival phrases help you feel more integrated into the community.</p>
+                        <textarea class="w-full p-4 md:p-6 border-2 border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-48 md:h-64" placeholder="Your reflection paragraph..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 md:mt-20 pt-8 md:pt-10 border-t-2 border-slate-100 text-center">
+            <p class="text-slate-500 text-lg md:text-xl font-bold tracking-wide">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-cyan-600 hover:text-cyan-800 transition-colors underline decoration-2 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        const attempts = {};
+
+        // Task 2: Vocab Data
+        const vocabData = [
+            { 
+                id: "v1", 
+                sentence: "Do you have a <strong>MEMBERSHIP</strong> card for our store to collect points?", 
+                correct: "b", 
+                options: { 
+                    a: "A card showing you are a qualified doctor.", 
+                    b: "A card that proves you belong to a specific group or loyalty program.", 
+                    c: "A card used only for emergency medical identification." 
+                } 
+            },
+            { 
+                id: "v2", 
+                sentence: "There is a small 3 yen <strong>CHARGE</strong> for each bag.", 
+                correct: "c", 
+                options: { 
+                    a: "A physical weight that is heavy to carry.", 
+                    b: "A task or responsibility given to a worker.", 
+                    c: "An amount of money that you have to pay for a service or item." 
+                } 
+            },
+            { 
+                id: "v3", 
+                sentence: "Could you please pack the medical supplies and the hot food <strong>SEPARATELY</strong>?", 
+                correct: "b", 
+                options: { 
+                    a: "Put things together in the same container.", 
+                    b: "Kept apart or not together in one group.", 
+                    c: "Moving very quickly between two places." 
+                } 
+            },
+            { 
+                id: "v4", 
+                sentence: "Please <strong>SCAN</strong> your QR code on the reader now.", 
+                correct: "a", 
+                options: { 
+                    a: "To use a machine to read information stored on a code or document.", 
+                    b: "To print a paper copy of a digital image.", 
+                    c: "To delete a file from a mobile device." 
+                } 
+            },
+            { 
+                id: "v5", 
+                sentence: "Thank you. The <strong>TRANSACTION</strong> is complete.", 
+                correct: "b", 
+                options: { 
+                    a: "A conversation between two doctors about a patient.", 
+                    b: "An instance of buying or selling something; a piece of business.", 
+                    c: "A long journey to a different city." 
+                } 
+            },
+            { 
+                id: "v6", 
+                sentence: "Here is your <strong>RECEIPT</strong>. Have a nice day!", 
+                correct: "a", 
+                options: { 
+                    a: "A piece of paper that proves you have paid for something.", 
+                    b: "A set of instructions for cooking a specific meal.", 
+                    c: "A prescription for a specific type of medication." 
+                } 
+            }
+        ];
+
+        // Task 5: True/False Data
+        const tfData = [
+            { 
+                id: "tf1", 
+                text: "1. The customer already has a store membership card.", 
+                correct: "False", 
+                explanation: "He says, 'No, I do not have one yet.'" 
+            },
+            { 
+                id: "tf2", 
+                text: "2. The store provides plastic bags for free.", 
+                correct: "False", 
+                explanation: "There is a '3 yen charge' for each bag." 
+            },
+            { 
+                id: "tf3", 
+                text: "3. The customer is careful about hygiene or temperature by separating food and medicine.", 
+                correct: "True", 
+                explanation: "He asks to pack the medical supplies and hot food 'separately.'" 
+            },
+            { 
+                id: "tf4", 
+                text: "4. The payment was successful.", 
+                correct: "True", 
+                explanation: "The staff says 'The transaction is complete.'" 
+            }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col gap-4 md:gap-6 p-5 md:p-8 bg-cyan-50/50 rounded-2xl border-2 border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <p class="text-lg md:text-2xl text-slate-800 font-medium italic border-l-8 border-cyan-400 pl-4 md:pl-6">"${item.sentence}"</p>
+                    <div class="flex flex-col gap-3 md:gap-4 pl-2 md:pl-4">
+                        ${Object.entries(item.options).map(([key, val]) => `
+                            <label class="flex items-start md:items-center gap-3 md:gap-4 p-3 md:p-5 bg-white rounded-xl border-2 border-slate-200 cursor-pointer hover:bg-cyan-50 hover:border-cyan-300 transition-all">
+                                <input type="radio" name="${item.id}" value="${key}" class="w-5 h-5 md:w-6 md:h-6 mt-1 md:mt-0 accent-cyan-600 shrink-0">
+                                <span class="text-base md:text-2xl text-slate-700"><strong>${key}.</strong> ${val}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-lg md:text-2xl font-bold min-h-[28px] md:min-h-[32px] mt-2 pl-2 md:pl-4"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col gap-4 p-5 md:p-8 border-b-2 border-emerald-100 last:border-0 bg-white rounded-xl mb-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 md:gap-6">
+                        <span class="text-lg md:text-2xl text-slate-800 font-medium w-full xl:w-2/3">${item.text}</span>
+                        <div class="flex flex-wrap items-center gap-4 md:gap-8 text-lg md:text-2xl font-bold bg-slate-50 p-3 md:p-4 rounded-xl shrink-0">
+                            <label class="flex items-center gap-2 md:gap-3 cursor-pointer hover:text-emerald-700">
+                                <input type="radio" name="${item.id}" value="True" class="w-5 h-5 md:w-7 md:h-7 accent-emerald-600"> True
+                            </label>
+                            <label class="flex items-center gap-2 md:gap-3 cursor-pointer hover:text-emerald-700">
+                                <input type="radio" name="${item.id}" value="False" class="w-5 h-5 md:w-7 md:h-7 accent-emerald-600"> False
+                            </label>
+                            <span id="feedback-${item.id}" class="w-8 md:w-10 flex justify-center text-xl md:text-3xl"></span>
+                        </div>
+                    </div>
+                    <div id="explain-${item.id}" class="hidden mt-3 md:mt-4 p-4 md:p-6 bg-emerald-100 text-emerald-900 text-base md:text-2xl rounded-xl border-2 border-emerald-200 font-medium"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2 md:mr-3"></i>Correct!</span>';
+                    radios.forEach(r => r.disabled = true);
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-600 block"><i class="fas fa-info-circle mr-2 md:mr-3"></i>Answer: ${item.correct}) ${item.options[item.correct]}</span>`;
+                    } else {
+                        feedback.innerHTML = '<span class="text-orange-600"><i class="fas fa-times-circle mr-2 md:mr-3"></i>Try again</span>';
+                    }
+                }
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-600"></i>';
+                    radios.forEach(r => r.disabled = true);
+                    explainDiv.innerHTML = `<strong>Reason:</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-600 text-base md:text-xl px-2 py-1 md:px-3 md:py-1 bg-red-100 rounded-lg">Ans: ${item.correct}</span>`;
+                        explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct}</strong><br><strong>Reason:</strong> ${item.explanation}`;
+                        explainDiv.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                    }
+                }
+            });
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = btn.innerText.includes("AI") ? "Show AI Sample Response" : "Show Sample";
+            }
+        }
+
+        function toggleScript() {
+            const content = document.getElementById("script-content");
+            const icon = document.getElementById("script-icon");
+            if (content.classList.contains("hidden")) {
+                content.classList.remove("hidden");
+                icon.classList.add("rotate-180");
+            } else {
+                content.classList.add("hidden");
+                icon.classList.remove("rotate-180");
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                for (const key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                
+                // Clear Feedback and Explanations
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('[id^="explain-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.add('hidden');
+                });
+                
+                // Hide Answers
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+                
+                // Reset Buttons
+                document.querySelectorAll('button').forEach(btn => {
+                   if(btn.innerText.includes("Hide")) {
+                       btn.innerText = btn.innerText.includes("AI") ? "Show AI Sample Response" : "Show Sample";
+                   }
+                });
+
+                // Reset Audio Player State
+                stopAudio();
+            }
+        }
+
+        let currentUtterance = null;
+        
+        // Ensure voices are loaded for Microsoft Edge
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        function playAudio() {
+            if (!('speechSynthesis' in window)) {
+                console.error("Speech synthesis not supported");
+                return;
+            }
+
+            const btnSection = document.getElementById('audio-uninitialized');
+            const playingSection = document.getElementById('audio-playing');
+
+            // Switch UI
+            btnSection.classList.add('hidden');
+            btnSection.classList.remove('flex');
+            playingSection.classList.remove('hidden');
+            playingSection.classList.add('flex');
+
+            const scriptText = "Welcome! Do you have a membership card for our store to collect points? No, I do not have one yet. I just moved here to work at the university hospital. I see. Understood. Would you like a plastic bag? There is a small 3 yen charge for each bag. No, thank you. I have my own bag. However, could you please pack the medical supplies and the hot food separately? Certainly. Your total is 1,250 yen. How would you like to pay? I would like to use a digital wallet on my phone. Please scan your QR code on the reader now. Thank you. The transaction is complete. Here is your receipt. Have a nice day!";
+
+            window.speechSynthesis.cancel(); // Clear any pending speech
+            currentUtterance = new SpeechSynthesisUtterance(scriptText);
+            
+            // Attempt to select Edge Natural voice or fallback to standard English
+            const voices = window.speechSynthesis.getVoices();
+            const naturalVoice = voices.find(v => v.name.includes('Natural') && v.lang.startsWith('en')) 
+                              || voices.find(v => v.name.includes('Online') && v.lang.startsWith('en'))
+                              || voices.find(v => v.lang.startsWith('en'));
+                              
+            if (naturalVoice) {
+                currentUtterance.voice = naturalVoice;
+            }
+
+            currentUtterance.onend = function() {
+                stopAudio();
+            };
+
+            currentUtterance.onerror = function() {
+                stopAudio();
+            };
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function stopAudio() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            
+            const btnSection = document.getElementById('audio-uninitialized');
+            const playingSection = document.getElementById('audio-playing');
+            
+            if (playingSection && btnSection) {
+                playingSection.classList.add('hidden');
+                playingSection.classList.remove('flex');
+                btnSection.classList.remove('hidden');
+                btnSection.classList.add('flex');
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderTF();
+        });
+
+    </script>
+</body>
+</html>

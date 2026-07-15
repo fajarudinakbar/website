@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2 Speaking - Cultural Know-How</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5', // Indigo 600
+                        primaryHover: '#4338ca', // Indigo 700
+                        secondary: '#64748b', // Slate 500
+                        accent: '#0ea5e9', // Sky 500
+                        surface: '#f8fafc',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Merriweather', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .serif-text { font-family: 'Merriweather', serif; }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+        // --- DATA CONSTANTS ---
+        const READING_PASSAGE = `Part 1: Communication Styles
+People from different countries often communicate differently, and these differences can easily cause misunderstandings. In some places, such as Singapore and Japan, saying “no” directly can feel rude or too strong. Instead, people prefer to say “maybe,” “I’ll think about it,” or give a softer answer. These responses may sound positive to a Western ear, but they often mean “no.”
+
+Gestures can also create confusion. For example, in Greece, a tilt of the head upwards can mean “no,” while a slight nod might not mean “yes.” Visitors who rely on their own cultural habits may misunderstand the meaning of these gestures.
+
+Punctuality also varies from culture to culture. Italian businesspeople may arrive late as a sign of flexibility or because they do not see strict punctuality as essential. In contrast, Dutch professionals usually arrive exactly on time and expect others to do the same. For them, lateness can seem unprofessional or disrespectful.
+
+In Japan, business cards (meishi) are an important part of business etiquette. People give and receive cards using both hands. Treating a card with care shows respect for the person and their organization. Placing a business card in a pocket casually or writing on it can appear disrespectful.
+
+Part 2: High-Context vs. Low-Context Cultures
+To understand these differences, anthropologist Edward T. Hall categorized cultures into two types: High-Context and Low-Context.
+
+In High-Context cultures (e.g., Japan, Indonesia, Arab countries), communication relies heavily on non-verbal cues, history, and relationships. What is *not* said is often more important than what is said. You must "read the air" to understand the true message.
+
+In Low-Context cultures (e.g., USA, Germany, Scandinavia), communication is explicit. "Yes" means yes, and "No" means no. Rules are clearly written out, and people value directness and clarity over maintaining harmony. Misunderstandings often arise when these two styles clash in global business.`;
+
+        const TASKS = [
+             {
+                id: 1,
+                title: "Warm-Up Discussion",
+                type: "input",
+                prompt: "Reflect on your own experiences before we start.",
+                questions: [
+                    "What cultural misunderstandings have you experienced or heard about?",
+                    "How direct are people in your culture (e.g., Indonesia) when they communicate?",
+                    "Why is cultural knowledge important when working internationally?"
+                ]
+            },
+            {
+                id: 2,
+                title: "Vocabulary Activation",
+                type: "vocab",
+                prompt: "Discuss the words below. Click to reveal the B2 definition.",
+                items: [
+                    { word: "Direct communication", def: "Saying exactly what you mean in a clear, honest way." },
+                    { word: "Indirect communication", def: "Expressing meaning politely without being explicit, often to save face." },
+                    { word: "High-Context Culture", def: "A culture where communication relies on implicit communication and nonverbal cues (e.g., Indonesia, Japan)." },
+                    { word: "Low-Context Culture", def: "A culture where communication is explicit and the message is mainly in the words (e.g., USA, Germany)." },
+                    { word: "Etiquette", def: "The customary code of polite behavior in society or among members of a particular profession." },
+                    { word: "To read the air", def: "Idiom: To understand the unspoken atmosphere or feelings in a situation (common in high-context cultures)." }
+                ]
+            },
+            {
+                id: 3,
+                title: "Topic Prediction",
+                type: "input",
+                prompt: "Based on the title 'Cultural Know-How', predict what specific business habits the passage might discuss.",
+                questions: ["Write prediction 1:", "Write prediction 2:"]
+            },
+            {
+                id: 4,
+                title: "Reading",
+                type: "reading_action",
+                prompt: "Read the expanded passage covering Communication Styles and Hall's Theory.",
+            },
+            {
+                id: 5,
+                title: "General Understanding",
+                type: "speaking_check",
+                prompt: "Answer these questions aloud. Check the model answer after.",
+                questions: [
+                    { q: "What is the passage mainly about?", a: "It discusses variations in communication, gestures, punctuality, and introduces the concept of High vs. Low Context cultures." },
+                    { q: "What is the difference between High and Low Context cultures?", a: "High-context relies on non-verbal cues and relationships; Low-context relies on explicit words and directness." }
+                ]
+            },
+            {
+                id: 6,
+                title: "Detailed Comprehension",
+                type: "speaking_check",
+                prompt: "Dive deeper. Speak your answer, then compare.",
+                questions: [
+                    { q: "Why do some cultures avoid saying 'no' directly?", a: "To avoid sounding rude, too strong, and to maintain harmony." },
+                    { q: "How do Italians and Dutch people view punctuality differently?", a: "Italians may see lateness as flexibility; Dutch see it as unprofessional/disrespectful." },
+                    { q: "What does 'reading the air' mean in the context of the text?", a: "It means understanding the hidden meaning or atmosphere without being told directly." }
+                ]
+            },
+            {
+                id: 7,
+                title: "Vocabulary in Context",
+                type: "input_check",
+                prompt: "Explain these phrases based on how they were used in the text.",
+                questions: [
+                    { q: "softer answer", hint: "Not a direct no..." },
+                    { q: "cultural habits", hint: "Things we do naturally..." },
+                    { q: "explicit communication", hint: "Opposite of hidden..." },
+                    { q: "business etiquette", hint: "Rules of work behavior..." }
+                ]
+            },
+            {
+                id: 8,
+                title: "Idiom Exploration",
+                type: "matching",
+                prompt: "Match the idiom to its meaning.",
+                pairs: [
+                    { term: "Go Dutch", def: "Each person pays their own share" },
+                    { term: "Save face", def: "Avoid embarrassment or loss of reputation" },
+                    { term: "Stick to your guns", def: "Refuse to change your mind/position" },
+                    { term: "Read between the lines", def: "Find the hidden meaning" },
+                    { term: "Get the wrong idea", def: "Misunderstand a situation" }
+                ]
+            },
+            {
+                id: 9,
+                title: "Theory Application",
+                type: "discussion",
+                prompt: "Based on Part 2 of the reading, categorize these situations.",
+                questions: [
+                    "A contract is 50 pages long and details every possible risk. (High or Low Context?)",
+                    "A business deal is sealed with a handshake after a long dinner, not a contract. (High or Low Context?)",
+                    "Where would you place Indonesia on this scale? Why?"
+                ]
+            },
+            {
+                id: 10,
+                title: "Prediction Scenarios",
+                type: "input_check",
+                prompt: "Predict the impact of these actions.",
+                questions: [
+                    { q: "You say 'no' directly in Japan. What might people think?", a: "They might feel it is rude, aggressive, or too strong." },
+                    { q: "You arrive 10 minutes late in the Netherlands.", a: "The team might assume you are unprofessional or disrespectful." },
+                    { q: "You rely only on the written contract in a High-Context culture.", a: "You might miss the importance of the relationship and verbal agreements." }
+                ]
+            },
+            {
+                id: 11,
+                title: "Critical Incident",
+                type: "decision",
+                prompt: "Read the scenario and decide the best course of action.",
+                scenarios: [
+                    { title: "The Silent Boardroom", text: "You are pitching to a Japanese client. You ask, 'Do you like the proposal?' The room goes silent. The CEO closes his eyes. You think they are bored, so you start speaking louder and faster.", answer: "MISTAKE. Silence is often used for thought in Japan. Closing eyes can mean deep listening, not sleep. You should have waited patiently." },
+                    { title: "The Dutch Feedback", text: "A Dutch colleague tells you, 'Your report is disorganized and needs a total rewrite.' You feel insulted and angry.", answer: "CULTURAL MISMATCH. The Dutch value directness/honesty (Low Context). It is not a personal attack; it is professional efficiency. Don't take it personally." },
+                    { title: "The Indonesian 'Yes'", text: "You ask your Indonesian team if they can finish by Friday. They smile and say 'We will try our best.' On Friday, it is not done.", answer: "INDIRECTNESS. 'We will try our best' often signals 'It is likely impossible, but we don't want to disappoint you.' You should have probed deeper." }
+                ]
+            },
+            {
+                id: 12,
+                title: "Compare Cultures",
+                type: "input",
+                prompt: "Reflect on INDONESIA vs The Text.",
+                questions: [
+                    "Is Indonesia High Context or Low Context? Give an example.",
+                    "How do people show disagreement politely in Indonesia?",
+                    "What cultural behaviours do foreigners misunderstand most when visiting Indonesia?"
+                ]
+            },
+            {
+                id: 13,
+                title: "Grammar: Modals",
+                type: "quiz",
+                prompt: "Choose the correct modal verb for the situation.",
+                items: [
+                    { q: "You are in Japan. You ___ write on a business card.", options: ["must not", "don't have to", "might not"], correct: "must not", reason: "It is a strong prohibition in Japanese etiquette." },
+                    { q: "He is late for the meeting in Italy. He ___ be stuck in traffic, or he just views time flexibly.", options: ["should", "might", "must"], correct: "might", reason: "We are guessing (deduction of possibility)." },
+                    { q: "In Germany, you ___ be on time. It is expected.", options: ["could", "should", "might"], correct: "should", reason: "It is a strong recommendation/expectation." },
+                    { q: "You ___ bow in Indonesia, but a handshake is common.", options: ["must", "don't have to", "shouldn't"], correct: "don't have to", reason: "Lack of obligation." }
+                ]
+            },
+            {
+                id: 14,
+                title: "Cultural Mistake Analysis",
+                type: "table_input",
+                prompt: "Analyze the mistake, consequence, and solution.",
+                rows: ["Saying 'no' directly in a High Context culture", "Arriving very early in Italy", "Ignoring hierarchy in an Asian meeting"]
+            },
+            {
+                id: 15,
+                title: "Final Speaking Task",
+                type: "recorder",
+                prompt: "Give advice for a Westerner coming to work in Indonesia. Speak for at least 1 minute.",
+                points: ["Communication Style (Direct vs Indirect)", "Body Language & Smile", "Time Expectations (Rubber Time?)", "Addressing Superiors"]
+            },
+            {
+                id: 16,
+                title: "Review & Export",
+                type: "export",
+                prompt: "Review your answers and download your Cultural Portfolio.",
+            }
+        ];
+
+        // --- SHARED UTILS ---
+
+        // Robust Icon Component for CDN usage
+        const Icon = ({ name, size = 20, className = "" }) => {
+            const iconRef = useRef(null);
+            
+            useEffect(() => {
+                if (window.lucide && window.lucide.createIcons && iconRef.current) {
+                    window.lucide.createIcons({
+                        root: iconRef.current,
+                        nameAttr: 'data-icon-name',
+                        attrs: {
+                            class: className,
+                            width: size,
+                            height: size
+                        }
+                    });
+                }
+            }, [name, size, className]);
+
+            // We use a key to force re-mount if the name changes, ensuring the effect runs cleanly
+            return <i ref={iconRef} key={name} data-icon-name={name} style={{ display: 'inline-flex' }} />;
+        };
+
+        const RevealCard = ({ title, children, color = "indigo" }) => {
+            const [isOpen, setIsOpen] = useState(false);
+            
+            const styles = {
+                indigo: "bg-indigo-50 text-indigo-900 border-indigo-200 hover:bg-indigo-100",
+                green: "bg-emerald-50 text-emerald-900 border-emerald-200 hover:bg-emerald-100",
+                gray: "bg-slate-100 text-slate-800 border-slate-200 hover:bg-slate-200"
+            };
+
+            return (
+                <div className="mt-4">
+                    <button 
+                        onClick={() => setIsOpen(!isOpen)}
+                        className={`w-full text-left px-4 py-3 rounded-lg border flex items-center justify-between font-bold transition-all ${styles[color]}`}
+                    >
+                        <span>{title}</span>
+                        <Icon name={isOpen ? "chevron-up" : "chevron-down"} size={18} />
+                    </button>
+                    {isOpen && (
+                        <div className="mt-2 p-4 border rounded-lg bg-white shadow-sm border-slate-100 animate-fade-in text-lg leading-relaxed text-slate-700">
+                            {children}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const TextArea = ({ value, onChange, placeholder, rows = 3 }) => (
+            <textarea 
+                value={value}
+                onChange={onChange}
+                className="w-full p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-shadow text-lg resize-none"
+                rows={rows}
+                placeholder={placeholder}
+            />
+        );
+
+        // --- TASK TYPE COMPONENTS ---
+        // Breaking the giant switch into smaller components for readability
+
+        const InputTask = ({ task, inputs, onInput }) => (
+            <div className="space-y-8">
+                {task.questions.map((q, idx) => (
+                    <div key={idx} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <label className="block font-bold text-xl text-slate-800 mb-4">{q}</label>
+                        <TextArea 
+                            value={inputs[`task_${task.id}_${idx}`] || ""} 
+                            onChange={(e) => onInput(idx, e.target.value)} 
+                            placeholder="Type your thoughts here..." 
+                        />
+                    </div>
+                ))}
+            </div>
+        );
+
+        const VocabTask = ({ task }) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {task.items.map((item, idx) => (
+                    <div key={idx} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition duration-300">
+                        <h4 className="font-bold text-2xl text-primary mb-3">{item.word}</h4>
+                        <RevealCard title="Reveal Definition" color="gray">{item.def}</RevealCard>
+                    </div>
+                ))}
+            </div>
+        );
+
+        const ReadingActionTask = ({ onOpenReading }) => (
+            <div className="text-center py-20 bg-gradient-to-br from-indigo-50 to-white rounded-2xl border border-indigo-100 shadow-inner">
+                <div className="inline-flex p-4 bg-white rounded-full shadow-sm mb-6 text-primary">
+                    <Icon name="book-open" size={48} />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-800 mb-4">Reading Time</h3>
+                <p className="text-lg text-slate-600 mb-8 max-w-xl mx-auto">Open the text panel to read about Cultural Contexts.</p>
+                <button onClick={onOpenReading} className="px-8 py-4 bg-primary text-white rounded-xl font-bold text-lg shadow-lg hover:bg-primaryHover hover:-translate-y-1 transition flex items-center gap-3 mx-auto">
+                    <Icon name="book" size={24} /> Open Reader
+                </button>
+            </div>
+        );
+
+        const SpeakingCheckTask = ({ task }) => (
+            <div className="space-y-6">
+                {task.questions.map((item, idx) => (
+                    <div key={idx} className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 className="font-bold text-xl text-slate-800 mb-4 flex gap-3 items-start">
+                            <span className="text-primary mt-1"><Icon name="message-circle" /></span> 
+                            <span>{item.q}</span>
+                        </h4>
+                        <RevealCard title="Check Model Answer" color="green">{item.a}</RevealCard>
+                    </div>
+                ))}
+            </div>
+        );
+
+        const InputCheckTask = ({ task, inputs, onInput }) => (
+            <div className="space-y-6">
+                {task.questions.map((item, idx) => (
+                    <div key={idx} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div className="flex flex-col md:flex-row md:justify-between md:items-baseline mb-4 gap-2">
+                            <label className="font-bold text-xl text-slate-900">{item.q}</label>
+                            {item.hint && <span className="text-sm text-slate-500 italic flex items-center gap-1"><Icon name="lightbulb" size={14}/> {item.hint}</span>}
+                        </div>
+                        <input 
+                            type="text" 
+                            value={inputs[`task_${task.id}_${idx}`] || ""} 
+                            onChange={(e) => onInput(idx, e.target.value)}
+                            className="w-full p-3 border rounded-lg text-lg mb-4 focus:ring-2 focus:ring-primary outline-none" 
+                            placeholder="Your Answer..." 
+                        />
+                        {item.a && <RevealCard title="Check Answer" color="indigo">{item.a}</RevealCard>}
+                    </div>
+                ))}
+            </div>
+        );
+
+        const DecisionTask = ({ task }) => (
+            <div className="grid gap-8">
+                {task.scenarios.map((scen, idx) => (
+                    <div key={idx} className="bg-white p-8 rounded-xl border-l-4 border-primary shadow-sm hover:shadow-md transition">
+                        <h4 className="font-bold text-2xl mb-3 text-slate-900">{scen.title}</h4>
+                        <p className="text-lg text-slate-700 mb-6 leading-relaxed">{scen.text}</p>
+                        <RevealCard title="Analyze Outcome" color="indigo">{scen.answer}</RevealCard>
+                    </div>
+                ))}
+            </div>
+        );
+
+        const QuizTask = ({ task, inputs, onInput }) => (
+            <div className="space-y-8">
+                {task.items.map((item, idx) => {
+                    const selected = inputs[`task_${task.id}_${idx}`];
+                    const isCorrect = selected === item.correct;
+                    return (
+                        <div key={idx} className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
+                            <p className="font-bold text-xl mb-6">{item.q}</p>
+                            <div className="flex flex-wrap gap-4 mb-4">
+                                {item.options.map((opt, i) => (
+                                    <button key={i} onClick={() => onInput(idx, opt)}
+                                        className={`px-6 py-3 rounded-lg border font-medium text-lg transition duration-200 ${
+                                            selected === opt 
+                                            ? 'bg-primary text-white border-primary shadow-md' 
+                                            : 'bg-white hover:bg-slate-50 text-slate-700'
+                                        }`}
+                                    >
+                                        {opt}
+                                    </button>
+                                ))}
+                            </div>
+                            {selected && (
+                                <div className={`p-4 rounded-lg text-lg flex gap-3 animate-fade-in ${isCorrect ? 'bg-emerald-50 text-emerald-800 border border-emerald-100' : 'bg-red-50 text-red-800 border border-red-100'}`}>
+                                    <div className="mt-1"><Icon name={isCorrect ? "check-circle" : "x-circle"} /></div>
+                                    <span><strong>{isCorrect ? "Correct!" : "Incorrect."}</strong> {item.reason}</span>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+
+        const TableInputTask = ({ task, inputs, onInput }) => (
+            <div className="overflow-x-auto bg-white rounded-xl border border-slate-200 shadow-sm">
+                <table className="w-full text-left min-w-[700px]">
+                    <thead className="bg-slate-100 text-slate-700">
+                        <tr>
+                            <th className="p-4 text-lg w-1/3">Situation</th>
+                            <th className="p-4 text-lg w-1/3">Mistake Analysis</th>
+                            <th className="p-4 text-lg w-1/3">Proposed Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                        {task.rows.map((row, idx) => (
+                            <tr key={idx}>
+                                <td className="p-4 font-bold align-top text-slate-800">{row}</td>
+                                <td className="p-4 align-top">
+                                    <TextArea 
+                                        value={inputs[`task_${task.id}_${idx}_mistake`]||""} 
+                                        onChange={(e)=>onInput(`${idx}_mistake`, e.target.value)} 
+                                        placeholder="Analyze mistake..." 
+                                        rows={4}
+                                    />
+                                </td>
+                                <td className="p-4 align-top">
+                                    <TextArea 
+                                        value={inputs[`task_${task.id}_${idx}_solution`]||""} 
+                                        onChange={(e)=>onInput(`${idx}_solution`, e.target.value)} 
+                                        placeholder="Suggest solution..." 
+                                        rows={4}
+                                    />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
+
+        const MatchingTask = ({ task }) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {task.pairs.map((pair, idx) => (
+                    <div key={idx} className="flex flex-col bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div className="font-bold text-xl text-primary mb-3 flex items-center gap-2">
+                            <Icon name="tag" size={18} /> {pair.term}
+                        </div>
+                        <select className="w-full p-3 border rounded-lg bg-slate-50 text-lg mb-2 focus:ring-2 focus:ring-primary outline-none">
+                            <option disabled selected>Select meaning...</option>
+                            {task.pairs.map((p, i) => <option key={i}>{p.def}</option>)}
+                        </select>
+                        <RevealCard title="Check Meaning" color="gray">{pair.def}</RevealCard>
+                    </div>
+                ))}
+            </div>
+        );
+
+        const RecorderTask = ({ task }) => {
+            const [isRecording, setIsRecording] = useState(false);
+            const [timer, setTimer] = useState(0);
+            const intervalRef = useRef(null);
+
+            const toggleRecord = () => {
+                if (isRecording) {
+                    clearInterval(intervalRef.current);
+                    setIsRecording(false);
+                } else {
+                    setTimer(0);
+                    setIsRecording(true);
+                    intervalRef.current = setInterval(() => setTimer(t => t + 1), 1000);
+                }
+            };
+
+            const formatTime = (s) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
+
+            return (
+                <div className="space-y-8">
+                    <div className="bg-indigo-50 p-8 rounded-xl border border-indigo-100">
+                        <h4 className="font-bold text-2xl text-indigo-900 mb-4 flex items-center gap-2">
+                            <Icon name="clipboard-list" /> Checklist:
+                        </h4>
+                        <ul className="space-y-3 text-lg text-indigo-800">
+                            {task.points.map((pt, i) => <li key={i} className="flex gap-2 items-center"><Icon name="check" size={16}/> {pt}</li>)}
+                        </ul>
+                    </div>
+                    
+                    <div className="bg-white rounded-xl p-8 flex flex-col items-center justify-center border-2 border-dashed border-slate-300 transition-all hover:border-primary">
+                        <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 transition-all duration-300 ${isRecording ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 text-slate-400'}`}>
+                                <Icon name="mic" size={40} />
+                        </div>
+                        <div className="text-5xl font-mono font-bold text-slate-700 mb-6">{formatTime(timer)}</div>
+                        <button 
+                            onClick={toggleRecord}
+                            className={`px-10 py-4 rounded-full font-bold text-xl text-white shadow-lg transition transform active:scale-95 ${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-primary hover:bg-primaryHover'}`}
+                        >
+                            {isRecording ? "Stop Recording" : "Start Speaking"}
+                        </button>
+                        <p className="mt-4 text-slate-500 text-sm">Note: This is a simulation. Audio is not saved to server.</p>
+                    </div>
+                </div>
+            );
+        };
+
+        const ExportTask = ({ inputs }) => {
+            const downloadWork = () => {
+                let content = `B2 BUSINESS ENGLISH - CULTURAL KNOW HOW\nDate: ${new Date().toLocaleDateString()}\n----------------------------------------\n\n`;
+                
+                TASKS.forEach(t => {
+                    if (t.type === 'export') return;
+                    content += `### ${t.title.toUpperCase()} ###\n`;
+                    
+                    if (['input', 'discussion', 'input_check', 'compare'].includes(t.type)) {
+                        t.questions.forEach((q, idx) => {
+                            const questionText = typeof q === 'string' ? q : q.q;
+                            const answer = inputs[`task_${t.id}_${idx}`] || "[No Answer Provided]";
+                            content += `Q: ${questionText}\nA: ${answer}\n\n`;
+                        });
+                    } else if (t.type === 'quiz') {
+                        t.items.forEach((item, idx) => {
+                            const selected = inputs[`task_${t.id}_${idx}`] || "-";
+                            content += `Q: ${item.q}\nSelected: ${selected} (${selected === item.correct ? 'Correct' : 'Incorrect'})\n\n`;
+                        });
+                    } else if (t.type === 'table_input') {
+                        t.rows.forEach((row, idx) => {
+                             content += `Situation: ${row}\nMistake: ${inputs[`task_${t.id}_${idx}_mistake`]||"-"}\nSolution: ${inputs[`task_${t.id}_${idx}_solution`]||"-"}\n\n`;
+                        });
+                    }
+                    content += "----------------------------------------\n\n";
+                });
+
+                const blob = new Blob([content], { type: 'text/plain' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'Cultural_Portfolio.txt';
+                a.click();
+            };
+
+            return (
+                <div className="text-center py-16 bg-white rounded-2xl shadow-lg border border-slate-200">
+                    <div className="text-emerald-500 mb-6 flex justify-center"><Icon name="check-circle" size={80} /></div>
+                    <h2 className="text-4xl font-bold text-slate-900 mb-4">Module Complete!</h2>
+                    <p className="text-xl text-slate-600 mb-10">You've finished the course. Download your portfolio below.</p>
+                    <button onClick={downloadWork} className="px-10 py-5 bg-primary text-white rounded-xl font-bold text-xl shadow-xl hover:bg-primaryHover hover:-translate-y-1 transition flex items-center gap-3 mx-auto">
+                        <Icon name="download" size={28} /> Download Portfolio
+                    </button>
+                </div>
+            );
+        };
+
+        // --- MAIN APP COMPONENT ---
+
+        const App = () => {
+            const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
+            const [showReading, setShowReading] = useState(false);
+            const [sidebarOpen, setSidebarOpen] = useState(true);
+            const [inputs, setInputs] = useState({});
+
+            // Load data once
+            useEffect(() => {
+                const saved = localStorage.getItem('ckh_opt_v2');
+                if (saved) setInputs(JSON.parse(saved));
+            }, []);
+
+            // Save data only when inputs change
+            useEffect(() => {
+                localStorage.setItem('ckh_opt_v2', JSON.stringify(inputs));
+            }, [inputs]);
+
+            const task = TASKS[currentTaskIndex];
+            
+            const handleInput = (key, value) => {
+                setInputs(prev => ({ ...prev, [`task_${task.id}_${key}`]: value }));
+            };
+
+            const resetProgress = () => {
+                if(confirm("Are you sure you want to reset all answers? This cannot be undone.")) {
+                    setInputs({});
+                    setCurrentTaskIndex(0);
+                    localStorage.removeItem('ckh_opt_v2');
+                }
+            };
+
+            const handleSpeech = () => {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(READING_PASSAGE);
+                u.rate = 0.9;
+                u.pitch = 1;
+                u.lang = 'en-US';
+                window.speechSynthesis.speak(u);
+            };
+
+            // Switcher for Task Content
+            const renderTaskContent = () => {
+                const commonProps = { task, inputs, onInput: handleInput };
+
+                switch(task.type) {
+                    case 'input':
+                    case 'discussion':
+                        return <InputTask {...commonProps} />;
+                    case 'vocab':
+                        return <VocabTask task={task} />;
+                    case 'reading_action':
+                        return <ReadingActionTask onOpenReading={() => setShowReading(true)} />;
+                    case 'speaking_check':
+                        return <SpeakingCheckTask task={task} />;
+                    case 'input_check':
+                        return <InputCheckTask {...commonProps} />;
+                    case 'decision':
+                        return <DecisionTask task={task} />;
+                    case 'quiz':
+                        return <QuizTask {...commonProps} />;
+                    case 'table_input':
+                        return <TableInputTask {...commonProps} />;
+                    case 'matching':
+                        return <MatchingTask task={task} />;
+                    case 'recorder':
+                        return <RecorderTask task={task} />;
+                    case 'export':
+                        return <ExportTask inputs={inputs} />;
+                    default:
+                        return <div className="p-4 text-red-500">Task type not found</div>;
+                }
+            };
+
+            return (
+                <div className="flex h-screen overflow-hidden bg-slate-50">
+                    {/* Sidebar */}
+                    <div className={`${sidebarOpen ? 'w-80' : 'w-0'} bg-slate-900 text-white transition-all duration-300 flex flex-col shrink-0 overflow-hidden shadow-2xl z-20`}>
+                        <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+                            <div>
+                                <h1 className="font-bold text-xl tracking-tight">B2 Speaking</h1>
+                                <p className="text-slate-400 text-xs uppercase tracking-wider mt-1">Cultural Know How</p>
+                            </div>
+                            <button onClick={resetProgress} title="Reset All" className="text-slate-500 hover:text-red-400 transition">
+                                <Icon name="rotate-ccw" size={18}/>
+                            </button>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-1">
+                            {TASKS.map((t, i) => (
+                                <button key={t.id} onClick={() => setCurrentTaskIndex(i)} 
+                                    className={`w-full text-left px-4 py-3 rounded-lg text-sm transition flex items-center gap-3 border border-transparent ${
+                                        i === currentTaskIndex 
+                                        ? 'bg-primary text-white font-bold shadow-lg border-primaryHover' 
+                                        : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                                    }`}
+                                >
+                                    <span className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold shrink-0 ${
+                                        i === currentTaskIndex ? 'bg-white text-primary' : 'bg-slate-700'
+                                    }`}>{t.id}</span>
+                                    <span className="truncate">{t.title}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+                        {/* Top Bar */}
+                        <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm z-10">
+                            <div className="flex items-center gap-4">
+                                <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-slate-500 hover:text-primary transition p-2 rounded-lg hover:bg-slate-50">
+                                    <Icon name={sidebarOpen ? "panel-left-close" : "panel-left"} size={24} />
+                                </button>
+                                <div className="h-6 w-px bg-slate-200"></div>
+                                <div className="flex flex-col">
+                                    <span className="font-bold text-slate-800">Task {currentTaskIndex + 1} of {TASKS.length}</span>
+                                    <div className="w-32 bg-slate-100 rounded-full h-1.5 mt-1 overflow-hidden">
+                                        <div className="bg-primary h-full transition-all duration-500" style={{width: `${((currentTaskIndex+1)/TASKS.length)*100}%`}}></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onClick={() => setShowReading(true)} className="flex items-center gap-2 text-primary font-bold hover:bg-indigo-50 px-4 py-2 rounded-lg transition border border-transparent hover:border-indigo-100">
+                                <Icon name="book-open" size={20} /> <span className="hidden sm:inline">Reading Text</span>
+                            </button>
+                        </header>
+
+                        {/* Scrollable Area */}
+                        <div className="flex-1 overflow-y-auto p-4 md:p-12 pb-12 scroll-smooth">
+                            <div className="max-w-4xl mx-auto animate-fade-in">
+                                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8 leading-tight">{task.title}</h2>
+                                
+                                <div className="bg-white p-6 rounded-xl border-l-4 border-primary shadow-sm mb-10 flex gap-4 items-start">
+                                    <div className="text-primary mt-1 shrink-0"><Icon name="info" size={24}/></div>
+                                    <p className="text-xl text-slate-700 font-medium">{task.prompt}</p>
+                                </div>
+
+                                {renderTaskContent()}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Reading Modal */}
+                    {showReading && (
+                        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={() => setShowReading(false)}>
+                            <div className="bg-white w-full max-w-3xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
+                                <div className="p-5 border-b flex justify-between items-center bg-slate-50">
+                                    <h3 className="font-bold text-xl flex items-center gap-2 text-slate-800">
+                                        <Icon name="book" size={24}/> Reading Material
+                                    </h3>
+                                    <button onClick={() => setShowReading(false)} className="p-2 hover:bg-slate-200 rounded-full transition text-slate-500 hover:text-red-500">
+                                        <Icon name="x" size={24}/>
+                                    </button>
+                                </div>
+                                <div className="p-8 overflow-y-auto serif-text text-lg leading-loose text-slate-800 bg-white">
+                                    {READING_PASSAGE.split('\n').map((para, i) => para ? <p key={i} className="mb-6">{para}</p> : null)}
+                                </div>
+                                <div className="p-4 border-t bg-slate-50 flex justify-center">
+                                    <button onClick={handleSpeech} 
+                                        className="text-primary font-bold flex items-center justify-center gap-2 hover:bg-indigo-50 px-6 py-2 rounded-full transition border border-indigo-100 shadow-sm">
+                                        <Icon name="volume-2" size={20}/> Listen to Audio
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

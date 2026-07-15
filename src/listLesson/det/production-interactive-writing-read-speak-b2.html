@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Mastery Module: Interactive Writing & Speak | CEFR B2+</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Animation for Recording */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .recording-active {
+            animation: pulse-red 1.5s infinite;
+            background-color: #ef4444 !important; /* Red-500 */
+            border-color: #b91c1c !important;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input specific styling */
+        .drill-input {
+            transition: all 0.2s;
+        }
+        .drill-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .drill-input.correct {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+            color: #166534;
+        }
+        .drill-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .drill-input.revealed {
+            border-color: #f59e0b;
+            background-color: #fffbeb;
+            color: #92400e;
+            font-weight: 700;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base md:text-lg text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Production</span> <span>&gt;</span> 
+            <span>Writing & Speaking</span> <span>&gt;</span> 
+            <span>CEFR B2+</span> <span>&gt;</span> 
+            <span class="text-blue-800 font-bold">Interactive Mastery</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-800 tracking-tight mb-3">
+                    Interactive Writing & Read, Then Speak
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-500 font-medium">Score Range: 110–130 | Focus: PEEL Synthesis & Logical Flow</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-xl text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-blue-600 p-8 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-2xl text-slate-700 leading-relaxed">
+                <i class="fas fa-layer-group mr-3 text-blue-600"></i> 
+                <strong>Instructions:</strong> These tasks are heavy hitters for your Production subscores. Master the PEEL structure, complex modals, and high-level collocations. Auto-graded drills offer <strong>2 attempts</strong> before revealing answers.
+            </p>
+        </div>
+
+        <!-- Section 1: Concept & Recognition (Cyan Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-600 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-900 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-3xl font-bold text-cyan-900">Steps 1-2: Task Specs & Diagnostics</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-700 text-3xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Step 1: Specs -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-900 mb-6">Step 1: Rapid-Fire Task Specs (60-Second Brief)</h3>
+                        <div class="bg-cyan-50 p-8 rounded-xl border border-cyan-200 text-xl leading-relaxed text-slate-700 space-y-4">
+                            <p><strong>The Impact:</strong> These tasks dictate your Production, Writing, and Oral subscores. They measure synthesis and logical flow under pressure.</p>
+                            <h4 class="font-bold text-cyan-900 mt-6 mb-2">The Targets:</h4>
+                            <ul class="list-disc pl-6 space-y-2">
+                                <li><strong>PEEL Structure:</strong> (Point, Evidence, Explanation, Link) for maximum coherence.</li>
+                                <li><strong>Discourse Markers:</strong> Using <em>Furthermore, In contrast,</em> and <em>Subsequently.</em></li>
+                                <li><strong>Complex Modals:</strong> Utilizing <em>would have, could potentially,</em> and <em>might arguably.</em></li>
+                                <li><strong>Collocations:</strong> Pairing words like <em>vastly underestimate, highly controversial,</em> and <em>mitigate impact.</em></li>
+                                <li><strong>Syntactic Variation:</strong> Mixing simple declarative sentences with complex conditionals.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Diagnostic -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-900 mb-6">Step 2: The Diagnostic 'Active Comparison' Set</h3>
+                        
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm text-xl mb-6">
+                            <p class="font-bold text-slate-800 mb-2">Prompt:</p>
+                            <p class="font-serif italic text-slate-700">"Do you think it is better to study alone or in a group?"</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-8 mb-8">
+                            <div class="p-6 bg-orange-50 border border-orange-200 rounded-xl">
+                                <h4 class="font-bold text-orange-800 text-xl mb-3">Model Answer A (Fragmented - B1)</h4>
+                                <p class="text-xl text-slate-800 leading-relaxed font-serif bg-white p-4 rounded border border-orange-100">
+                                    "I like studying in groups. You can ask friends questions. It is fun and we can share notes. Sometimes it is loud, but I think it is better than being alone at home."
+                                </p>
+                            </div>
+                            <div class="p-6 bg-emerald-50 border border-emerald-300 rounded-xl shadow-sm">
+                                <h4 class="font-bold text-emerald-900 text-xl mb-3">Model Answer B (PEEL Structured - B2+)</h4>
+                                <p class="text-xl text-emerald-900 leading-relaxed font-serif bg-white p-4 rounded border border-emerald-200">
+                                    "(P) I maintain that group study is more effective due to the collaborative environment it fosters. (E) For instance, explaining a concept to a peer solidifies one's own understanding. (Ex) This active engagement prevents passive reading and highlights knowledge gaps. (L) Consequently, group work often leads to superior academic outcomes compared to solitary study."
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-8 border-2 border-slate-200 rounded-xl">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="font-bold text-cyan-900 text-2xl">Task: Audit Checklist</h4>
+                                <button onclick="checkAudit()" class="text-lg font-bold text-white bg-cyan-700 px-6 py-2 rounded-lg hover:bg-cyan-800 transition-colors">Check Audit</button>
+                            </div>
+                            
+                            <div class="space-y-6 text-xl text-slate-700">
+                                <div>
+                                    <label class="block font-bold mb-2">1. Paste the Explanation (Ex) sentence from Model B.</label>
+                                    <input type="text" id="aud1" class="w-full drill-input p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none" placeholder="Sentence starting with 'This...'">
+                                </div>
+                                <div>
+                                    <label class="block font-bold mb-2">2. Type an Academic Verb in Model B that replaces basic verbs like "is" or "has" (e.g., f______s).</label>
+                                    <input type="text" id="aud2" class="w-full drill-input p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none" placeholder="Verb...">
+                                </div>
+                                <div>
+                                    <label class="block font-bold mb-2">3. Identify which model uses a Conjunction to connect a result to a cause.</label>
+                                    <select id="aud3" class="drill-input w-full p-3 border border-slate-300 rounded-lg bg-white outline-none focus:ring-2 focus:ring-cyan-500">
+                                        <option value="">Select...</option>
+                                        <option value="A">Model A</option>
+                                        <option value="B">Model B</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="fb-audit" class="mt-6 font-bold text-xl min-h-[2rem]"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Strategy & Warm-up (Blue Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-600 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-900 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-3xl font-bold text-blue-900">Steps 3-4: Strategy & Foundations</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-700 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white border-t border-blue-50 space-y-12">
+                    
+                    <!-- Step 3: Strategy Drill -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-900 mb-6">Step 3: The 'Strategy Fix-It' Drill</h3>
+                        <div class="bg-blue-50 p-8 rounded-xl border border-blue-200 mb-6">
+                            <p class="text-lg font-bold text-slate-500 uppercase tracking-wider mb-2">Mediocre Response:</p>
+                            <p class="text-xl text-slate-800 font-serif leading-relaxed mb-6 bg-white p-6 rounded-lg border border-red-200">
+                                "Electric cars are good. They don't use gas so the air is clean. People should buy them to help the earth. I want one in the future."
+                            </p>
+                            
+                            <div class="mb-6">
+                                <h5 class="font-bold text-blue-900 text-xl mb-3">Task: Rewrite immediately using PEEL and these Pro-Tips:</h5>
+                                <ul class="list-disc pl-6 text-xl text-slate-700 space-y-2 bg-white p-6 rounded-lg border border-blue-100">
+                                    <li><strong>Pro-Tip 1:</strong> Start with a Point about "environmental sustainability."</li>
+                                    <li><strong>Pro-Tip 2:</strong> Use the word 'Efficacy' or 'Implementation'.</li>
+                                    <li><strong>Pro-Tip 3:</strong> Replace 'good' with 'imperative' or 'advantageous'.</li>
+                                </ul>
+                            </div>
+
+                            <label class="block font-bold text-slate-700 text-xl mb-2">Your PEEL Rewrite:</label>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-4 focus:ring-blue-200 outline-none h-32" placeholder="Write your revised paragraph here..."></textarea>
+                            
+                            <button onclick="toggleAnswer('strategy-hint', this)" class="mt-4 text-lg font-bold text-blue-700 underline">Show Model Rewrite</button>
+                            <div id="strategy-hint" class="answer-box hidden mt-4 p-6 bg-blue-100 border border-blue-300 rounded-lg text-xl text-blue-900 font-serif italic">
+                                "The transition to electric vehicles is imperative for long-term environmental sustainability. By eliminating reliance on fossil fuels, these vehicles significantly reduce urban air pollution. The efficacy of this technology in combating climate change is well-documented. Consequently, widespread implementation of electric transit systems is advantageous for securing a greener future."
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Warm-up Suite -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-900 mb-6">Step 4: Foundations Skill-Building Suite (High Volume)</h3>
+                        
+                        <!-- Drill A: Vocab -->
+                        <div class="mb-10 bg-slate-50 p-8 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill A: Vocabulary 'Upgrade'</h4>
+                                <button onclick="checkDrillA()" class="text-lg font-bold text-white bg-blue-700 hover:bg-blue-800 px-6 py-2 rounded-lg transition-colors">Check Vocab</button>
+                            </div>
+                            <p class="text-xl text-slate-600 mb-6">Select the most sophisticated option for B2+.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-x-8 gap-y-4 text-xl">
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">1. To show a trend</span>
+                                    <select id="va1" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Reveal</option><option value="B">B. Illustrate</option><option value="C">C. Display</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">6. Many options</span>
+                                    <select id="va6" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. A lot of</option><option value="B">B. Numerous</option><option value="C">C. A myriad of</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">2. A bad result</span>
+                                    <select id="va2" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Harmful</option><option value="B">B. Adverse</option><option value="C">C. Wrong</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">7. Clear evidence</span>
+                                    <select id="va7" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Plain</option><option value="B">B. Compelling</option><option value="C">C. Simple</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">3. To think about an idea</span>
+                                    <select id="va3" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Ponder</option><option value="B">B. Reflect on</option><option value="C">C. Analyze</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">8. To help the process</span>
+                                    <select id="va8" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Facilitate</option><option value="B">B. Assist</option><option value="C">C. Support</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">4. Very big</span>
+                                    <select id="va4" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Massive</option><option value="B">B. Substantial</option><option value="C">C. Huge</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">9. Hard to understand</span>
+                                    <select id="va9" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Tough</option><option value="B">B. Complex</option><option value="C">C. Arduous</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">5. To change your mind</span>
+                                    <select id="va5" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. Alter</option><option value="B">B. Shift</option><option value="C">C. Pivot</option></select>
+                                </div>
+                                <div class="flex flex-col border-b border-slate-300 pb-3">
+                                    <span class="text-slate-800 font-bold mb-2">10. To stop a problem</span>
+                                    <select id="va10" class="drill-input p-2 rounded border border-slate-300 bg-white"><option value="">Select...</option><option value="A">A. End</option><option value="B">B. Mitigate</option><option value="C">C. Close</option></select>
+                                </div>
+                            </div>
+                            <div id="fb-drilla" class="mt-6 font-bold min-h-[2rem] text-xl"></div>
+                        </div>
+
+                        <!-- Drill B: Scramble -->
+                        <div class="mb-10 bg-slate-50 p-8 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill B: 5 Sentence Scrambles (Oral/Written Flow)</h4>
+                                <button onclick="checkDrillB()" class="text-lg font-bold text-white bg-blue-700 hover:bg-blue-800 px-6 py-2 rounded-lg transition-colors">Check Scrambles</button>
+                            </div>
+                            <div class="space-y-6 text-xl">
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(only / not / is / it / convenient / but / it / also / is / efficient)</p>
+                                    <input type="text" id="vb1" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="1...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(circumstances / no / under / should / be / the / ignored / results)</p>
+                                    <input type="text" id="vb2" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="2...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(provided / that / the / data / is / accurate / we / can / proceed)</p>
+                                    <input type="text" id="vb3" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="3...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(pivotal / role / education / plays / a / in / development / societal)</p>
+                                    <input type="text" id="vb4" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="4...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(hand / other / on / the / there / are / concerns / ethical)</p>
+                                    <input type="text" id="vb5" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="5...">
+                                </div>
+                            </div>
+                            <div id="fb-drillb" class="mt-6 font-bold min-h-[2rem] text-xl"></div>
+                        </div>
+
+                        <!-- Drill C: Spot the Syntax Error -->
+                        <div class="bg-slate-50 p-8 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill C: 5 'Spot the Syntax Error' Items</h4>
+                                <button onclick="checkDrillC()" class="text-lg font-bold text-white bg-blue-700 hover:bg-blue-800 px-6 py-2 rounded-lg transition-colors">Check Errors</button>
+                            </div>
+                            <p class="text-xl text-slate-600 mb-4">Correct the grammatical/syntactic errors in these sentences:</p>
+                            <div class="space-y-6 text-xl">
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">1. The information provided in the lectures were very helpful.</p>
+                                    <input type="text" id="vc1" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">2. Despite he was tired, he finished the presentation.</p>
+                                    <input type="text" id="vc2" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">3. I am looking forward to meet the new manager.</p>
+                                    <input type="text" id="vc3" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">4. He suggested to take the bus instead of a taxi.</p>
+                                    <input type="text" id="vc4" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">5. If it will rain tomorrow, the event will be canceled.</p>
+                                    <input type="text" id="vc5" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                            </div>
+                            <div id="fb-drillc" class="mt-6 font-bold min-h-[2rem] text-xl"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Guided Practice (Emerald Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-600 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-900 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-3xl font-bold text-emerald-900">Step 5: Guided Drafting & Iteration</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-700 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-10">
+                    
+                    <div class="bg-emerald-50 p-8 rounded-xl border border-emerald-200 shadow-inner">
+                        <h4 class="font-bold text-emerald-900 text-2xl mb-4">Read, Then Speak Prompt:</h4>
+                        <p class="text-2xl font-serif text-slate-800 leading-relaxed mb-6 bg-white p-4 rounded-lg">
+                            "Talk about a book you read recently. What was it about and would you recommend it?"
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="bg-white p-6 rounded-lg border border-emerald-100 shadow-sm">
+                                <h5 class="font-bold text-emerald-800 text-xl mb-4">Task 1: PEEL Skeleton</h5>
+                                <ul class="space-y-3 text-lg text-slate-700">
+                                    <li><strong>P (Point):</strong> "Recently, I completed [Title], which explores the theme of..."</li>
+                                    <li><strong>E (Evidence):</strong> "A specific example of this is when the protagonist..."</li>
+                                    <li><strong>E (Explanation):</strong> "This illustrates the author's message regarding..."</li>
+                                    <li><strong>L (Link):</strong> "For these reasons, I would highly recommend it to anyone interested in..."</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg border border-emerald-100 shadow-sm">
+                                <h5 class="font-bold text-emerald-800 text-xl mb-4">Task 2: The Upgrade</h5>
+                                <p class="text-slate-600 mb-3">Integrate these 3 'Booster Phrases':</p>
+                                <ul class="space-y-3 text-lg text-slate-700 font-serif italic">
+                                    <li>"...the narrative delves into..."</li>
+                                    <li>"...presents a thought-provoking perspective on..."</li>
+                                    <li>"...is widely regarded as..."</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <label class="block font-bold text-slate-700 text-xl mb-2">Draft your B2+ Response here:</label>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-4 focus:ring-emerald-200 outline-none h-48" placeholder="Start your speech draft..."></textarea>
+                            
+                            <button onclick="toggleAnswer('drafting-hint', this)" class="mt-4 text-lg font-bold text-emerald-700 underline">Show Model Draft</button>
+                            <div id="drafting-hint" class="answer-box hidden mt-4 p-6 bg-emerald-100 border border-emerald-300 rounded-lg text-xl text-emerald-900 font-serif leading-loose">
+                                "Recently, I completed '1984', which explores the theme of totalitarianism. The narrative delves into the dangers of absolute government control. A specific example of this is when the protagonist struggles with constant surveillance, which presents a thought-provoking perspective on modern privacy. This illustrates the author's message regarding freedom. Because it is widely regarded as a classic warning, I would highly recommend it to anyone interested in political history."
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Simulation & Challenge (Violet Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-600 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-900 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-3xl font-bold text-violet-900">Step 6-8: Simulation & Clinic</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-violet-700 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Simulation Setup -->
+                    <div class="bg-violet-50 p-8 rounded-xl border border-violet-200">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-6">
+                            <h3 class="font-bold text-violet-900 text-3xl">Step 6: The 'Pressure Cooker' Simulation</h3>
+                        </div>
+                        <p class="text-xl text-slate-700 mb-6">Simulate the test environment. First, complete the 5-minute Writing task. Then, complete the 90-second Speaking task with the live microphone.</p>
+                        
+                        <!-- Dual Timer UI -->
+                        <div class="grid md:grid-cols-2 gap-8 mb-8">
+                            <!-- Writing Task -->
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border-2 border-violet-300 flex flex-col">
+                                <p class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-2 text-center">Interactive Writing (5 Mins)</p>
+                                <div class="text-4xl font-mono font-bold text-violet-700 text-center" id="write-timer-display">05:00</div>
+                                <button id="write-btn" onclick="startWriteSim()" class="mt-4 bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-6 rounded-lg transition-colors w-full text-lg mb-4">Start Writing Timer</button>
+                                
+                                <p class="font-serif text-lg text-slate-800 mb-2 italic">"Should high schools require students to perform community service? Why or why not?"</p>
+                                <textarea id="sim-write-area" class="w-full p-3 border border-slate-300 rounded focus:ring-2 focus:ring-violet-400 outline-none flex-1" placeholder="Write your response here..." disabled></textarea>
+                            </div>
+
+                            <!-- Speaking Task -->
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border-2 border-fuchsia-300 flex flex-col">
+                                <p class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-2 text-center">Read, Then Speak (20s+90s)</p>
+                                <div class="text-4xl font-mono font-bold text-fuchsia-700 text-center" id="speak-timer-display">00:20</div>
+                                <p id="speak-phase" class="text-center text-sm font-bold text-fuchsia-600 mb-2">Prep Phase</p>
+                                <button id="speak-btn" onclick="startSpeakSim()" class="bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-bold py-2 px-6 rounded-lg transition-all w-full text-lg mb-4">Start Speaking Sim</button>
+                                
+                                <p class="font-serif text-lg text-slate-800 mb-2 italic">"Describe a technological device you use every day. How has it changed your life?"</p>
+                                <label class="text-sm font-bold text-fuchsia-800 mb-1 block"><i class="fas fa-microphone mr-1"></i> Live Mic Transcript:</label>
+                                <textarea id="live-transcript" class="w-full p-3 border border-slate-300 rounded outline-none flex-1 bg-slate-50 text-slate-600" placeholder="Speech will appear here..." readonly></textarea>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-violet-200 rounded-xl p-6">
+                            <h4 class="font-bold text-violet-800 text-xl mb-4">Performance Friction Checklist:</h4>
+                            <div class="space-y-2 text-lg text-slate-700">
+                                <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-violet-600"> Did you use a 'P-E-E-L' structure?</label>
+                                <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-violet-600"> Did you use a filler word (um, like) more than twice?</label>
+                                <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-violet-600"> Did you vary your sentence length?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Independent Marathon -->
+                    <div class="pt-8 border-t border-slate-200">
+                        <h3 class="text-3xl font-bold text-violet-900 mb-6">Step 7: The Independent Mastery Marathon</h3>
+                        <p class="text-xl text-slate-600 mb-6">Draft your responses. For Interactive Writing, remember to anticipate a follow-up.</p>
+                        
+                        <div class="space-y-6 text-xl">
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 1 (Writing):</span> Discuss the pros and cons of tourism in historical cities. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 2 (Speaking):</span> Describe your favorite piece of art. Why do you like it? <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24" placeholder="Draft bullet points..."></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 3 (Writing):</span> Evaluate the impact of "Flexible Working Hours" on employee morale. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 4 (Speaking):</span> Explain how you would handle a disagreement with a co-worker. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24" placeholder="Draft bullet points..."></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 border-l-4 border-l-violet-600"><span class="font-bold text-violet-900 block mb-2">Item 5 (Writing - High Academic):</span> Analyze the role of space exploration in modern science. Is it a waste of resources? <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Step 8: Error Clinic -->
+                    <div class="pt-10 border-t border-slate-200">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-red-800">Step 8: The Error-Correction Clinic</h3>
+                            <button onclick="checkClinic()" class="text-lg font-bold text-white bg-red-700 hover:bg-red-800 px-6 py-2 rounded-lg transition-colors">Check Clinic</button>
+                        </div>
+                        <p class="text-xl text-slate-700 mb-6">Identify and fix the 7 errors in this 'Glitchy Paragraph'.</p>
+                        
+                        <div class="p-6 bg-red-50 border border-red-200 rounded-xl mb-6">
+                            <p class="font-serif text-xl text-slate-800 leading-loose">
+                                "I think that city life is <span class="bg-red-200 px-1 rounded font-bold">1. very fast</span>. People are always busy. For example, they run to catch the train. This <span class="bg-red-200 px-1 rounded font-bold">2. make</span> them feel stressed. <span class="bg-red-200 px-1 rounded font-bold">3. But</span>, living in a city has many <span class="bg-red-200 px-1 rounded font-bold">4. good things</span>. There are lots of jobs. If someone <span class="bg-red-200 px-1 rounded font-bold">5. want</span> to succeed, they should move to a city. <span class="bg-red-200 px-1 rounded font-bold">6. Its</span> a great opportunity. <span class="bg-red-200 px-1 rounded font-bold">7. (Missing 'Link' sentence)</span>"
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 text-lg bg-white p-6 border border-slate-300 rounded-xl">
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">1.</span><input type="text" id="cl1" class="drill-input flex-1 p-2 border rounded" placeholder="Replace 'very fast' (e.g. at an accelerated...)"></div>
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">2.</span><input type="text" id="cl2" class="drill-input flex-1 p-2 border rounded" placeholder="Correct 'make'"></div>
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">3.</span><input type="text" id="cl3" class="drill-input flex-1 p-2 border rounded" placeholder="Replace 'But' (e.g. However)"></div>
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">4.</span><input type="text" id="cl4" class="drill-input flex-1 p-2 border rounded" placeholder="Replace 'good things'"></div>
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">5.</span><input type="text" id="cl5" class="drill-input flex-1 p-2 border rounded" placeholder="Correct 'want'"></div>
+                            <div class="flex items-center gap-3"><span class="font-bold w-6">6.</span><input type="text" id="cl6" class="drill-input flex-1 p-2 border rounded" placeholder="Correct 'Its'"></div>
+                            <div class="flex items-center gap-3 md:col-span-2"><span class="font-bold w-auto whitespace-nowrap">7. Add Link Sentence:</span><input type="text" id="cl7" class="drill-input flex-1 p-2 border rounded" placeholder="Write a final linking sentence..."></div>
+                        </div>
+                        <div id="fb-clinic" class="mt-6 font-bold text-xl min-h-[2rem]"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Reflection (Rose Theme) -->
+        <div class="mb-12 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-900 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-3xl font-bold text-rose-900">Step 9-10: AI Lab & Review</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-rose-700 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- AI Prompting -->
+                    <div class="bg-rose-50 p-8 rounded-xl border-l-4 border-rose-500 shadow-sm space-y-6">
+                        <h3 class="text-3xl font-bold text-rose-900 mb-4"><i class="fas fa-robot mr-3"></i>Step 9: The AI Prompting Lab</h3>
+                        
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">The 'Drill Sergeant' (Generate Prompts):</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-1">Generate 5 'Read, Then Speak' prompts focusing on 'Global Challenges' for test preparation. For each, provide three high-level C1 vocabulary words I must include in my answer.</p>
+                                <button onclick="copyToClipboard('ai-prompt-1')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">The 'Score Auditor' (Grade Response):</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-2">Evaluate my Interactive Writing response for 'Lexical Sophistication' and 'Grammatical Complexity'. List any words I used that are below B2 level and suggest C1 alternatives. [PASTE WORK]</p>
+                                <button onclick="copyToClipboard('ai-prompt-2')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reflection -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-rose-900 mb-6">Step 10: Metacognitive Performance Log</h3>
+                        <p class="text-xl text-slate-700 italic mb-6">"Your discipline in the drills determines your dominance in the results. Keep pushing."</p>
+                        
+                        <div class="overflow-x-auto rounded-xl border border-slate-300">
+                            <table class="w-full text-lg">
+                                <thead>
+                                    <tr class="bg-rose-50 text-rose-900">
+                                        <th class="p-4">Task</th>
+                                        <th class="p-4">Time Taken</th>
+                                        <th class="p-4">PEEL Used?</th>
+                                        <th class="p-4">Errors Self-Corrected</th>
+                                        <th class="p-4">Next Step Goal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-slate-700">Interactive Writing</td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="e.g. 5m"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="Yes"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="e.g. Tense error"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="Add more modals"></td>
+                                    </tr>
+                                    <tr class="bg-slate-50">
+                                        <td class="p-4 font-bold text-slate-700">Read, Then Speak</td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-xl font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-blue-800 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- State Management ---
+        let attempts = {
+            audit: 0,
+            drilla: 0,
+            drillb: 0,
+            drillc: 0,
+            clinic: 0
+        };
+
+        const ansAudit = {
+            aud1: ["This active engagement prevents passive reading and highlights knowledge gaps.", "this active engagement prevents passive reading and highlights knowledge gaps"],
+            aud2: ["fosters", "solidifies", "maintains", "highlights", "prevents"],
+            aud3: "B"
+        };
+
+        const ansDrillA = {
+            va1: "B",
+            va2: "B",
+            va3: "C",
+            va4: "B",
+            va5: "A",
+            va6: "C",
+            va7: "B",
+            va8: "A",
+            va9: "B",
+            va10: "B"
+        };
+
+        const ansDrillB = {
+            vb1: "not only is it convenient but it is also efficient",
+            vb2: "under no circumstances should the results be ignored",
+            vb3: "provided that the data is accurate we can proceed",
+            vb4: "education plays a pivotal role in societal development",
+            vb5: "on the other hand there are ethical concerns"
+        };
+
+        // Arrays prioritize the FULL authentic sentence for the reveal, but grade leniently on the keywords
+        const ansDrillC = {
+            vc1: ["The information provided in the lectures was very helpful.", "was"],
+            vc2: ["Although he was tired, he finished the presentation.", "although he was", "despite being", "even though he was"],
+            vc3: ["I am looking forward to meeting the new manager.", "meeting"],
+            vc4: ["He suggested taking the bus instead of a taxi.", "taking"],
+            vc5: ["If it rains tomorrow, the event will be canceled.", "if it rains", "rains"]
+        };
+
+        const ansClinic = {
+            cl1: ["at an accelerated pace", "accelerated", "exponential"],
+            cl2: ["makes"],
+            cl3: ["however", "nevertheless"],
+            cl4: ["many advantages", "advantages", "benefits", "many benefits"], 
+            cl5: ["wants"],
+            cl6: ["it's", "it is"], 
+            cl7: ["Consequently, the transition to city life is advantageous.", "consequently", "ultimately", "therefore", "thus"] 
+        };
+
+        // Note: Apostrophes are intentionally preserved to accurately assess grammar (e.g. its vs it's)
+        function cleanString(str) {
+            return str.toLowerCase().replace(/[.,!?"()]/g, '').trim().replace(/\s+/g, ' ');
+        }
+
+        // --- Streamlined Logic Handler ---
+        function handleInputCheck(idList, ansObj, attemptKey, feedbackId) {
+            let correctCount = 0;
+            const total = idList.length;
+            const currentAttempt = attempts[attemptKey];
+            const feedback = document.getElementById(feedbackId);
+
+            idList.forEach(id => {
+                const el = document.getElementById(id);
+                const val = el.value;
+                const expected = ansObj[id];
+                
+                let isCorrect = false;
+                let targetAnsToReveal = "";
+
+                // Route logic based on input type (select vs text)
+                if (el.tagName.toLowerCase() === 'select') {
+                    isCorrect = (val === expected);
+                    targetAnsToReveal = expected;
+                } else {
+                    const cleanedVal = cleanString(val);
+                    if (typeof expected === 'string') {
+                        isCorrect = (cleanedVal === cleanString(expected));
+                        targetAnsToReveal = expected;
+                    } else if (Array.isArray(expected)) {
+                        // Lenient check: Does user string contain any of the acceptable key phrases?
+                        isCorrect = expected.some(t => cleanedVal.includes(cleanString(t)));
+                        targetAnsToReveal = expected[0]; // Reveal is always the first, most complete answer
+                    }
+                }
+
+                // UI Updates
+                if (isCorrect && val !== "") {
+                    el.classList.add('correct');
+                    el.classList.remove('incorrect');
+                    correctCount++;
+                } else {
+                    el.classList.add('incorrect');
+                    el.classList.remove('correct');
+                    
+                    if (currentAttempt >= 1) { // Reveal on 2nd fail
+                        if (el.tagName.toLowerCase() === 'select') {
+                            el.value = targetAnsToReveal;
+                        } else {
+                            // Capitalize the first letter neatly for the user
+                            el.value = targetAnsToReveal.charAt(0).toUpperCase() + targetAnsToReveal.slice(1);
+                        }
+                        el.classList.add('revealed');
+                    }
+                }
+            });
+
+            // Master Feedback
+            if (correctCount === total) {
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Perfect!</span>';
+                idList.forEach(id => document.getElementById(id).disabled = true);
+                attempts[attemptKey] = 2; // Lock
+            } else {
+                attempts[attemptKey]++;
+                if (attempts[attemptKey] >= 2) {
+                    feedback.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answers revealed.</span>';
+                    idList.forEach(id => document.getElementById(id).disabled = true);
+                } else {
+                    feedback.innerHTML = `<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>${correctCount}/${total} correct. 1 attempt left.</span>`;
+                }
+            }
+        }
+
+        // Callers are now clean and unified
+        function checkAudit() {
+            handleInputCheck(['aud1', 'aud2', 'aud3'], ansAudit, 'audit', 'fb-audit');
+        }
+
+        function checkDrillA() {
+            const ids = Array.from({length: 10}, (_, i) => `va${i+1}`);
+            handleInputCheck(ids, ansDrillA, 'drilla', 'fb-drilla');
+        }
+
+        function checkDrillB() {
+            const ids = Array.from({length: 5}, (_, i) => `vb${i+1}`);
+            handleInputCheck(ids, ansDrillB, 'drillb', 'fb-drillb');
+        }
+
+        function checkDrillC() {
+            const ids = Array.from({length: 5}, (_, i) => `vc${i+1}`);
+            handleInputCheck(ids, ansDrillC, 'drillc', 'fb-drillc');
+        }
+
+        function checkClinic() {
+            const ids = Array.from({length: 7}, (_, i) => `cl${i+1}`);
+            handleInputCheck(ids, ansClinic, 'clinic', 'fb-clinic');
+        }
+
+        // --- Writing Sim Timer ---
+        let writeInterval;
+        let writeTime = 300; // 5 mins
+
+        function startWriteSim() {
+            clearInterval(writeInterval);
+            writeTime = 300;
+            const display = document.getElementById('write-timer-display');
+            const textarea = document.getElementById('sim-write-area');
+            const btn = document.getElementById('write-btn');
+            
+            textarea.disabled = false;
+            textarea.focus();
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            display.classList.remove('text-red-600');
+            
+            writeInterval = setInterval(() => {
+                writeTime--;
+                const mins = Math.floor(writeTime / 60);
+                const secs = writeTime % 60;
+                display.innerText = `0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                
+                if (writeTime <= 30) {
+                    display.classList.add('text-red-600');
+                }
+                
+                if(writeTime <= 0) {
+                    clearInterval(writeInterval);
+                    textarea.disabled = true;
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    btn.innerText = "Restart Writing Timer";
+                    alert("Writing Time is up!");
+                }
+            }, 1000);
+        }
+
+        // --- Speech Recognition Setup ---
+        let recognition;
+        let finalTranscript = '';
+
+        function initSpeechRecognition() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert("Your browser does not support Speech Recognition. Please use Chrome or Edge for live transcription.");
+                return false;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = function(event) {
+                let interimTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+                document.getElementById('live-transcript').value = finalTranscript + interimTranscript;
+            };
+
+            recognition.onerror = function(event) {
+                console.error("Speech recognition error", event.error);
+                if(event.error === 'not-allowed') {
+                    alert("Microphone access denied. Please allow microphone permissions in your browser to use the transcriber.");
+                }
+            };
+
+            recognition.onend = function() {
+                if (speakRunning && speakPhase === 'speak') {
+                    try { recognition.start(); } catch(e){}
+                }
+            };
+            
+            return true;
+        }
+
+        // --- Speaking Sim Timer ---
+        let speakInterval;
+        let speakTime = 20;
+        let speakPhase = 'prep'; 
+        let speakRunning = false;
+
+        function startSpeakSim() {
+            const btn = document.getElementById('speak-btn');
+            const display = document.getElementById('speak-timer-display');
+            const phaseLabel = document.getElementById('speak-phase');
+
+            if (speakRunning) return; 
+            
+            speakRunning = true;
+            speakPhase = 'prep';
+            speakTime = 20;
+            
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            btn.innerText = "Simulation Running...";
+            phaseLabel.innerText = "Prep Phase";
+            display.classList.remove('text-red-600');
+            btn.classList.remove('recording-active');
+
+            clearInterval(speakInterval);
+
+            speakInterval = setInterval(() => {
+                speakTime--;
+                const mins = Math.floor(speakTime / 60);
+                const secs = speakTime % 60;
+                display.innerText = `0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+                if (speakTime <= 0) {
+                    if (speakPhase === 'prep') {
+                        // Switch to Speak
+                        speakPhase = 'speak';
+                        speakTime = 90;
+                        phaseLabel.innerText = "Speaking Phase (Recording Live...)";
+                        display.classList.add('text-red-600');
+                        btn.classList.add('recording-active');
+                        
+                        // Start Mic
+                        finalTranscript = '';
+                        document.getElementById('live-transcript').value = '';
+                        if(!recognition) initSpeechRecognition();
+                        if(recognition) {
+                            try { recognition.start(); } catch(e) {}
+                        }
+
+                    } else if (speakPhase === 'speak') {
+                        // End
+                        clearInterval(speakInterval);
+                        speakRunning = false;
+                        phaseLabel.innerText = "Simulation Complete";
+                        display.classList.remove('text-red-600');
+                        btn.classList.remove('recording-active', 'opacity-50', 'cursor-not-allowed');
+                        btn.disabled = false;
+                        btn.innerText = "Restart Speaking Sim";
+                        
+                        // Stop Mic
+                        if(recognition) recognition.stop();
+                    }
+                }
+            }, 1000);
+        }
+
+        // --- Utils ---
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Output";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = btn.innerText.includes('Rewrite') ? "Show Model Rewrite" : "Show C1 Model Response";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '6000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert("Prompt copied to clipboard!");
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers and reset attempts?")) {
+                attempts = { audit: 0, drilla: 0, drillb: 0, drillc: 0, clinic: 0 };
+
+                document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+                    if (el.id !== 'live-transcript' && el.id !== 'sim-write-area') {
+                         el.value = "";
+                    }
+                    el.disabled = false;
+                    el.classList.remove('correct', 'incorrect', 'revealed');
+                });
+                
+                document.querySelectorAll('select').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('correct', 'incorrect', 'revealed');
+                });
+
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+                
+                document.querySelectorAll('[id^="fb-"]').forEach(f => f.innerHTML = "");
+
+                document.querySelectorAll('.answer-box').forEach(el => {
+                    el.classList.add('hidden');
+                    el.classList.remove('visible');
+                });
+
+                // Reset Write Sim
+                clearInterval(writeInterval);
+                document.getElementById('write-timer-display').innerText = "05:00";
+                document.getElementById('write-timer-display').classList.remove('text-red-600');
+                const writeBtn = document.getElementById('write-btn');
+                writeBtn.disabled = false;
+                writeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                writeBtn.innerText = "Start Writing Timer";
+                document.getElementById('sim-write-area').disabled = true;
+                document.getElementById('sim-write-area').value = "";
+
+                // Reset Speak Sim
+                clearInterval(speakInterval);
+                speakRunning = false;
+                if(recognition) recognition.stop();
+                finalTranscript = '';
+                document.getElementById('live-transcript').value = "";
+                document.getElementById('speak-timer-display').innerText = "00:20";
+                document.getElementById('speak-phase').innerText = "Prep Phase";
+                document.getElementById('speak-timer-display').classList.remove('text-red-600');
+                const speakBtn = document.getElementById('speak-btn');
+                speakBtn.disabled = false;
+                speakBtn.classList.remove('recording-active', 'opacity-50', 'cursor-not-allowed');
+                speakBtn.innerText = "Start Speaking Sim";
+            }
+        }
+
+    </script>
+</body>
+</html>

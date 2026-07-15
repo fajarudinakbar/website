@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL ITP Reading - Practice B</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Custom Scrollbar for Reading Pane */
+        .reading-pane::-webkit-scrollbar { width: 8px; }
+        .reading-pane::-webkit-scrollbar-track { background: #f1f5f9; }
+        .reading-pane::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .reading-pane::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Accessibility & Interaction Styles */
+        .highlight-target {
+            transition: all 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .highlight-active {
+            background-color: #fef08a; /* Yellow-200 */
+            color: #854d0e; /* Yellow-800 */
+            font-weight: bold;
+            box-shadow: 0 0 0 3px #fef08a;
+            padding: 0 2px;
+        }
+
+        .ref-link {
+            color: #4f46e5; /* Indigo-600 */
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 1px dashed #4f46e5;
+            transition: background-color 0.2s;
+        }
+        .ref-link:hover {
+            background-color: #e0e7ff; /* Indigo-100 */
+            border-bottom-style: solid;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 sticky top-0 z-20 border-b border-slate-200">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-book text-indigo-600 text-2xl"></i>
+                <h1 class="font-bold text-slate-700 text-lg md:text-xl">TOEFL ITP Reading Practice B</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="progress-display" class="hidden text-sm font-medium bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full border border-indigo-100">
+                    Question <span id="current-q-num">1</span> of 50
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="w-full bg-slate-200 h-1.5 z-10">
+        <div id="progress-bar" class="bg-indigo-600 h-1.5 transition-all duration-300 w-0"></div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-6xl mx-auto w-full p-4 md:p-6 flex flex-col">
+        
+        <!-- View: Intro (Home Page) -->
+        <div id="view-intro" class="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto mt-8 fade-in text-center">
+            <div class="mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 mb-4">
+                    <i class="fa-solid fa-book-open text-3xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">Reading Comprehension Practice B</h2>
+                <p class="text-slate-500 font-medium">TOEFL ITP Section 3 Simulation</p>
+            </div>
+
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed max-w-lg mx-auto">
+                This practice test is designed to simulate the reading section of the TOEFL ITP exam. You will read academic passages and answer questions to test your ability to understand main ideas, details, vocabulary in context, and inferences.
+            </p>
+            
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 mb-8 text-left mx-auto max-w-lg">
+                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-indigo-500"></i> Test Overview
+                </h3>
+                <ul class="space-y-3 text-slate-700">
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                        <span>Contains <strong>5 Reading Passages</strong> focusing on academic topics.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                        <span>Includes <strong>50 Questions</strong> (10 per passage).</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-hand-pointer text-indigo-500 mt-1"></i>
+                        <span><strong>Interactive Feature:</strong> Click highlighted references in questions (e.g., <span class="text-indigo-600 font-bold border-b border-indigo-600 border-dashed">paragraph 1</span>) to locate them in the text.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <button onclick="startTest()" class="w-full md:w-auto md:px-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-lg transition shadow-md flex items-center justify-center gap-2 mx-auto text-lg">
+                Start Practice Test B <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- View: Test (Split Screen) -->
+        <div id="view-test" class="hidden fade-in flex-1 flex flex-col md:flex-row gap-6 h-[calc(100vh-140px)]">
+            
+            <!-- Left: Reading Passage -->
+            <div class="md:w-1/2 flex flex-col bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                <div class="bg-slate-50 p-3 border-b border-slate-200 flex justify-between items-center">
+                    <span class="font-bold text-slate-500 text-xs uppercase tracking-wide">Reading Passage</span>
+                    <span id="passage-indicator" class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-0.5 rounded">Passage 1 of 5</span>
+                </div>
+                <!-- Reading Pane -->
+                <div id="passage-content" class="reading-pane flex-1 overflow-y-auto p-6 text-lg leading-relaxed text-slate-800 font-serif">
+                    <!-- Passage text injected here via JS -->
+                </div>
+            </div>
+
+            <!-- Right: Questions -->
+            <div class="md:w-1/2 flex flex-col bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                <div class="bg-slate-50 p-3 border-b border-slate-200">
+                    <span class="font-bold text-slate-500 text-xs uppercase tracking-wide">Question</span>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-6 flex flex-col">
+                    <!-- Question Text -->
+                    <h2 id="question-text" class="text-xl font-semibold text-slate-900 mb-6 leading-relaxed">
+                        Question goes here?
+                    </h2>
+                    
+                    <div id="options-container" class="space-y-3 mb-6">
+                        <!-- Options injected here -->
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="mt-auto flex justify-between pt-4 border-t border-slate-100">
+                        <button onclick="prevQuestion()" id="btn-prev" class="px-4 py-2 rounded-lg font-bold text-slate-500 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center gap-2">
+                            <i class="fa-solid fa-chevron-left"></i> Previous
+                        </button>
+                        <button onclick="nextQuestion()" id="btn-next" class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition shadow flex items-center gap-2">
+                            Next <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Results -->
+        <div id="view-results" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-center text-slate-800">Test Results</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-slate-100 p-6 rounded-xl text-center">
+                        <div class="text-sm text-slate-500 uppercase tracking-wide font-bold">Raw Score</div>
+                        <div class="text-4xl font-bold text-slate-900"><span id="score-raw">0</span> / 50</div>
+                    </div>
+                    <div class="bg-indigo-600 p-6 rounded-xl text-center text-white">
+                        <div class="text-sm text-indigo-100 uppercase tracking-wide font-bold">TOEFL Scaled Score</div>
+                        <div class="text-5xl font-bold" id="score-scaled">31</div>
+                        <div class="text-xs text-indigo-200 mt-2">Section 3 Scoring Table</div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold border-b pb-4 mb-6 text-slate-700">Detailed Review</h3>
+                <div id="review-container" class="space-y-8">
+                    <!-- Review items injected here -->
+                </div>
+
+                <button onclick="location.reload()" class="mt-8 w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 shadow-md transition">
+                    <i class="fa-solid fa-rotate"></i> Retake Test
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        const passages = [
+            {
+                id: 1,
+                title: "The Erie Canal",
+                text: `
+                    <p id="p1-par1" class="mb-4 highlight-target">The Erie Canal, completed in 1825, was a marvel of engineering that transformed the economic landscape of the United States. Connecting Albany on the Hudson River to Buffalo on Lake Erie, the canal provided a direct water route from New York City to the Great Lakes. Before its construction, transporting goods across the Appalachian Mountains was slow and expensive. The canal <span id="p1-w-slashed" class="highlight-target">slashed</span> these transport costs by up to 95 percent and significantly reduced travel time.</p>
+                    
+                    <p id="p1-par2" class="mb-4 highlight-target">The immediate success of the Erie Canal sparked a canal building boom across the country. Towns and cities along the route, such as Syracuse and Rochester, experienced rapid growth and became <span id="p1-w-thriving" class="highlight-target">thriving</span> commercial centers. New York City, already a busy port, solidified its position as the premier commercial hub of the nation. Agricultural products from the Midwest could now be shipped quickly to the East Coast, while manufactured goods flowed westward.</p>
+
+                    <p id="p1-par3" class="mb-4 highlight-target">Despite its immense economic impact, the dominance of the Erie Canal was eventually challenged by the rise of railroads in the mid 19th century. Trains offered faster and year round transportation, unlike the canal, <span id="p1-w-which" class="highlight-target">which</span> froze over during the winter months. By the early 20th century, much of the commercial traffic had shifted to the rails.</p>
+
+                    <p id="p1-par4" class="mb-4 highlight-target">However, the Erie Canal did not become entirely <span id="p1-w-obsolete" class="highlight-target">obsolete</span>. It was enlarged and incorporated into the New York State Canal System. Today, while it no longer carries heavy commercial freight, it serves primarily as a popular recreational waterway, preserving a vital piece of American industrial history.</p>
+                `,
+                questions: [
+                    { id: 1, text: "What is the primary purpose of this passage?", options: ["To explain the construction techniques of the Erie Canal", "To discuss the economic and historical impact of the Erie Canal", "To compare canals and railroads in the 19th century", "To describe the geography of New York State"], answer: 1, explanation: "The passage discusses the building, economic benefits, decline in commercial use, and modern status of the canal." },
+                    { id: 2, text: "The word <span class='ref-link' onclick=\"locate('p1-w-slashed')\">'slashed'</span> in <span class='ref-link' onclick=\"locate('p1-par1')\">paragraph 1</span> is closest in meaning to", options: ["increased", "reduced", "measured", "funded"], answer: 1, explanation: "In this context, 'slashed' means cut significantly or 'reduced' transport costs." },
+                    { id: 3, text: "According to <span class='ref-link' onclick=\"locate('p1-par1')\">paragraph 1</span>, what bodies of water did the Erie Canal connect?", options: ["The Atlantic Ocean and the Pacific Ocean", "The Hudson River and Lake Erie", "The Appalachian Mountains and New York City", "Lake Erie and Lake Ontario"], answer: 1, explanation: "The text states it connected 'Albany on the Hudson River to Buffalo on Lake Erie'." },
+                    { id: 4, text: "The word <span class='ref-link' onclick=\"locate('p1-w-thriving')\">'thriving'</span> in <span class='ref-link' onclick=\"locate('p1-par2')\">paragraph 2</span> is closest in meaning to", options: ["prosperous", "crowded", "peaceful", "dangerous"], answer: 0, explanation: "'Thriving' describes places that are growing and successful, or 'prosperous'." },
+                    { id: 5, text: "It can be inferred from the passage that before 1825, New York City", options: ["was not a commercial center", "was already an important port", "was the only city with a canal", "traded exclusively with the Midwest"], answer: 1, explanation: "Paragraph 2 says New York City, 'already a busy port, solidified its position'." },
+                    { id: 6, text: "The word <span class='ref-link' onclick=\"locate('p1-w-which')\">'which'</span> in <span class='ref-link' onclick=\"locate('p1-par3')\">paragraph 3</span> refers to", options: ["transportation", "railroads", "the canal", "winter months"], answer: 2, explanation: "The pronoun 'which' refers to the immediately preceding noun 'the canal', which froze during winter." },
+                    { id: 7, text: "Why did railroads eventually challenge the Erie Canal?", options: ["They were cheaper to build.", "They were faster and operated year round.", "They could carry heavier freight.", "They were funded by New York City."], answer: 1, explanation: "Paragraph 3 states: 'Trains offered faster and year round transportation'." },
+                    { id: 8, text: "The word <span class='ref-link' onclick=\"locate('p1-w-obsolete')\">'obsolete'</span> in <span class='ref-link' onclick=\"locate('p1-par4')\">paragraph 4</span> is closest in meaning to", options: ["popular", "damaged", "outdated", "expensive"], answer: 2, explanation: "Something that is obsolete is no longer used or is 'outdated'." },
+                    { id: 9, text: "According to the passage, how is the Erie Canal primarily used today?", options: ["For heavy commercial freight", "To transport agricultural products", "For recreational purposes", "To generate hydroelectric power"], answer: 2, explanation: "Paragraph 4 states that today it serves 'primarily as a popular recreational waterway'." },
+                    { id: 10, text: "Which of the following would be the best title for the passage?", options: ["The History of Railroads", "New York's Recreational Waterways", "The Erie Canal: Rise, Decline, and Legacy", "Engineering the Appalachian Mountains"], answer: 2, explanation: "This title accurately reflects the passage's structure from creation and peak, to decline and current use." }
+                ]
+            },
+            {
+                id: 2,
+                title: "Bioluminescence",
+                text: `
+                    <p id="p2-par1" class="mb-4 highlight-target">Bioluminescence is the biochemical emission of light by living organisms. It occurs widely in marine vertebrates and invertebrates, as well as in some fungi and terrestrial insects like fireflies. In the dark depths of the ocean, where sunlight cannot penetrate, bioluminescence serves several <span id="p2-w-crucial" class="highlight-target">crucial</span> survival functions for marine life.</p>
+                    
+                    <p id="p2-par2" class="mb-4 highlight-target">The light is produced by a chemical reaction involving a light emitting molecule called luciferin and an enzyme called luciferase. When luciferin reacts with oxygen, facilitated by the enzyme, it produces energy in the form of light. Unlike the light generated by a lightbulb, bioluminescent light is "cold light," meaning that very little of the energy is wasted as heat.</p>
+                    
+                    <p id="p2-par3" class="mb-4 highlight-target">Marine organisms use bioluminescence for various reasons. Some deep sea predators, such as the anglerfish, possess a glowing lure dangling from their heads to attract unsuspecting prey in the dark. Other species use a sudden flash of light to startle predators, allowing <span id="p2-w-them" class="highlight-target">them</span> valuable seconds to escape. Additionally, certain squid and fish use a technique known as counterillumination.</p>
+                    
+                    <p id="p2-par4" class="mb-4 highlight-target">Counterillumination is a form of camouflage. Organisms produce light on their undersides that matches the faint sunlight filtering down from the surface. This <span id="p2-w-masks" class="highlight-target">masks</span> their silhouettes, rendering them virtually invisible to predators swimming below them looking upwards. Through these diverse adaptations, bioluminescence has become an essential tool for life in the deep sea.</p>
+                `,
+                questions: [
+                    { id: 11, text: "What is the main topic of the passage?", options: ["The anatomy of the anglerfish", "How fireflies produce light", "The chemical reactions of enzymes", "The process and purpose of bioluminescence"], answer: 3, explanation: "The passage explains what bioluminescence is, how it works chemically, and how marine animals use it." },
+                    { id: 12, text: "The word <span class='ref-link' onclick=\"locate('p2-w-crucial')\">'crucial'</span> in <span class='ref-link' onclick=\"locate('p2-par1')\">paragraph 1</span> is closest in meaning to", options: ["essential", "difficult", "rare", "mysterious"], answer: 0, explanation: "In this context, 'crucial' means extremely important or 'essential' for survival." },
+                    { id: 13, text: "According to <span class='ref-link' onclick=\"locate('p2-par2')\">paragraph 2</span>, what makes bioluminescent light different from a lightbulb?", options: ["It requires electricity.", "It wastes very little energy as heat.", "It cannot be seen in the dark.", "It requires sunlight to activate."], answer: 1, explanation: "The text states it is 'cold light,' meaning that 'very little of the energy is wasted as heat'." },
+                    { id: 14, text: "What role does oxygen play in bioluminescence?", options: ["It stops the chemical reaction.", "It cools the light down.", "It reacts with luciferin to produce light.", "It acts as a camouflage."], answer: 2, explanation: "Paragraph 2 explains: 'When luciferin reacts with oxygen... it produces energy in the form of light'." },
+                    { id: 15, text: "Why does the anglerfish use bioluminescence?", options: ["To hide from predators", "To attract prey", "To communicate with other anglerfish", "To see in the dark"], answer: 1, explanation: "Paragraph 3 notes the anglerfish uses a glowing lure to 'attract unsuspecting prey'." },
+                    { id: 16, text: "The word <span class='ref-link' onclick=\"locate('p2-w-them')\">'them'</span> in <span class='ref-link' onclick=\"locate('p2-par3')\">paragraph 3</span> refers to", options: ["predators", "seconds", "other species", "flashes of light"], answer: 2, explanation: "The pronoun 'them' refers to 'other species' that use the light to escape." },
+                    { id: 17, text: "What is counterillumination?", options: ["A method of attracting a mate", "A sudden flash to blind a predator", "A chemical reaction lacking oxygen", "A type of camouflage matching surface light"], answer: 3, explanation: "Paragraph 4 explains counterillumination matches surface light to act as a 'form of camouflage'." },
+                    { id: 18, text: "The word <span class='ref-link' onclick=\"locate('p2-w-masks')\">'masks'</span> in <span class='ref-link' onclick=\"locate('p2-par4')\">paragraph 4</span> is closest in meaning to", options: ["reveals", "hides", "decorates", "replaces"], answer: 1, explanation: "To 'mask' a silhouette means to conceal or 'hide' it." },
+                    { id: 19, text: "It can be inferred from the passage that predators below counterilluminating prey", options: ["hunt by looking for shadows against the surface light", "are usually blind", "use luciferin to see their prey", "are easily startled by sudden flashes"], answer: 0, explanation: "If counterillumination matches surface light to hide silhouettes from predators 'looking upwards', those predators must hunt by looking for those dark silhouettes." },
+                    { id: 20, text: "Which of the following organisms is NOT mentioned as producing bioluminescence?", options: ["Fireflies", "Fungi", "Squid", "Algae"], answer: 3, explanation: "The passage mentions fungi, insects (fireflies), squid, fish, and anglerfish, but not algae." }
+                ]
+            },
+            {
+                id: 3,
+                title: "Georgia O'Keeffe",
+                text: `
+                    <p id="p3-par1" class="mb-4 highlight-target">Georgia O'Keeffe was a pioneering American artist known for her striking paintings of enlarged flowers, New York skyscrapers, and New Mexico landscapes. Born in Wisconsin in 1887, she studied art in Chicago and New York but eventually developed a highly personal style that broke away from traditional European realism.</p>
+                    
+                    <p id="p3-par2" class="mb-4 highlight-target">In the 1920s, she began painting close up views of flowers, magnifying their forms so that <span id="p3-w-they" class="highlight-target">they</span> bordered on abstraction. These large scale floral paintings, such as "Jimson Weed," were intended to make people stop and look at the intricate details of a flower, something she felt busy city dwellers often ignored. Her work during this period was championed by photographer Alfred Stieglitz, whom she later married.</p>
+                    
+                    <p id="p3-par3" class="mb-4 highlight-target">In 1929, O'Keeffe traveled to Northern New Mexico for the first time. She was deeply inspired by the region's stark desert landscapes, <span id="p3-w-distinctive" class="highlight-target">distinctive</span> architecture, and indigenous cultures. For years, she split her time between New York and New Mexico before making the desert her permanent home after Stieglitz's death in 1946.</p>
+                    
+                    <p id="p3-par4" class="mb-4 highlight-target">Her later works frequently featured bleached animal skulls set against vibrant desert skies. O'Keeffe remained fiercely independent throughout her career, refusing to align herself with specific art movements. She continued to paint until failing eyesight forced her to stop in the 1970s. Today, her <span id="p3-w-legacy" class="highlight-target">legacy</span> is celebrated at the Georgia O'Keeffe Museum in Santa Fe, New Mexico.</p>
+                `,
+                questions: [
+                    { id: 21, text: "What is the passage mainly about?", options: ["The photography of Alfred Stieglitz", "The history of art in New Mexico", "The life and art of Georgia O'Keeffe", "The transition from realism to abstraction"], answer: 2, explanation: "The text provides a biographical overview of Georgia O'Keeffe and her artistic development." },
+                    { id: 22, text: "According to <span class='ref-link' onclick=\"locate('p3-par1')\">paragraph 1</span>, O'Keeffe's style", options: ["closely followed European realism", "departed from traditional European realism", "was mostly popular in Chicago", "focused entirely on portraits"], answer: 1, explanation: "Paragraph 1 states she developed a style that 'broke away from traditional European realism'." },
+                    { id: 23, text: "The word <span class='ref-link' onclick=\"locate('p3-w-they')\">'they'</span> in <span class='ref-link' onclick=\"locate('p3-par2')\">paragraph 2</span> refers to", options: ["city dwellers", "New York skyscrapers", "forms of flowers", "the 1920s"], answer: 2, explanation: "The pronoun 'they' refers to the 'forms' of the flowers she magnified." },
+                    { id: 24, text: "Why did O'Keeffe paint enlarged flowers?", options: ["To force busy people to notice their details", "To practice her abstraction techniques", "To sell more paintings in New York", "To compete with Alfred Stieglitz"], answer: 0, explanation: "She intended to make people 'stop and look at the intricate details of a flower, something she felt busy city dwellers often ignored'." },
+                    { id: 25, text: "Who was Alfred Stieglitz?", options: ["An indigenous artist", "A European painter", "O'Keeffe's photographer husband", "A museum curator"], answer: 2, explanation: "Paragraph 2 identifies him as a 'photographer Alfred Stieglitz, whom she later married'." },
+                    { id: 26, text: "The word <span class='ref-link' onclick=\"locate('p3-w-distinctive')\">'distinctive'</span> in <span class='ref-link' onclick=\"locate('p3-par3')\">paragraph 3</span> is closest in meaning to", options: ["ordinary", "unique", "ancient", "colorful"], answer: 1, explanation: "'Distinctive' means characteristic or 'unique' to a particular person or place." },
+                    { id: 27, text: "When did O'Keeffe move to New Mexico permanently?", options: ["In 1887", "In 1920", "In 1929", "After 1946"], answer: 3, explanation: "Paragraph 3 states she made it her permanent home 'after Stieglitz's death in 1946'." },
+                    { id: 28, text: "What subject matter is noted in O'Keeffe's later works?", options: ["Skyscrapers", "Animal skulls and desert skies", "Portraits of her husband", "Chicago landscapes"], answer: 1, explanation: "Paragraph 4 states her later works featured 'bleached animal skulls set against vibrant desert skies'." },
+                    { id: 29, text: "Why did O'Keeffe stop painting in the 1970s?", options: ["She lost interest in art.", "She ran out of supplies in the desert.", "Her eyesight was failing.", "She opened a museum instead."], answer: 2, explanation: "Paragraph 4 notes she stopped because 'failing eyesight forced her to stop'." },
+                    { id: 30, text: "The word <span class='ref-link' onclick=\"locate('p3-w-legacy')\">'legacy'</span> in <span class='ref-link' onclick=\"locate('p3-par4')\">paragraph 4</span> is closest in meaning to", options: ["wealth", "contribution to history", "family", "collection of tools"], answer: 1, explanation: "A legacy in this context refers to her lasting impact or 'contribution to history' through her art." }
+                ]
+            },
+            {
+                id: 4,
+                title: "Meteorites",
+                text: `
+                    <p id="p4-par1" class="mb-4 highlight-target">A meteorite is a solid piece of debris from an object, such as a comet, asteroid, or meteoroid, that originates in outer space and survives its passage through the atmosphere to reach the surface of a planet or moon. Before it hits the ground, it is known as a meteoroid. When the original object enters the atmosphere, various factors such as friction and pressure cause <span id="p4-w-it" class="highlight-target">it</span> to heat up and radiate energy.</p>
+                    
+                    <p id="p4-par2" class="mb-4 highlight-target">At this stage, it becomes a meteor, commonly known as a shooting star. If the meteor is large enough and the conditions are right, it will not burn up completely and will land on the Earth. Meteorites that are recovered after being observed as they transit the atmosphere are called meteorites falls. All others are known as meteorite finds.</p>
+                    
+                    <p id="p4-par3" class="mb-4 highlight-target">Meteorites have traditionally been divided into three broad categories based on their composition. Stony meteorites are rocks, mainly composed of silicate minerals. Iron meteorites are largely composed of metallic iron and nickel. Stony iron meteorites contain large amounts of both metallic and rocky material. Stony meteorites are by far the most <span id="p4-w-abundant" class="highlight-target">abundant</span>, making up over 90 percent of all known meteorites.</p>
+                    
+                    <p id="p4-par4" class="mb-4 highlight-target">Studying meteorites provides scientists with vital clues about the origins of our solar system. Because many meteorites have remained virtually unchanged since they formed billions of years ago, they act as time capsules. They help researchers understand the chemical composition of the early solar nebula from which the planets <span id="p4-w-condensed" class="highlight-target">condensed</span>.</p>
+                `,
+                questions: [
+                    { id: 31, text: "What is the main purpose of the passage?", options: ["To warn about the dangers of falling space debris", "To explain the stages and types of meteorites", "To compare the atmosphere of Earth to the moon", "To detail the chemical composition of Earth's crust"], answer: 1, explanation: "The passage defines what a meteorite is, names its stages (meteoroid, meteor, meteorite), and describes its types." },
+                    { id: 32, text: "What is a piece of space debris called before it enters the atmosphere?", options: ["A meteorite", "A meteor", "A meteoroid", "A shooting star"], answer: 2, explanation: "Paragraph 1 states: 'Before it hits the ground (and atmosphere context), it is known as a meteoroid'." },
+                    { id: 33, text: "The word <span class='ref-link' onclick=\"locate('p4-w-it')\">'it'</span> in <span class='ref-link' onclick=\"locate('p4-par1')\">paragraph 1</span> refers to", options: ["friction", "the atmosphere", "the original object", "radiate energy"], answer: 2, explanation: "The pronoun 'it' refers back to 'the original object' entering the atmosphere." },
+                    { id: 34, text: "According to the passage, a 'shooting star' is scientifically known as", options: ["a meteorite fall", "a meteor", "a meteoroid", "a comet"], answer: 1, explanation: "Paragraph 2 explicitly states: 'it becomes a meteor, commonly known as a shooting star'." },
+                    { id: 35, text: "What is the difference between a meteorite fall and a meteorite find?", options: ["Falls are made of iron; finds are made of stone.", "Falls are observed coming down; finds are discovered later.", "Falls burn up completely; finds hit the ground.", "Falls originate from comets; finds originate from asteroids."], answer: 1, explanation: "Paragraph 2 explains falls are 'recovered after being observed' while all others are 'finds'." },
+                    { id: 36, text: "Which type of meteorite contains mostly metallic iron and nickel?", options: ["Stony meteorites", "Iron meteorites", "Stony iron meteorites", "Silicate meteorites"], answer: 1, explanation: "Paragraph 3 states: 'Iron meteorites are largely composed of metallic iron and nickel'." },
+                    { id: 37, text: "The word <span class='ref-link' onclick=\"locate('p4-w-abundant')\">'abundant'</span> in <span class='ref-link' onclick=\"locate('p4-par3')\">paragraph 3</span> is closest in meaning to", options: ["heavy", "plentiful", "valuable", "ancient"], answer: 1, explanation: "Abundant means existing in large quantities, or 'plentiful'." },
+                    { id: 38, text: "Why do scientists study meteorites?", options: ["To find new sources of iron", "To understand weather patterns", "To learn about the early solar system", "To prevent them from hitting Earth"], answer: 2, explanation: "Paragraph 4 notes they provide 'vital clues about the origins of our solar system'." },
+                    { id: 39, text: "The word <span class='ref-link' onclick=\"locate('p4-w-condensed')\">'condensed'</span> in <span class='ref-link' onclick=\"locate('p4-par4')\">paragraph 4</span> is closest in meaning to", options: ["evaporated", "formed into a solid mass", "moved quickly", "exploded"], answer: 1, explanation: "In this astronomical context, condensed means gas or dust coming together or 'formed into a solid mass'." },
+                    { id: 40, text: "It can be inferred from the passage that", options: ["most meteoroids become meteorites", "iron meteorites are very rare compared to stony ones", "meteorites frequently cause major damage to cities", "the solar system is only a few million years old"], answer: 1, explanation: "Since stony meteorites make up 'over 90 percent', it can be inferred that iron meteorites are rare in comparison." }
+                ]
+            },
+            {
+                id: 5,
+                title: "The Ancestral Puebloans",
+                text: `
+                    <p id="p5-par1" class="mb-4 highlight-target">The Ancestral Puebloans, formerly known as the Anasazi, were an ancient Native American culture that spanned the present day Four Corners region of the United States. This area comprises southeastern Utah, northeastern Arizona, northwestern New Mexico, and southwestern Colorado. They are perhaps best known for their <span id="p5-w-impressive" class="highlight-target">impressive</span> cliff dwellings, built into the sheer rock walls of canyons.</p>
+                    
+                    <p id="p5-par2" class="mb-4 highlight-target">For centuries, the Ancestral Puebloans lived in open villages and engaged in agriculture. They successfully cultivated corn, beans, and squash in a challenging, arid environment. They utilized complex terracing and irrigation systems to capture and direct rainwater to their crops. Around the year 1150, however, there was a significant shift in their building patterns.</p>
+                    
+                    <p id="p5-par3" class="mb-4 highlight-target"><span id="p5-w-they" class="highlight-target">They</span> began moving their villages from the open mesa tops into alcoves situated high up in the canyon walls. These cliff dwellings offered superior protection against the elements and potential enemies. Within these complexes, they built kivas, which were circular, subterranean rooms used for religious rituals and community gatherings.</p>
+                    
+                    <p id="p5-par4" class="mb-4 highlight-target">By the late 13th century, the Ancestral Puebloans began to <span id="p5-w-abandon" class="highlight-target">abandon</span> their cliff dwellings entirely. The exact reasons for this mass migration remain a subject of debate among archaeologists. Prolonged drought, resource depletion, and social conflict are all believed to have played a role. They migrated south and east, integrating with other groups to become the ancestors of the modern Pueblo peoples.</p>
+                `,
+                questions: [
+                    { id: 41, text: "What is the primary focus of the passage?", options: ["The agricultural techniques of early Americans", "The architectural styles of modern Pueblo peoples", "The history and settlements of the Ancestral Puebloans", "The causes of drought in the American Southwest"], answer: 2, explanation: "The passage discusses who the Ancestral Puebloans were, where and how they lived, and their eventual migration." },
+                    { id: 42, text: "The word <span class='ref-link' onclick=\"locate('p5-w-impressive')\">'impressive'</span> in <span class='ref-link' onclick=\"locate('p5-par1')\">paragraph 1</span> is closest in meaning to", options: ["hidden", "remarkable", "temporary", "dangerous"], answer: 1, explanation: "Something impressive evokes admiration and is 'remarkable'." },
+                    { id: 43, text: "What were the primary crops cultivated by the Ancestral Puebloans?", options: ["Wheat, barley, and oats", "Corn, beans, and squash", "Potatoes, tomatoes, and peppers", "Cotton and tobacco"], answer: 1, explanation: "Paragraph 2 states: 'They successfully cultivated corn, beans, and squash'." },
+                    { id: 44, text: "How did the Ancestral Puebloans farm in an arid environment?", options: ["By importing water from other regions", "By using terracing and irrigation systems", "By planting crops inside the cliff dwellings", "By only farming during the winter"], answer: 1, explanation: "Paragraph 2 notes they used 'complex terracing and irrigation systems to capture and direct rainwater'." },
+                    { id: 45, text: "The word <span class='ref-link' onclick=\"locate('p5-w-they')\">'They'</span> in <span class='ref-link' onclick=\"locate('p5-par3')\">paragraph 3</span> refers to", options: ["crops", "irrigation systems", "villages", "the Ancestral Puebloans"], answer: 3, explanation: "The pronoun 'They' starts the sentence and refers back to the people who began moving their villages." },
+                    { id: 46, text: "Why did the Ancestral Puebloans likely move into cliff dwellings?", options: ["To find more water", "For protection from weather and enemies", "To be closer to their crops", "To avoid religious persecution"], answer: 1, explanation: "Paragraph 3 explains the cliff dwellings 'offered superior protection against the elements and potential enemies'." },
+                    { id: 47, text: "What was the purpose of a kiva?", options: ["Storing grain and crops", "Gathering water from rain", "Holding religious rituals and meetings", "Housing animals"], answer: 2, explanation: "Paragraph 3 defines kivas as rooms 'used for religious rituals and community gatherings'." },
+                    { id: 48, text: "The word <span class='ref-link' onclick=\"locate('p5-w-abandon')\">'abandon'</span> in <span class='ref-link' onclick=\"locate('p5-par4')\">paragraph 4</span> is closest in meaning to", options: ["rebuild", "defend", "leave", "expand"], answer: 2, explanation: "To abandon a dwelling means to 'leave' it permanently." },
+                    { id: 49, text: "Which of the following is NOT mentioned as a possible reason for their migration?", options: ["Prolonged drought", "Disease outbreaks", "Resource depletion", "Social conflict"], answer: 1, explanation: "Paragraph 4 lists drought, resource depletion, and social conflict. Disease is not mentioned." },
+                    { id: 50, text: "What happened to the Ancestral Puebloans after they left the cliff dwellings?", options: ["They died out completely.", "They moved to the East Coast.", "They became the ancestors of modern Pueblo peoples.", "They returned to their original open villages."], answer: 2, explanation: "The passage concludes they migrated and became 'the ancestors of the modern Pueblo peoples'." }
+                ]
+            }
+        ];
+
+        // --- STATE ---
+        let currentPassageIdx = 0;
+        let currentQuestionIdx = 0; // Relative to the passage (0-9)
+        let totalQuestionIdx = 0;   // Global (0-49)
+        let userAnswers = {}; // Map of global question ID to selected option index
+
+        // --- DOM ELEMENTS ---
+        const viewIntro = document.getElementById('view-intro');
+        const viewTest = document.getElementById('view-test');
+        const viewResults = document.getElementById('view-results');
+        
+        const progressBar = document.getElementById('progress-bar');
+        const progressDisplay = document.getElementById('progress-display');
+        const currentQNum = document.getElementById('current-q-num');
+        
+        const passageContent = document.getElementById('passage-content');
+        const passageIndicator = document.getElementById('passage-indicator');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        // --- LOGIC ---
+
+        function startTest() {
+            viewIntro.classList.add('hidden');
+            viewTest.classList.remove('hidden');
+            progressDisplay.classList.remove('hidden');
+            loadState();
+        }
+
+        function loadState() {
+            // Determine current passage based on global question index
+            currentPassageIdx = Math.floor(totalQuestionIdx / 10);
+            currentQuestionIdx = totalQuestionIdx % 10;
+            
+            const passage = passages[currentPassageIdx];
+            const question = passage.questions[currentQuestionIdx];
+
+            // Render Passage
+            passageIndicator.innerText = `Passage ${currentPassageIdx + 1} of ${passages.length}`;
+            
+            if (passageContent.getAttribute('data-id') != passage.id) {
+                 passageContent.innerHTML = passage.text;
+                 passageContent.setAttribute('data-id', passage.id);
+                 passageContent.scrollTop = 0;
+            }
+
+            // Render Question
+            currentQNum.innerText = totalQuestionIdx + 1;
+            progressBar.style.width = `${((totalQuestionIdx + 1) / 50) * 100}%`;
+            
+            questionText.innerHTML = `${totalQuestionIdx + 1}. ${question.text}`;
+            
+            optionsContainer.innerHTML = '';
+            question.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[question.id] === idx;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-3 rounded-lg border transition-all flex items-start gap-3 text-base ${
+                    isSelected 
+                    ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600' 
+                    : 'border-slate-200 hover:bg-slate-50'
+                }`;
+                btn.onclick = () => selectAnswer(question.id, idx);
+                
+                const badge = document.createElement('span');
+                badge.className = `w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 ${
+                    isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-600'
+                }`;
+                badge.innerText = String.fromCharCode(65 + idx);
+                
+                const text = document.createElement('span');
+                text.className = 'text-slate-700';
+                text.innerText = opt;
+
+                btn.appendChild(badge);
+                btn.appendChild(text);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Navigation State
+            btnPrev.disabled = (totalQuestionIdx === 0);
+            
+            if (totalQuestionIdx === 49) { // 50 questions total
+                btnNext.innerHTML = 'Finish Test <i class="fa-solid fa-check"></i>';
+                btnNext.onclick = finishTest;
+                btnNext.className = "px-6 py-2 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition shadow flex items-center gap-2";
+            } else {
+                btnNext.innerHTML = 'Next <i class="fa-solid fa-chevron-right"></i>';
+                btnNext.onclick = nextQuestion;
+                btnNext.className = "px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition shadow flex items-center gap-2";
+            }
+        }
+
+        // Interaction Function
+        function locate(id) {
+            document.querySelectorAll('.highlight-active').forEach(el => el.classList.remove('highlight-active'));
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.classList.add('highlight-active');
+            }
+        }
+
+        function selectAnswer(qId, optIdx) {
+            userAnswers[qId] = optIdx;
+            loadState(); 
+        }
+
+        function nextQuestion() {
+            if (totalQuestionIdx < 49) {
+                totalQuestionIdx++;
+                loadState();
+            }
+        }
+
+        function prevQuestion() {
+            if (totalQuestionIdx > 0) {
+                totalQuestionIdx--;
+                loadState();
+            }
+        }
+
+        function calculateScaledScore(raw) {
+            // TOEFL ITP Section 3 Conversion (Approx)
+            if (raw >= 50) return 67;
+            if (raw >= 48) return 66;
+            if (raw >= 45) return 63;
+            if (raw >= 40) return 57;
+            if (raw >= 35) return 54;
+            if (raw >= 30) return 50;
+            if (raw >= 25) return 46;
+            if (raw >= 20) return 41;
+            if (raw >= 15) return 35;
+            if (raw >= 10) return 31;
+            return 31; 
+        }
+
+        function finishTest() {
+            let rawScore = 0;
+            let reviewHTML = '';
+
+            passages.forEach((p, pIdx) => {
+                reviewHTML += `<div class="border-b border-slate-200 pb-2 mb-4 font-bold text-xl text-slate-400 uppercase tracking-wide">Passage ${pIdx + 1}: ${p.title}</div>`;
+                
+                p.questions.forEach((q, qIdx) => {
+                    const isCorrect = userAnswers[q.id] === q.answer;
+                    if (isCorrect) rawScore++;
+                    
+                    const userOptIdx = userAnswers[q.id];
+                    
+                    const cleanQuestionText = q.text.replace(/<[^>]*>/g, '');
+
+                    reviewHTML += `
+                        <div class="mb-6 p-4 rounded-lg border ${isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}">
+                             <div class="flex justify-between items-start mb-2">
+                                <span class="font-bold text-slate-700">Q${q.id}. ${cleanQuestionText}</span>
+                                ${isCorrect 
+                                    ? '<span class="text-green-700 text-sm font-bold"><i class="fa-solid fa-check"></i> Correct</span>' 
+                                    : '<span class="text-red-700 text-sm font-bold"><i class="fa-solid fa-xmark"></i> Incorrect</span>'}
+                             </div>
+                             
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm mb-3">
+                                <div class="${isCorrect ? 'text-green-800' : 'text-red-800'}">
+                                    <span class="font-semibold">Your Answer:</span> ${userOptIdx !== undefined ? q.options[userOptIdx] : 'No Answer'}
+                                </div>
+                                <div class="text-slate-700">
+                                    <span class="font-semibold">Correct Answer:</span> ${q.options[q.answer]}
+                                </div>
+                             </div>
+
+                             <div class="bg-white p-3 rounded border border-slate-200 text-sm text-slate-600">
+                                <span class="font-bold text-indigo-600"><i class="fa-solid fa-lightbulb"></i> Explanation:</span> ${q.explanation}
+                             </div>
+                        </div>
+                    `;
+                });
+            });
+
+            const scaledScore = calculateScaledScore(rawScore);
+
+            document.getElementById('score-raw').innerText = rawScore;
+            document.getElementById('score-scaled').innerText = scaledScore;
+            document.getElementById('review-container').innerHTML = reviewHTML;
+
+            viewTest.classList.add('hidden');
+            progressDisplay.classList.add('hidden');
+            viewResults.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

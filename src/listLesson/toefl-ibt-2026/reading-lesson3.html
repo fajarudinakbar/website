@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Reading: Lesson 3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* Base font for the application UI */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Serif font for reading passages for better readability */
+        .passage, .prose {
+            font-family: 'Lora', serif;
+        }
+        /* Make the layout full height */
+        html, body {
+            height: 100%;
+            overflow: hidden; /* Prevent body scrollbars */
+        }
+        .main-container {
+            height: 100vh; /* Full viewport height */
+        }
+        /* Allow main content to scroll and add font transition */
+        #app-content {
+            overflow-y: auto;
+            flex-grow: 1; /* Ensure it takes available space */
+            transition: font-size 0.2s ease-in-out; /* Smooth font size transition */
+        }
+        /* Hide sections by default */
+        .section {
+            display: none;
+        }
+        /* Show the active section */
+        .section.active {
+            display: block;
+        }
+        /* Style for the active navigation button */
+        .nav-btn.active-nav {
+            background-color: #2563eb; /* Tailwind's bg-blue-600 */
+            color: white;
+            font-weight: 600;
+        }
+        /* Feedback message base styles */
+        .feedback {
+            display: none;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        /* Styles for a correct feedback message */
+        .feedback.correct {
+            display: block;
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+        /* Styles for an incorrect feedback message */
+        .feedback.incorrect {
+            display: block;
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+         /* Styles for informational feedback */
+        .feedback.info {
+            display: block;
+            background-color: #eff6ff; /* blue-50 */
+            color: #1e40af; /* blue-800 */
+            border: 1px solid #93c5fd; /* blue-300 */
+        }
+        /* Styles for disabled buttons after an answer is submitted */
+        .disabled-btn {
+            background-color: #d1d5db !important; /* Use !important to override hover styles */
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="main-container w-full p-4 sm:p-6 md:p-8 flex flex-col">
+        
+        <!-- Header -->
+        <header class="bg-white shadow-md rounded-xl p-6 mb-8">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-blue-700">TOEFL iBT® Reading Lesson 3</h1>
+                    <p class="mt-2 text-gray-600">An interactive app to practice complete the words.</p>
+                </div>
+                <!-- Font Size Controller -->
+                <div class="flex items-center gap-2 flex-shrink-0 ml-4">
+                    <span class="text-sm font-medium text-gray-600 hidden sm:inline">Font Size:</span>
+                    <button id="decrease-font" title="Decrease font size" class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 text-xl font-bold flex items-center justify-center">-</button>
+                    <button id="increase-font" title="Increase font size" class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 text-xl font-bold flex items-center justify-center">+</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav id="main-nav" class="bg-white shadow-sm rounded-lg p-3 mb-8 flex flex-wrap justify-center gap-2">
+            <button data-section="intro" class="nav-btn px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">Introduction</button>
+            <button data-section="part1" class="nav-btn px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">Part 1: Parts of Speech</button>
+            <button data-section="part2" class="nav-btn px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md hover:bg-gray-50">Part 2: Complete the Words</button>
+        </nav>
+
+        <main id="app-content" class="bg-white shadow-lg rounded-xl p-6 sm:p-8">
+            <!-- Introduction Section -->
+            <section id="intro" class="section">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Welcome to Lesson 3: Vocabulary!</h2>
+                <p class="mb-4">This lesson helps you practice vocabulary and word recognition, skills that are especially important for the "Complete the Words" task in the TOEFL Reading section.</p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md">
+                    <p><strong class="font-semibold">Learning Objectives:</strong></p>
+                    <ul class="list-disc list-inside mt-2">
+                        <li>Identify the part of speech for different words.</li>
+                        <li>Use context to complete words with missing letters.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Part 1: Parts of Speech Sort -->
+            <section id="part1" class="section">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 1: Parts of Speech Sort</h2>
+                <p class="mb-4">Read the following text. Find as many nouns, adjectives, verbs, and adverbs as you can and write them in the appropriate boxes below.</p>
+                <div class="prose max-w-none mb-8 passage p-4 bg-gray-50 rounded-lg border">
+                    <p class="text-base leading-relaxed">
+                        Agriculture changed human history. Being able to grow food meant that people no longer had to travel around—they could settle down in small communities. Humans built villages and started to farm the land around them and even keep animals. Once food supplies were more than enough for everyone, the population grew, and some people began to work in other fields. Some people started making tools, others started to work in religion, and others became soldiers, merchants, and so on. The more people interacted with each other, the more they realized that rules were needed. That is why governments were established.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block font-semibold mb-2">Nouns:</label>
+                        <textarea rows="5" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g., agriculture, history, food..."></textarea>
+                    </div>
+                     <div>
+                        <label class="block font-semibold mb-2">Adjectives:</label>
+                        <textarea rows="5" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g., small, other..."></textarea>
+                    </div>
+                     <div>
+                        <label class="block font-semibold mb-2">Verbs:</label>
+                        <textarea rows="5" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g., changed, grow, meant..."></textarea>
+                    </div>
+                     <div>
+                        <label class="block font-semibold mb-2">Adverbs:</label>
+                        <textarea rows="5" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g., no longer, around, even..."></textarea>
+                    </div>
+                </div>
+                <button data-action="toggle-answer" data-target="part1-answers" class="mt-4 text-sm text-blue-600 hover:underline">Show Suggested Answers →</button>
+                <div id="part1-answers" class="feedback info" style="display: none;">
+                    <p class="font-semibold">Suggested Answers:</p>
+                    <ul class="list-disc list-inside mt-2 text-sm">
+                        <li><strong>Nouns:</strong> agriculture, history, food, people, communities, villages, land, animals, supplies, everyone, population, fields, tools, religion, soldiers, merchants, rules, governments</li>
+                        <li><strong>Adjectives:</strong> small, other, enough</li>
+                        <li><strong>Verbs:</strong> changed, grow, meant, travel, settle, built, started, farm, keep, were, grew, began, work, making, interacted, realized, needed, established</li>
+                        <li><strong>Adverbs:</strong> no longer, around, even, more, so</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <!-- Part 2: Complete the Words -->
+            <section id="part2" class="section">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Part 2: Complete the Words</h2>
+                <p class="mb-4">For each gap in the text, type the part of speech (noun, adjective, verb, or adverb) in the parenthesis and complete the word in the blank.</p>
+                <p class="mb-6">This is a practice for the "Complete the Words" task on the TOEFL iBT test.</p>
+                
+                <div id="complete-words-container" class="prose max-w-none passage p-6 bg-gray-50 rounded-lg border text-lg leading-loose">
+                    <p>
+                        Today, our relationships with animals come in many different forms. But when exa<input type="text" class="vocab-input p-1 border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 w-16 text-center" data-answer="ctly" maxlength="4"> 
+                        (<select class="pos-input p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 text-center" data-answer="adverb">
+                            <option value="">select...</option>
+                            <option value="noun">noun</option>
+                            <option value="verb">verb</option>
+                            <option value="adjective">adjective</option>
+                            <option value="adverb">adverb</option>
+                        </select>) 
+                        did these relati<input type="text" class="vocab-input p-1 border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 w-24 text-center" data-answer="onships" maxlength="7"> 
+                        (<select class="pos-input p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 text-center" data-answer="noun">
+                            <option value="">select...</option>
+                            <option value="noun">noun</option>
+                            <option value="verb">verb</option>
+                            <option value="adjective">adjective</option>
+                            <option value="adverb">adverb</option>
+                        </select>) 
+                        start? Researchers fo<input type="text" class="vocab-input p-1 border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 w-12 text-center" data-answer="und" maxlength="3"> 
+                        (<select class="pos-input p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 text-center" data-answer="verb">
+                            <option value="">select...</option>
+                            <option value="noun">noun</option>
+                            <option value="verb">verb</option>
+                            <option value="adjective">adjective</option>
+                            <option value="adverb">adverb</option>
+                        </select>) 
+                        that the first animals app<input type="text" class="vocab-input p-1 border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 w-20 text-center" data-answer="eared" maxlength="5"> 
+                        (<select class="pos-input p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 text-center" data-answer="verb">
+                            <option value="">select...</option>
+                            <option value="noun">noun</option>
+                            <option value="verb">verb</option>
+                            <option value="adjective">adjective</option>
+                            <option value="adverb">adverb</option>
+                        </select>) 
+                        more than 540 million years ago, and that they started living with hu<input type="text" class="vocab-input p-1 border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 w-16 text-center" data-answer="mans" maxlength="4"> 
+                        (<select class="pos-input p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 text-center" data-answer="noun">
+                            <option value="">select...</option>
+                            <option value="noun">noun</option>
+                            <option value="verb">verb</option>
+                            <option value="adjective">adjective</option>
+                            <option value="adverb">adverb</option>
+                        </select>) 
+                        around 40,000 to 20,000 years ago. Since then, the roles of animals in our li<input type="text" class="vocab-input p-1 border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 w-12 text-center" data-answer="ves" maxlength="3"> 
+                        (<select class="pos-input p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 text-center" data-answer="noun">
+                            <option value="">select...</option>
+                            <option value="noun">noun</option>
+                            <option value="verb">verb</option>
+                            <option value="adjective">adjective</option>
+                            <option value="adverb">adverb</option>
+                        </select>) 
+                        have deve<input type="text" class="vocab-input p-1 border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 w-20 text-center" data-answer="loped" maxlength="5"> 
+                        (<select class="pos-input p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 text-center" data-answer="verb">
+                            <option value="">select...</option>
+                            <option value="noun">noun</option>
+                            <option value="verb">verb</option>
+                            <option value="adjective">adjective</option>
+                            <option value="adverb">adverb</option>
+                        </select>) 
+                        in many inter<input type="text" class="vocab-input p-1 border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 w-24 text-center" data-answer="esting" maxlength="6"> 
+                        (<select class="pos-input p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 text-center" data-answer="adjective">
+                            <option value="">select...</option>
+                            <option value="noun">noun</option>
+                            <option value="verb">verb</option>
+                            <option value="adjective">adjective</option>
+                            <option value="adverb">adverb</option>
+                        </select>) 
+                        ways.
+                    </p>
+                </div>
+                <button id="check-part2-btn" class="mt-6 bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700">Check Answers</button>
+                <div id="part2-feedback" class="feedback"></div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- STATE & CONSTANTS ---
+            const mainNav = document.getElementById('main-nav');
+            const sections = document.querySelectorAll('.section');
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const appContent = document.getElementById('app-content');
+            const increaseFontButton = document.getElementById('increase-font');
+            const decreaseFontButton = document.getElementById('decrease-font');
+            let fontSize = 100;
+            let part2Attempts = 0; // Track attempts for Part 2
+
+            // --- FUNCTIONS ---
+            function showSection(sectionId) {
+                sections.forEach(section => section.classList.remove('active'));
+                document.getElementById(sectionId)?.classList.add('active');
+                navButtons.forEach(btn => btn.classList.toggle('active-nav', btn.dataset.section === sectionId));
+                appContent.scrollTop = 0;
+            }
+
+            function adjustFontSize(amount) {
+                fontSize = Math.max(70, Math.min(150, fontSize + amount));
+                appContent.style.fontSize = `${fontSize}%`;
+                // Removed the lines that updated the text content with the percentage
+            }
+            
+            function checkPart2() {
+                part2Attempts++; // Increment attempt counter
+                let allCorrect = true;
+                
+                // Clear any old "correct answer" spans
+                document.querySelectorAll('.correct-answer-span').forEach(span => span.remove());
+
+                // Check vocabulary inputs
+                document.querySelectorAll('.vocab-input').forEach(input => {
+                    const isCorrect = input.value.trim().toLowerCase() === input.dataset.answer.toLowerCase();
+                    input.classList.remove('border-gray-300', 'border-green-500', 'border-red-500');
+                    input.classList.add(isCorrect ? 'border-green-500' : 'border-red-500');
+                    if (!isCorrect) allCorrect = false;
+                });
+
+                // Check part-of-speech inputs
+                document.querySelectorAll('.pos-input').forEach(input => {
+                    const isCorrect = input.value.trim().toLowerCase() === input.dataset.answer.toLowerCase();
+                    input.classList.remove('border-gray-300', 'border-green-500', 'border-red-500');
+                    input.classList.add(isCorrect ? 'border-green-500' : 'border-red-500');
+                    if (!isCorrect) allCorrect = false;
+                });
+
+                const feedbackEl = document.getElementById('part2-feedback');
+                const checkBtn = document.getElementById('check-part2-btn');
+                feedbackEl.style.display = 'block';
+
+                if (allCorrect) {
+                    feedbackEl.className = 'feedback correct';
+                    feedbackEl.textContent = 'Excellent! All answers are correct.';
+                    checkBtn.disabled = true;
+                    checkBtn.classList.add('disabled-btn');
+                } else if (part2Attempts === 1) {
+                    // Incorrect, first attempt
+                    feedbackEl.className = 'feedback incorrect';
+                    feedbackEl.textContent = 'Some answers are incorrect. Please review the red-bordered fields and try again.';
+                    // Do not disable button, allow another try
+                } else {
+                    // Incorrect, second (or more) attempt
+                    feedbackEl.className = 'feedback incorrect';
+                    feedbackEl.textContent = 'Some answers are still incorrect. The correct answers are shown in green.';
+                    
+                    // Loop through and show correct answers for incorrect fields
+                    document.querySelectorAll('.vocab-input').forEach(input => {
+                        if (!input.classList.contains('border-green-500')) {
+                            const correctSpan = document.createElement('span');
+                            correctSpan.className = 'correct-answer-span text-green-700 font-medium ml-2';
+                            correctSpan.textContent = `(Answer: ${input.dataset.answer})`;
+                            // Check if a span already exists
+                            if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('correct-answer-span')) {
+                                 input.after(correctSpan);
+                            }
+                        }
+                    });
+                    document.querySelectorAll('.pos-input').forEach(input => {
+                        if (!input.classList.contains('border-green-500')) {
+                             const correctSpan = document.createElement('span');
+                            correctSpan.className = 'correct-answer-span text-green-700 font-medium ml-2';
+                            correctSpan.textContent = `(Answer: ${input.dataset.answer})`;
+                            // Check if a span already exists
+                            if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('correct-answer-span')) {
+                                 input.after(correctSpan);
+                            }
+                        }
+                    });
+
+                    // Disable button after showing answers
+                    checkBtn.disabled = true;
+                    checkBtn.classList.add('disabled-btn');
+                }
+            }
+            
+            // --- EVENT LISTENERS ---
+            mainNav.addEventListener('click', e => e.target.matches('.nav-btn') && showSection(e.target.dataset.section));
+            increaseFontButton.addEventListener('click', () => adjustFontSize(10));
+            decreaseFontButton.addEventListener('click', () => adjustFontSize(-10));
+            document.getElementById('check-part2-btn').addEventListener('click', checkPart2);
+
+            // Event delegation for "Show Answer" buttons
+            document.getElementById('app-content').addEventListener('click', e => {
+                const target = e.target;
+                const action = target.dataset.action;
+
+                if (action === 'toggle-answer') {
+                    const answerEl = document.getElementById(target.dataset.target);
+                    answerEl.style.display = answerEl.style.display === 'none' ? 'block' : 'none';
+                    target.textContent = answerEl.style.display === 'none' ? 'Show Suggested Answers →' : 'Hide Suggested Answers →';
+                }
+            });
+
+            // --- INITIAL SETUP ---
+            showSection('intro');
+            // Removed the lines that manually set the initial font size display text
+        });
+    </script>
+
+</body>
+</html>

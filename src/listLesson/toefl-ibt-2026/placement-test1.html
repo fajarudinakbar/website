@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Placement Test - Reading & Listening</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* Custom scrollbar for reading pane */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- App Container -->
+    <div id="app"></div>
+
+    <script>
+        // --- DATA STRUCTURE ---
+        const testData = [
+            // READING SECTION
+            {
+                id: "inst_reading",
+                section: "Reading",
+                type: "instruction",
+                title: "Practice Test Instructions",
+                timeLimit: 0
+            },
+            {
+                id: "r1_cloze",
+                section: "Reading",
+                type: "cloze",
+                title: "Passage 1: Fill in the missing letters (second half of the word).",
+                text: "Many professionals today choose to work from home instead of commuting to a traditional corporate office environment. This modern trend has grown %1% because of advanced %2% tools. Remote work %3% %4% to manage their daily %5% more easily. However, some remote staff %6% loneliness when they do not interact with %7%. %8% try to solve this common issue by %9% %10% team meetings online. Overall, flexible working arrangements are becoming highly popular in cities around the world. These exciting changes will most likely shape the future of global business operations.",
+                blanks: [
+                    { id: 1, prefix: "rap", suffix: "", answer: "rapidly" },
+                    { id: 2, prefix: "dig", suffix: "", answer: "digital" },
+                    { id: 3, prefix: "all", suffix: "", answer: "allows" },
+                    { id: 4, prefix: "emplo", suffix: "", answer: "employees" },
+                    { id: 5, prefix: "sche", suffix: "", answer: "schedules" },
+                    { id: 6, prefix: "exper", suffix: "", answer: "experience" },
+                    { id: 7, prefix: "colle", suffix: "", answer: "colleagues" },
+                    { id: 8, prefix: "Mana", suffix: "", answer: "Managers" },
+                    { id: 9, prefix: "organ", suffix: "", answer: "organizing" },
+                    { id: 10, prefix: "reg", suffix: "", answer: "regular" }
+                ],
+                timeLimit: 300 // 5 minutes
+            },
+            {
+                id: "r2_cloze",
+                section: "Reading",
+                type: "cloze",
+                title: "Passage 2: Fill in the missing letters (second half of the word).",
+                text: "Ecotourism is a popular way of traveling that focuses strongly on protecting the delicate natural environment. When people visit beautiful natural places, they must try to %11% their impact on local %12%. Many tour operators now %13% special holiday packages that include staying in green hotels and actively %14% native communities. By choosing to travel %15%, modern tourists can help %16% these amazing %17% for future %18% to fully %19% and %20%. This mindful approach ensures that the global tourism industry benefits everyone involved. The Earth will certainly thank us for making much better travel choices.",
+                blanks: [
+                    { id: 11, prefix: "mini", suffix: "", answer: "minimize" },
+                    { id: 12, prefix: "wild", suffix: "", answer: "wildlife" },
+                    { id: 13, prefix: "pro", suffix: "", answer: "provide" },
+                    { id: 14, prefix: "suppo", suffix: "", answer: "supporting" },
+                    { id: 15, prefix: "respo", suffix: "", answer: "responsibly" },
+                    { id: 16, prefix: "pres", suffix: "", answer: "preserve" },
+                    { id: 17, prefix: "destin", suffix: "", answer: "destinations" },
+                    { id: 18, prefix: "gener", suffix: "", answer: "generations" },
+                    { id: 19, prefix: "exper", suffix: "", answer: "experience" },
+                    { id: 20, prefix: "appre", suffix: "", answer: "appreciate" }
+                ],
+                timeLimit: 300 // 5 minutes
+            },
+            // LISTENING SECTION
+            {
+                id: "inst_listening",
+                section: "Listening",
+                type: "instruction",
+                title: "Practice Test Instructions",
+                timeLimit: 0
+            },
+            {
+                id: "m1_l1_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (1 of 16)",
+                audioTranscript: "Does the building have a parking garage?",
+                voiceGender: "male",
+                options: [
+                    "No, I haven't received it yet.",
+                    "Yes, it's just around the corner.",
+                    "Let's walk to the park.",
+                    "Several times a month."
+                ],
+                correctAnswer: 1,
+                timeLimit: 20
+            },
+            {
+                id: "m1_l2_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (2 of 16)",
+                audioTranscript: "Didn't you book a trip to Australia?",
+                voiceGender: "female",
+                options: [
+                    "No, the airport is on the right.",
+                    "Yes, I loved that book!",
+                    "I'd be happy to sell tickets for the fundraiser.",
+                    "I'm going to New Zealand instead."
+                ],
+                correctAnswer: 3,
+                timeLimit: 20
+            },
+            {
+                id: "m1_l3_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (3 of 16)",
+                audioTranscript: "Who's conducting the safety training?",
+                voiceGender: "female",
+                options: [
+                    "Elizabeth would be the person to ask.",
+                    "We'll be gathering in the main conference room.",
+                    "Did Robert place the food order?",
+                    "The train station closes at midnight."
+                ],
+                correctAnswer: 0,
+                timeLimit: 20
+            },
+            {
+                id: "m1_l4_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (4 of 16)",
+                audioTranscript: "Can I purchase this shirt in a different size?",
+                voiceGender: "male",
+                options: [
+                    "Are you looking for the same color?",
+                    "Yes, we stock a variety of styles of pants.",
+                    "All of our stores are open on Sundays.",
+                    "The store will be remodeled this summer."
+                ],
+                correctAnswer: 0,
+                timeLimit: 20
+            },
+            {
+                id: "m1_l5_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (5 of 16)",
+                audioTranscript: "Why did Sharon relocate to Belfast?",
+                voiceGender: "male",
+                options: [
+                    "The suitcases can be stored overhead.",
+                    "Because I have a doctor's appointment.",
+                    "I know you have some vacation time coming up.",
+                    "She was offered a new role."
+                ],
+                correctAnswer: 3,
+                timeLimit: 20
+            },
+            {
+                id: "m1_l6_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (6 of 16)",
+                audioTranscript: "How much do these watches cost?",
+                voiceGender: "female",
+                options: [
+                    "Did you watch the game yesterday?",
+                    "They start at a hundred dollars.",
+                    "These models feature a new display.",
+                    "The admission fee has gone up by twenty dollars."
+                ],
+                correctAnswer: 1,
+                timeLimit: 20
+            },
+            {
+                id: "m1_l7_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (7 of 16)",
+                audioTranscript: "Where can I buy a charger for my phone?",
+                voiceGender: "female",
+                options: [
+                    "Battery recycling is available on Saturdays.",
+                    "The cost of those phones just went up.",
+                    "There's a shopping center a few minutes from here.",
+                    "The cashier charged me too much."
+                ],
+                correctAnswer: 2,
+                timeLimit: 20
+            },
+            {
+                id: "m1_l8_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (8 of 16)",
+                audioTranscript: "What streaming services do you like to watch shows on?",
+                voiceGender: "male",
+                options: [
+                    "I don't have a cleaning service.",
+                    "I'm too busy to watch anything right now.",
+                    "The stream runs behind the house.",
+                    "The magazine subscription is expensive."
+                ],
+                correctAnswer: 1,
+                timeLimit: 20
+            },
+            {
+                id: "m2_l1_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (9 of 16)",
+                audioTranscript: "Don't you have class right now?",
+                voiceGender: "male",
+                options: [
+                    "My professor is out this week.",
+                    "The syllabus was just posted.",
+                    "Yes, it's in my backpack.",
+                    "I don't think I received one."
+                ],
+                correctAnswer: 0,
+                timeLimit: 20
+            },
+            {
+                id: "m2_l2_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (10 of 16)",
+                audioTranscript: "Have you met our new neighbor?",
+                voiceGender: "female",
+                options: [
+                    "It's a quiet neighborhood.",
+                    "I haven't yet.",
+                    "Yes, I'll drop it off tomorrow.",
+                    "Not usually at this time of day."
+                ],
+                correctAnswer: 1,
+                timeLimit: 20
+            },
+            {
+                id: "m2_l3_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (11 of 16)",
+                audioTranscript: "Why does my computer keep shutting down?",
+                voiceGender: "female",
+                options: [
+                    "Sure, you can borrow my charging cord.",
+                    "The door should remain shut and locked.",
+                    "Because the schedule was changed at the last minute.",
+                    "Sounds like it needs to be repaired."
+                ],
+                correctAnswer: 3,
+                timeLimit: 20
+            },
+            {
+                id: "m2_l4_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (12 of 16)",
+                audioTranscript: "Why didn't Andy come to the business dinner?",
+                voiceGender: "male",
+                options: [
+                    "I just met his assistant.",
+                    "The cafeteria closes at 2 o'clock.",
+                    "He's working late tonight.",
+                    "Because I lost mine."
+                ],
+                correctAnswer: 2,
+                timeLimit: 20
+            },
+            {
+                id: "m2_l5_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (13 of 16)",
+                audioTranscript: "Should we repaint the classrooms in that building?",
+                voiceGender: "male",
+                options: [
+                    "They usually study together.",
+                    "The library is past the cafeteria.",
+                    "I think it's time to do it.",
+                    "Some new classroom equipment."
+                ],
+                correctAnswer: 2,
+                timeLimit: 20
+            },
+            {
+                id: "m2_l6_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (14 of 16)",
+                audioTranscript: "Would you mind making copies of the syllabus for me?",
+                voiceGender: "female",
+                options: [
+                    "I'll put them on your desk.",
+                    "Yes, I'll pass along the message.",
+                    "I like that new coffee maker.",
+                    "No, the other textbook."
+                ],
+                correctAnswer: 0,
+                timeLimit: 20
+            },
+            {
+                id: "m2_l7_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (15 of 16)",
+                audioTranscript: "You managed to get to the concert, didn't you?",
+                voiceGender: "female",
+                options: [
+                    "I was able to make it to the trade show.",
+                    "I do not play any instruments.",
+                    "My manager agreed to the new schedule.",
+                    "It was a very long drive."
+                ],
+                correctAnswer: 3,
+                timeLimit: 20
+            },
+            {
+                id: "m2_l8_response",
+                section: "Listening",
+                type: "listen_response",
+                title: "Listen and Choose a Response (16 of 16)",
+                audioTranscript: "Does the restaurant use organic vegetables?",
+                voiceGender: "male",
+                options: [
+                    "The menu features two fish entrées.",
+                    "It depends on the season.",
+                    "The cost of broccoli has increased.",
+                    "Yes, the natural lighting is lovely."
+                ],
+                correctAnswer: 1,
+                timeLimit: 20
+            }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            flatSteps: testData,
+            currentStepIndex: 0,
+            answers: {},
+            showResults: false,
+            showWelcome: true,
+            passageTimes: testData.map(step => step.timeLimit),
+            timerInterval: null,
+            audioPlayCounts: {},
+            studentName: ""
+        };
+
+        // --- LOGIC FUNCTIONS ---
+
+        function startTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                const currentStep = state.flatSteps[state.currentStepIndex];
+                if (currentStep.type === 'instruction') return; // Do not count down on instruction screens
+
+                if (state.passageTimes[state.currentStepIndex] > 0) {
+                    state.passageTimes[state.currentStepIndex]--;
+                    updateTimerDisplay();
+                } else {
+                    // Auto-advance or finish when time is up
+                    if (state.currentStepIndex < state.flatSteps.length - 1) {
+                        handleNext();
+                    } else {
+                        clearInterval(state.timerInterval);
+                        finishTest();
+                    }
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function handleNext() {
+            if (state.currentStepIndex < state.flatSteps.length - 1) {
+                state.currentStepIndex++;
+                render();
+            } else {
+                finishTest();
+            }
+        }
+
+        function handleBack() {
+            if (state.currentStepIndex > 0) {
+                state.currentStepIndex--;
+                render();
+            }
+        }
+
+        function validateAndBegin() {
+            const nameInput = document.getElementById('student-name');
+            const errorMsg = document.getElementById('name-error');
+            
+            if (!nameInput.value.trim()) {
+                nameInput.classList.add('border-red-500');
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+            
+            state.studentName = nameInput.value.trim();
+            handleBeginTest();
+        }
+
+        function handleBeginTest() {
+            state.showWelcome = false;
+            render();
+            startTimer();
+        }
+
+        function finishTest() {
+            stopTimer();
+            state.showResults = true;
+            render();
+            // Automatically trigger PDF download after a short delay so the results screen renders first
+            setTimeout(generateAndDownloadPDF, 1000);
+        }
+
+        function generateAndDownloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : Math.round((correct/total)*100);
+
+            // Header Section
+            doc.setFontSize(22);
+            doc.setTextColor(0, 119, 119); // #007777 (Teal)
+            doc.text("TOEFL iBT Placement Test", 105, 30, { align: "center" });
+            
+            doc.setFontSize(16);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Score Report", 105, 40, { align: "center" });
+            
+            // Draw a subtle line
+            doc.setDrawColor(200, 200, 200);
+            doc.line(20, 48, 190, 48);
+            
+            // Student Information
+            doc.setFontSize(12);
+            doc.setTextColor(50, 50, 50);
+            doc.text("Name: " + state.studentName, 20, 60);
+            doc.text("Date: " + new Date().toLocaleDateString(), 20, 68);
+            
+            // Overall Score
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text("Overall Score: " + correct + " / " + total + " (" + percent + "%)", 20, 85);
+
+            // Feedback and Recommendation Logic
+            let feedbackHeading = "Recommendation:";
+            let feedbackText = "";
+            
+            if (percent >= 60) {
+                feedbackText = "Congratulations! You have demonstrated a solid foundation in English. Based on your performance, you are ready to begin your preparation for the TOEFL iBT test. Keep up the great work and focus on test specific strategies.";
+            } else {
+                feedbackText = "Thank you for completing the placement test. To build a stronger language foundation, we highly recommend starting with a General English course. Strengthening your core skills first will make your future TOEFL iBT preparation much more successful.";
+            }
+
+            // Render Feedback
+            doc.setFontSize(14);
+            doc.setTextColor(0, 119, 119);
+            doc.text(feedbackHeading, 20, 105);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(50, 50, 50);
+            // Split text to fit the page width neatly
+            const splitFeedback = doc.splitTextToSize(feedbackText, 170);
+            doc.text(splitFeedback, 20, 115);
+
+            // Footer
+            doc.setFontSize(10);
+            doc.setTextColor(150, 150, 150);
+            doc.text("Generated by EnglishTech Solutions", 105, 280, { align: "center" });
+
+            doc.save("TOEFL_iBT_Score_Report_" + state.studentName.replace(/\s+/g, '_') + ".pdf");
+        }
+
+        function handleClozeInput(id, value, missingLength) {
+            state.answers[id] = value;
+            // Update dynamic dashes in the background
+            const bgEl = document.getElementById(`bg-dashes-${id}`);
+            if (bgEl) {
+                const remaining = Math.max(0, missingLength - value.length);
+                const safeValue = value.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+                // Using underscores instead of dashes per design requirement
+                bgEl.innerHTML = `<span class="opacity-0">${safeValue}</span><span>${'_'.repeat(remaining)}</span>`;
+            }
+        }
+
+        function handleRadioInput(qId, value) {
+            state.answers[qId] = value;
+            // Native radio behavior handles UI, but we track it in state.
+        }
+
+        // Feature to simulate audio playback utilizing Web Speech API for an authentic feel
+        function playSimulatedAudio(id, text, gender) {
+            const currentPlays = state.audioPlayCounts[id] || 0;
+            if (currentPlays >= 2) return; // Limit to 2 plays
+
+            state.audioPlayCounts[id] = currentPlays + 1;
+
+            if ('speechSynthesis' in window) {
+                // Ensure voices are loaded
+                let voices = window.speechSynthesis.getVoices();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9; // Slightly slower for clear comprehension
+                
+                if (voices.length > 0) {
+                    // Filter for English voices
+                    const enVoices = voices.filter(v => v.lang.startsWith('en'));
+                    
+                    // Prioritize Edge Natural / Online voices
+                    const edgeVoices = enVoices.filter(v => v.name.includes('Natural') || v.name.includes('Online'));
+                    const voicePool = edgeVoices.length > 0 ? edgeVoices : (enVoices.length > 0 ? enVoices : voices);
+                    
+                    // Common Microsoft/Google TTS names categorized by gender
+                    const femaleNames = ['Aria', 'Jenny', 'Michelle', 'Sonia', 'Natasha', 'Zira', 'Samantha', 'Ava', 'Emma', 'Google US English'];
+                    const maleNames = ['Guy', 'Christopher', 'Eric', 'Roger', 'Brian', 'David', 'Mark', 'Andrew', 'Steffan'];
+                    
+                    let selectedVoice = null;
+                    if (gender === 'female') {
+                        selectedVoice = voicePool.find(v => femaleNames.some(name => v.name.includes(name)));
+                    } else if (gender === 'male') {
+                        selectedVoice = voicePool.find(v => maleNames.some(name => v.name.includes(name)));
+                    }
+                    
+                    // Fallback to random matching voice pool if specific name not found
+                    if (!selectedVoice && voicePool.length > 0) {
+                        selectedVoice = voicePool[Math.floor(Math.random() * voicePool.length)];
+                    }
+                    
+                    if (selectedVoice) {
+                        utterance.voice = selectedVoice;
+                    }
+                }
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                console.warn("Audio playback is not supported in this browser.");
+            }
+            
+            // Re-render to update the play count UI immediately
+            render();
+        }
+
+        function resetApp() {
+            state.currentStepIndex = 0;
+            state.answers = {};
+            state.showResults = false;
+            state.showWelcome = true;
+            state.passageTimes = testData.map(step => step.timeLimit);
+            state.audioPlayCounts = {};
+            stopTimer();
+            render();
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            let total = 0;
+
+            state.flatSteps.forEach(sec => {
+                if (sec.type === 'cloze') {
+                    sec.blanks.forEach(b => {
+                        total++;
+                        const userInput = state.answers[b.id] ? state.answers[b.id].trim() : "";
+                        const fullWord = (b.prefix || "") + userInput + (b.suffix || "");
+                        if (fullWord.toLowerCase() === b.answer.toLowerCase()) {
+                            correct++;
+                        }
+                    });
+                } else if (sec.type === 'listen_response') {
+                    total++;
+                    if (state.answers[sec.id] === sec.correctAnswer) {
+                        correct++;
+                    }
+                }
+            });
+            return { correct, total };
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('timer-display');
+            if (el) {
+                const time = state.passageTimes[state.currentStepIndex];
+                el.innerText = formatTime(time);
+                
+                // Add visual urgency if time is low
+                if (time <= 10) {
+                    el.classList.add('text-red-600', 'animate-pulse');
+                } else {
+                    el.classList.remove('text-red-600', 'animate-pulse');
+                }
+            }
+        }
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderWelcome() {
+            return `
+            <div class="min-h-screen bg-[#f0f0f0] flex items-center justify-center p-4">
+                <div class="bg-white max-w-3xl w-full shadow-lg rounded-lg overflow-hidden border-t-8 border-[#007777]">
+                    <div class="bg-[#007777] p-6 text-white text-center">
+                        <i data-lucide="monitor" class="w-12 h-12 mx-auto mb-4 opacity-90"></i>
+                        <h1 class="text-3xl font-bold font-sans">TOEFL iBT® Placement Test</h1>
+                        <p class="opacity-90 mt-2">Reading & Listening Sections</p>
+                    </div>
+                    
+                    <div class="p-10 text-center">
+                        <p class="text-gray-600 mb-6 text-lg">
+                            This test includes two sections:
+                            <br><br>
+                            <strong>Reading:</strong> Read and Complete passages (5 minutes per passage).<br>
+                            <strong>Listening:</strong> Listen and Choose a Response items (20 seconds per item).
+                        </p>
+                        
+                        <div class="max-w-md mx-auto mb-8 text-left">
+                            <label for="student-name" class="block text-sm font-medium text-gray-700 mb-2">Please enter your full name to begin</label>
+                            <input type="text" id="student-name" placeholder="First and Last Name" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007777] focus:border-transparent transition-all" autocomplete="name" />
+                            <p id="name-error" class="text-red-500 text-sm mt-2 hidden">A name is required to generate your score report.</p>
+                        </div>
+                        
+                        <div class="flex justify-center">
+                            <button onclick="validateAndBegin()" class="px-8 py-4 bg-[#007777] text-white text-lg font-bold rounded-lg shadow hover:bg-[#005555] transition-colors flex items-center">
+                                Begin Test <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 text-center text-xs text-gray-500">
+                        Simulated interface for educational purposes. Please note that this placement test is designed for practice and is not an exact replacement for the official TOEFL iBT test.
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderReview() {
+            let html = '<div class="max-w-4xl mx-auto mt-12 space-y-8 pb-16">';
+            
+            html += '<h2 class="text-2xl font-bold text-center text-gray-800 mb-6 border-b pb-4">Detailed Answer Review</h2>';
+
+            state.flatSteps.forEach(section => {
+                if (section.type === 'cloze') {
+                    html += `<div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="font-bold text-lg mb-4 text-[#007777] flex items-center">
+                            <i data-lucide="book-open" class="w-5 h-5 mr-2"></i> ${section.title}
+                        </h3>
+                        <div class="leading-loose text-lg text-gray-800">`;
+                    
+                    const parts = section.text.split(/%\d+%/);
+                    parts.forEach((part, idx) => {
+                        html += part;
+                        const blank = section.blanks[idx];
+                        if (blank) {
+                            const userVal = state.answers[blank.id] ? state.answers[blank.id].trim() : "";
+                            const fullUserWord = (blank.prefix || "") + userVal + (blank.suffix || "");
+                            const isCorrect = fullUserWord.toLowerCase() === blank.answer.toLowerCase();
+                            
+                            if (isCorrect) {
+                                html += `<span class="inline-block px-1 mx-1 bg-green-100 text-green-700 font-bold border border-green-300 rounded">${fullUserWord}</span>`;
+                            } else {
+                                html += `<span class="inline-block px-1 mx-1 bg-red-50 text-red-500 line-through decoration-2 decoration-red-500 border border-red-200 rounded">${fullUserWord || "(empty)"}</span>
+                                         <span class="inline-block px-1 mx-1 bg-green-100 text-green-700 font-bold border border-green-300 rounded shadow-sm">${blank.answer}</span>`;
+                            }
+                        }
+                    });
+                    html += `</div></div>`;
+                } else if (section.type === 'listen_response') {
+                    const userAnsIdx = state.answers[section.id];
+                    const correctAnsIdx = section.correctAnswer;
+                    const isCorrect = userAnsIdx === correctAnsIdx;
+                    
+                    const borderColor = isCorrect ? 'border-l-green-500' : 'border-l-red-500';
+
+                    html += `<div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 border-l-4 ${borderColor}">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-bold text-lg text-[#007777] flex items-center">
+                                <i data-lucide="headphones" class="w-5 h-5 mr-2"></i> Listening Item
+                            </h3>
+                            ${isCorrect 
+                                ? '<span class="text-green-600 font-bold text-sm flex items-center bg-green-50 px-2 py-1 rounded"><i data-lucide="check" class="w-4 h-4 mr-1"></i> Correct</span>' 
+                                : '<span class="text-red-500 font-bold text-sm flex items-center bg-red-50 px-2 py-1 rounded"><i data-lucide="x" class="w-4 h-4 mr-1"></i> Incorrect</span>'}
+                        </div>
+                        
+                        <div class="mb-4 p-3 bg-blue-50 border border-blue-100 rounded text-gray-700 italic">
+                            <strong>Transcript:</strong> "${section.audioTranscript}"
+                        </div>
+                        
+                        <div class="space-y-2">`;
+                        
+                        section.options.forEach((opt, optIdx) => {
+                            let optionClass = "p-3 rounded border border-gray-200 text-gray-700";
+                            let icon = "";
+                            
+                            if (optIdx === correctAnsIdx) {
+                                optionClass = "p-3 rounded border-2 border-green-500 bg-green-50 text-green-800 font-bold shadow-sm";
+                                icon = '<i data-lucide="check-circle" class="w-5 h-5 ml-auto text-green-600"></i>';
+                            } else if (optIdx === userAnsIdx && !isCorrect) {
+                                optionClass = "p-3 rounded border-2 border-red-300 bg-red-50 text-red-800";
+                                icon = '<i data-lucide="x-circle" class="w-5 h-5 ml-auto text-red-500"></i>';
+                            } else if (optIdx === userAnsIdx && isCorrect) {
+                                optionClass = "p-3 rounded border-2 border-green-500 bg-green-50 text-green-800 font-bold shadow-sm";
+                            } else {
+                                optionClass = "p-3 rounded border border-gray-100 bg-white opacity-60";
+                            }
+                            
+                            html += `<div class="${optionClass} flex items-center transition-all">
+                                        <span>${opt}</span>
+                                        ${icon}
+                                    </div>`;
+                        });
+
+                    html += `</div></div>`;
+                }
+            });
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderResults() {
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : Math.round((correct/total)*100);
+            const scoreColor = percent >= 70 ? 'text-green-600' : 'text-orange-500';
+            
+            const reviewHtml = renderReview();
+
+            return `
+            <div class="min-h-screen bg-[#f0f0f0] pt-24 pb-12 px-4 overflow-y-auto custom-scroll">
+                <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                    <div class="bg-[#007777] p-8 text-white text-center">
+                        <h2 class="text-3xl font-bold mb-2">Test Completed</h2>
+                        <p>Combined Score for Reading & Listening</p>
+                    </div>
+                    
+                    <div class="p-8">
+                        <div class="flex flex-col md:flex-row justify-center items-center gap-12 mb-8">
+                            <div class="text-center">
+                                <div class="text-6xl font-bold text-[#007777] mb-2">${correct}/${total}</div>
+                                <div class="text-gray-500 uppercase tracking-widest text-sm">Total Correct</div>
+                            </div>
+                            <div class="w-px h-24 bg-gray-200 hidden md:block"></div>
+                            <div class="text-center">
+                                <div class="text-6xl font-bold mb-2 ${scoreColor}">${percent}%</div>
+                                <div class="text-gray-500 uppercase tracking-widest text-sm">Overall Score</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row justify-center gap-4 border-t pt-8">
+                            <button onclick="generateAndDownloadPDF()" class="px-8 py-3 bg-[#007777] text-white font-bold rounded shadow hover:bg-[#005555] transition-colors flex items-center justify-center">
+                                <i data-lucide="download" class="w-4 h-4 mr-2"></i> Download Report Again
+                            </button>
+                            <button onclick="resetApp()" class="px-8 py-3 bg-gray-800 text-white font-bold rounded shadow hover:bg-gray-700 transition-colors flex items-center justify-center">
+                                <i data-lucide="home" class="w-4 h-4 mr-2"></i> Return to Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Review Section -->
+                ${reviewHtml}
+                
+                <div class="flex justify-center pb-12">
+                     <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-full shadow hover:bg-gray-400 transition-colors text-sm font-bold flex items-center">
+                        <i data-lucide="arrow-up" class="w-4 h-4 mr-2"></i> Back to Top
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        function renderHeader() {
+            const currentStep = state.flatSteps[state.currentStepIndex];
+            const isInstructionPhase = currentStep.type === 'instruction';
+            let navButtons = '';
+
+            const backBtn = state.currentStepIndex > 0 
+                ? `<button onclick="handleBack()" class="flex items-center px-6 py-2 bg-white text-[#007777] font-bold rounded shadow hover:bg-gray-100 transition-colors mr-2">
+                    <i data-lucide="chevron-left" class="mr-1 w-5 h-5"></i> Back
+                   </button>` 
+                : '';
+            
+            const nextText = state.currentStepIndex === state.flatSteps.length - 1 ? 'Finish' : (isInstructionPhase ? 'Begin Section' : 'Next');
+            
+            navButtons = `
+                ${backBtn}
+                <button onclick="handleNext()" class="flex items-center px-6 py-2 bg-white text-[#007777] font-bold rounded shadow hover:bg-gray-100 transition-colors">
+                    ${nextText}
+                    <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                </button>
+            `;
+
+            return `
+            <header class="bg-[#007777] h-16 flex items-center justify-between px-6 shadow-md z-50 fixed w-full top-0">
+                <div class="flex items-center space-x-4">
+                    <span class="text-white text-lg font-sans font-semibold">${currentStep.section} Section</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="flex space-x-2">
+                        ${navButtons}
+                    </div>
+                </div>
+            </header>
+            `;
+        }
+
+        function renderSubHeader() {
+            const currentStep = state.flatSteps[state.currentStepIndex];
+            if (currentStep.type === 'instruction') return '';
+            
+            // Calculate question number excluding instruction steps
+            let questionNum = 0;
+            let totalQuestions = 0;
+            for (let i = 0; i < state.flatSteps.length; i++) {
+                if (state.flatSteps[i].type !== 'instruction') {
+                    totalQuestions++;
+                    if (i <= state.currentStepIndex) {
+                        questionNum++;
+                    }
+                }
+            }
+
+            const sectionName = currentStep.section;
+            const displayText = `${sectionName} | Question ${questionNum} of ${totalQuestions}`;
+
+            // Add a visual indicator for quick timing tasks
+            const timerIconClass = currentStep.timeLimit <= 60 ? "text-orange-500 animate-pulse" : "text-gray-500";
+
+            return `
+            <div class="fixed top-16 w-full bg-white border-b border-gray-300 px-6 py-3 flex justify-between items-center text-gray-700 text-sm font-sans z-40 shadow-sm">
+                <span class="font-semibold text-lg">${displayText}</span>
+                <div class="flex items-center font-mono font-bold text-lg">
+                    <i data-lucide="clock" class="mr-2 w-5 h-5 ${timerIconClass}"></i>
+                    <span id="timer-display" class="${currentStep.timeLimit <= 60 ? 'text-orange-600' : 'text-gray-700'}">
+                        ${formatTime(state.passageTimes[state.currentStepIndex])}
+                    </span>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderInstructionStep(step) {
+            let taskTitle, taskDesc, timeDesc;
+
+            if (step.section === 'Reading') {
+                taskTitle = "Reading: Read and Complete";
+                taskDesc = "Fill in the missing letters in an academic or general passage.";
+                timeDesc = "Time limit: 5 minutes per passage.";
+            } else {
+                taskTitle = "Listening: Listen and Choose";
+                taskDesc = "Listen to a brief audio statement (or read the transcript) and select the most appropriate response from the options.";
+                timeDesc = "Time limit: 20 seconds per item.";
+            }
+
+            return `
+            <div class="pt-24 px-8 max-w-5xl mx-auto h-screen overflow-y-auto custom-scroll pb-10">
+                <h1 class="text-3xl text-gray-700 mb-6 font-sans">${step.title}</h1>
+                
+                <p class="text-gray-800 text-lg mb-8 leading-relaxed">
+                    This test evaluates your ability to understand authentic English in both written and spoken formats. 
+                    The tasks are strictly timed, so manage your pace accordingly.
+                    <br><br>
+                    <span class="text-[#007777] font-semibold">Note:</span> This placement test is a simulated practice tool and is not an exact replacement for the official test.
+                </p>
+
+                <div class="border border-black max-w-3xl">
+                    <div class="grid grid-cols-[30%_70%] bg-[#00d2be] border-b border-black">
+                        <div class="p-3 font-bold border-r border-black">Section & Task</div>
+                        <div class="p-3 font-bold">Description & Timing</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-[30%_70%] bg-white border-b border-black">
+                        <div class="p-3 border-r border-black font-semibold text-blue-900">${taskTitle}</div>
+                        <div class="p-3">${taskDesc}<br><br><strong>${timeDesc}</strong></div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderCloze(step) {
+            const data = step;
+            const parts = data.text.split(/%\d+%/);
+            
+            let content = '';
+            parts.forEach((part, idx) => {
+                content += part;
+                const blank = data.blanks[idx];
+                if (blank) {
+                    const val = state.answers[blank.id] || '';
+                    
+                    const missingLength = blank.answer.length - (blank.prefix ? blank.prefix.length : 0);
+                    const safeVal = val.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+                    const remainingDashes = Math.max(0, missingLength - val.length);
+                    
+                    const inputWidth = (missingLength * 1.25) + 0.5;
+                    
+                    content += `
+                    <span class="inline-flex items-baseline mx-0.5 whitespace-nowrap">
+                        ${blank.prefix ? `<span class="text-[#005a9c] font-semibold tracking-wide">${blank.prefix}</span>` : ''}
+                        <span class="relative inline-block h-8 border-b-[3px] border-gray-300 focus-within:border-[#007777] transition-colors mx-0.5 align-baseline" style="width: ${inputWidth}rem;">
+                            <!-- Background layer for dynamic spaced underscores -->
+                            <span id="bg-dashes-${blank.id}" class="absolute inset-0 px-1 text-left font-mono text-xl tracking-[0.25em] pointer-events-none leading-8 text-gray-500 font-bold overflow-hidden">
+                                <span class="opacity-0">${safeVal}</span><span>${'_'.repeat(remainingDashes)}</span>
+                            </span>
+                            <!-- Foreground transparent input -->
+                            <input 
+                                type="text" 
+                                value="${safeVal}" 
+                                maxlength="${missingLength}"
+                                oninput="handleClozeInput(${blank.id}, this.value, ${missingLength})"
+                                class="absolute inset-0 w-full h-full px-1 text-left bg-transparent text-[#005a9c] font-mono text-xl tracking-[0.25em] font-bold focus:outline-none leading-8"
+                                aria-label="Blank ${blank.id}"
+                                autocomplete="off"
+                                spellcheck="false"
+                            />
+                        </span>
+                        ${blank.suffix ? `<span class="text-[#005a9c] font-semibold tracking-wide">${blank.suffix}</span>` : ''}
+                    </span>`;
+                }
+            });
+
+            return `
+            <div class="pt-32 px-4 md:px-12 max-w-5xl mx-auto pb-12">
+                <h2 class="text-center text-2xl font-sans font-bold text-black mb-12">
+                    ${data.title}
+                </h2>
+                
+                <div class="bg-white p-8 leading-loose text-lg text-gray-800 font-sans text-justify shadow-sm border border-gray-200">
+                    ${content}
+                </div>
+            </div>
+            `;
+        }
+
+        function renderListeningResponse(step) {
+            const data = step;
+            
+            const optionsHtml = data.options.map((opt, idx) => {
+                const isChecked = state.answers[data.id] === idx ? 'checked' : '';
+                return `
+                <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group ${isChecked ? 'bg-blue-50 border-[#007777]' : 'border-gray-300'}">
+                    <div class="relative flex items-center justify-center flex-shrink-0">
+                        <input 
+                            type="radio" 
+                            name="q-${data.id}" 
+                            ${isChecked}
+                            onchange="handleRadioInput('${data.id}', ${idx})"
+                            class="peer appearance-none w-6 h-6 border-2 border-gray-400 rounded-full checked:border-[#007777] checked:border-[6px] transition-all"
+                        />
+                    </div>
+                    <span class="ml-4 text-gray-800 font-sans text-xl group-hover:text-black">
+                        ${opt}
+                    </span>
+                </label>
+                `;
+            }).join('');
+
+            const playCount = state.audioPlayCounts[data.id] || 0;
+            const playsLeft = 2 - playCount;
+            const isButtonDisabled = playsLeft <= 0;
+            
+            const btnClass = isButtonDisabled 
+                ? "bg-gray-400 cursor-not-allowed text-white p-4 rounded-full shadow" 
+                : "bg-[#007777] hover:bg-[#005555] text-white p-4 rounded-full shadow-lg transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300";
+
+            // Escape single quotes for the inline onclick handler
+            const safeTranscript = data.audioTranscript.replace(/'/g, "\\'");
+            const gender = data.voiceGender || 'female';
+
+            return `
+            <div class="pt-32 px-4 md:px-12 max-w-4xl mx-auto pb-12">
+                <div class="bg-white p-10 rounded-xl shadow-md border border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                        <i data-lucide="headphones" class="w-6 h-6 mr-3 text-[#007777]"></i> 
+                        ${data.title}
+                    </h2>
+                    
+                    <div class="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg flex flex-col items-center justify-center gap-4 text-center">
+                        <button ${isButtonDisabled ? 'disabled' : ''} onclick="playSimulatedAudio('${data.id}', '${safeTranscript}', '${gender}')" class="${btnClass}">
+                            <i data-lucide="${isButtonDisabled ? 'volume-x' : 'play'}" class="w-8 h-8 ${isButtonDisabled ? '' : 'ml-1'}"></i>
+                        </button>
+                        <div>
+                            <span class="text-gray-700 text-sm uppercase tracking-wider font-bold block mb-1">Audio Controls</span>
+                            <span class="text-${playsLeft > 0 ? 'blue-600' : 'red-500'} font-semibold text-md">
+                                Plays remaining: ${playsLeft}
+                            </span>
+                            <p class="text-sm text-gray-500 mt-2 max-w-md mx-auto">Listen to the audio and select the best response. The transcript will be available in the review section after you finish the test.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        ${optionsHtml}
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // --- MAIN RENDER LOOP ---
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (state.showWelcome) {
+                app.innerHTML = renderWelcome();
+            } else if (state.showResults) {
+                app.innerHTML = renderResults();
+            } else {
+                let mainContent = '';
+                const step = state.flatSteps[state.currentStepIndex];
+                
+                if (step.type === 'instruction') {
+                    mainContent = renderInstructionStep(step);
+                } else if (step.type === 'cloze') {
+                    mainContent = renderCloze(step);
+                } else if (step.type === 'listen_response') {
+                    mainContent = renderListeningResponse(step);
+                }
+                
+                app.innerHTML = renderHeader() + renderSubHeader() + mainContent;
+                
+                // Once rendered, if timer needs to update, we reset the timer display manually once to ensure no lag
+                if (step.type !== 'instruction' && state.timerInterval) {
+                     updateTimerDisplay();
+                }
+            }
+
+            // Re-initialize icons after DOM update
+            lucide.createIcons();
+        }
+
+        // Initialize App & pre-load voices to avoid lag on first click
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
+        
+        render();
+
+    </script>
+</body>
+</html>

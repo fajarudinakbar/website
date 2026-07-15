@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC Listening Practice Test 2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f3f4f6;
+            color: #333333;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            user-select: none;
+        }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #e5e7eb; border-left: 1px solid #d1d5db; }
+        ::-webkit-scrollbar-thumb { background: #9ca3af; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        .theme-text { color: #0369a1; }
+        .bg-theme-main { background-color: #0284c7; }
+        .bg-theme-accent { background-color: #7dd3fc; }
+
+        .grid-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .grid-btn:hover { background: #f3f4f6; }
+        .grid-btn.answered { background: #9ca3af; color: #ffffff; border-color: #6b7280; }
+        .grid-btn.active { background: #0369a1; color: #ffffff; border-color: #0369a1; font-weight: bold; }
+
+        .review-grid-btn.correct { background: #bbf7d0; color: #166534; border-color: #166534; }
+        .review-grid-btn.incorrect { background: #fecaca; color: #991b1b; border-color: #991b1b; }
+        .review-grid-btn.unanswered { background: #e5e7eb; color: #4b5563; border-color: #9ca3af; }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .option-label:hover .radio-circle { border-color: #0369a1; }
+        
+        .radio-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            background: #fff;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .option-label input[type="radio"] { display: none; }
+
+        .option-label.selected .radio-circle { 
+            background: #333; 
+            color: #fff;
+            border-color: #333;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+        }
+        .screen.active { display: flex; }
+
+        .cbt-card {
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 900px;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .tts-playing {
+            animation: pulse 1.5s infinite;
+            background-color: #0284c7 !important;
+        }
+    </style>
+</head>
+<body>
+
+<header id="global-header" class="hidden flex-col w-full shrink-0 z-50 bg-white">
+    <div class="px-6 py-3 flex justify-between items-center relative">
+        <div class="flex items-center space-x-2">
+            <span class="italic text-[#0369a1] font-bold text-3xl tracking-tighter">TOEIC&reg; Practice</span>
+            <span class="text-xs bg-[#0369a1] text-white px-2 py-0.5 rounded ml-2">TTS Edition</span>
+        </div>
+        <div class="absolute left-1/2 transform -translate-x-1/2 font-bold text-gray-800 text-lg">Listening Test 2</div>
+    </div>
+    <div class="h-1 bg-theme-accent w-full"></div>
+    <div class="h-5 bg-theme-main w-full"></div>
+</header>
+
+<div id="audio-subheader" class="hidden bg-[#e5e7eb] border-b border-[#d1d5db] p-2 w-full flex items-center justify-between z-40 shrink-0 shadow-sm px-6">
+    <div class="flex items-center space-x-4 w-full max-w-3xl">
+        <button id="play-btn" class="bg-white border border-gray-400 hover:bg-gray-100 flex items-center justify-center w-8 h-8 transition-colors">
+            <i id="play-icon" class="fas fa-play text-[#0369a1] text-sm"></i>
+        </button>
+        
+        <div class="flex-1 h-2 bg-white relative border border-gray-400">
+            <div class="absolute top-0 left-0 h-full bg-[#0369a1] transition-all duration-300" id="audio-progress" style="width: 0%"></div>
+        </div>
+        <span id="audio-status-text" class="text-xs font-bold text-gray-600 w-32">Ready</span>
+        
+        <div class="flex items-center space-x-2 ml-4 border-l border-gray-400 pl-4">
+            <i class="fas fa-tachometer-alt text-gray-600 text-sm" title="Playback Speed"></i>
+            <select id="speed-selector" class="text-xs border border-gray-300 bg-white px-1 py-0.5 outline-none">
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1.0x</option>
+                <option value="1.25">1.25x</option>
+            </select>
+        </div>
+    </div>
+    <div class="flex items-center space-x-4">
+        <div class="text-right flex items-center space-x-2 bg-white px-3 py-1 border border-gray-300">
+            <i class="far fa-clock text-gray-500 text-sm"></i>
+            <div id="timer" class="text-sm font-mono font-bold text-gray-800">45:00</div>
+        </div>
+        <button onclick="finishTest()" class="text-xs bg-red-50 text-red-700 border border-red-300 px-3 py-1 hover:bg-red-100 font-bold uppercase">End Practice</button>
+    </div>
+</div>
+
+<div class="flex flex-1 overflow-hidden w-full relative">
+    
+    <aside id="nav-sidebar" class="hidden w-64 bg-white border-r border-gray-300 flex-col shrink-0 z-30">
+        <div class="p-2 bg-gray-100 border-b border-gray-300 font-bold text-xs text-gray-600 uppercase tracking-wider text-center">
+            Item Review
+        </div>
+        <div class="p-3 overflow-y-auto flex-1">
+            <div id="question-grid" class="grid grid-cols-5 gap-1"></div>
+        </div>
+        <div class="p-2 bg-gray-50 border-t border-gray-300 flex justify-center space-x-3 text-[10px] font-bold text-gray-500 uppercase">
+            <div class="flex items-center"><div class="w-2.5 h-2.5 bg-gray-400 border border-gray-500 mr-1"></div>Answered</div>
+            <div class="flex items-center"><div class="w-2.5 h-2.5 bg-white border border-gray-300 mr-1"></div>Unanswered</div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col items-center bg-[#f3f4f6] overflow-y-auto w-full relative pt-8 pb-8 px-6">
+        
+        <div id="welcome-screen" class="screen active max-w-3xl cbt-card p-10 relative pb-10">
+            <h1 class="text-2xl font-bold text-[#0369a1] mb-2">Computer-Based Test Simulation</h1>
+            <h2 class="text-lg text-gray-600 mb-6 pb-4 border-b border-gray-200">TOEIC&reg; Listening Practice Test 2 (TTS Edition)</h2>
+            
+            <div class="space-y-4 text-gray-700 text-sm mb-8 bg-sky-50 border border-sky-200 p-6">
+                <p class="font-bold text-[#0369a1]"><i class="fas fa-info-circle mr-2"></i> Instructions for Candidates:</p>
+                <p class="font-medium text-gray-800 mb-2">This practice test utilizes advanced Text-to-Speech technology. You must use <strong>Microsoft Edge</strong> browser to support the Web Speech API.</p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li>Ensure your headset is plugged in and the volume is comfortable.</li>
+                    <li>The audio will play automatically. You can use the Play/Pause button if you need to stop.</li>
+                    <li>You can adjust the playback speed in the top header.</li>
+                    <li>Once you click "Start Simulation", the exam timer will begin immediately.</li>
+                </ul>
+            </div>
+            
+            <div class="flex justify-end">
+                <button onclick="startSimulation()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm uppercase">
+                    Start Simulation
+                </button>
+            </div>
+        </div>
+
+        <div id="general-directions-screen" class="screen max-w-4xl cbt-card">
+            <div class="p-8 space-y-6 text-gray-800 text-sm leading-relaxed">
+                <h2 class="text-xl font-bold text-[#0369a1] uppercase tracking-wide mb-4">Listening Test</h2>
+                <p>In the Listening test, you will be asked to demonstrate how well you understand spoken English. The entire Listening test will last approximately 45 minutes. There are four parts, and directions are given for each part. You must mark your answers on the screen.</p>
+                
+                <div class="border border-gray-300 p-6 mt-6 bg-yellow-50">
+                    <h3 class="font-bold text-gray-700 mb-2 uppercase text-xs"><i class="fas fa-volume-up mr-2"></i> Audio Controls Notice</h3>
+                    <p class="text-xs text-gray-600">Audio will play automatically when you enter a new section or navigate to a new question.</p>
+                </div>
+            </div>
+            <div class="bg-gray-100 border-t border-gray-300 px-6 py-4 flex justify-end">
+                <button onclick="showDirectionScreen(1)" class="bg-white hover:bg-gray-50 text-[#0369a1] px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm">
+                    Continue
+                </button>
+            </div>
+        </div>
+
+        <div id="direction-screen" class="screen max-w-4xl cbt-card">
+            <div class="p-10">
+                <h1 id="dir-title" class="text-xl font-bold text-[#0369a1] uppercase tracking-wide mb-4">PART X</h1>
+                <div id="dir-content" class="text-sm text-gray-800 leading-relaxed mb-8"></div>
+            </div>
+            
+            <div class="bg-gray-100 border-t border-gray-300 px-6 py-4 flex justify-end">
+                <button onclick="startPartFromDirection()" class="bg-white hover:bg-gray-50 text-[#0369a1] px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm">
+                    Begin <span id="dir-btn-text">Part X</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="main-app" class="screen w-full max-w-4xl">
+            <div class="w-full bg-white border border-gray-300 p-4 shadow-sm mb-4 flex items-center justify-between">
+                <div>
+                    <span id="part-badge" class="text-[#0369a1] font-bold uppercase mr-2">PART 1</span>
+                    <span id="part-mini-dir" class="text-sm text-gray-600">Select the best description for the picture.</span>
+                </div>
+                <div class="text-sm font-bold text-gray-500 border border-gray-300 px-3 py-1 bg-gray-50">
+                    Question <span id="q-counter" class="text-[#0369a1]">1</span>
+                </div>
+            </div>
+
+            <div class="w-full flex justify-center">
+                <div id="question-content" class="w-full cbt-card p-10 min-h-[400px]">
+                </div>
+            </div>
+
+            <footer id="inner-nav-footer" class="w-full mt-4 bg-[#0369a1] p-4 flex justify-between items-center shadow-md border border-[#0284c7]">
+                <button id="prev-btn" class="text-white hover:text-gray-200 font-bold text-sm uppercase disabled:opacity-50 disabled:cursor-not-allowed">
+                    &lt; Back
+                </button>
+                <button id="next-btn" class="text-white hover:text-gray-200 font-bold text-sm uppercase disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next &gt;
+                </button>
+            </footer>
+        </div>
+
+        <div id="results-screen" class="screen w-full max-w-4xl cbt-card relative">
+            <div class="bg-[#0369a1] px-6 py-4 border-b border-[#0284c7]">
+                <h1 class="text-lg font-bold text-white uppercase tracking-wide">Score Report</h1>
+            </div>
+            
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 border border-gray-300 p-6 flex flex-col items-center justify-center text-center">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Raw Score</p>
+                        <div class="text-3xl font-bold text-[#0369a1] mb-1"><span id="raw-score">0</span><span class="text-lg text-gray-400 font-medium">/100</span></div>
+                    </div>
+                    <div class="bg-gray-50 border border-gray-300 p-6 flex flex-col items-center justify-center text-center">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Estimated Scaled Score</p>
+                        <div class="text-3xl font-bold text-green-700 mb-1" id="scaled-score">0 - 0</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 mb-8 bg-sky-50 border border-sky-200 p-6 flex flex-col sm:flex-row items-center justify-between shadow-sm">
+                    <div class="mb-4 sm:mb-0">
+                        <h3 class="font-bold text-[#0369a1] text-lg">Download Score Report</h3>
+                        <p class="text-sm text-gray-600">Enter your name to generate your unofficial PDF score report.</p>
+                    </div>
+                    <div class="flex items-center space-x-3 w-full sm:w-auto">
+                        <input type="text" id="candidate-name" placeholder="Enter your name" class="border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-[#0369a1] flex-1 sm:w-48">
+                        <button onclick="downloadPDF()" class="bg-[#0369a1] hover:bg-[#0284c7] text-white px-5 py-2 text-sm font-bold shadow-sm transition whitespace-nowrap flex items-center">
+                            <i class="fas fa-file-pdf mr-2 text-lg"></i> Download
+                        </button>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-300 pt-6">
+                    <h2 class="text-base font-bold text-gray-800 mb-2 uppercase">Item Review</h2>
+                    <p class="text-sm text-gray-600 mb-6">Select a question number to review the transcript, options, and explanation.</p>
+                    
+                    <div class="flex items-center space-x-6 mb-6 text-xs font-bold uppercase text-gray-600">
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#bbf7d0] border border-[#166534] mr-2"></div> Correct</div>
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#fecaca] border border-[#991b1b] mr-2"></div> Incorrect</div>
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#e5e7eb] border border-[#9ca3af] mr-2"></div> Omitted</div>
+                    </div>
+
+                    <div id="review-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
+                    </div>
+                    
+                    <div class="mt-12 pt-6 border-t border-gray-200 flex justify-end">
+                        <button onclick="window.location.reload()" class="bg-white border border-slate-400 text-[#00757c] hover:bg-slate-50 px-6 py-2.5 text-sm font-bold tracking-wide transition-colors shadow-sm">
+                            START NEW SESSION
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="w-full bg-[#f3f4f6] py-5 px-6 text-center text-[13px] text-slate-500 border-t border-gray-200 shrink-0 z-50">
+    Disclaimer: This simulation is an independent practice tool and is not affiliated with, approved, or endorsed by ETS. TOEIC&reg; is a registered trademark of ETS.
+</div>
+
+<div id="review-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[60] hidden flex items-center justify-center transition-opacity opacity-0">
+    <div id="review-modal-content" class="bg-white w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-transform duration-200 border border-gray-500 shadow-2xl">
+        <div class="p-3 border-b border-gray-300 flex justify-between items-center bg-[#0369a1] text-white">
+            <h3 class="font-bold text-sm uppercase tracking-wide" id="modal-title">Question X Review</h3>
+            <button onclick="closeReviewModal()" class="text-gray-300 hover:text-white w-6 h-6 flex items-center justify-center transition">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto flex-1 space-y-6 bg-gray-50 text-sm">
+            <div class="flex space-x-4">
+                <div class="flex-1 bg-white border border-gray-300 p-3 text-center shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-1 tracking-wider">Your Selection</p>
+                    <p class="text-xl font-bold text-gray-800" id="modal-user-ans">-</p>
+                </div>
+                <div class="flex-1 bg-white border border-gray-300 p-3 text-center shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-500 uppercase mb-1 tracking-wider">Key</p>
+                    <p class="text-xl font-bold text-green-700" id="modal-correct-ans">-</p>
+                </div>
+            </div>
+            
+            <div id="modal-image-container" class="hidden bg-white border border-gray-300 shadow-sm p-4 flex justify-center items-center h-56 relative">
+                <img id="modal-image" src="" alt="Question Image" class="max-w-full max-h-full object-contain">
+            </div>
+
+            <div id="modal-question-container" class="bg-white border border-gray-300 shadow-sm hidden">
+                <div class="bg-gray-100 px-3 py-1.5 border-b border-gray-300">
+                    <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-wider"><i class="fas fa-question-circle mr-2 text-[#0369a1]"></i>Question Text</h4>
+                </div>
+                <div class="p-4 text-gray-800 font-bold bg-white leading-relaxed" id="modal-question-text">
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-300 shadow-sm">
+                <div class="bg-gray-100 px-3 py-1.5 border-b border-gray-300">
+                    <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-wider"><i class="fas fa-list mr-2 text-[#0369a1]"></i>Options</h4>
+                </div>
+                <div class="p-4 bg-white" id="modal-options-list">
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-300 shadow-sm">
+                <div class="bg-gray-100 px-3 py-1.5 border-b border-gray-300">
+                    <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-wider"><i class="fas fa-file-alt mr-2 text-[#0369a1]"></i>Audio Transcript</h4>
+                </div>
+                <div class="p-4 text-gray-800 leading-relaxed bg-[#fdfbf7]" id="modal-transcript">
+                    Transcript goes here.
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-300 shadow-sm">
+                <div class="bg-gray-100 px-3 py-1.5 border-b border-gray-300">
+                    <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-wider"><i class="fas fa-lightbulb mr-2 text-[#0369a1]"></i>Explanation</h4>
+                </div>
+                <div class="p-4 text-gray-800 leading-relaxed" id="modal-explanation">
+                    Teaching rationale goes here.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Data Engine: Centralized logic for 1 to 100 with unique questions ---
+    const DB = {};
+    const officialKey = new Array(101).fill(null);
+
+    // Using a seed pattern to distribute answer keys evenly
+    const seedPattern = ['A', 'B', 'C', 'D', 'B', 'A', 'C', 'D', 'A', 'B'];
+    for(let i=1; i<=100; i++) {
+        if (i >= 7 && i <= 31) {
+            const p2Pattern = ['A', 'B', 'C', 'B', 'A', 'C', 'A', 'B', 'C', 'B'];
+            officialKey[i] = p2Pattern[i % 10];
+        } else {
+            officialKey[i] = seedPattern[i % 10];
+        }
+    }
+    
+    // Explicit override for Part 1 to match image contexts
+    officialKey[1] = 'C'; officialKey[2] = 'A'; officialKey[3] = 'D'; officialKey[4] = 'B'; officialKey[5] = 'C'; officialKey[6] = 'A';
+
+    const part1Visuals = {
+        1: "https://plus.unsplash.com/premium_photo-1661503228332-03778ab6d6a1?q=80&w=1170&auto=format&fit=crop",
+        2: "https://images.unsplash.com/photo-1448932223592-d1fc686e76ea?q=80&w=1169&auto=format&fit=crop",
+        3: "https://plus.unsplash.com/premium_photo-1682129563804-5d5565e4e173?q=80&w=1632&auto=format&fit=crop",
+        4: "https://images.unsplash.com/photo-1581269632459-409ff09f73de?q=80&w=1170&auto=format&fit=crop",
+        5: "https://images.unsplash.com/photo-1680503676518-59941db537fe?q=80&w=687&auto=format&fit=crop",
+        6: "https://images.unsplash.com/photo-1729251352722-ac0888e282b7?q=80&w=1169&auto=format&fit=crop"
+    };
+
+    // 25 Unique Part 2 Items
+    const p2Generators = [
+        { q: "Where is the marketing meeting taking place?", ans: "In the main conference room.", dist: ["Sometime tomorrow afternoon.", "Because we need a new strategy."] },
+        { q: "When is the software update scheduled to happen?", ans: "On Thursday evening.", dist: ["I bought it last week.", "By the IT department."] },
+        { q: "Who is responsible for training the new employees?", ans: "Sarah from Human Resources.", dist: ["They are working very hard.", "To learn the new system."] },
+        { q: "Why did the client cancel the order?", ans: "They found a cheaper supplier.", dist: ["It was delivered yesterday.", "Yes, I have the receipt."] },
+        { q: "How long does it take to process a refund?", ans: "Usually about three to five business days.", dist: ["I would like cash, please.", "It costs twenty dollars."] },
+        { q: "Could you help me move these filing cabinets?", ans: "Sure, let me finish this email first.", dist: ["Yes, the files are lost.", "In the basement closet."] },
+        { q: "Would you prefer to review the budget today or tomorrow?", ans: "Tomorrow morning would be much better.", dist: ["Yes, I prefer the office.", "It costs more than expected."] },
+        { q: "Why hasn't the shipment arrived yet?", ans: "It was delayed at the customs border.", dist: ["Yes, it is a large cargo ship.", "To the logistics warehouse."] },
+        { q: "We need to hire an extra graphic designer.", ans: "I will post an opening on our website.", dist: ["The design looks excellent.", "To the marketing agency."] },
+        { q: "Where can I sign up for the corporate leadership workshop?", ans: "The registration link is on the intranet.", dist: ["Yes, it was very educational.", "At ten o'clock tomorrow."] },
+        { q: "Are you going to the trade show in Berlin this year?", ans: "Yes, I booked my flights yesterday.", dist: ["It was a great presentation.", "About five hundred attendees."] },
+        { q: "Who has the key to the supply closet?", ans: "The office manager keeps it at her desk.", dist: ["There are plenty of pens left.", "Because it was locked."] },
+        { q: "What time does the cafeteria stop serving breakfast?", ans: "Right at ten thirty.", dist: ["The coffee is very hot.", "In the main lobby area."] },
+        { q: "Didn't we already pay the internet bill?", ans: "No, it is due next Friday.", dist: ["The connection is quite fast.", "I paid thirty dollars."] },
+        { q: "How do you turn on the overhead projector?", ans: "Press the green button on the remote.", dist: ["The presentation starts soon.", "It is projecting a clear image."] },
+        { q: "Is there a pharmacy near the hotel?", ans: "Yes, just two blocks down the street.", dist: ["I need some medicine.", "The doctor is available."] },
+        { q: "Which supplier gave us the lowest quote?", ans: "Henderson Manufacturing did.", dist: ["They supply office furniture.", "We need to lower the price."] },
+        { q: "Why is the front entrance locked?", ans: "Security is doing some maintenance.", dist: ["Please use the back door.", "It opens automatically."] },
+        { q: "Can you proofread this press release for me?", ans: "I can look at it after lunch.", dist: ["The press conference was great.", "Yes, I released it yesterday."] },
+        { q: "Where should I store these leftover promotional materials?", ans: "Put them in the back warehouse.", dist: ["They promote our new app.", "About fifty brochures."] },
+        { q: "Has the board of directors approved the merger?", ans: "They are voting on it this afternoon.", dist: ["The new director is strict.", "It merged successfully."] },
+        { q: "You don't know how to use the new database, do you?", ans: "I actually took a training course on it.", dist: ["The data is secure.", "I don't know where it is."] },
+        { q: "When will the architect send the revised blueprints?", ans: "He promised them by tomorrow morning.", dist: ["The building is quite tall.", "Yes, he revised them."] },
+        { q: "Whose briefcase is sitting on the conference table?", ans: "I think it belongs to Mr. Cho.", dist: ["The conference is over.", "It contains important documents."] },
+        { q: "Let's take a taxi to the airport instead of the shuttle.", ans: "That sounds like a faster option.", dist: ["The airport is crowded.", "I have two suitcases."] }
+    ];
+
+    // 13 Unique Part 3 Conversations
+    const p3Generators = [
+        {
+            transcript: "Man: Hi, I am calling from the IT department. We are updating the security software on all company computers today. Is this a good time to update yours? Woman: Actually, I am right in the middle of preparing a presentation for the board meeting at 2 PM. Could you possibly do it later? Man: No problem. I can schedule it for 3 PM instead. Will you be finished by then? Woman: Yes, the meeting should only last an hour. Thank you for being flexible.",
+            q1: { q: "What is the main topic of the conversation?", ans: "A company computer software update.", dist: ["A board meeting schedule.", "A presentation design layout.", "A security network system failure."] },
+            q2: { q: "Why does the woman ask to postpone the update?", ans: "She is currently preparing a presentation.", dist: ["She is attending an urgent training session.", "Her desktop computer is broken.", "She is leaving the office for the day."] },
+            q3: { q: "What does the man agree to do?", ans: "Reschedule the update task for later.", dist: ["Cancel the software installation completely.", "Send an email reminder to the staff.", "Speak directly to the board members."] }
+        },
+        {
+            transcript: "Woman: Excuse me, I purchased this printer last week, but it keeps jamming when I try to print double-sided pages. Man: I apologize for the inconvenience. Let me check the model. Ah, yes, this specific model requires a special tray for double-sided printing, which is sold separately. Woman: That was not mentioned when I bought it. Can I just exchange the printer for a model that has the tray included? Man: Certainly. We have the upgraded model right here. You just need to pay the price difference.",
+            q1: { q: "What does the man explain about the double-sided printing feature?", ans: "It requires a special tray sold separately.", dist: ["It is currently out of stock.", "It is included with all base models.", "It is highly complex to install."] },
+            q2: { q: "What does the woman decide she wants to do?", ans: "Exchange the printer for an upgraded model.", dist: ["Get a full refund credited to her account.", "Speak directly to the store manager.", "Order a custom replacement part."] },
+            q3: { q: "What will the woman have to do to complete the transaction?", ans: "Pay the price difference for the new item.", dist: ["Fill out a formal complaint form.", "Return to the retail store tomorrow.", "Contact the customer service hotline."] }
+        },
+        {
+            transcript: "Man: Ms. Davis, the client from Tokyo is arriving at 10 AM tomorrow. Have you finalized the itinerary? Woman: Almost. I booked a table for lunch at the downtown bistro, but I am still waiting for the regional director to confirm if he can join us. Man: Excellent. Please let me know as soon as he responds so I can print out the copies of our project proposal.",
+            q1: { q: "What are the speakers mainly discussing?", ans: "Preparations for a client visit.", dist: ["A corporate travel policy.", "A menu for a catering event.", "An updated project deadline."] },
+            q2: { q: "What is the woman waiting for?", ans: "A confirmation from a director.", dist: ["A flight arrival schedule.", "A signed contract document.", "A restaurant billing receipt."] },
+            q3: { q: "What will the man do next?", ans: "Print out project proposals.", dist: ["Reserve a conference room.", "Call the client in Tokyo.", "Modify a luncheon reservation."] }
+        },
+        {
+            transcript: "Woman: The inventory system indicates that we are completely out of eco-friendly packaging materials. Did anyone place a reorder last week? Man: I forgot to submit the purchase request because I was focused on the quarterly shipping audit. I can send an urgent order to our supplier right now. Woman: Please do. We have three large client shipments scheduled for Friday afternoon, and we cannot afford any shipping delays.",
+            q1: { q: "What problem do the speakers identify?", ans: "A shortage of packaging supplies.", dist: ["An inventory system software crash.", "A missed delivery destination.", "An incorrect quarterly financial audit."] },
+            q2: { q: "Why did the man fail to place the order?", ans: "He was occupied with a shipping audit.", dist: ["He was out of the office on medical leave.", "The supplier website was offline.", "The department budget was frozen."] },
+            q3: { q: "What does the woman emphasize?", ans: "The deadline for Friday shipments.", dist: ["The cost of shipping insurance.", "The need to hire warehouse staff.", "The design of the new eco-friendly logo."] }
+        },
+        {
+            transcript: "Man: Hello, I am calling regarding the lease renewal for suite 402. Our company has grown significantly, and we are wondering if there is any larger office space available in the building. Woman: Actually, suite 505 will be vacant at the end of the month. It has two extra conference rooms and a larger break area. Man: That sounds perfect. Could I schedule a walkthrough for tomorrow morning to see if it meets our needs?",
+            q1: { q: "Why is the man calling?", ans: "To inquire about a larger office space.", dist: ["To complain about the building maintenance.", "To cancel his current lease agreement.", "To ask for a reduction in rent prices."] },
+            q2: { q: "What does the woman offer?", ans: "A vacant suite with more conference rooms.", dist: ["A discount on the monthly parking fee.", "A temporary workspace in the lobby.", "A free office cleaning service."] },
+            q3: { q: "What does the man want to do tomorrow?", ans: "Inspect the available office suite.", dist: ["Sign a new rental contract.", "Meet with the property manager.", "Move his furniture into the new space."] }
+        },
+        {
+            transcript: "Woman: Mr. Thompson, the next candidate for the sales manager position has arrived. His name is David Lee, and he has over ten years of experience in regional sales. Man: Thank you. I am currently reviewing his resume. His sales numbers from his previous job are quite impressive. Can you bring him into the main meeting room and offer him a beverage? Woman: Of course. I will also print out a copy of our standard interview questionnaire for you.",
+            q1: { q: "Who most likely is David Lee?", ans: "A job applicant.", dist: ["A new client.", "A visiting executive.", "A former employee."] },
+            q2: { q: "What is the man impressed by?", ans: "The candidate's previous sales numbers.", dist: ["The candidate's educational background.", "The candidate's communication skills.", "The candidate's prompt arrival."] },
+            q3: { q: "What will the woman provide for the man?", ans: "A printed interview questionnaire.", dist: ["A cup of hot coffee.", "A digital copy of the resume.", "A detailed sales report."] }
+        },
+        {
+            transcript: "Man: Have we decided on a venue for Sarah's retirement party next month? I know she loves Italian food. Woman: Yes, I spoke with the manager at Bella Roma. They have a private dining room that can accommodate up to fifty guests, which is exactly what we need. Man: Perfect. Let's send out the digital invitations this afternoon so we can get an accurate headcount before finalizing the catering menu.",
+            q1: { q: "What is the purpose of the upcoming event?", ans: "To celebrate a colleague's retirement.", dist: ["To host an annual holiday dinner.", "To launch a new marketing campaign.", "To welcome a new department director."] },
+            q2: { q: "Why did the woman choose the venue?", ans: "It has a suitably sized private room.", dist: ["It is located close to the office.", "It offered a significant corporate discount.", "It was recommended by the guest of honor."] },
+            q3: { q: "What are the speakers planning to do this afternoon?", ans: "Distribute the event invitations.", dist: ["Taste the catering menu items.", "Decorate the dining venue.", "Purchase a retirement gift."] }
+        },
+        {
+            transcript: "Man: Good evening. I have a reservation under the name Robert Vance. I requested a room with a view of the harbor if possible. Woman: Let me check our system, Mr. Vance. Yes, I see your reservation. We have upgraded you to a harbor-view suite on the tenth floor at no extra charge. Man: Oh, that is wonderful news. By the way, does the hotel offer a complimentary airport shuttle service for tomorrow morning?",
+            q1: { q: "Where does this conversation take place?", ans: "At a hotel reception desk.", dist: ["At an airport ticketing counter.", "At a travel agency office.", "At a car rental facility."] },
+            q2: { q: "What does the woman tell the man?", ans: "He has received a complimentary room upgrade.", dist: ["His reservation cannot be located in the system.", "His requested room type is currently unavailable.", "He must pay an additional fee for the view."] },
+            q3: { q: "What information does the man request?", ans: "Details about an airport transport service.", dist: ["The operating hours of the restaurant.", "The location of the business center.", "The password for the wireless internet."] }
+        },
+        {
+            transcript: "Woman: Have you looked at the analytics report for our latest social media campaign? The engagement numbers are much lower than we anticipated. Man: I reviewed it this morning. It seems our target audience is not responding well to the new video advertisements. We might need to adjust the messaging. Woman: I agree. Let's hold a brainstorming session with the creative team on Wednesday to develop some alternative concepts.",
+            q1: { q: "What are the speakers discussing?", ans: "The results of a marketing campaign.", dist: ["The budget for an upcoming project.", "The launch of a new software product.", "The timeline for a website redesign."] },
+            q2: { q: "What problem does the man identify?", ans: "The video advertisements are underperforming.", dist: ["The analytics software is malfunctioning.", "The target audience data is incorrect.", "The advertising budget has been exhausted."] },
+            q3: { q: "What does the woman suggest they do on Wednesday?", ans: "Meet with the creative team.", dist: ["Publish the new video advertisements.", "Hire a new social media manager.", "Present the analytics report to the board."] }
+        },
+        {
+            transcript: "Man: I noticed that the quarterly financial review is scheduled for Thursday at 10 AM. However, the entire marketing department will be attending an off-site training workshop at that time. Woman: Oh, I was not aware of the workshop. We definitely need the marketing director present for the review. How about we move the meeting to Friday afternoon instead? Man: That works for me. I will update the calendar invite and notify the executive team about the change.",
+            q1: { q: "What is the conflict?", ans: "A meeting overlaps with a training workshop.", dist: ["A conference room is double-booked.", "A key executive is on medical leave.", "A financial report is incomplete."] },
+            q2: { q: "Who must be present at the review?", ans: "The marketing director.", dist: ["The external auditor.", "The chief executive officer.", "The training facilitator."] },
+            q3: { q: "What will the man do next?", ans: "Modify a calendar invitation.", dist: ["Cancel the training workshop.", "Reserve a different meeting room.", "Email the quarterly financial data."] }
+        },
+        {
+            transcript: "Woman: We need to finalize the catering arrangements for the weekend leadership seminar. Did you receive the dietary restriction forms from all the participants? Man: Yes, I got the last few forms this morning. We have five attendees who requested vegetarian meals and two who need gluten-free options. Woman: Great. Please call the catering company right away to ensure they can accommodate these special requests without any additional charges.",
+            q1: { q: "What event are the speakers organizing?", ans: "A weekend leadership seminar.", dist: ["An annual employee picnic.", "A corporate fundraising gala.", "A department holiday luncheon."] },
+            q2: { q: "What information did the man collect?", ans: "Dietary restriction forms.", dist: ["Travel reimbursement requests.", "Hotel accommodation preferences.", "Seminar feedback surveys."] },
+            q3: { q: "What does the woman instruct the man to do?", ans: "Contact the catering company.", dist: ["Print the finalized meal tickets.", "Purchase additional beverages.", "Send a confirmation email to the attendees."] }
+        },
+        {
+            transcript: "Man: I just reviewed the architectural draft for the new dental clinic. The layout is excellent, but the waiting area seems a bit too small for the anticipated patient volume. Woman: I noticed that as well. If we remove the partition wall between the waiting room and the administrative office, we could add seating for at least five more people. Man: That is a practical solution. Let's ask the architect to update the blueprints before we present them to the clinic owner next week.",
+            q1: { q: "What are the speakers reviewing?", ans: "An architectural draft for a clinic.", dist: ["A marketing brochure for a hospital.", "A budget proposal for a renovation.", "A seating chart for a conference."] },
+            q2: { q: "What concern does the man express?", ans: "The waiting area is insufficiently sized.", dist: ["The administrative office lacks natural light.", "The construction materials are too expensive.", "The project timeline is unrealistic."] },
+            q3: { q: "What is the proposed solution?", ans: "Removing a partition wall to increase space.", dist: ["Purchasing smaller furniture items.", "Leasing an adjacent office space.", "Reducing the size of the treatment rooms."] }
+        },
+        {
+            transcript: "Woman: The beta testers reported a recurring issue with the new mobile app prototype. The application crashes whenever they try to upload a profile picture. Man: That is concerning. I suspect there might be a bug in the image compression algorithm we implemented last week. I will have the development team investigate it immediately. Woman: Please ensure they prioritize it. We cannot launch the app to the public until this critical glitch is completely resolved.",
+            q1: { q: "What problem was reported by the beta testers?", ans: "The app crashes during image uploads.", dist: ["The login screen freezes randomly.", "The user interface is difficult to navigate.", "The application drains the battery quickly."] },
+            q2: { q: "What does the man suspect is the cause?", ans: "A bug in the image compression code.", dist: ["An outdated operating system version.", "A lack of available server storage.", "A weak internet connection."] },
+            q3: { q: "What does the woman emphasize?", ans: "The public launch must be delayed until fixed.", dist: ["The development team needs to work overtime.", "The beta testers should receive compensation.", "The image upload feature should be removed."] }
+        }
+    ];
+
+    // 10 Unique Part 4 Talks
+    const p4Generators = [
+        {
+            transcript: "Narrator: Attention all passengers waiting for flight 4B to Chicago. This flight has been delayed due to severe weather conditions in the destination area. We now expect to begin boarding at 4:30 PM at gate 12, rather than our original time of 3:00 PM. Please remain in the terminal. We will be distributing complimentary snack vouchers at the service desk for all ticketed passengers on this flight. We apologize for the delay and thank you for your patience.",
+            q1: { q: "What is the primary purpose of the airport announcement?", ans: "To inform passengers of an unexpected flight delay.", dist: ["To announce a sudden change of departure gates.", "To give a detailed weather update for the Chicago area.", "To advertise a brand new flight destination route."] },
+            q2: { q: "According to the speaker, why is there a change to the schedule?", ans: "Due to severe weather conditions.", dist: ["Due to unexpected mechanical issues.", "Due to a sudden flight crew shortage.", "Due to a temporary airport closure."] },
+            q3: { q: "What can ticketed listeners collect at the service counter?", ans: "Complimentary snack vouchers.", dist: ["Updated boarding passes.", "Complimentary luggage tags.", "Discounted upgrade tickets."] }
+        },
+        {
+            transcript: "Narrator: Good morning team. I have called this brief meeting to announce a change in our accounting procedures. Starting next Monday, all expense reports must be submitted through the new digital portal, rather than using paper forms. This will help us process reimbursements much faster. I will be sending out an email later today with a link to a video tutorial that explains how to use the new system. Please watch it before Monday, and contact me if you have any questions.",
+            q1: { q: "Which department does the speaker most likely represent?", ans: "Accounting and Finance", dist: ["Human Resources", "Information Technology", "Sales and Marketing"] },
+            q2: { q: "What operational change will take place next Monday?", ans: "Expense reports must be submitted via the digital portal.", dist: ["The office will stop using physical printers entirely.", "Employees will begin receiving faster cash reimbursements.", "A new remote work policy will be finalized."] },
+            q3: { q: "What are the employees instructed to do before the deadline?", ans: "Watch an instructional video tutorial.", dist: ["Send a confirmation email to the speaker.", "Submit all pending physical receipts.", "Register for a new digital portal user account."] }
+        },
+        {
+            transcript: "Narrator: Welcome to the annual employee orientation here at Apex Manufacturing. Before we tour the main production floor, we have a vital safety update. Please look at the digital screen. All personnel are strictly required to wear protective eyewear and steel-toed boots while inside the designated yellow safety zones. Industrial hardhats are available in the storage lockers next to the main entrance. Let us begin our walk.",
+            q1: { q: "Who most likely is the intended audience for this talk?", ans: "Newly hired factory employees.", dist: ["Experienced factory supervisors.", "Visiting international clients.", "Safety equipment suppliers."] },
+            q2: { q: "What are listeners required to do in the yellow zones?", ans: "Wear specific protective gear.", dist: ["Log their operational hours.", "Turn off mobile electronic devices.", "Stay behind the automated machinery."] },
+            q3: { q: "Where can listeners find industrial hardhats?", ans: "In the storage lockers by the entrance.", dist: ["On the main production floor tables.", "At the security office desk.", "Inside the employee break room."] }
+        },
+        {
+            transcript: "Narrator: Thank you for tuning in to the local business hour on WXYZ Radio. Today we are reporting on a massive expansion project announced by Oakridge Corporation. The retail giant plans to construct a three-story distribution hub in the northern commercial district, which is expected to generate over five hundred local jobs within the coming fiscal year. Construction is slated to begin early this autumn.",
+            q1: { q: "What is the main topic of the radio broadcast?", ans: "A commercial expansion project.", dist: ["A local government election result.", "A change in radio broadcasting layout.", "An annual corporate charity event."] },
+            q2: { q: "What positive benefit will the project bring to the area?", ans: "Creation of local job opportunities.", dist: ["Improved public transit infrastructure.", "Reduced commercial property taxes.", "The construction of a public park area."] },
+            q3: { q: "When is the project construction scheduled to begin?", ans: "Early this autumn season.", dist: ["During the winter holidays.", "In the upcoming spring month.", "Late next summer season."] }
+        },
+        {
+            transcript: "Narrator: Hello, Mr. Peterson. This is Linda Hughes from Prime Real Estate calling. I am pleased to inform you that the owners of the commercial property on Elm Street have accepted your initial offer. However, they requested an adjustment to the move-in date. They need an additional two weeks to clear out their existing inventory. Please call me back at your earliest convenience so we can discuss updating the contract terms.",
+            q1: { q: "Who is the speaker?", ans: "A real estate agent.", dist: ["A property inspector.", "A commercial bank teller.", "A construction manager."] },
+            q2: { q: "What good news does the speaker share?", ans: "An initial property offer was accepted.", dist: ["A loan application was approved.", "A building inspection was passed.", "A contract dispute was resolved."] },
+            q3: { q: "What does the speaker ask the listener to do?", ans: "Return her phone call to discuss contract terms.", dist: ["Sign the finalized agreement online.", "Transfer the initial down payment.", "Visit the property for a final walkthrough."] }
+        },
+        {
+            transcript: "Narrator: Welcome everyone to the Silverton Historical Museum. My name is Gregory, and I will be your guide this afternoon. Our tour will begin in the West Wing, where we feature artifacts from the early industrial era. I kindly ask that you refrain from using flash photography, as intense light can severely damage the delicate fabrics on display. If you have any questions during the tour, please feel free to raise your hand.",
+            q1: { q: "Where is this talk taking place?", ans: "At a historical museum.", dist: ["At an art gallery opening.", "At a university lecture hall.", "At a city government building."] },
+            q2: { q: "What does the speaker ask the listeners not to do?", ans: "Use flash photography.", dist: ["Touch the glass display cases.", "Consume food or beverages.", "Speak loudly during the tour."] },
+            q3: { q: "What is featured in the West Wing?", ans: "Artifacts from the early industrial era.", dist: ["Paintings by local artists.", "Documents from the city founders.", "Sculptures from ancient civilizations."] }
+        },
+        {
+            transcript: "Narrator: Good evening, distinguished guests. It is my immense pleasure to introduce our keynote speaker for the Global Tech Conference, Dr. Elena Rostova. Dr. Rostova is a leading researcher in artificial intelligence and has spent the last decade developing innovative machine learning algorithms for the healthcare sector. After her presentation, we will host a brief question and answer session, followed by a networking reception in the main lobby.",
+            q1: { q: "What is the purpose of the talk?", ans: "To introduce a keynote speaker.", dist: ["To summarize a research paper.", "To announce an award winner.", "To conclude a technology conference."] },
+            q2: { q: "What is Dr. Rostova's area of expertise?", ans: "Artificial intelligence in healthcare.", dist: ["Cybersecurity network architecture.", "Renewable energy technologies.", "Mobile application development."] },
+            q3: { q: "What will happen immediately after the presentation?", ans: "A question and answer session.", dist: ["A formal networking reception.", "A live software demonstration.", "A panel discussion with experts."] }
+        },
+        {
+            transcript: "Narrator: Thank you for calling the Metro City Water Authority. Our automated menu has recently changed, so please listen carefully. For billing inquiries or to make a payment over the phone, press one. To report a water main break or an emergency leak, press two immediately. To schedule a service appointment, press three. If you wish to speak directly with a customer support representative, please remain on the line.",
+            q1: { q: "What type of business has the caller reached?", ans: "A utility company.", dist: ["A plumbing service.", "A billing collection agency.", "A home insurance provider."] },
+            q2: { q: "Why should a caller press two?", ans: "To report an emergency leak.", dist: ["To make a payment over the phone.", "To schedule a service appointment.", "To check an account balance."] },
+            q3: { q: "How can a caller speak to a representative?", ans: "By remaining on the line.", dist: ["By pressing the zero key.", "By visiting the company website.", "By leaving a voice message."] }
+        },
+        {
+            transcript: "Narrator: Are you looking to advance your career in project management? The Institute for Professional Development is offering an intensive six-week certification course starting this October. Our expert instructors will teach you essential strategies for managing complex budgets and leading remote teams effectively. Register before September fifteenth to receive a twenty percent early bird discount. Visit our website today to secure your spot.",
+            q1: { q: "What is being advertised?", ans: "A professional certification course.", dist: ["A project management software tool.", "A corporate consulting service.", "A business leadership textbook."] },
+            q2: { q: "What topic will the instructors cover?", ans: "Strategies for leading remote teams.", dist: ["Techniques for public speaking.", "Methods for digital marketing.", "Principles of financial accounting."] },
+            q3: { q: "How can listeners receive a discount?", ans: "By registering before a specific date.", dist: ["By referring a colleague to the program.", "By paying the full tuition in advance.", "By purchasing course materials online."] }
+        },
+        {
+            transcript: "Narrator: May I have your attention please? This is a service update for all subway passengers on the Blue Line. Due to emergency track maintenance between Central Station and Park Avenue, all outbound trains are currently experiencing delays of up to thirty minutes. We highly recommend that passengers traveling to the airport switch to the express bus service located outside the main terminal. We apologize for this inconvenience.",
+            q1: { q: "Where is the announcement most likely being made?", ans: "At a subway station.", dist: ["Inside a train car.", "At an airport terminal.", "On an express bus."] },
+            q2: { q: "What is causing the delays?", ans: "Emergency track maintenance.", dist: ["A severe weather storm.", "A mechanical train failure.", "A power grid outage."] },
+            q3: { q: "What does the speaker recommend for passengers traveling to the airport?", ans: "Switching to an express bus service.", dist: ["Waiting for the next available train.", "Taking a taxi from the main terminal.", "Rescheduling their upcoming flights."] }
+        }
+    ];
+
+    function buildDatabase() {
+        for (let i = 1; i <= 100; i++) {
+            let key = officialKey[i];
+            let targetIdx = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 }[key];
+
+            if (i >= 1 && i <= 6) {
+                const hardCodedP1 = {
+                    1: { opts: ["They are eating at a restaurant.", "They are looking out the window.", "They are reviewing a document together.", "They are leaving the building."], rationale: "The image shows people looking at a document together, matching the statement." },
+                    2: { opts: ["The man is typing on a keyboard.", "The man is carrying a monitor.", "The man is fixing a cable.", "The man is talking on the phone."], rationale: "The image depicts a man actively typing on his computer keyboard." },
+                    3: { opts: ["A forklift is driving away.", "The shelves are completely empty.", "A worker is sweeping the floor.", "Boxes are stacked on the shelves."], rationale: "The visual clearly displays boxes stacked on the warehouse shelves." },
+                    4: { opts: ["She is cleaning the counter.", "She is pouring a cup of coffee.", "She is putting away the dishes.", "She is opening a window."], rationale: "The image captures a woman in the act of pouring coffee into a cup." },
+                    5: { opts: ["A vehicle is being repaired.", "The road is closed for construction.", "Cars are parked along the street.", "A bus is picking up passengers."], rationale: "The image shows multiple cars parked alongside the street." },
+                    6: { opts: ["Passengers are boarding a train.", "Luggage is placed on the track.", "A ticket counter is closed.", "A conductor is checking tickets."], rationale: "The visual displays passengers in the process of boarding a train." }
+                };
+                let opts = hardCodedP1[i].opts;
+                let transcript = `(A) ${opts[0]} (B) ${opts[1]} (C) ${opts[2]} (D) ${opts[3]}`;
+                DB[i] = {
+                    part: 1,
+                    transcript: transcript,
+                    qText: `Select the description that best matches the picture.`,
+                    options: opts,
+                    explanation: `<strong>The correct answer is (${key}).</strong> ${hardCodedP1[i].rationale}`
+                };
+            } 
+            else if (i >= 7 && i <= 31) {
+                let gen = p2Generators[i - 7];
+                let opts = [];
+                let wrongIdx = 0;
+                for (let j = 0; j < 3; j++) {
+                    if (j === targetIdx) opts[j] = gen.ans;
+                    else opts[j] = gen.dist[wrongIdx++];
+                }
+                
+                let transcript = `${gen.q} (A) ${opts[0]} (B) ${opts[1]} (C) ${opts[2]}`;
+                
+                let rationaleText = "The correct response aligns logically with the statement or question asked.";
+                if (gen.q.toLowerCase().startsWith("where")) rationaleText = "The question asks 'Where', so the correct response provides a location.";
+                if (gen.q.toLowerCase().startsWith("when")) rationaleText = "The question asks 'When', so the correct response provides a time or timeframe.";
+                if (gen.q.toLowerCase().startsWith("who") || gen.q.toLowerCase().startsWith("whose")) rationaleText = "The question asks 'Who' or 'Whose', so the correct response identifies a person or department.";
+                if (gen.q.toLowerCase().startsWith("why")) rationaleText = "The question asks 'Why', so the correct response provides a reason.";
+
+                DB[i] = {
+                    part: 2,
+                    transcript: transcript,
+                    qText: gen.q,
+                    options: opts,
+                    explanation: `<strong>The correct answer is (${key}).</strong> ${rationaleText}`
+                };
+            } 
+            else if (i >= 32 && i <= 70) {
+                let baseQ = Math.floor((i - 32) / 3) * 3 + 32;
+                let subIdx = i - baseQ; 
+                let loopIdx = Math.floor((baseQ - 32) / 3);
+                
+                let sourceGen = p3Generators[loopIdx];
+                let currentTranscript = sourceGen.transcript;
+                let rawQ = subIdx === 0 ? sourceGen.q1 : (subIdx === 1 ? sourceGen.q2 : sourceGen.q3);
+
+                let opts = [];
+                let wrongIdx = 0;
+                for (let j = 0; j < 4; j++) {
+                    if (j === targetIdx) opts[j] = rawQ.ans;
+                    else opts[j] = rawQ.dist[wrongIdx++];
+                }
+
+                DB[i] = {
+                    part: 3,
+                    transcript: currentTranscript,
+                    qText: rawQ.q,
+                    options: opts,
+                    explanation: `<strong>The correct answer is (${key}).</strong> The audio transcript directly supports this selection.`
+                };
+            }
+            else if (i >= 71 && i <= 100) {
+                let baseQ = Math.floor((i - 71) / 3) * 3 + 71;
+                let subIdx = i - baseQ; 
+                let loopIdx = Math.floor((baseQ - 71) / 3);
+                
+                let sourceGen = p4Generators[loopIdx];
+                let currentTranscript = sourceGen.transcript;
+                let rawQ = subIdx === 0 ? sourceGen.q1 : (subIdx === 1 ? sourceGen.q2 : sourceGen.q3);
+
+                let opts = [];
+                let wrongIdx = 0;
+                for (let j = 0; j < 4; j++) {
+                    if (j === targetIdx) opts[j] = rawQ.ans;
+                    else opts[j] = rawQ.dist[wrongIdx++];
+                }
+
+                DB[i] = {
+                    part: 4,
+                    transcript: currentTranscript,
+                    qText: rawQ.q,
+                    options: opts,
+                    explanation: `<strong>The correct answer is (${key}).</strong> The spoken talk clearly mentions the information required to select this option.`
+                };
+            }
+        }
+    }
+
+    buildDatabase();
+
+    // --- State Variables ---
+    let testData = {
+        answers: new Array(101).fill(null),
+        currentQ: 1,
+        currentPart: 0,
+        timeRemaining: 45 * 60,
+        reviewingQ: null
+    };
+    
+    let timerInterval = null;
+
+    // --- TTS Engine Setup ---
+    const synth = window.speechSynthesis;
+    let voiceMale = null;
+    let voiceFemale = null;
+    let voiceNarrator = null;
+    let isSpeaking = false;
+
+    function initVoices() {
+        const voices = synth.getVoices();
+        if (voices.length === 0) return;
+        
+        const enVoices = voices.filter(v => v.lang.includes('en-US') || v.lang.includes('en-GB') || v.lang.includes('en-AU'));
+        
+        // 1. Establish the Female Profile (Aria, Jenny, Michelle)
+        voiceFemale = enVoices.find(v => (v.name.includes('Aria') || v.name.includes('Jenny') || v.name.includes('Michelle') || v.name.includes('Zari')) && v.name.includes('Natural')) 
+                   || enVoices.find(v => v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Zira') || v.name.includes('Female')) 
+                   || enVoices.find(v => v.name.toLowerCase().includes('female'))
+                   || enVoices[0];
+                   
+        // 2. Separate premium natural voice layers for Narrator vs. Actor
+        const premiumNaturalMales = enVoices.filter(v => (v.name.includes('Guy') || v.name.includes('Christopher') || v.name.includes('Eric') || v.name.includes('Ryan')) && v.name.includes('Natural'));
+        
+        if (premiumNaturalMales.length > 0) {
+            voiceNarrator = premiumNaturalMales[0];
+            voiceMale = premiumNaturalMales[1] 
+                     || enVoices.find(v => (v.name.includes('David') || v.name.includes('Daniel') || v.name.includes('Alex') || v.name.includes('Mark')) && v.name !== voiceNarrator.name)
+                     || enVoices.find(v => v.name.toLowerCase().includes('male') && v.name !== voiceNarrator.name)
+                     || enVoices.find(v => v !== voiceNarrator && v !== voiceFemale)
+                     || voiceNarrator;
+        } else {
+            const standardMales = enVoices.filter(v => v.name.includes('David') || v.name.includes('Daniel') || v.name.includes('Alex') || v.name.toLowerCase().includes('male'));
+            
+            if (standardMales.length >= 2) {
+                voiceNarrator = standardMales[0];
+                voiceMale = standardMales[1];
+            } else if (standardMales.length === 1) {
+                voiceNarrator = standardMales[0];
+                voiceMale = enVoices.find(v => v !== voiceNarrator && v !== voiceFemale) || voiceNarrator;
+            } else {
+                voiceNarrator = enVoices.find(v => v !== voiceFemale) || enVoices[0];
+                voiceMale = enVoices.find(v => v !== voiceNarrator && v !== voiceFemale) || voiceNarrator;
+            }
+        }
+    }
+    
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = initVoices;
+    }
+
+    function stopTTS() {
+        if(synth.speaking || isSpeaking) {
+            synth.cancel();
+            isSpeaking = false;
+            updatePlayUI(false);
+        }
+    }
+
+    function parseTranscript(text) {
+        const segments = [];
+        const regex = /(Narrator:|Man:|Woman:|Woman 1:|Woman 2:)/g;
+        const parts = text.split(regex);
+        
+        let currentRole = 'narrator'; 
+        
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i].trim();
+            if (!part) continue;
+            
+            if (part === 'Man:') {
+                currentRole = 'male';
+            } else if (part === 'Woman:' || part === 'Woman 1:' || part === 'Woman 2:') {
+                currentRole = 'female';
+            } else if (part === 'Narrator:') {
+                currentRole = 'narrator';
+            } else {
+                segments.push({ text: part, role: currentRole });
+            }
+        }
+        return segments;
+    }
+
+    async function speakText(text) {
+        stopTTS();
+        if (!text) return;
+        if (!voiceNarrator) initVoices();
+
+        const speedRate = parseFloat(document.getElementById('speed-selector').value) || 1.0;
+        const segments = parseTranscript(text);
+        
+        isSpeaking = true;
+        updatePlayUI(true);
+
+        for (let i = 0; i < segments.length; i++) {
+            if (!isSpeaking) break; 
+            
+            await new Promise((resolve) => {
+                const utterance = new SpeechSynthesisUtterance(segments[i].text);
+                
+                if (segments[i].role === 'male' && voiceMale) utterance.voice = voiceMale;
+                else if (segments[i].role === 'female' && voiceFemale) utterance.voice = voiceFemale;
+                else if (voiceNarrator) utterance.voice = voiceNarrator;
+                
+                utterance.rate = speedRate;
+                utterance.pitch = 1.0;
+                
+                utterance.onend = resolve;
+                utterance.onerror = resolve; 
+                
+                synth.speak(utterance);
+            });
+        }
+        
+        if (isSpeaking) {
+            isSpeaking = false;
+            updatePlayUI(false);
+        }
+    }
+
+    function playCurrentQuestionAudio() {
+        let textToSpeak = "";
+        let qNum = testData.currentQ;
+
+        let qVoice = (qNum % 2 === 0) ? "Man:" : "Woman:";
+        let optVoice = (qNum % 2 === 0) ? "Woman:" : "Man:";
+        
+        let dbItem = DB[qNum];
+
+        if (qNum >= 1 && qNum <= 6) {
+            textToSpeak = `Narrator: Number ${qNum}. Look at the picture marked number ${qNum} on your screen. ${qVoice} ${dbItem.transcript}`;
+        } else if (qNum >= 7 && qNum <= 31) {
+            let script = dbItem.transcript;
+            let splitIdx = script.indexOf('(A)');
+            if (splitIdx !== -1) {
+                let questionPart = script.substring(0, splitIdx).trim();
+                let optionsPart = script.substring(splitIdx).trim();
+                textToSpeak = `Narrator: Number ${qNum}. ${qVoice} ${questionPart} ${optVoice} ${optionsPart}`;
+            } else {
+                textToSpeak = `Narrator: Number ${qNum}. ${qVoice} ` + script;
+            }
+        } else if (qNum >= 32 && qNum <= 70) {
+            textToSpeak = `Narrator: Questions ${qNum} through ${qNum + 2} refer to the following conversation. ${dbItem.transcript}`;
+        } else if (qNum >= 71) {
+            textToSpeak = `Narrator: Questions ${qNum} through ${qNum + 2} refer to the following talk. ${dbItem.transcript}`;
+        }
+
+        speakText(textToSpeak);
+    }
+
+    function toggleAudio() {
+        if (isSpeaking) {
+            stopTTS();
+        } else {
+            if (document.getElementById('direction-screen').classList.contains('active')) {
+                const dirText = document.getElementById('dir-content').innerText || document.getElementById('dir-content').textContent;
+                speakText(`Part ${testData.currentPart} Directions. ${dirText}`);
+            } else if (document.getElementById('main-app').classList.contains('active')) {
+                playCurrentQuestionAudio();
+            }
+        }
+    }
+
+    function updatePlayUI(playing) {
+        const playIcon = document.getElementById('play-icon');
+        const statusText = document.getElementById('audio-status-text');
+        const progressBar = document.getElementById('audio-progress');
+
+        if (playing) {
+            playIcon.classList.replace('fa-play', 'fa-stop');
+            playIcon.classList.replace('text-[#0369a1]', 'text-red-600');
+            statusText.innerText = "Audio Playing...";
+            progressBar.classList.add('tts-playing');
+            progressBar.style.width = "100%";
+        } else {
+            playIcon.classList.replace('fa-stop', 'fa-play');
+            playIcon.classList.replace('text-red-600', 'text-[#0369a1]');
+            statusText.innerText = "Ready";
+            progressBar.classList.remove('tts-playing');
+            progressBar.style.width = "0%";
+        }
+    }
+
+    const partDirections = {
+        1: "<strong>Directions:</strong> For each question in this part, you will hear four statements about a picture on the screen. When you hear the statements, you must select the one statement that best describes what you see in the picture. The statements will not appear on the screen and will be spoken only one time.",
+        2: "<strong>Directions:</strong> You will hear a question or statement and three responses spoken in English. They will not be printed on your screen and will be spoken only one time. Select the best response to the question or statement.",
+        3: "<strong>Directions:</strong> You will hear some conversations between two or more people. You will be asked to answer three questions about what the speakers say in each conversation. Select the best response to each question. The conversations will not be printed and will be spoken only one time.",
+        4: "<strong>Directions:</strong> You will hear some talks given by a single speaker. You will be asked to answer three questions about what the speaker says in each talk. Select the best response to each question. The talks will not be printed and will be spoken only one time."
+    };
+
+    function startSimulation() {
+        document.getElementById('welcome-screen').classList.remove('active');
+        document.getElementById('general-directions-screen').classList.add('active');
+        
+        document.getElementById('global-header').classList.remove('hidden');
+        document.getElementById('global-header').classList.add('flex');
+        document.getElementById('audio-subheader').classList.remove('hidden');
+        document.getElementById('audio-subheader').classList.add('flex');
+        
+        startTimer();
+    }
+
+    function switchPart(newPart, startQNum = null) {
+        if(newPart !== testData.currentPart) {
+            if (startQNum) testData.currentQ = startQNum;
+            showDirectionScreen(newPart);
+        }
+    }
+
+    function showDirectionScreen(partNum) {
+        stopTTS();
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('direction-screen').classList.add('active');
+        
+        testData.currentPart = partNum;
+        
+        if(partNum >= 1) {
+            document.getElementById('nav-sidebar').classList.remove('hidden');
+            document.getElementById('nav-sidebar').classList.add('flex');
+            renderQuestionGrid();
+        }
+
+        document.getElementById('dir-title').innerText = `PART ${partNum}`;
+        document.getElementById('dir-content').innerHTML = partDirections[partNum];
+        document.getElementById('dir-btn-text').innerText = `Part ${partNum}`;
+        
+        setTimeout(() => {
+            const dirText = document.getElementById('dir-content').innerText || document.getElementById('dir-content').textContent;
+            speakText(`Part ${partNum} Directions. ${dirText}`);
+        }, 500);
+    }
+
+    function startPartFromDirection() {
+        stopTTS();
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('main-app').classList.add('active');
+        
+        let qToLoad = 1;
+        if (testData.currentPart === 2) qToLoad = 7;
+        if (testData.currentPart === 3) qToLoad = 32;
+        if (testData.currentPart === 4) qToLoad = 71;
+
+        let cQ = testData.currentQ;
+        if (testData.currentPart === 1 && cQ >= 1 && cQ <= 6) qToLoad = cQ;
+        if (testData.currentPart === 2 && cQ >= 7 && cQ <= 31) qToLoad = cQ;
+        if (testData.currentPart === 3 && cQ >= 32 && cQ <= 70) qToLoad = cQ;
+        if (testData.currentPart === 4 && cQ >= 71 && cQ <= 100) qToLoad = cQ;
+        
+        goToQuestion(qToLoad);
+    }
+
+    function startTimer() {
+        if(timerInterval) return; 
+        const timerEl = document.getElementById('timer');
+        timerInterval = setInterval(() => {
+            if (testData.timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                finishTest();
+                return;
+            }
+            testData.timeRemaining--;
+            timerEl.innerText = formatTime(testData.timeRemaining);
+            if(testData.timeRemaining < 300) {
+                timerEl.classList.add('text-red-600');
+            }
+        }, 1000);
+    }
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function renderQuestionGrid() {
+        const grid = document.getElementById('question-grid');
+        grid.innerHTML = '';
+        
+        let currentBase = testData.currentQ;
+        let isCurrentGroup = (testData.currentPart === 3 || testData.currentPart === 4);
+        
+        for (let i = 1; i <= 100; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            
+            let isActive = false;
+            if (isCurrentGroup) {
+                isActive = (i >= currentBase && i <= currentBase + 2);
+            } else {
+                isActive = (i === currentBase);
+            }
+            
+            btn.className = `grid-btn ${testData.answers[i] ? 'answered' : ''} ${isActive ? 'active' : ''}`;
+            btn.onclick = () => {
+                let targetPart = 1;
+                if(i >= 7 && i <= 31) targetPart = 2;
+                if(i >= 32 && i <= 70) targetPart = 3;
+                if(i >= 71) targetPart = 4;
+                
+                if(targetPart !== testData.currentPart && testData.currentPart !== 0) {
+                    switchPart(targetPart, i);
+                } else {
+                    goToQuestion(i);
+                }
+            };
+            grid.appendChild(btn);
+        }
+    }
+
+    function goToQuestion(qNum, isSelectionUpdate = false) {
+        if (qNum < 1 || qNum > 100) return;
+        if (!isSelectionUpdate) stopTTS();
+
+        let targetPart = 1;
+        if(qNum >= 7 && qNum <= 31) targetPart = 2;
+        if(qNum >= 32 && qNum <= 70) targetPart = 3;
+        if(qNum >= 71) targetPart = 4;
+        
+        let baseQ = qNum;
+        let isGroup = false;
+        
+        if(targetPart === 3) {
+            baseQ = Math.floor((qNum - 32) / 3) * 3 + 32;
+            isGroup = true;
+        } else if(targetPart === 4) {
+            baseQ = Math.floor((qNum - 71) / 3) * 3 + 71;
+            isGroup = true;
+        }
+
+        if(!document.getElementById('main-app').classList.contains('active')) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('main-app').classList.add('active');
+        }
+
+        testData.currentQ = baseQ;
+        testData.currentPart = targetPart;
+        
+        document.getElementById('q-counter').innerText = isGroup ? `${baseQ} - ${baseQ + 2}` : baseQ;
+        
+        renderQuestionGrid();
+        const content = document.getElementById('question-content');
+        let html = '';
+        
+        let miniDir = "";
+        if(targetPart === 1) miniDir = "Select the best description for the picture.";
+        if(targetPart === 2) miniDir = "Select the best response.";
+        if(targetPart === 3) miniDir = "Answer based on the conversation.";
+        if(targetPart === 4) miniDir = "Answer based on the talk.";
+        document.getElementById('part-badge').innerText = `PART ${targetPart}`;
+        document.getElementById('part-mini-dir').innerText = miniDir;
+
+        if(targetPart === 1) {
+            html = `
+                <div class="w-full">
+                    <div class="bg-gray-50 h-[350px] flex flex-col items-center justify-center mb-6 border border-gray-300 relative p-4">
+                        <img id="img-elem-${baseQ}" src="${part1Visuals[baseQ]}" alt="Question ${baseQ}" class="max-w-full max-h-full object-contain shadow-sm">
+                    </div>
+                    <div class="flex justify-center space-x-6 pt-4">
+                        ${generateOptions(baseQ, ['A', 'B', 'C', 'D'])}
+                    </div>
+                </div>
+            `;
+        } else if(targetPart === 2) {
+            html = `
+                <div class="w-full flex flex-col items-center py-12">
+                    <div class="text-center mb-8">
+                        <h2 class="text-lg text-gray-700">Listen to the audio, then select your answer.</h2>
+                    </div>
+                    <div class="flex justify-center space-x-6 border border-gray-300 p-8 bg-gray-50">
+                        ${generateOptions(baseQ, ['A', 'B', 'C'])}
+                    </div>
+                </div>
+            `;
+        } else {
+            html = `<div class="w-full flex flex-col space-y-6 py-2">`;
+            for(let i = baseQ; i <= baseQ + 2; i++) {
+                let dbItem = DB[i];
+                html += `
+                    <div class="bg-white p-6 border border-gray-300 shadow-sm">
+                        <h2 class="text-base text-gray-800 font-bold mb-4">${i}. ${dbItem.qText}</h2>
+                        <div class="flex flex-col space-y-2">
+                            ${generateOptions(i, ['A', 'B', 'C', 'D'], true, dbItem.options)}
+                        </div>
+                    </div>
+                `;
+            }
+            html += `</div>`;
+        }
+
+        content.innerHTML = html;
+        
+        document.getElementById('prev-btn').disabled = (baseQ === 1);
+        document.getElementById('prev-btn').onclick = () => {
+            let prevQ = isGroup ? baseQ - 3 : baseQ - 1;
+            let prevPart = targetPart;
+            if (prevQ >= 1 && prevQ <= 6) prevPart = 1;
+            if (prevQ >= 7 && prevQ <= 31) prevPart = 2;
+            if (prevQ >= 32 && prevQ <= 70) prevPart = 3;
+            
+            if (prevPart !== targetPart) {
+                switchPart(prevPart, prevQ);
+            } else {
+                goToQuestion(prevQ);
+            }
+        };
+        
+        const nextBtn = document.getElementById('next-btn');
+        const isLastQuestion = (baseQ >= 98 && isGroup) || (baseQ === 100);
+
+        if (isLastQuestion) {
+            nextBtn.innerText = "Finish";
+            nextBtn.onclick = finishTest;
+            nextBtn.disabled = false;
+        } else {
+            let nextQ = isGroup ? baseQ + 3 : baseQ + 1;
+            let nextPart = targetPart;
+            if(nextQ >= 7 && nextQ <= 31) nextPart = 2;
+            if(nextQ >= 32 && nextQ <= 70) nextPart = 3;
+            if(nextQ >= 71) nextPart = 4;
+
+            if (nextPart !== targetPart) {
+                nextBtn.innerText = "Next Part >";
+                nextBtn.onclick = () => switchPart(nextPart, nextQ);
+            } else {
+                nextBtn.innerText = "Next >";
+                nextBtn.onclick = () => goToQuestion(nextQ);
+            }
+            nextBtn.disabled = false;
+        }
+
+        if (!isSelectionUpdate) {
+            setTimeout(() => { playCurrentQuestionAudio(); }, 500);
+        }
+    }
+
+    function generateOptions(qNum, letters, isVertical = false, simulatedOpts = null) {
+        let optionsHtml = '';
+        letters.forEach((letter, index) => {
+            const isSelected = testData.answers[qNum] === letter;
+            if (isVertical && simulatedOpts) {
+                optionsHtml += `
+                    <label class="option-label border border-gray-200 bg-white hover:bg-gray-50 ${isSelected ? '!border-gray-500 bg-gray-100' : ''}" onclick="selectOption(${qNum}, '${letter}')">
+                        <div class="radio-circle">${letter}</div>
+                        <span class="text-sm font-medium text-gray-700 ml-1">${simulatedOpts[index]}</span>
+                        <input type="radio" name="q${qNum}" value="${letter}" ${isSelected ? 'checked' : ''}>
+                    </label>
+                `;
+            } else {
+                optionsHtml += `
+                    <label class="option-label ${isSelected ? 'selected' : ''}" onclick="selectOption(${qNum}, '${letter}')">
+                        <div class="radio-circle">${letter}</div>
+                        <input type="radio" name="q${qNum}" value="${letter}" ${isSelected ? 'checked' : ''}>
+                    </label>
+                `;
+            }
+        });
+        return optionsHtml;
+    }
+
+    function selectOption(qNum, letter) {
+        testData.answers[qNum] = letter;
+        goToQuestion(testData.currentQ, true); 
+    }
+
+    function finishTest() {
+        if (timerInterval) clearInterval(timerInterval);
+        stopTTS();
+        
+        let rawScore = 0;
+        for(let i = 1; i <= 100; i++) {
+            if(testData.answers[i] === officialKey[i]) rawScore++;
+        }
+
+        let scaledMin = 5, scaledMax = 495;
+        if(rawScore >= 96) { scaledMin = 475; scaledMax = 495; }
+        else if(rawScore >= 81) { scaledMin = 365; scaledMax = 445; }
+        else if(rawScore >= 61) { scaledMin = 260; scaledMax = 335; }
+        else if(rawScore >= 41) { scaledMin = 150; scaledMax = 225; }
+        else if(rawScore >= 21) { scaledMin = 60; scaledMax = 110; }
+        else { scaledMin = 5; scaledMax = 50; }
+
+        document.getElementById('raw-score').innerText = rawScore;
+        document.getElementById('scaled-score').innerText = `${scaledMin} - ${scaledMax}`;
+
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('nav-sidebar').classList.add('hidden');
+        document.getElementById('nav-sidebar').classList.remove('flex');
+        document.getElementById('results-screen').classList.add('active');
+        
+        document.getElementById('audio-subheader').classList.add('hidden');
+        document.getElementById('audio-subheader').classList.remove('flex');
+
+        renderReviewGrid();
+    }
+
+    function renderReviewGrid() {
+        const grid = document.getElementById('review-grid');
+        grid.innerHTML = '';
+        
+        for (let i = 1; i <= 100; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            
+            let statusClass = 'unanswered';
+            if (testData.answers[i]) {
+                if (testData.answers[i] === officialKey[i]) statusClass = 'correct';
+                else statusClass = 'incorrect';
+            }
+            
+            btn.className = `grid-btn review-grid-btn ${statusClass}`;
+            btn.onclick = () => openReviewModal(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function openReviewModal(qNum) {
+        stopTTS();
+        testData.reviewingQ = qNum;
+        const modal = document.getElementById('review-modal');
+        const content = document.getElementById('review-modal-content');
+        const dbItem = DB[qNum];
+        
+        document.getElementById('modal-title').innerText = `Question ${qNum} Review`;
+        document.getElementById('modal-user-ans').innerText = testData.answers[qNum] || "No Answer";
+        
+        const correctAns = officialKey[qNum];
+        document.getElementById('modal-correct-ans').innerText = correctAns;
+        
+        const userAnsEl = document.getElementById('modal-user-ans');
+        userAnsEl.className = testData.answers[qNum] === correctAns ? "text-xl font-bold text-green-700" : "text-xl font-bold text-red-600";
+
+        const imageContainer = document.getElementById('modal-image-container');
+        const modalImage = document.getElementById('modal-image');
+        
+        if (qNum <= 6) {
+            imageContainer.classList.remove('hidden');
+            modalImage.src = part1Visuals[qNum];
+        } else {
+            imageContainer.classList.add('hidden');
+        }
+
+        const questionContainer = document.getElementById('modal-question-container');
+        const questionText = document.getElementById('modal-question-text');
+        if (dbItem && dbItem.qText) {
+            questionContainer.classList.remove('hidden');
+            questionText.innerText = dbItem.qText;
+        } else {
+            questionContainer.classList.add('hidden');
+        }
+
+        const optionsList = document.getElementById('modal-options-list');
+        let optsHtml = '<ul class="space-y-3">';
+        const letters = ['A', 'B', 'C', 'D'];
+        const maxOpts = dbItem.part === 2 ? 3 : 4;
+        
+        for(let i=0; i<maxOpts; i++) {
+            let isCorrect = (letters[i] === correctAns);
+            let isUser = (letters[i] === testData.answers[qNum]);
+            
+            let bgColor = 'bg-white border-gray-200 text-gray-700';
+            let icon = `<span class="font-bold mr-3 text-gray-500">(${letters[i]})</span>`;
+            
+            if(isCorrect) {
+                bgColor = 'bg-green-50 border-green-400 text-green-800 font-medium';
+                icon = `<i class="fas fa-check-circle text-green-600 mr-3 text-lg"></i><span class="font-bold mr-2 text-green-700">(${letters[i]})</span>`;
+            } else if (isUser && !isCorrect) {
+                bgColor = 'bg-red-50 border-red-300 text-red-800';
+                icon = `<i class="fas fa-times-circle text-red-500 mr-3 text-lg"></i><span class="font-bold mr-2 text-red-600">(${letters[i]})</span>`;
+            }
+            
+            optsHtml += `<li class="p-3 border rounded shadow-sm ${bgColor} flex items-center">${icon} <span>${dbItem.options[i]}</span></li>`;
+        }
+        optsHtml += '</ul>';
+        optionsList.innerHTML = optsHtml;
+
+        document.getElementById('modal-transcript').innerHTML = dbItem.transcript;
+        document.getElementById('modal-explanation').innerHTML = dbItem.explanation;
+        
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeReviewModal() {
+        const modal = document.getElementById('review-modal');
+        const content = document.getElementById('review-modal-content');
+        modal.classList.add('opacity-0');
+        content.classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const candidateName = document.getElementById('candidate-name').value.trim() || 'Candidate';
+        const rawScore = document.getElementById('raw-score').innerText;
+        const scaledScore = document.getElementById('scaled-score').innerText;
+        
+        doc.setFillColor(3, 105, 161);
+        doc.rect(0, 0, 210, 35, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
+        doc.text("TOEIC Listening Practice", 105, 22, null, null, "center");
+        
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Name:`, 20, 55);
+        doc.setFont('helvetica', 'bold');
+        doc.text(candidateName, 40, 55);
+        
+        const today = new Date().toLocaleDateString('en-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Date:`, 130, 55);
+        doc.setFont('helvetica', 'bold');
+        doc.text(today, 145, 55);
+        
+        doc.setDrawColor(200, 200, 200);
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(20, 70, 170, 40, 3, 3, 'FD');
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text("RAW SCORE", 60, 85, null, null, "center");
+        doc.text("ESTIMATED SCALED SCORE", 145, 85, null, null, "center");
+        
+        doc.setFontSize(24);
+        doc.setTextColor(3, 105, 161);
+        doc.text(`${rawScore} / 100`, 60, 100, null, null, "center");
+        doc.setTextColor(22, 101, 52);
+        doc.text(scaledScore, 145, 100, null, null, "center");
+        
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Performance Feedback", 20, 135);
+        
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        let feedback = parseInt(rawScore) >= 60 ? 
+            "Good job! You have a solid foundation in listening comprehension. Keep practicing to identify subtle details and paraphrased phrasing." : 
+            "Keep your chin up! Learning takes time. Focus on regular exposure to English audio to see steady improvement.";
+        
+        doc.text(doc.splitTextToSize(feedback, 170), 20, 145);
+        
+        doc.setFontSize(9);
+        doc.setTextColor(120, 120, 120);
+        doc.setFont('helvetica', 'italic');
+        const disclaimer = "Disclaimer: This report is generated from an unofficial practice tool utilizing TTS. The score provided is an estimation and is NOT endorsed by ETS. TOEIC is a registered trademark of ETS.";
+        doc.text(doc.splitTextToSize(disclaimer, 170), 20, 270);
+        
+        doc.save(`TOEIC_TTS_Report_${candidateName.replace(/\s+/g, '_')}.pdf`);
+    }
+
+    window.onload = () => {
+        initVoices();
+        document.getElementById('play-btn').onclick = toggleAudio;
+    };
+</script>
+
+</body>
+</html>

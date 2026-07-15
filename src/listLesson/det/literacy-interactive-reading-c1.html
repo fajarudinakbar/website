@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Mastery Module: Interactive Reading | CEFR C1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input specific styling */
+        .drill-input {
+            transition: all 0.2s;
+        }
+        .drill-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .drill-input.correct {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+            color: #166534;
+        }
+        .drill-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .drill-input.revealed {
+            border-color: #f59e0b;
+            background-color: #fffbeb;
+            color: #92400e;
+            font-weight: 700;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base md:text-lg text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Literacy</span> <span>&gt;</span> 
+            <span>Reading</span> <span>&gt;</span> 
+            <span>CEFR C1</span> <span>&gt;</span> 
+            <span class="text-teal-700 font-bold">Interactive Reading</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-700 to-cyan-700 tracking-tight mb-3">
+                    Interactive Reading Mastery
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-500 font-medium">Score Range: 125–145 | Focus: Anaphoric Reference & Pragmatic Inference</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-xl text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-teal-600 p-8 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-2xl text-slate-700 leading-relaxed">
+                <i class="fas fa-book-open mr-3 text-teal-600"></i> 
+                <strong>Instructions:</strong> Navigate this multi-stage evaluation. Master the invisible threads of logic, cohesive devices, and lexical chains. All auto-graded drills offer <strong>2 attempts</strong> before revealing answers.
+            </p>
+        </div>
+
+        <!-- Section 1: Concept & Recognition (Cyan Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-3xl font-bold text-cyan-900">Steps 1-2: Task Specs & Diagnostics</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-3xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Step 1: Specs -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 1: Rapid-Fire Task Specs</h3>
+                        <div class="bg-cyan-50 p-8 rounded-xl border border-cyan-100 text-xl leading-relaxed text-slate-700 space-y-4">
+                            <p><strong>Overview:</strong> A multi-stage evaluation involving two sets of tasks. You must complete sentences, select missing sentences, highlight specific answers, identify main ideas, and title the text within a 7–8 minute window per set.</p>
+                            <h4 class="font-bold text-cyan-900 mt-6 mb-2">Linguistic Targets (C1):</h4>
+                            <ul class="list-disc pl-6 space-y-2">
+                                <li><strong>Anaphoric Reference:</strong> Mastering pronouns and determiners (e.g., <em>this phenomenon</em>) to maintain cohesion.</li>
+                                <li><strong>Discourse Markers:</strong> Identifying nuanced transitions (e.g., <em>notwithstanding, conversely</em>).</li>
+                                <li><strong>Lexical Chains:</strong> Recognizing sets of semantically related words.</li>
+                                <li><strong>Syntactic Complexity:</strong> Parsing long, nested clauses.</li>
+                                <li><strong>Pragmatic Inference:</strong> Understanding what is implied rather than explicitly stated.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Diagnostic -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 2: The Diagnostic 'Warm-Up'</h3>
+                        
+                        <div class="space-y-6 mb-8">
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm text-xl">
+                                <p class="mb-2"><span class="font-bold text-cyan-800">Example 1 (Complete the Sentence):</span> "The researcher's findings were initially met with skepticism; __________, subsequent peer-reviewed studies corroborated the data."</p>
+                                <p class="text-slate-600 italic mb-4">Options: (A) resultantly (B) however (C) furthermore.</p>
+                                <button onclick="toggleAnswer('diag-ans-1', this)" class="text-lg font-bold text-cyan-600 underline hover:text-cyan-800 transition-colors">Show Answer & Analysis</button>
+                                <div id="diag-ans-1" class="answer-box hidden mt-4 p-5 bg-cyan-50 border border-cyan-200 rounded-xl">
+                                    <p class="text-lg text-slate-800 mb-3"><strong>Correct Answer: (B) however</strong></p>
+                                    <p class="text-lg text-slate-700 border-l-4 border-cyan-500 pl-4"><strong>Linguistic Analysis:</strong> The sentence requires a contrastive discourse marker. The first clause expresses a negative reception ("skepticism"), while the second clause expresses a positive validation ("corroborated"). "However" establishes this necessary contrast, whereas "resultantly" indicates causation and "furthermore" indicates addition.</p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm text-xl">
+                                <p class="mb-2"><span class="font-bold text-cyan-800">Example 2 (Identify the Idea):</span> Read a short paragraph about the socio-economic impact of urban green spaces. Select the statement that captures the underlying argument, not just a detail.</p>
+                            </div>
+                        </div>
+
+                        <h4 class="font-bold text-cyan-900 text-2xl mb-4">'Spot the Difference' Task: Title the Passage</h4>
+                        <p class="text-xl text-slate-600 mb-4">Read the following C1-level paragraph about urban planning, then analyze why Title C is superior to Title B.</p>
+                        
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 mb-6 font-serif text-lg leading-relaxed text-slate-800 shadow-sm border-l-4 border-cyan-400">
+                            "The integration of arboreal networks within metropolitan grids extends far beyond aesthetic enhancement. Recent longitudinal studies indicate that strategic urban reforestation mitigates the heat island effect, significantly reducing municipal energy consumption. Furthermore, these green corridors foster biodiversity and have been empirically linked to improved psychological well-being among residents, suggesting a complex matrix of socio-ecological dividends that transcend simple economic valuation."
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-8 mb-8">
+                            <div class="p-6 bg-orange-50 border border-orange-200 rounded-xl">
+                                <h4 class="font-bold text-orange-800 text-xl mb-3">Title B (Score: 105-115)</h4>
+                                <p class="text-xl text-slate-800 font-bold mb-4">"The Economic Benefits of Parks"</p>
+                                <ul class="list-disc pl-5 text-lg text-slate-700">
+                                    <li>Focuses on a single, literal aspect mentioned in the text (Economics).</li>
+                                    <li>Uses basic vocabulary.</li>
+                                </ul>
+                            </div>
+                            <div class="p-6 bg-emerald-50 border border-emerald-200 rounded-xl shadow-sm">
+                                <h4 class="font-bold text-emerald-800 text-xl mb-3">Title C (Score: 130-145)</h4>
+                                <p class="text-xl text-emerald-900 font-bold mb-4">"Quantifying the Multi-faceted Value of Urban Reforestation"</p>
+                                <ul class="list-disc pl-5 text-lg text-emerald-800">
+                                    <li>Captures the comprehensive scope and academic tone.</li>
+                                    <li>Uses precise, high-level academic terminology.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <label class="block font-bold text-slate-700 text-xl mb-2">Diagnostic Analysis Notes:</label>
+                        <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-2 focus:ring-cyan-500 outline-none" placeholder="Write your own analysis of why academic precision matters here..."></textarea>
+                        
+                        <button onclick="toggleAnswer('diag-sample-notes', this)" class="mt-4 text-lg font-bold text-cyan-600 underline hover:text-cyan-800 transition-colors">Show Sample Analysis</button>
+                        <div id="diag-sample-notes" class="answer-box hidden mt-4 p-5 bg-cyan-50 border border-cyan-200 rounded-xl">
+                            <p class="text-lg text-slate-800 mb-3"><strong>Model C1 Analysis:</strong></p>
+                            <p class="text-lg text-slate-700 border-l-4 border-cyan-500 pl-4 italic">"Title C demonstrates true C1 proficiency by synthesizing the text's broader themes. Instead of relying on literal, B1-level vocabulary like 'economic benefits,' it employs precise, lexically dense phrasing ('quantifying,' 'multi-faceted'). Furthermore, it shows an ability to distinguish between a localized detail (money) and the overarching academic argument (measuring diverse ecological and social values)."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Strategy & Warm-up (Blue Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-3xl font-bold text-blue-900">Steps 3-4: Strategy & Foundations</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white border-t border-blue-50 space-y-12">
+                    
+                    <!-- Step 3: Strategy Drill -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 3: Strategic Application Drill</h3>
+                        <div class="bg-blue-50 p-8 rounded-xl border border-blue-200 mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-bold text-blue-900 text-2xl">Strategy Fix-It Exercise</h4>
+                                <button onclick="checkStrategy()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Strategy</button>
+                            </div>
+                            <p class="text-xl text-slate-800 font-serif leading-relaxed mb-6 bg-white p-6 rounded-lg border border-blue-100">
+                                "Artificial Intelligence has revolutionized diagnostic medicine by identifying patterns invisible to the human eye. <strong>[INSERT SENTENCE HERE]</strong>. This efficiency, however, raises significant ethical concerns regarding data privacy."
+                            </p>
+                            
+                            <div class="grid md:grid-cols-2 gap-8">
+                                <div>
+                                    <h5 class="font-bold text-blue-800 text-xl mb-3">Options:</h5>
+                                    <div class="space-y-3">
+                                        <label class="flex items-start gap-3 p-3 border border-slate-300 rounded-lg bg-white cursor-pointer hover:bg-blue-50">
+                                            <input type="radio" name="strat-opt" value="A" class="mt-1 w-5 h-5 accent-blue-600">
+                                            <span class="text-lg">Doctors still need to talk to patients.</span>
+                                        </label>
+                                        <label class="flex items-start gap-3 p-3 border border-slate-300 rounded-lg bg-white cursor-pointer hover:bg-blue-50">
+                                            <input type="radio" name="strat-opt" value="B" class="mt-1 w-5 h-5 accent-blue-600">
+                                            <span class="text-lg">It can process vast datasets in seconds, far outstripping manual analysis.</span>
+                                        </label>
+                                        <label class="flex items-start gap-3 p-3 border border-slate-300 rounded-lg bg-white cursor-pointer hover:bg-blue-50">
+                                            <input type="radio" name="strat-opt" value="C" class="mt-1 w-5 h-5 accent-blue-600">
+                                            <span class="text-lg">AI is very expensive for most hospitals to buy.</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-blue-800 text-xl mb-3">Pro-Tips:</h5>
+                                    <ul class="list-disc pl-5 text-lg text-slate-700 space-y-2">
+                                        <li><strong>The 'Link' Test:</strong> Bridge "Diagnostic identification" with "Efficiency".</li>
+                                        <li><strong>Pronoun Alignment:</strong> Match the logical agent (AI).</li>
+                                        <li><strong>Tone Consistency:</strong> Maintain a formal, analytical register.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div id="fb-strategy" class="mt-6 font-bold text-xl min-h-[2rem]"></div>
+
+                            <div class="mt-6">
+                                <label class="block font-bold text-slate-700 text-xl mb-2">Your Choice & Justification:</label>
+                                <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-2 focus:ring-blue-500 outline-none h-32" placeholder="I chose Option [ ] because..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Warm-up Suite -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 4: Foundations Skill-Building Suite (High Volume)</h3>
+                        
+                        <!-- Drill 1: Vocab -->
+                        <div class="mb-10 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">1. Academic Vocabulary Matching</h4>
+                                <button onclick="checkVocab()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Matches</button>
+                            </div>
+                            <p class="text-xl font-bold text-blue-900 mb-4 bg-blue-100 p-4 rounded-lg">(A) Obviate | (B) Empirical | (C) Paradigmatic | (D) Anomalous | (E) Transient</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4 text-xl">
+                                <div class="flex items-center gap-3">
+                                    <select id="v1" class="drill-input w-24 p-2 rounded border border-slate-300"><option value=""></option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+                                    <span>Based on observation</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <select id="v2" class="drill-input w-24 p-2 rounded border border-slate-300"><option value=""></option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+                                    <span>Deviating from the norm</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <select id="v3" class="drill-input w-24 p-2 rounded border border-slate-300"><option value=""></option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+                                    <span>Lasting only a short time</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <select id="v4" class="drill-input w-24 p-2 rounded border border-slate-300"><option value=""></option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+                                    <span>To remove a need/difficulty</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <select id="v5" class="drill-input w-24 p-2 rounded border border-slate-300"><option value=""></option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select>
+                                    <span>Serving as a typical example</span>
+                                </div>
+                            </div>
+                            <div id="fb-v" class="mt-4 font-bold min-h-[2rem]"></div>
+                        </div>
+
+                        <!-- Drill 2: Scramble -->
+                        <div class="mb-10 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">2. Sentence-Scramble (Logical Flow)</h4>
+                                <button onclick="checkScramble()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Flow</button>
+                            </div>
+                            <p class="text-xl text-slate-600 mb-4">Reorder to form a coherent C1 argument. Enter the letters (e.g., A-B-C).</p>
+                            <div class="space-y-3 bg-white p-4 rounded-lg border border-slate-300 text-xl font-serif text-slate-800 mb-4">
+                                <p><strong>(A)</strong> Consequently, traditional retail models are being forced to adapt.</p>
+                                <p><strong>(B)</strong> This shift is primarily driven by the convenience of mobile integration.</p>
+                                <p><strong>(C)</strong> E-commerce has seen an unprecedented surge in global market share.</p>
+                            </div>
+                            <input type="text" id="scramble-input" class="w-full drill-input p-4 text-2xl tracking-[0.5em] font-bold uppercase rounded border border-slate-300 text-center" placeholder="C B A" maxlength="5">
+                            <div id="fb-scramble" class="mt-4 font-bold min-h-[2rem]"></div>
+                        </div>
+
+                        <!-- Drill 3: Find Error -->
+                        <div class="mb-10 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">3. Find the Error (Reference & Cohesion)</h4>
+                                <button onclick="checkErrors()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Errors</button>
+                            </div>
+                            <p class="text-lg text-slate-600 mb-4">Identify and correct the cohesion/reference error in these sentences.</p>
+                            <div class="space-y-4 text-xl">
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">1. The city expanded rapidly, but these growth caused traffic issues.</p>
+                                    <input type="text" id="err1" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">2. He studied for years; therefore, he failed the exam.</p>
+                                    <input type="text" id="err2" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">3. The data is clear, notwithstanding the conclusion is debated.</p>
+                                    <input type="text" id="err3" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                            </div>
+                            <div id="fb-errors" class="mt-4 font-bold min-h-[2rem]"></div>
+                        </div>
+
+                        <!-- Drill 4: Inference & Synonyms -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">4. Contextual Inference & Synonyms</h4>
+                                <button onclick="checkSynonyms()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Answers</button>
+                            </div>
+                            
+                            <div class="mb-6 bg-white p-4 rounded-lg border border-slate-300">
+                                <p class="text-xl font-bold text-slate-800 mb-2">Contextual Inference:</p>
+                                <p class="text-lg text-slate-700 mb-3">In a text about "biomimicry," if the author mentions "Velcro and burrs," what is the likely definition of biomimicry?</p>
+                                <input type="text" id="inf1" class="w-full drill-input p-3 rounded border border-slate-300 text-xl" placeholder="Definition...">
+                            </div>
+
+                            <div class="bg-white p-4 rounded-lg border border-slate-300">
+                                <p class="text-xl font-bold text-slate-800 mb-4">Synonym Swap (Provide a C1-level synonym):</p>
+                                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 text-lg font-bold">
+                                    <div>1. Change<input type="text" id="syn1" class="w-full drill-input mt-2 p-2 rounded border border-slate-300 font-normal" placeholder="e.g. Alter"></div>
+                                    <div>2. Big<input type="text" id="syn2" class="w-full drill-input mt-2 p-2 rounded border border-slate-300 font-normal" placeholder="e.g. Substantial"></div>
+                                    <div>3. Show<input type="text" id="syn3" class="w-full drill-input mt-2 p-2 rounded border border-slate-300 font-normal" placeholder="e.g. Demonstrate"></div>
+                                    <div>4. Use<input type="text" id="syn4" class="w-full drill-input mt-2 p-2 rounded border border-slate-300 font-normal" placeholder="e.g. Utilize"></div>
+                                    <div>5. Problem<input type="text" id="syn5" class="w-full drill-input mt-2 p-2 rounded border border-slate-300 font-normal" placeholder="e.g. Dilemma"></div>
+                                </div>
+                            </div>
+                            <div id="fb-syn" class="mt-4 font-bold min-h-[2rem]"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Guided Practice (Emerald Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-3xl font-bold text-emerald-900">Step 5: Guided Drafting & Iteration</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-10">
+                    
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-emerald-800">Practice Task: Complete the Sentence</h3>
+                            <button onclick="checkGuided1()" class="text-lg font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-6 py-2 rounded-lg transition-colors">Check Sentence</button>
+                        </div>
+                        
+                        <div class="bg-emerald-50 p-8 rounded-xl border border-emerald-200 shadow-inner mb-6">
+                            <p class="text-2xl font-serif text-slate-800 leading-relaxed mb-6">
+                                "The shift toward renewable energy is often hindered by <select id="guided-drop" class="drill-input border-b-4 border-emerald-500 bg-transparent font-bold text-emerald-900 focus:outline-none outline-none"><option value=""></option><option value="A">(A) modern</option><option value="B">(B) legacy</option><option value="C">(C) sustainable</option></select> infrastructure that was designed for fossil fuel consumption."
+                            </p>
+                            <div id="fb-guided1" class="font-bold text-xl min-h-[2rem]"></div>
+                        </div>
+
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h4 class="font-bold text-emerald-800 text-xl mb-3">Mental Modeling Prompts:</h4>
+                            <ul class="list-disc pl-6 space-y-2 text-lg text-slate-700">
+                                <li><strong>Keyword Search:</strong> What does "hindered" imply about the state of the infrastructure? (It's a negative obstruction).</li>
+                                <li><strong>Context Clues:</strong> If it was "designed for fossil fuel," it is likely old.</li>
+                                <li><strong>Collocation:</strong> "Legacy" frequently pairs with "infrastructure" or "systems" to describe outdated, inherited technology.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="pt-8 border-t border-slate-200">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-emerald-800">Iteration Task: Upgrade B2 to C1</h3>
+                            <button onclick="checkGuided2()" class="text-lg font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-6 py-2 rounded-lg transition-colors">Check Upgrades</button>
+                        </div>
+                        
+                        <p class="text-xl text-slate-700 mb-6">Upgrade these B2 transitions to C1-level complexity:</p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex flex-col md:flex-row gap-4 md:items-center">
+                                <label class="text-slate-500 font-serif text-xl w-64">(B2) Also <i class="fas fa-arrow-right ml-2 text-emerald-500"></i> (C1)</label>
+                                <input type="text" id="up1" class="flex-1 drill-input p-3 border border-slate-300 rounded-lg text-xl focus:ring-2 focus:ring-emerald-400 outline-none" placeholder="e.g., Furthermore / Moreover">
+                            </div>
+                            <div class="flex flex-col md:flex-row gap-4 md:items-center">
+                                <label class="text-slate-500 font-serif text-xl w-64">(B2) So <i class="fas fa-arrow-right ml-2 text-emerald-500"></i> (C1)</label>
+                                <input type="text" id="up2" class="flex-1 drill-input p-3 border border-slate-300 rounded-lg text-xl focus:ring-2 focus:ring-emerald-400 outline-none" placeholder="e.g., Consequently / Therefore">
+                            </div>
+                            <div class="flex flex-col md:flex-row gap-4 md:items-center">
+                                <label class="text-slate-500 font-serif text-xl w-64">(B2) On the other hand <i class="fas fa-arrow-right ml-2 text-emerald-500"></i> (C1)</label>
+                                <input type="text" id="up3" class="flex-1 drill-input p-3 border border-slate-300 rounded-lg text-xl focus:ring-2 focus:ring-emerald-400 outline-none" placeholder="e.g., Conversely / Alternatively">
+                            </div>
+                        </div>
+                        <div id="fb-guided2" class="mt-6 font-bold text-xl min-h-[2rem]"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Simulation & Challenge (Violet Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-3xl font-bold text-violet-900">Step 6-8: Simulation, Marathon & Clinic</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-violet-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Simulation Setup -->
+                    <div class="bg-violet-50 p-8 rounded-xl border border-violet-200 flex flex-col md:flex-row justify-between items-center gap-8">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-violet-900 text-3xl mb-4">Step 6: The 'Pressure Cooker' Simulation</h3>
+                            <p class="text-xl text-slate-700 mb-4">Set a timer for 90 seconds per item. Complete the task under test conditions.</p>
+                            <ul class="list-disc pl-6 space-y-2 text-lg text-slate-600">
+                                <li><strong>Item 1:</strong> Select Missing Sentence (Quantum Entanglement).</li>
+                                <li><strong>Item 2:</strong> Highlight Answer (Experiment Failure).</li>
+                                <li><strong>Item 3:</strong> Identify Idea (Modernist Architecture).</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-md border-2 border-violet-300 text-center min-w-[200px]">
+                            <p class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-2">Sim Timer</p>
+                            <div class="text-5xl font-mono font-bold text-violet-700" id="sim-timer-display">01:30</div>
+                            <button onclick="startSimTimer()" class="mt-4 bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-6 rounded-lg transition-colors w-full">Start Item</button>
+                        </div>
+                    </div>
+
+                    <!-- Digital Fluency Checklist -->
+                    <div class="bg-white border-2 border-slate-200 p-8 rounded-xl">
+                        <h4 class="font-bold text-violet-800 text-2xl mb-4">Digital Fluency Checklist</h4>
+                        <div class="space-y-4 text-xl text-slate-700">
+                            <label class="flex items-center gap-4 cursor-pointer">
+                                <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                <span>Did I use the scroll wheel effectively to keep the whole passage in view?</span>
+                            </label>
+                            <label class="flex items-center gap-4 cursor-pointer">
+                                <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                <span>Did I click 'Next' immediately after finalizing a multi-choice answer?</span>
+                            </label>
+                            <label class="flex items-center gap-4 cursor-pointer">
+                                <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                <span>Did I re-read the sentence before and after the gap for "Complete the Passage"?</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Independent Marathon -->
+                    <div class="pt-8 border-t border-slate-200">
+                        <h3 class="text-3xl font-bold text-violet-800 mb-6">Step 7: The Independent Mastery Marathon (Real Practice)</h3>
+                        <p class="text-xl text-slate-600 mb-8">Apply your C1 strategies to these authentic, high-level DET tasks.</p>
+                        
+                        <!-- Task 1: Missing Sentence -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-violet-900">Task 1: Select the Missing Sentence</h4>
+                                <button onclick="checkMarathon1()" class="text-lg font-bold text-white bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors">Check Answer</button>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg border border-slate-300 font-serif text-lg leading-relaxed text-slate-800 mb-6">
+                                "Quantum entanglement, a phenomenon where particles remain interconnected such that the state of one instantly influences another regardless of distance, has long perplexed physicists. Einstein famously derided it as 'spooky action at a distance.' <strong>[ _________________ ]</strong>. Today, this principle forms the foundational architecture of emerging quantum cryptography systems, promising theoretically unhackable communication networks."
+                            </div>
+                            <div class="space-y-3">
+                                <label class="flex items-start gap-3 p-3 border border-slate-300 rounded-lg bg-white cursor-pointer hover:bg-violet-50">
+                                    <input type="radio" name="m1-opt" value="A" class="mt-1 w-5 h-5 accent-violet-600">
+                                    <span class="text-lg">(A) He preferred classical mechanics over newer theories.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 border border-slate-300 rounded-lg bg-white cursor-pointer hover:bg-violet-50">
+                                    <input type="radio" name="m1-opt" value="B" class="mt-1 w-5 h-5 accent-violet-600">
+                                    <span class="text-lg">(B) However, subsequent empirical experiments irrefutably demonstrated its reality.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 border border-slate-300 rounded-lg bg-white cursor-pointer hover:bg-violet-50">
+                                    <input type="radio" name="m1-opt" value="C" class="mt-1 w-5 h-5 accent-violet-600">
+                                    <span class="text-lg">(C) Entanglement is a very difficult concept for students to grasp.</span>
+                                </label>
+                            </div>
+                            <div id="fb-m1" class="mt-4 font-bold text-xl min-h-[2rem]"></div>
+                        </div>
+
+                        <!-- Task 2: Highlight Answer (Simulated) -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-violet-900">Task 2: Highlight the Answer</h4>
+                                <button onclick="checkMarathon2()" class="text-lg font-bold text-white bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors">Check Phrase</button>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg border border-slate-300 font-serif text-lg leading-relaxed text-slate-800 mb-4">
+                                "The transition from modernism to postmodernism in architectural design was characterized by a distinct rejection of the former's austere functionalism. Where modernist pioneers championed the dictum 'form follows function,' often resulting in stark, unornamented concrete monoliths, postmodernists embraced pastiche, historical reference, and playful irony. This stylistic rebellion sought to reintroduce human warmth and contextual relevance to urban landscapes that had become profoundly alienating."
+                            </div>
+                            <p class="text-lg font-bold text-slate-700 mb-2">Question: Highlight (Type) the exact phrase that explains <em>why</em> postmodern architects rebelled.</p>
+                            <input type="text" id="m2-input" class="w-full drill-input p-3 rounded border border-slate-300 text-lg" placeholder="Type the exact 6-to-8 word phrase here...">
+                            <div id="fb-m2" class="mt-4 font-bold text-xl min-h-[2rem]"></div>
+                        </div>
+
+                        <!-- Task 3: Identify Idea -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-violet-900">Task 3: Identify the Idea</h4>
+                                <button onclick="checkMarathon3()" class="text-lg font-bold text-white bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors">Check Idea</button>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg border border-slate-300 font-serif text-lg leading-relaxed text-slate-800 mb-6">
+                                "Corporate governance paradigms are shifting from a strictly shareholder-centric model, prioritizing short-term financial returns, towards a broader stakeholder-capitalism approach. This evolution acknowledges that long-term corporate viability is inextricably linked to environmental sustainability, employee welfare, and community engagement. Consequently, boards of directors are increasingly held accountable for metrics that extend well beyond the quarterly balance sheet."
+                            </div>
+                            <p class="text-lg font-bold text-slate-700 mb-2">Select the statement that best captures the main idea:</p>
+                            <div class="space-y-3">
+                                <label class="flex items-start gap-3 p-3 border border-slate-300 rounded-lg bg-white cursor-pointer hover:bg-violet-50">
+                                    <input type="radio" name="m3-opt" value="A" class="mt-1 w-5 h-5 accent-violet-600">
+                                    <span class="text-lg">(A) Companies are losing profits because they are too focused on employee welfare.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 border border-slate-300 rounded-lg bg-white cursor-pointer hover:bg-violet-50">
+                                    <input type="radio" name="m3-opt" value="B" class="mt-1 w-5 h-5 accent-violet-600">
+                                    <span class="text-lg">(B) The definition of corporate success has broadened to include social and environmental responsibility alongside financial metrics.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 border border-slate-300 rounded-lg bg-white cursor-pointer hover:bg-violet-50">
+                                    <input type="radio" name="m3-opt" value="C" class="mt-1 w-5 h-5 accent-violet-600">
+                                    <span class="text-lg">(C) Quarterly balance sheets are no longer utilized by modern corporate boards.</span>
+                                </label>
+                            </div>
+                            <div id="fb-m3" class="mt-4 font-bold text-xl min-h-[2rem]"></div>
+                        </div>
+
+                    </div>
+
+                    <!-- Step 8: Error Clinic -->
+                    <div class="pt-10 border-t border-slate-200">
+                        <h3 class="text-3xl font-bold text-red-800 mb-6">Step 8: The Error-Correction Clinic</h3>
+                        <p class="text-xl text-slate-700 mb-6">Identify and correct the "Cohesion Pitfalls" in this C1-level paragraph.</p>
+                        
+                        <div class="p-6 bg-red-50 border border-red-200 rounded-xl mb-6">
+                            <p class="font-serif text-xl text-slate-800 leading-loose">
+                                "The Industrial Revolution marked a turning point. <span class="bg-red-200 font-bold px-1 rounded">Moreover</span>, it led to urbanization. People moved to cities for work. <span class="bg-red-200 font-bold px-1 rounded">This</span> resulted in overcrowding. <span class="bg-red-200 font-bold px-1 rounded">However</span>, the government did nothing. <span class="bg-red-200 font-bold px-1 rounded">Consequently</span>, the standard of living for the poor remained low. <span class="bg-red-200 font-bold px-1 rounded">In contrast</span>, the middle class grew wealthy."
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-6 border border-slate-300 rounded-xl">
+                            <h4 class="font-bold text-slate-800 text-xl mb-4">Correction Task:</h4>
+                            <p class="text-lg text-slate-600 mb-6">The transitions above are repetitive or basic. Replace them with: <strong class="text-emerald-700">Subsequently, Such mass migration, Notwithstanding this demographic shift, As a direct result, conversely.</strong></p>
+                            
+                            <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl font-serif leading-loose focus:ring-4 focus:ring-red-200 outline-none h-48" placeholder="Rewrite the paragraph using the advanced cohesive devices..."></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Reflection (Rose Theme) -->
+        <div class="mb-12 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-3xl font-bold text-rose-900">Step 9-10: AI Lab & Review</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-rose-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- AI Prompting -->
+                    <div class="bg-rose-50 p-8 rounded-xl border-l-4 border-rose-500 shadow-sm space-y-6">
+                        <h3 class="text-3xl font-bold text-rose-900 mb-4"><i class="fas fa-robot mr-3"></i>Step 9: The AI Tutor Prompting Lab</h3>
+                        
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">Prompt 1: The 'Drill Sergeant'</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-1">Generate a 300-word C1-level academic passage about 'Neuroplasticity'. Remove three sentences and provide 4 options for each. I will select the correct ones. Correct me immediately if my reasoning regarding cohesive devices is flawed.</p>
+                                <button onclick="copyToClipboard('ai-prompt-1')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">Prompt 2: The 'Adaptive Evaluator'</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-2">I will provide a Title and a 'Main Idea' for an academic text. Evaluate if they meet C1 criteria for the Duolingo English Test. Focus on whether I have captured the nuance or just the literal facts. Suggest more 'lexically dense' alternatives for my response.</p>
+                                <button onclick="copyToClipboard('ai-prompt-2')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reflection -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-rose-800 mb-6">Step 10: Metacognitive Performance Log</h3>
+                        <p class="text-xl text-slate-700 italic mb-6">"Precision in reading is the key to unlocking the highest tiers of the DET; your ability to see the invisible threads of logic will define your success."</p>
+                        
+                        <div class="overflow-x-auto rounded-xl border border-slate-300">
+                            <table class="w-full text-lg">
+                                <thead>
+                                    <tr class="bg-rose-50 text-rose-900">
+                                        <th class="p-4">Task Stage</th>
+                                        <th class="p-4">Time Remaining</th>
+                                        <th class="p-4">Mistakes Made</th>
+                                        <th class="p-4">Strategy for Next Session</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-slate-700">Simulation</td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="e.g. 10s"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="Missed pronoun cue"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="Track 'These/Those' targets"></td>
+                                    </tr>
+                                    <tr class="bg-slate-50">
+                                        <td class="p-4 font-bold text-slate-700">Marathon</td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                    </tr>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-slate-700">Error Clinic</td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-xl font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-cyan-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- State Management ---
+        let attempts = {
+            strategy: 0,
+            vocab: 0,
+            scramble: 0,
+            errors: 0,
+            inference: 0,
+            synonyms: 0,
+            guided1: 0,
+            guided2: 0,
+            m1: 0,
+            m2: 0,
+            m3: 0
+        };
+
+        const ansVocab = { v1: 'B', v2: 'D', v3: 'E', v4: 'A', v5: 'C' };
+        
+        const ansScramble = "cba"; // C, B, A order logic
+        
+        const ansErrors = [
+            "the city expanded rapidly, but this growth caused traffic issues",
+            "he studied for years; nevertheless, he failed the exam", // accept yet/nevertheless
+            "the data is clear, although the conclusion is debated" // accept although/even though
+        ];
+
+        const ansGuided2 = {
+            up1: ["furthermore", "moreover", "additionally"],
+            up2: ["consequently", "therefore", "thus", "as a result"],
+            up3: ["conversely", "alternatively", "in contrast", "on the contrary"]
+        };
+
+        function cleanString(str) {
+            return str.toLowerCase().replace(/[.,!?'"()]/g, '').trim().replace(/\s+/g, ' ');
+        }
+
+        // --- Logic Handlers ---
+
+        function handleInputCheck(idList, ansObj, attemptKey, feedbackId, customLogic) {
+            let correctCount = 0;
+            const total = idList.length;
+            const currentAttempt = attempts[attemptKey];
+            const feedback = document.getElementById(feedbackId);
+
+            idList.forEach((id, idx) => {
+                const el = document.getElementById(id);
+                const val = cleanString(el.value);
+                
+                let isCorrect = false;
+                let displayAns = "";
+
+                if (typeof customLogic === 'function') {
+                    // Custom logic for complex matching
+                    const result = customLogic(val, idx, el);
+                    isCorrect = result.ok;
+                    displayAns = result.target;
+                } else {
+                    const rawAns = ansObj[id] || ansObj[idx];
+                    displayAns = Array.isArray(rawAns) ? rawAns[0] : rawAns;
+                    isCorrect = val === String(displayAns).toLowerCase();
+                }
+
+                if (isCorrect) {
+                    el.classList.add('correct');
+                    el.classList.remove('incorrect');
+                    correctCount++;
+                } else {
+                    el.classList.add('incorrect');
+                    el.classList.remove('correct');
+                    if (currentAttempt >= 1) { // Reveal on 2nd fail
+                        el.value = displayAns;
+                        el.classList.add('revealed');
+                    }
+                }
+            });
+
+            if (correctCount === total) {
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Perfect!</span>';
+                idList.forEach(id => document.getElementById(id).disabled = true);
+                attempts[attemptKey] = 2; // Lock
+            } else {
+                attempts[attemptKey]++;
+                if (attempts[attemptKey] >= 2) {
+                    feedback.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answers revealed.</span>';
+                    idList.forEach(id => document.getElementById(id).disabled = true);
+                } else {
+                    feedback.innerHTML = `<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>${correctCount}/${total} correct. 1 attempt left.</span>`;
+                }
+            }
+        }
+
+        function checkStrategy() {
+            const fb = document.getElementById('fb-strategy');
+            const selected = document.querySelector('input[name="strat-opt"]:checked');
+            
+            if (!selected) {
+                fb.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Please select an option first.</span>';
+                return;
+            }
+
+            if (selected.value === 'B') {
+                fb.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Correct! Option B logically bridges "diagnostic identification" with "efficiency" and correctly uses the pronoun "It" for AI.</span>';
+                document.querySelectorAll('input[name="strat-opt"]').forEach(el => el.disabled = true);
+                attempts.strategy = 2;
+            } else {
+                attempts.strategy++;
+                if (attempts.strategy >= 2) {
+                    fb.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answer revealed: Option B is correct because it explicitly introduces the "efficiency" mentioned in the next sentence.</span>';
+                    const correctInput = document.querySelector('input[name="strat-opt"][value="B"]');
+                    if(correctInput) correctInput.checked = true;
+                    document.querySelectorAll('input[name="strat-opt"]').forEach(el => el.disabled = true);
+                } else {
+                    fb.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Incorrect. Think about which option introduces the concept of "efficiency". 1 attempt left.</span>';
+                }
+            }
+        }
+
+        function checkVocab() {
+            handleInputCheck(['v1', 'v2', 'v3', 'v4', 'v5'], ansVocab, 'vocab', 'fb-v');
+        }
+
+        function checkScramble() {
+            const input = document.getElementById('scramble-input');
+            const feedback = document.getElementById('fb-scramble');
+            const val = cleanString(input.value).replace(/[^a-c]/g, ''); // strip to just a,b,c
+            
+            if (val === ansScramble) {
+                input.classList.add('correct');
+                input.classList.remove('incorrect');
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Logical flow established (C -> B -> A).</span>';
+                input.disabled = true;
+                attempts.scramble = 2;
+            } else {
+                input.classList.add('incorrect');
+                attempts.scramble++;
+                if (attempts.scramble >= 2) {
+                    input.value = "C - B - A";
+                    input.classList.add('revealed');
+                    input.disabled = true;
+                    feedback.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Order revealed. Surge -> Shift -> Adaptation.</span>';
+                } else {
+                    feedback.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Check logical connectors. 1 attempt left.</span>';
+                }
+            }
+        }
+
+        function checkErrors() {
+            handleInputCheck(['err1', 'err2', 'err3'], ansErrors, 'errors', 'fb-errors', (val, idx) => {
+                let ok = false;
+                let target = ansErrors[idx];
+                
+                if (idx === 0 && val.includes("this growth")) ok = true;
+                if (idx === 1 && (val.includes("nevertheless") || val.includes("yet"))) ok = true;
+                if (idx === 2 && (val.includes("although") || val.includes("even though") || val.includes("notwithstanding the debated"))) ok = true;
+
+                return { ok, target: target.charAt(0).toUpperCase() + target.slice(1) + "." };
+            });
+        }
+
+        function checkSynonyms() {
+            // Inference
+            const inf = document.getElementById('inf1');
+            const valInf = cleanString(inf.value);
+            let infOk = false;
+            if (valInf.includes('imitat') || valInf.includes('nature') || valInf.includes('biology') || valInf.includes('copy')) infOk = true;
+
+            if (infOk) {
+                inf.classList.add('correct');
+                inf.classList.remove('incorrect');
+                inf.disabled = true;
+            } else {
+                inf.classList.add('incorrect');
+                if (attempts.inference >= 1) {
+                    inf.value = "Imitating nature/biology for design.";
+                    inf.classList.add('revealed');
+                    inf.disabled = true;
+                }
+            }
+
+            // Synonyms
+            handleInputCheck(['syn1', 'syn2', 'syn3', 'syn4', 'syn5'], [], 'synonyms', 'fb-syn', (val, idx) => {
+                const targetsList = [
+                    ["alter", "modify", "transform"],
+                    ["substantial", "significant", "considerable"],
+                    ["demonstrate", "illustrate", "exhibit"],
+                    ["utilize", "employ", "implement"],
+                    ["dilemma", "complication", "issue"]
+                ];
+                const ok = targetsList[idx].some(t => val.includes(t));
+                return { ok, target: targetsList[idx][0].charAt(0).toUpperCase() + targetsList[idx][0].slice(1) };
+            });
+
+            attempts.inference = attempts.synonyms; // sync
+        }
+
+        function checkGuided1() {
+            const drop = document.getElementById('guided-drop');
+            const fb = document.getElementById('fb-guided1');
+            
+            if (drop.value === "B") {
+                drop.classList.add('correct');
+                drop.classList.remove('incorrect');
+                fb.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Correct! Legacy infrastructure.</span>';
+                drop.disabled = true;
+                attempts.guided1 = 2;
+            } else {
+                drop.classList.add('incorrect');
+                attempts.guided1++;
+                if (attempts.guided1 >= 2) {
+                    drop.value = "B";
+                    drop.classList.add('revealed');
+                    drop.disabled = true;
+                    fb.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answer revealed.</span>';
+                } else {
+                    fb.innerHTML = '<span class="text-orange-500">Try again.</span>';
+                }
+            }
+        }
+
+        function checkGuided2() {
+            handleInputCheck(['up1', 'up2', 'up3'], ansGuided2, 'guided2', 'fb-guided2', (val, idx, el) => {
+                const targets = ansGuided2[el.id];
+                const ok = targets.some(t => val.includes(t));
+                return { ok, target: targets[0].charAt(0).toUpperCase() + targets[0].slice(1) };
+            });
+        }
+
+        // --- Marathon Logic ---
+        function checkMarathon1() {
+            const fb = document.getElementById('fb-m1');
+            const selected = document.querySelector('input[name="m1-opt"]:checked');
+            
+            if (!selected) {
+                fb.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Please select an option.</span>';
+                return;
+            }
+
+            if (selected.value === 'B') {
+                fb.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Correct! "However" signals the transition from Einstein\'s skepticism to the modern proven reality.</span>';
+                document.querySelectorAll('input[name="m1-opt"]').forEach(el => el.disabled = true);
+                attempts.m1 = 2;
+            } else {
+                attempts.m1++;
+                if (attempts.m1 >= 2) {
+                    fb.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answer revealed: (B) is correct as it bridges the historical doubt with the modern application.</span>';
+                    const correctInput = document.querySelector('input[name="m1-opt"][value="B"]');
+                    if(correctInput) correctInput.checked = true;
+                    document.querySelectorAll('input[name="m1-opt"]').forEach(el => el.disabled = true);
+                } else {
+                    fb.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Incorrect. Look for the contrastive discourse marker connecting the past doubt and present fact. 1 attempt left.</span>';
+                }
+            }
+        }
+
+        function checkMarathon2() {
+            const input = document.getElementById('m2-input');
+            const fb = document.getElementById('fb-m2');
+            const val = cleanString(input.value);
+            
+            // Allow acceptable variations of the key phrase
+            let isCorrect = val.includes("reintroduce human warmth") || val.includes("contextual relevance") || val.includes("reintroduce human warmth and contextual relevance");
+
+            if (isCorrect) {
+                input.classList.add('correct');
+                input.classList.remove('incorrect');
+                fb.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Excellent extraction! This phrase captures their exact motivation.</span>';
+                input.disabled = true;
+                attempts.m2 = 2;
+            } else {
+                input.classList.add('incorrect');
+                attempts.m2++;
+                if (attempts.m2 >= 2) {
+                    input.value = "to reintroduce human warmth and contextual relevance";
+                    input.classList.add('revealed');
+                    input.disabled = true;
+                    fb.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answer revealed.</span>';
+                } else {
+                    fb.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Incorrect. Look at the final sentence for their overarching goal. 1 attempt left.</span>';
+                }
+            }
+        }
+
+        function checkMarathon3() {
+            const fb = document.getElementById('fb-m3');
+            const selected = document.querySelector('input[name="m3-opt"]:checked');
+            
+            if (!selected) {
+                fb.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Please select an option.</span>';
+                return;
+            }
+
+            if (selected.value === 'B') {
+                fb.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Perfect! This synthesizes the shift from purely financial returns to broader responsibilities.</span>';
+                document.querySelectorAll('input[name="m3-opt"]').forEach(el => el.disabled = true);
+                attempts.m3 = 2;
+            } else {
+                attempts.m3++;
+                if (attempts.m3 >= 2) {
+                    fb.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answer revealed: (B) captures the "main idea" (the paradigm shift), while others misinterpret details.</span>';
+                    const correctInput = document.querySelector('input[name="m3-opt"][value="B"]');
+                    if(correctInput) correctInput.checked = true;
+                    document.querySelectorAll('input[name="m3-opt"]').forEach(el => el.disabled = true);
+                } else {
+                    fb.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Incorrect. Be careful of extreme distractor words like "losing profits" or "no longer utilized". 1 attempt left.</span>';
+                }
+            }
+        }
+
+        // --- Sim Timer ---
+        let simInterval;
+        let simTime = 90;
+
+        function startSimTimer() {
+            clearInterval(simInterval);
+            simTime = 90;
+            const display = document.getElementById('sim-timer-display');
+            display.classList.remove('text-red-600');
+            display.classList.add('text-violet-700');
+            
+            simInterval = setInterval(() => {
+                simTime--;
+                const mins = Math.floor(simTime / 60);
+                const secs = simTime % 60;
+                display.innerText = `0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                
+                if (simTime <= 10) {
+                    display.classList.remove('text-violet-700');
+                    display.classList.add('text-red-600');
+                }
+                
+                if(simTime <= 0) {
+                    clearInterval(simInterval);
+                    alert("Time is up for this item! Click 'Next'.");
+                }
+            }, 1000);
+        }
+
+        // --- Utils ---
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            // Store the original text on the first click
+            if (!btn.dataset.originalText) {
+                btn.dataset.originalText = btn.innerText;
+            }
+            
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = btn.dataset.originalText;
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '4000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert("Prompt copied to clipboard!");
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers and reset attempts?")) {
+                attempts = { strategy: 0, vocab: 0, scramble: 0, errors: 0, inference: 0, synonyms: 0, guided1: 0, guided2: 0, m1: 0, m2: 0, m3: 0 };
+
+                document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('correct', 'incorrect', 'revealed');
+                });
+                
+                document.querySelectorAll('select').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('correct', 'incorrect', 'revealed');
+                });
+
+                document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+                
+                document.querySelectorAll('[id^="fb-"]').forEach(f => f.innerHTML = "");
+
+                document.querySelectorAll('.answer-box').forEach(el => {
+                    el.classList.add('hidden');
+                    el.classList.remove('visible');
+                });
+
+                clearInterval(simInterval);
+                document.getElementById('sim-timer-display').innerText = "01:30";
+                document.getElementById('sim-timer-display').classList.remove('text-red-600');
+            }
+        }
+
+    </script>
+</body>
+</html>

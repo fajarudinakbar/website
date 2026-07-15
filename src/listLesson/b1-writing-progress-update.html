@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>B1 (GSE 50) Writing - The Weekly Progress Update</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            overflow-wrap: normal;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 4px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 3px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+        .text-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            margin-top: 0.75rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .text-input:disabled {
+            background-color: #f1f5f9;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            white-space: nowrap;
+        }
+        .neo-btn:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .neo-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Option Labels (Radios) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.6;
+            font-weight: 800;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.35rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            accent-color: #0f172a;
+        }
+        .option-label:hover:not(.locked) {
+            background-color: #f8fafc;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .option-label.locked {
+            cursor: not-allowed;
+        }
+
+        /* 3-State Feedback Styles */
+        .state-amber {
+            background-color: #fef08a; 
+            border-color: #ca8a04;
+            color: #854d0e;
+        }
+        .state-rose {
+            background-color: #fecdd3; 
+            border-color: #e11d48;
+            color: #9f1239;
+        }
+        .state-emerald {
+            background-color: #a7f3d0; 
+            border-color: #059669;
+            color: #065f46;
+        }
+
+        /* AI Prompt Box */
+        .ai-prompt-neo {
+            background-color: #e0f2fe;
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            padding: 1.5rem;
+            position: relative;
+        }
+        .ai-prompt-neo::before {
+            content: "AI ASSISTANT";
+            position: absolute;
+            top: -16px;
+            left: 16px;
+            background: #0ea5e9;
+            color: white;
+            padding: 4px 12px;
+            font-weight: 900;
+            border: 3px solid #0f172a;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 sm:p-6 md:p-10">
+
+    <div class="max-w-7xl mx-auto bg-white p-6 sm:p-10 lg:p-12 border-4 border-dark shadow-neo">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base sm:text-xl text-dark mb-10 flex gap-3 font-black uppercase tracking-wider items-center flex-wrap whitespace-nowrap">
+            <span class="bg-[#c4b5fd] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Professional English</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#c4b5fd] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Writing Focus</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#facc15] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">B1 / GSE 50</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#818cf8] text-white px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">The Weekly Progress Update</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-8 mb-10 md:mb-14 border-b-4 border-dark pb-10">
+            <div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-dark uppercase tracking-tight mb-5 leading-tight">
+                    The Weekly Progress Update
+                </h1>
+                <p class="text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-4 py-2 border-3 border-dark">
+                    Topic: Drafting and Structuring a Professional Status Report
+                </p>
+            </div>
+            <div class="flex gap-4 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-3 px-6 py-4 text-xl text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-6 h-6"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#fefce8] border-4 border-dark p-6 md:p-8 mb-10 md:mb-14 shadow-neo flex items-start gap-5">
+            <div class="bg-[#facc15] p-3 border-3 border-dark shrink-0">
+                <i data-lucide="pen-tool" class="w-8 h-8 text-dark"></i>
+            </div>
+            <p class="text-xl md:text-2xl text-dark font-bold leading-relaxed">
+                <span class="uppercase font-black text-2xl mr-2">Instructions:</span> Complete the <strong>Preparation</strong> tasks to build your vocabulary. Then study the model email in Section 2 and complete the writing exercises. Your goal is to produce clear and professional sentences for the workplace. Interactive quizzes use a strict 2-attempt system.
+            </p>
+        </div>
+
+        <!-- Accordion Container -->
+        <div class="space-y-10 md:space-y-12">
+
+            <!-- Part 1: Preparation (Cyan Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            1
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Preparation (Tasks 1 to 2)</span>
+                    </div>
+                    <div id="icon-wrapper-part1" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part1" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 1 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 1</span> Writing Habits Warm Up
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t1', this, 'Show Sample Ideas')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Ideas</button>
+                            </div>
+                            <ul class="list-disc pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>When writing a report for your supervisor, what is your biggest challenge? Formatting, choosing the right words, or organizing your ideas?</li>
+                                <li>Why is writing in bullet points often better than writing long paragraphs in professional emails?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your thoughts here..."></textarea>
+                            
+                            <div id="ans-t1" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="lightbulb" class="w-8 h-8 inline mr-2 text-[#eab308] fill-current"></i>Sample Ideas:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li>Choosing the right words to sound professional is often difficult, especially when explaining a mistake.</li>
+                                    <li>Bullet points are better because they are highly scannable. Supervisors are busy and need to see the key actions immediately.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 1.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-10">
+                                <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 1.1</span> AI Support for Action Verbs
+                            </h3>
+                            <div class="ai-prompt-neo mb-8 mt-4">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Explain the importance of starting bullet points with Action Verbs (for example: Finalized, Initiated, Collaborated) in a professional medical status report. Provide a list of five action verbs suitable for a B1 English learner."</p>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Draft your expected findings before comparing it to the AI's response.</p>
+                            <textarea class="text-input text-2xl mb-6" placeholder="Your draft..."></textarea>
+                            <button onclick="toggleAnswer('ans-t1-1', this, 'Show AI Sample Response')" class="neo-btn bg-[#0ea5e9] text-white px-5 py-3 text-xl">Show AI Sample Response</button>
+                            
+                            <div id="ans-t1-1" class="answer-box hidden mt-8 p-6 bg-slate-50 border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="bot" class="w-8 h-8 inline mr-2 text-[#0ea5e9]"></i>AI Response:</strong>
+                                <p class="font-bold text-xl md:text-2xl leading-relaxed italic border-l-4 border-[#0ea5e9] pl-4">"Action verbs make your writing strong and confident. Instead of saying 'I was working on', saying 'I Finalized' shows exact results. It removes unnecessary words. Good action verbs for a B1 learner include: Completed, Organized, Resolved, Analyzed, and Documented."</p>
+                            </div>
+                        </div>
+
+                        <!-- Task 2 (Interactive Vocab) -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 border-b-4 border-dark pb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 2</span> Writing Vocabulary Check
+                                </h3>
+                                <button onclick="checkVocab()" class="neo-btn bg-[#38bdf8] text-dark px-8 py-4 text-xl">
+                                    Submit Answers
+                                </button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-8">Select the correct definition for the CAPITALIZED action word used in writing professional updates.</p>
+                            
+                            <div id="vocab-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Reading Content (Blue Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#eff6ff]">
+                <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black">
+                            <i data-lucide="mail" class="w-8 h-8 md:w-10 md:h-10"></i>
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Core Content: Email Model</span>
+                    </div>
+                    <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-10">
+                        
+                        <h3 class="text-2xl md:text-3xl font-black text-dark uppercase tracking-wider mb-6 text-center">Professional Email Model</h3>
+                        
+                        <!-- Email Client Mockup (Neo-Brutalist Adaptation) -->
+                        <div class="flex flex-col border-4 border-dark shadow-neo bg-white overflow-hidden">
+                            
+                            <!-- Email Header -->
+                            <div class="bg-slate-50 border-b-4 border-dark p-6 md:p-8 space-y-3 font-medium text-xl md:text-2xl">
+                                <div class="flex flex-col md:flex-row gap-2 md:gap-4">
+                                    <span class="font-black text-slate-500 uppercase tracking-wide md:w-28 shrink-0">Subject:</span>
+                                    <span class="font-black text-dark">Progress Update Week 18 (May 4, 2026)</span>
+                                </div>
+                                <div class="flex flex-col md:flex-row gap-2 md:gap-4">
+                                    <span class="font-black text-slate-500 uppercase tracking-wide md:w-28 shrink-0">To:</span>
+                                    <span class="text-slate-800">Dr. Hiroshi Tanaka, Senior Supervisor</span>
+                                </div>
+                                <div class="flex flex-col md:flex-row gap-2 md:gap-4">
+                                    <span class="font-black text-slate-500 uppercase tracking-wide md:w-28 shrink-0">From:</span>
+                                    <span class="text-slate-800">Cardiology Department Research Intern</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Email Body -->
+                            <div class="p-6 md:p-10 bg-white">
+                                <div class="text-xl md:text-2xl leading-relaxed text-slate-800 font-medium space-y-6">
+                                    <p>Dear Dr. Tanaka,</p>
+                                    <p>Please find below the summary of my activities and research achievements for the current week. Following our last meeting, I have focused on the following objectives:</p>
+                                    
+                                    <ul class="space-y-5 my-8">
+                                        <li class="flex items-start gap-4">
+                                            <i data-lucide="check-circle-2" class="text-brand-600 w-8 h-8 shrink-0 mt-1"></i>
+                                            <p><strong class="font-black bg-brand-200 border-2 border-dark px-2 uppercase">FINALIZED</strong> the data entry for the Phase 2 heart valve study. All 50 patient records are now updated in the central database.</p>
+                                        </li>
+                                        <li class="flex items-start gap-4">
+                                            <i data-lucide="check-circle-2" class="text-brand-600 w-8 h-8 shrink-0 mt-1"></i>
+                                            <p><strong class="font-black bg-brand-200 border-2 border-dark px-2 uppercase">COLLABORATED</strong> with the radiology team to review three remaining echocardiogram reports. We identified a small <strong class="font-black bg-amber-200 border-2 border-dark px-2 uppercase">DISCREPANCY</strong> in one report, which is currently being corrected.</p>
+                                        </li>
+                                        <li class="flex items-start gap-4">
+                                            <i data-lucide="check-circle-2" class="text-brand-600 w-8 h-8 shrink-0 mt-1"></i>
+                                            <p><strong class="font-black bg-brand-200 border-2 border-dark px-2 uppercase">INITIATED</strong> the literature review for our upcoming paper on pediatric arrhythmias. I have already cataloged fifteen relevant peer-reviewed articles.</p>
+                                        </li>
+                                        <li class="flex items-start gap-4">
+                                            <i data-lucide="check-circle-2" class="text-brand-600 w-8 h-8 shrink-0 mt-1"></i>
+                                            <p><strong class="font-black bg-brand-200 border-2 border-dark px-2 uppercase">ATTENDED</strong> the multidisciplinary team (MDT) meeting on Wednesday to observe the surgical planning for the aortic aneurysm case.</p>
+                                        </li>
+                                        <li class="flex items-start gap-4">
+                                            <i data-lucide="check-circle-2" class="text-brand-600 w-8 h-8 shrink-0 mt-1"></i>
+                                            <p><strong class="font-black bg-brand-200 border-2 border-dark px-2 uppercase">SCHEDULED</strong> a follow-up interview with the pharmaceutical representative to clarify the side effects of the new beta-blocker trial.</p>
+                                        </li>
+                                    </ul>
+
+                                    <div class="bg-slate-50 border-4 border-dark p-6 shadow-neo-sm mt-10">
+                                        <p class="font-black text-dark text-2xl uppercase tracking-wider mb-4 border-b-2 border-dark pb-2 inline-block">Upcoming Objectives (Week 19):</p>
+                                        <ul class="list-disc pl-8 space-y-3 font-bold">
+                                            <li>Incorporate the supervisor's feedback into the draft of the arrhythmia paper.</li>
+                                            <li>Perform a preliminary <strong class="font-black bg-blue-200 border-2 border-dark px-2 uppercase">ANALYSIS</strong> of the Phase 2 data trends.</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="mt-10">
+                                        <p>Thank you for your guidance.</p>
+                                        <p class="mt-4">Best regards,</p>
+                                        <p class="mt-2 font-black text-dark">Junior Researcher<br>
+                                        <span class="text-lg md:text-xl text-slate-500 font-bold uppercase tracking-wide">Cardiology Department</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Email Mockup -->
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 3: Understanding (Emerald Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            3
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Writing Structure (Tasks 3 to 5)</span>
+                    </div>
+                    <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 3 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 3</span> Reverse Outlining
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t3', this, 'Show Model Outline')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Model Outline</button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Analyze the email in Section 2. Break down the email structure by explaining the purpose of each section below.</p>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>The Opening Paragraph:</li>
+                                <li>The Main Bullet Points:</li>
+                                <li>The Upcoming Objectives Box:</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your structural breakdown here..."></textarea>
+                            
+                            <div id="ans-t3" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-square" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Model Outline:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li><strong>Opening Paragraph:</strong> Sets a polite tone and clearly states the context (a summary of the current week).</li>
+                                    <li><strong>Main Bullet Points:</strong> Lists past actions and achievements concisely, starting with strong verbs.</li>
+                                    <li><strong>Upcoming Objectives:</strong> Shows forward planning and sets expectations for next week.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 4 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 4</span> Sentence Transformation
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t4', this, 'Show Improved Sentences')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Improved Sentences</button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Rewrite these informal, wordy sentences into professional bullet points. Use the strong action verbs from Task 2 (Finalized, Initiated, Scheduled).</p>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>"I finally finished putting all the patient data into the computer system for Phase 2."</li>
+                                <li>"I just started looking for papers for the new pediatric study."</li>
+                                <li>"I put a meeting on the calendar with the pharmacy rep for next week."</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your rewritten bullet points here..."></textarea>
+                            
+                            <div id="ans-t4" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-square" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Improved Sentences:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li><strong>FINALIZED</strong> data entry for the Phase 2 study.</li>
+                                    <li><strong>INITIATED</strong> the literature review for the pediatric study.</li>
+                                    <li><strong>SCHEDULED</strong> a meeting with the pharmaceutical representative.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 5 (Interactive Tone Check) -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 border-b-4 border-dark pb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 5</span> Tone Evaluation Check
+                                </h3>
+                                <button onclick="checkTone()" class="neo-btn bg-[#4ade80] text-dark px-8 py-4 text-xl">
+                                    Submit Answers
+                                </button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-8">Evaluate the tone of the following sentences. Are they Appropriate or Inappropriate for a formal weekly report to a supervisor?</p>
+                            <div id="tone-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 4: Analysis (Orange Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#ffedd5]">
+                <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            4
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Drafting (Tasks 6 to 7)</span>
+                    </div>
+                    <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 6: Sentence Combining -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 6</span> Sentence Combining
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t6', this, 'Show Combinations')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Combinations</button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-6">Writing skill: Combining ideas clearly. Combine the cause and effect into one professional sentence using words like "resulting in", "therefore", or "which is".</p>
+                            
+                            <div class="space-y-6">
+                                <div class="bg-white border-4 border-dark p-6">
+                                    <p class="font-bold text-xl text-dark mb-4">1. Cause: We found a discrepancy in the report.<br>Effect: We are currently correcting the report.</p>
+                                    <input type="text" class="text-input mt-0 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] flex-1 text-xl py-3 px-4" placeholder="Combine these...">
+                                </div>
+
+                                <div class="bg-white border-4 border-dark p-6">
+                                    <p class="font-bold text-xl text-dark mb-4">2. Cause: I attended the MDT meeting on Wednesday.<br>Effect: I gained insight into the surgical planning process.</p>
+                                    <input type="text" class="text-input mt-0 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] flex-1 text-xl py-3 px-4" placeholder="Combine these...">
+                                </div>
+                            </div>
+                            
+                            <div id="ans-t6" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-circle" class="w-8 h-8 inline mr-2 text-[#eab308]"></i>Suggested Combinations:</strong>
+                                <ul class="list-disc pl-8 space-y-4 font-bold text-xl md:text-2xl">
+                                    <li>We found a discrepancy in the report, <strong>which is</strong> currently being corrected.</li>
+                                    <li>I attended the MDT meeting on Wednesday, <strong>resulting in</strong> valuable insight into the surgical planning process.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 6.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 6.1</span> AI Sentence Review
+                            </h3>
+                            <div class="ai-prompt-neo mb-8">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Review the following draft sentence for a weekly report: 'I saw that the data was wrong so I fixed it up real fast.' Rewrite it to be formal, concise, and appropriate for a medical supervisor. Explain the changes to a B1 learner."</p>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Attempt to rewrite the sentence yourself before using the AI prompt.</p>
+                            <textarea class="text-input text-2xl mb-4" placeholder="Your formal rewrite..."></textarea>
+                        </div>
+
+                        <!-- Task 7 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 7</span> Drafting Openings and Closings
+                            </h3>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Write a professional opening paragraph and a closing sign-off for a status report. Do not copy the email from Section 2 directly. Use your own words to establish context.</p>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>Opening (State the purpose of the email):</li>
+                                <li>Closing (Offer availability for questions and sign off):</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Draft your opening and closing here..."></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 5: Case Studies (Violet Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fae8ff]">
+                <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            5
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Writing Challenges (Tasks 8 to 9)</span>
+                    </div>
+                    <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 8 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 8</span> The Power of the Bullet Point
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t8', this, 'Show Model Transformation')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Model Transformation</button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-6 leading-relaxed">Convert this long, rambling paragraph into three clear, action-oriented bullet points starting with past tense verbs.</p>
+                            
+                            <div class="bg-[#fdf4ff] p-6 border-4 border-dark mb-8 shadow-[4px_4px_0_0_#0f172a]">
+                                <p class="text-xl md:text-2xl text-dark font-medium leading-relaxed italic">"Yesterday I spent a lot of time talking with the radiology team. We were looking at three reports. We found a small mistake in one of them so we are fixing it now. After that, I went to a meeting to watch how they plan surgeries for aneurysms. Then I had to call the pharmacy rep to set up an interview for next Tuesday."</p>
+                            </div>
+
+                            <textarea class="text-input text-2xl" placeholder="- Action verb...&#10;- Action verb...&#10;- Action verb..."></textarea>
+                            
+                            <div id="ans-t8" class="answer-box hidden mt-8 p-6 bg-slate-50 border-4 border-dark text-slate-800 shadow-[6px_6px_0_0_#0f172a]">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-circle" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Model Transformation:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li><strong>COLLABORATED</strong> with radiology to review reports and correct one identified discrepancy.</li>
+                                    <li><strong>ATTENDED</strong> a surgical planning meeting for an aneurysm case.</li>
+                                    <li><strong>SCHEDULED</strong> an interview with the pharmacy representative for next Tuesday.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 9: Writing a Correction Email -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 9</span> Writing a Correction Update
+                            </h3>
+                            <div class="bg-[#fdf4ff] p-6 border-4 border-dark mb-8 shadow-[6px_6px_0_0_#0f172a]">
+                                <p class="text-2xl text-dark font-black uppercase mb-4 tracking-wide"><i data-lucide="alert-triangle" class="w-8 h-8 inline mr-2 text-fuchsia-600"></i> Scenario:</p>
+                                <p class="text-2xl text-slate-800 font-bold leading-relaxed">You are drafting your weekly report. You realized you accidentally deleted a small section of the Phase 2 data, but you have successfully restored it from a backup. Write a short paragraph for your email explaining the error and the solution professionally.</p>
+                            </div>
+                            <textarea class="text-input text-2xl h-48" placeholder="Dear Dr. Tanaka, I want to report a brief issue..."></textarea>
+                        </div>
+
+                        <!-- Task 9.1 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 9.1</span> AI Critique
+                            </h3>
+                            <div class="ai-prompt-neo mb-4">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Act as a writing tutor. Read my drafted paragraph from Task 9 where I report a data error and restoration. Evaluate my writing for professional tone, clarity, and accountability. Point out any overly emotional language and suggest one improvement."</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 6: Reflection (Rose Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fff1f2]">
+                <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#fb7185] hover:bg-[#f43f5e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            6
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Final Assessment (Task 10)</span>
+                    </div>
+                    <div id="icon-wrapper-part6" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part6" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-8 md:space-y-10">
+                        <div>
+                            <h3 class="text-3xl font-black text-dark mb-6 uppercase tracking-wide">Task 10: Write Your Own Report</h3>
+                            <p class="text-2xl text-slate-800 mb-8 font-bold leading-relaxed">Write a complete weekly progress update based on your own actual work or studies this week. Apply the structure from Section 2 (Opening, Bullet Points with Action Verbs, Upcoming Objectives, and Closing). Ensure a humble, reflective, yet professional tone.</p>
+                            <textarea class="text-input h-96 text-2xl" placeholder="Subject: Weekly Progress Update...&#10;&#10;Dear [Supervisor Name],"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t-4 border-dark text-center mb-8">
+            <p class="text-dark text-xl font-black uppercase tracking-wider bg-[#facc15] inline-block px-6 py-3 border-4 border-dark shadow-neo">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">Fajarudin Akbar</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-8 py-5 shadow-neo transition-all duration-300 translate-y-32 opacity-0 z-50 flex items-center gap-4 font-black text-xl uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="info" class="w-8 h-8 shrink-0 text-brand-600"></i> <span id="toast-msg">Notification</span>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- Init Lucide Icons ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderVocab();
+            renderTone();
+        });
+
+        // Track attempts globally
+        const attempts = {};
+
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { 
+                id: "v1", 
+                word: "FINALIZED",
+                sentence: "FINALIZED the data entry for the Phase 2 heart valve study.", 
+                correct: "b", 
+                options: { 
+                    a: "Started a new task for the first time.", 
+                    b: "Completed the final part of a process or project.", 
+                    c: "Deleted all the information from a system." 
+                },
+                hint: "Think about finishing the last steps of a project."
+            },
+            { 
+                id: "v2", 
+                word: "COLLABORATED",
+                sentence: "COLLABORATED with the radiology team to review reports.", 
+                correct: "a", 
+                options: { 
+                    a: "Worked together with others to achieve a common goal.", 
+                    b: "Argued with another team about a medical diagnosis.", 
+                    c: "Waited for another department to finish their work." 
+                },
+                hint: "Means working as a team or partnering up."
+            },
+            { 
+                id: "v3", 
+                word: "DISCREPANCY",
+                sentence: "We identified a small DISCREPANCY in one report.", 
+                correct: "b", 
+                options: { 
+                    a: "A total agreement between two sets of facts.", 
+                    b: "A difference or lack of agreement between related facts.", 
+                    c: "A very successful outcome of a clinical trial." 
+                },
+                hint: "Think of an error, difference, or inconsistency."
+            },
+            { 
+                id: "v4", 
+                word: "INITIATED",
+                sentence: "INITIATED the literature review for our upcoming paper.", 
+                correct: "c", 
+                options: { 
+                    a: "Finished a project after many months of work.", 
+                    b: "Stopped a process because of a lack of funding.", 
+                    c: "Caused a process or action to begin." 
+                },
+                hint: "Means to start or kick off something new."
+            },
+            { 
+                id: "v5", 
+                word: "SCHEDULED",
+                sentence: "SCHEDULED a follow up interview with the representative.", 
+                correct: "b", 
+                options: { 
+                    a: "Canceled a meeting at the last minute.", 
+                    b: "Arranged for something to happen at a particular time.", 
+                    c: "Forgot to attend an important appointment." 
+                },
+                hint: "Booking a time on a calendar."
+            },
+            { 
+                id: "v6", 
+                word: "ANALYSIS",
+                sentence: "Perform a preliminary ANALYSIS of the Phase 2 data trends.", 
+                correct: "a", 
+                options: { 
+                    a: "A detailed examination of the elements or structure of something.", 
+                    b: "A random guess about what the data might mean.", 
+                    c: "A physical surgery performed on a laboratory animal." 
+                },
+                hint: "Looking closely at data to understand it."
+            }
+        ];
+
+        // 3. TONE EVALUATION DATA (Replacing T/F)
+        const toneData = [
+            { 
+                id: "tone1", 
+                text: "1. Hey Dr. Tanaka, here is what I did this week.", 
+                correct: "Inappropriate", 
+                explanation: "Too informal. Use 'Dear Dr. Tanaka' and a professional opening sentence.",
+                hint: "Look at the greeting. Is 'Hey' appropriate for a Senior Supervisor?"
+            },
+            { 
+                id: "tone2", 
+                text: "2. COLLABORATED with the radiology team to review three remaining reports.", 
+                correct: "Appropriate", 
+                explanation: "Uses a strong action verb and is concise.",
+                hint: "Check the first word. Is it a strong action verb?"
+            },
+            { 
+                id: "tone3", 
+                text: "3. I am super tired but I managed to attend the MDT meeting.", 
+                correct: "Inappropriate", 
+                explanation: "Avoid personal feelings of tiredness in a formal status report.",
+                hint: "Should you include personal feelings in a professional update?"
+            },
+            { 
+                id: "tone4", 
+                text: "4. Please find below the summary of my activities and research achievements.", 
+                correct: "Appropriate", 
+                explanation: "A standard, polite, and clear opening.",
+                hint: "Does this sound polite and clear?"
+            }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            if(vocabData.length === 0) return;
+
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="" disabled selected>Select definition...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${key.toUpperCase()}. ${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col xl:flex-row xl:items-center gap-6 p-6 bg-white border-4 border-dark shadow-neo-sm w-full">
+                    <div class="xl:w-2/5 font-black text-dark text-2xl bg-cyan-100 px-4 py-2 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">${item.word}</div>
+                    <div class="xl:w-3/5 flex flex-col gap-3">
+                        <select id="${item.id}" class="text-input mt-0 py-4 text-xl cursor-pointer w-full" onchange="resetVocabState('${item.id}')">
+                            ${optionsHtml}
+                        </select>
+                        <div id="feedback-${item.id}" class="text-xl font-bold hidden px-4 py-2 border-3 mt-2"></div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function resetVocabState(id) {
+            const select = document.getElementById(id);
+            const feedback = document.getElementById(`feedback-${id}`);
+            select.classList.remove('state-amber', 'state-rose', 'state-emerald');
+            feedback.classList.add('hidden');
+        }
+
+        function renderTone() {
+            const container = document.getElementById('tone-container');
+            container.innerHTML = toneData.map(item => `
+                <div class="bg-white p-6 md:p-8 border-4 border-dark shadow-neo mb-6 flex flex-col gap-6">
+                    <span class="text-2xl font-black text-dark leading-relaxed">${item.text}</span>
+                    <div class="flex flex-wrap items-center gap-6">
+                        <label class="option-label m-0 flex-1 justify-center py-4 text-2xl group">
+                            <input type="radio" name="${item.id}" value="Appropriate" class="mt-1 w-6 h-6 hidden" onchange="resetToneState('${item.id}')">
+                            <div class="w-6 h-6 border-3 border-dark rounded-sm group-[.locked]:bg-slate-200 mt-1 flex items-center justify-center shrink-0 radio-custom"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                            <span class="uppercase tracking-wide">Appropriate</span>
+                        </label>
+                        <label class="option-label m-0 flex-1 justify-center py-4 text-2xl group">
+                            <input type="radio" name="${item.id}" value="Inappropriate" class="mt-1 w-6 h-6 hidden" onchange="resetToneState('${item.id}')">
+                            <div class="w-6 h-6 border-3 border-dark rounded-sm group-[.locked]:bg-slate-200 mt-1 flex items-center justify-center shrink-0 radio-custom"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                            <span class="uppercase tracking-wide">Inappropriate</span>
+                        </label>
+                    </div>
+                    <div id="feedback-${item.id}" class="text-xl font-bold hidden px-5 py-4 border-3 mt-2 leading-relaxed"></div>
+                </div>
+            `).join('');
+
+            // Add custom radio behavior
+            setTimeout(() => {
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const name = e.target.name;
+                        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                            const dot = r.parentElement.querySelector('.inner-dot');
+                            if(r.checked) dot.classList.remove('hidden');
+                            else dot.classList.add('hidden');
+                        });
+                    });
+                });
+            }, 100);
+        }
+
+        function resetToneState(id) {
+            const feedback = document.getElementById(`feedback-${id}`);
+            const radios = document.getElementsByName(id);
+            radios.forEach(r => {
+                r.closest('.option-label').classList.remove('state-amber', 'state-rose', 'state-emerald');
+            });
+            feedback.classList.add('hidden');
+        }
+
+        // --- Logic Handlers ---
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3500);
+        }
+
+        function checkVocab() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+                
+                // Reset styles initially
+                select.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                feedback.classList.remove('state-amber', 'state-rose', 'state-emerald', 'hidden');
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Correct!';
+                    select.classList.add('state-emerald');
+                    feedback.classList.add('state-emerald');
+                    select.disabled = true;
+                    correctCount++;
+                    answeredCount++;
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    answeredCount++;
+                    if (attempts[key] >= 2) {
+                        select.disabled = true;
+                        select.classList.add('state-rose');
+                        feedback.classList.add('state-rose');
+                        feedback.innerHTML = `<i data-lucide="x-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Locked. The correct answer is <strong>${item.correct.toUpperCase()}</strong>.`;
+                    } else {
+                        select.classList.add('state-amber');
+                        feedback.classList.add('state-amber');
+                        feedback.innerHTML = `<i data-lucide="info" class="w-6 h-6 inline mr-2 align-middle"></i> Not quite. Hint: ${item.hint}`;
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                }
+            });
+            lucide.createIcons();
+            
+            if (answeredCount === 0) {
+                showToast("Please select at least one answer.");
+            } else if (correctCount === vocabData.length) {
+                showToast("Perfect! All vocabulary matched.");
+            } else {
+                showToast("Answers checked. Review the feedback.");
+            }
+        }
+
+        function checkTone() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            toneData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                let userVal = "";
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                radios.forEach(r => {
+                    const label = r.closest('.option-label');
+                    label.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                    if(r.checked) userVal = r.value;
+                });
+
+                feedback.classList.remove('state-amber', 'state-rose', 'state-emerald', 'hidden');
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Correct! Reason: ${item.explanation}`;
+                    feedback.classList.add('state-emerald');
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        const label = r.closest('.option-label');
+                        label.classList.add('locked');
+                        if(r.checked) label.classList.add('state-emerald');
+                    });
+                    correctCount++;
+                    answeredCount++;
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    answeredCount++;
+                    if (attempts[key] >= 2) {
+                        feedback.innerHTML = `<i data-lucide="x-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Locked. The correct answer is <strong>${item.correct}</strong>.<br><span class="mt-2 block">Reason: ${item.explanation}</span>`;
+                        feedback.classList.add('state-rose');
+                        radios.forEach(r => {
+                            r.disabled = true;
+                            const label = r.closest('.option-label');
+                            label.classList.add('locked');
+                            if(r.checked) label.classList.add('state-rose');
+                        });
+                    } else {
+                        feedback.innerHTML = `<i data-lucide="info" class="w-6 h-6 inline mr-2 align-middle"></i> Incorrect. Hint: ${item.hint}`;
+                        feedback.classList.add('state-amber');
+                        radios.forEach(r => {
+                            if(r.checked) r.closest('.option-label').classList.add('state-amber');
+                        });
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                }
+            });
+            lucide.createIcons();
+            
+            if (answeredCount === 0) {
+                showToast("Please answer at least one tone evaluation question.");
+            } else if (correctCount === toneData.length) {
+                showToast("Excellent! All tone evaluations are correct.");
+            } else {
+                showToast("Answers checked. Review the feedback.");
+            }
+        }
+
+        // --- UI Interactions ---
+
+        function toggleAnswer(elementId, btn, baseText) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Output";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = baseText;
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Are you sure you want to clear all your progress?")) {
+                
+                for (let key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+                
+                document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                    r.checked = false; 
+                    r.disabled = false;
+                    r.parentElement.querySelector('.inner-dot').classList.add('hidden');
+                });
+                document.querySelectorAll('.option-label').forEach(label => {
+                    label.classList.remove('state-amber', 'state-rose', 'state-emerald', 'locked');
+                });
+                
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.classList.remove('state-amber', 'state-rose', 'state-emerald'); 
+                });
+                
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                    f.classList.add('hidden');
+                });
+                
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+                
+                document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                    const params = btn.getAttribute('onclick').match(/'([^']+)'/g);
+                    if(params && params.length >= 3) {
+                        btn.innerText = params[2].replace(/'/g, '');
+                    }
+                });
+                
+                showToast("All progress has been reset.");
+            }
+        }
+
+    </script>
+</body>
+</html>

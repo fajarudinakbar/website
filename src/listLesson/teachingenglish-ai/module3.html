@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Building Your Custom AI Teaching Assistant</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://github.com/fajarudinakbar/Images/blob/main/TEI-AI%20Open%20Badge.png?raw=true">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-10 text-base md:text-lg">
+
+    <div class="max-w-7xl mx-auto bg-white p-5 md:p-12 rounded-2xl md:rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-sm md:text-base text-slate-500 mb-6 md:mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Teaching English Innovatively with AI</span> <span>&gt;</span> 
+            <span>Module 3</span> <span>&gt;</span> 
+            <span class="text-indigo-700 font-bold">Custom AI Agents</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 md:mb-10">
+            <div>
+                <h1 class="text-3xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-600 tracking-tight mb-3">
+                    Building Your Custom AI Teaching Assistant
+                </h1>
+                <p class="text-lg md:text-2xl text-slate-500 font-medium">Topic: Scaling Expertise with Gemini Gems</p>
+            </div>
+            <div class="flex gap-2 w-full md:w-auto">
+                <button onclick="resetAll()" class="w-full md:w-auto justify-center flex items-center gap-3 px-6 py-3 text-base md:text-lg text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-indigo-600 p-6 md:p-8 mb-8 md:mb-10 rounded-r-xl shadow-sm">
+            <p class="text-lg md:text-xl text-slate-700 leading-relaxed">
+                <i class="fas fa-microchip mr-3 text-indigo-600"></i> 
+                <strong>Instructions:</strong> In Module 1 & 2, you controlled AI manually. Now, you will scale your expertise. Complete the <strong>Preparation</strong>, learn about <strong>System Instructions</strong>, and build your own <strong>Gemini Gem</strong>.
+            </p>
+        </div>
+
+        <!-- Section 1: Preparation (Cyan Theme) -->
+        <div class="mb-6 md:mb-8 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-lg md:text-2xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-xl md:text-3xl font-bold text-cyan-900">Preparation (Tasks 1-2)</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-xl md:text-3xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 2000px;">
+                <div class="p-5 md:p-10 bg-white space-y-8 md:space-y-12">
+                    
+                    <!-- Task 1 -->
+                    <div>
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4 md:mb-6">
+                            <h3 class="text-2xl md:text-3xl font-bold text-cyan-800"><span class="bg-cyan-100 px-3 py-1 rounded-lg text-lg md:text-xl mr-3">Task 1</span> Reflection</h3>
+                            <button onclick="toggleAnswer('ans-t1', this)" class="w-full md:w-auto text-base md:text-lg font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-6 py-3 rounded-xl hover:bg-cyan-50 transition-colors shadow-sm">Show Insight</button>
+                        </div>
+                        <div class="space-y-4">
+                            <p class="text-lg md:text-xl text-slate-700 font-medium">How often do you find yourself writing the same instructions to AI? (e.g., "Don't use complex words," "Include an answer key"). Why is this inefficient?</p>
+                            <textarea class="w-full p-4 md:p-5 border border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none h-40"></textarea>
+                            <div id="ans-t1" class="answer-box hidden mt-6 p-5 md:p-6 bg-cyan-50 border border-cyan-200 rounded-2xl text-base md:text-lg text-slate-700">
+                                <strong>Insight:</strong> Repeating instructions is time-consuming and inconsistent. A <strong>Custom Agent</strong> (Gem) stores these rules once, allowing you to focus on the content rather than the formatting every single time.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 2: Vocab -->
+                    <div>
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4 md:mb-6">
+                            <h3 class="text-2xl md:text-3xl font-bold text-cyan-800"><span class="bg-cyan-100 px-3 py-1 rounded-lg text-lg md:text-xl mr-3">Task 2</span> Key Terminology</h3>
+                            <button onclick="checkVocab()" class="w-full md:w-auto text-base md:text-lg font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-6 py-3 rounded-xl hover:bg-cyan-50 transition-colors shadow-sm">Check Terms</button>
+                        </div>
+                        <div id="vocab-container" class="space-y-6">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Core Content (Blue Theme) -->
+        <div class="mb-6 md:mb-8 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-lg md:text-2xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-robot"></i></div>
+                    <span class="text-xl md:text-3xl font-bold text-blue-900">Module Content</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-xl md:text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 5000px;">
+                <div class="p-6 md:p-12 bg-white prose prose-slate max-w-none text-justify leading-loose text-lg md:text-xl border-t border-blue-50">
+                    
+                    <h3 class="text-2xl md:text-3xl font-bold text-slate-800 mb-4">Section 1. Why Build a Custom Agent?</h3>
+                    <p class="mb-6">Most teachers repeatedly rewrite the same instructions: <em>"Use communicative tasks," "Keep vocabulary level appropriate," "Include interaction."</em></p>
+                    <p class="mb-6">A custom AI agent (Gem) stores these principles in its <strong>system instructions</strong>. You are externalizing your pedagogical knowledge into a reusable design system. This turns AI from a chatbot into a specialized instructional designer.</p>
+
+                    <h3 class="text-2xl md:text-3xl font-bold text-slate-800 mt-10 mb-4">Section 2. What Is a Gem?</h3>
+                    <p class="mb-6">In <a href="https://gemini.google.com/gems" target="_blank" class="text-indigo-600 font-bold hover:underline">Gemini</a>, a Gem is a custom version of the AI that follows permanent instructions you define.</p>
+                    <p class="mb-6">Instead of prompting from scratch, you design a "Worksheet Architect" that:</p>
+                    <ul class="list-disc pl-6 md:pl-8 mb-6 space-y-2">
+                        <li>Understands GSE alignment</li>
+                        <li>Follows your task structure automatically</li>
+                        <li>Uses communicative methodology</li>
+                        <li>Maintains level control</li>
+                    </ul>
+
+                    <h3 class="text-2xl md:text-3xl font-bold text-slate-800 mt-10 mb-4">Section 3. The Pedagogical System Instructions</h3>
+                    <p class="mb-6">Your Gem must include these five core rules:</p>
+                    <div class="space-y-4 mb-8">
+                        <div class="p-5 bg-blue-50 rounded-xl border border-blue-100">
+                            <strong class="text-indigo-700 block text-lg mb-1">1. Pedagogical Role</strong>
+                            <p>"You are an ELT instructional designer specializing in communicative, task-based learning."</p>
+                        </div>
+                        <div class="p-5 bg-blue-50 rounded-xl border border-blue-100">
+                            <strong class="text-indigo-700 block text-lg mb-1">2. Standards Alignment Rule</strong>
+                            <p>"All materials must be aligned to a provided GSE Can-Do statement."</p>
+                        </div>
+                        <div class="p-5 bg-blue-50 rounded-xl border border-blue-100">
+                            <strong class="text-indigo-700 block text-lg mb-1">3. Output Structure Rule</strong>
+                            <p>"Follow this format: Warm-up → Input → Guided task → Communicative task → Reflection."</p>
+                        </div>
+                        <div class="p-5 bg-blue-50 rounded-xl border border-blue-100">
+                            <strong class="text-indigo-700 block text-lg mb-1">4. Language Control Rule</strong>
+                            <p>"Grammar and vocabulary must match the performance described in the Can-Do statement."</p>
+                        </div>
+                        <div class="p-5 bg-blue-50 rounded-xl border border-blue-100">
+                            <strong class="text-indigo-700 block text-lg mb-1">5. Interaction Rule</strong>
+                            <p>"Avoid isolated drills. Tasks must involve meaning-focused communication."</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl md:text-3xl font-bold text-slate-800 mt-10 mb-4">Section 4. How to Create Your Gem</h3>
+                    <ol class="list-decimal pl-6 md:pl-8 mb-6 space-y-3 font-medium">
+                        <li>Go to <a href="https://gemini.google.com/gems" target="_blank" class="text-indigo-600 font-bold hover:underline">Gemini Gems</a>.</li>
+                        <li>Click "Create a Gem".</li>
+                        <li>Name it (e.g., "Worksheet Architect").</li>
+                        <li>Paste your System Instructions.</li>
+                        <li>Save.</li>
+                    </ol>
+                    <p class="mb-6">You now have a reusable AI teaching assistant.</p>
+
+                    <h3 class="text-2xl md:text-3xl font-bold text-slate-800 mt-10 mb-4">Section 5. Using Your Gem</h3>
+                    <p class="mb-6">Once built, you only need to provide the variable information:</p>
+                    <div class="bg-slate-800 text-slate-200 p-6 rounded-xl font-mono text-sm md:text-base">
+                        <p class="mb-2"><span class="text-green-400">User Prompt:</span></p>
+                        <p class="mb-1"><strong>Learning Objective:</strong> Learners can explain the purpose of a meeting.</p>
+                        <p class="mb-1"><strong>Context:</strong> Business English, team meeting.</p>
+                        <p><strong>Output:</strong> 1-page speaking lesson.</p>
+                    </div>
+                    <p class="mt-4 text-sm text-slate-500 italic">The Gem automatically applies all your structural and pedagogical rules to this simple request.</p>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Understanding (Emerald Theme) -->
+        <div class="mb-6 md:mb-8 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 md:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-lg md:text-2xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-xl md:text-3xl font-bold text-emerald-900">Understanding (Tasks 3-4)</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-xl md:text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-5 md:p-10 bg-white space-y-8 md:space-y-12">
+                    
+                    <!-- Task 3 -->
+                    <div>
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4 md:mb-6">
+                            <h3 class="text-2xl md:text-3xl font-bold text-emerald-800"><span class="bg-emerald-100 px-3 py-1 rounded-lg text-lg md:text-xl mr-3">Task 3</span> System Instruction Check</h3>
+                            <button onclick="toggleAnswer('ans-t3', this)" class="w-full md:w-auto text-base md:text-lg font-bold text-emerald-600 border-2 border-emerald-200 bg-white px-6 py-3 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm">Show Answer</button>
+                        </div>
+                        <div class="space-y-4">
+                            <p class="text-lg md:text-xl text-slate-700">What are the <strong>FIVE</strong> core rules your Gem's instructions must include?</p>
+                            <textarea placeholder="1... 2... 3... 4... 5..." class="w-full p-4 md:p-5 border border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none h-48"></textarea>
+                        </div>
+                        <div id="ans-t3" class="answer-box hidden mt-6 p-5 md:p-8 bg-emerald-50 rounded-2xl border border-emerald-200 text-base md:text-lg text-slate-700">
+                            <ol class="list-decimal pl-6 space-y-3 font-medium">
+                                <li>Pedagogical Role</li>
+                                <li>Standards Alignment Rule</li>
+                                <li>Output Structure Rule</li>
+                                <li>Language Control Rule</li>
+                                <li>Interaction Rule</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Task 4 (True/False) -->
+                    <div>
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4 md:mb-6">
+                            <h3 class="text-2xl md:text-3xl font-bold text-emerald-800"><span class="bg-emerald-100 px-3 py-1 rounded-lg text-lg md:text-xl mr-3">Task 4</span> Concept Check</h3>
+                            <button onclick="checkTF()" class="w-full md:w-auto text-base md:text-lg font-bold text-emerald-600 border-2 border-emerald-200 bg-white px-6 py-3 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm">Check Answers</button>
+                        </div>
+                        <div id="tf-container" class="space-y-6">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Practice & Application (Orange Theme) -->
+        <div class="mb-6 md:mb-8 rounded-2xl overflow-hidden border border-orange-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 md:p-8 bg-orange-50 hover:bg-orange-100 border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-5">
+                    <div class="bg-orange-200 text-orange-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-lg md:text-2xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-xl md:text-3xl font-bold text-orange-900">Practice Activities (Tasks 6-8)</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 text-xl md:text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-5 md:p-10 bg-white space-y-8 md:space-y-12">
+                    
+                    <!-- Task 6 (Practice 1) -->
+                    <div>
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4 md:mb-6">
+                            <h3 class="text-2xl md:text-3xl font-bold text-orange-800"><span class="bg-orange-100 px-3 py-1 rounded-lg text-lg md:text-xl mr-3">Task 6</span> Draft Your System Instructions</h3>
+                            <button onclick="toggleAnswer('ans-t6', this)" class="w-full md:w-auto text-base md:text-lg font-bold text-orange-600 border-2 border-orange-200 bg-white px-6 py-3 rounded-xl hover:bg-orange-50 transition-colors shadow-sm">Show Tips</button>
+                        </div>
+                        <p class="text-lg md:text-xl text-slate-700 mb-4">Define the rules for your custom agent below. This text will be pasted into Gemini.</p>
+                        
+                        <div class="grid md:grid-cols-1 gap-6">
+                            <div>
+                                <label class="block text-sm font-bold text-orange-900 mb-2 uppercase">1. Pedagogical Role</label>
+                                <input type="text" placeholder="e.g. You are an ELT instructional designer..." class="w-full p-4 border border-slate-300 rounded-xl text-base md:text-lg focus:outline-none focus:border-orange-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-orange-900 mb-2 uppercase">2. Standards Alignment Rule</label>
+                                <input type="text" placeholder="e.g. Align all content to..." class="w-full p-4 border border-slate-300 rounded-xl text-base md:text-lg focus:outline-none focus:border-orange-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-orange-900 mb-2 uppercase">3. Output Structure (Sequence)</label>
+                                <textarea placeholder="e.g. 1. Warm-up, 2. Input..." class="w-full p-4 border border-slate-300 rounded-xl text-base md:text-lg focus:outline-none focus:border-orange-500 h-24"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-orange-900 mb-2 uppercase">4. Language Control</label>
+                                <input type="text" placeholder="e.g. Grammar must match Can-Do..." class="w-full p-4 border border-slate-300 rounded-xl text-base md:text-lg focus:outline-none focus:border-orange-500">
+                            </div>
+                             <div>
+                                <label class="block text-sm font-bold text-orange-900 mb-2 uppercase">5. Interaction Requirement</label>
+                                <input type="text" placeholder="e.g. Avoid drills, focus on meaning..." class="w-full p-4 border border-slate-300 rounded-xl text-base md:text-lg focus:outline-none focus:border-orange-500">
+                            </div>
+                        </div>
+                        <div id="ans-t6" class="answer-box hidden mt-8 p-5 md:p-6 bg-orange-50 rounded-2xl border border-orange-200 text-base md:text-lg text-slate-700">
+                            <strong>Tip:</strong> Be imperative and specific. Use phrases like "You must," "Always," and "Never." The clearer the rule, the better the Gem.
+                        </div>
+                    </div>
+
+                    <!-- Task 7 (Practice 2) -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-bold text-orange-800 mb-6"><span class="bg-orange-100 px-3 py-1 rounded-lg text-lg md:text-xl mr-3">Task 7</span> Test Your Gem</h3>
+                        <div class="bg-orange-50/50 p-5 md:p-8 rounded-3xl border border-orange-100">
+                            <p class="text-lg md:text-xl text-slate-600 mb-6">Create the Gem in Gemini, then feed it a prompt. Audit the output:</p>
+                            <div class="space-y-4">
+                                <label class="flex items-center gap-4 p-4 bg-white rounded-xl border border-orange-200 cursor-pointer hover:border-orange-400">
+                                    <input type="checkbox" class="w-6 h-6 rounded text-orange-600 focus:ring-orange-500">
+                                    <span class="text-lg font-medium text-slate-800">Does it follow the structure exactly?</span>
+                                </label>
+                                <label class="flex items-center gap-4 p-4 bg-white rounded-xl border border-orange-200 cursor-pointer hover:border-orange-400">
+                                    <input type="checkbox" class="w-6 h-6 rounded text-orange-600 focus:ring-orange-500">
+                                    <span class="text-lg font-medium text-slate-800">Is the language level controlled (not too hard)?</span>
+                                </label>
+                                <label class="flex items-center gap-4 p-4 bg-white rounded-xl border border-orange-200 cursor-pointer hover:border-orange-400">
+                                    <input type="checkbox" class="w-6 h-6 rounded text-orange-600 focus:ring-orange-500">
+                                    <span class="text-lg font-medium text-slate-800">Is the task communicative (meaning-focused)?</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                      <!-- Task 8 (Practice 3) -->
+                      <div>
+                        <h3 class="text-2xl md:text-3xl font-bold text-orange-800 mb-6"><span class="bg-orange-100 px-3 py-1 rounded-lg text-lg md:text-xl mr-3">Task 8</span> Stress Test</h3>
+                        <p class="text-lg md:text-xl text-slate-700 mb-4">Try a totally different context (e.g., Exam Prep vs. Business English). Did the Gem adapt while keeping your structure?</p>
+                        <textarea placeholder="Observations on how the Gem handled the switch..." class="w-full p-4 md:p-5 border border-slate-300 rounded-2xl text-base md:text-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none h-32"></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Assignment (Violet Theme) -->
+        <div class="mb-6 md:mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-4 md:gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-lg md:text-2xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-xl md:text-3xl font-bold text-violet-900">Module Assignment</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-xl md:text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-5 md:p-10 bg-white space-y-8 md:space-y-12">
+                    
+                    <!-- Assignment -->
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-bold text-violet-800 mb-6">Submission Requirements</h3>
+                        <div class="bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-200">
+                            <p class="text-lg md:text-xl text-slate-800 leading-relaxed mb-4"><strong>Submit the following:</strong></p>
+                            <ol class="list-decimal pl-6 space-y-2 text-base md:text-lg text-slate-700">
+                                <li>Your Gem’s full system instructions.</li>
+                                <li>One GSE descriptor used as input.</li>
+                                <li>The lesson output generated by your Gem.</li>
+                                <li>A short explanation of how the Gem followed your rules.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <!-- Outro -->
+                    <div class="border-t border-slate-200 pt-8">
+                        <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-4">What You Can Now Do</h3>
+                        <p class="text-base md:text-lg text-slate-600">You can now scale your teaching expertise, produce consistent materials quickly, and maintain pedagogical standards automatically. You have transitioned from a material writer to an instructional system designer.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-10 md:mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-base md:text-lg font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        
+        // Attempts Tracking
+        const attempts = {};
+
+        // Task 2: Vocab Data
+        const vocabData = [
+            { id: "v1", word: "1. Gemini Gem", correct: "a", explanation: "A custom version of the AI that follows permanent instructions you define.", options: { a: "Custom AI with permanent instructions", b: "A visual image tool", c: "A paid plugin", d: "A shiny stone" } },
+            { id: "v2", word: "2. System Instructions", correct: "c", explanation: "The core set of rules that defines the AI's role and behavior permanently.", options: { a: "The daily prompt", b: "The user's question", c: "Permanent rules defining the AI", d: "The answer key" } },
+            { id: "v3", word: "3. Instructional Designer", correct: "b", explanation: "The role you take when you build a system for creating materials, rather than writing them yourself.", options: { a: "Someone who formats text", b: "Architect of learning systems", c: "A graphic artist", d: "A chatbot user" } }
+        ];
+
+        // Task 4: True/False
+        const tfData = [
+            { id: "tf1", text: "1. A Gem requires you to rewrite your pedagogical rules every time you use it.", correct: "False", explanation: "That is the point of a Gem; it stores the rules so you don't have to repeat them." },
+            { id: "tf2", text: "2. System instructions should include specific rules about interaction, not just content.", correct: "True", explanation: "Yes, defining interaction (e.g., 'avoid drills') is crucial for methodology." },
+            { id: "tf3", text: "3. You cannot use GSE descriptors with a custom Gem.", correct: "False", explanation: "You should combine them. The Gem holds the structure; the GSE descriptor provides the specific lesson target." },
+            { id: "tf4", text: "4. Building a Gem turns you into a software engineer.", correct: "False", explanation: "No, it turns you into an instructional system designer using natural language." }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            
+            container.innerHTML = vocabData.map(item => {
+                let specificOptions = `<option value="">Select definition...</option>`;
+                Object.keys(item.options).forEach(key => {
+                    specificOptions += `<option value="${key}">${item.options[key]}</option>`;
+                });
+
+                return `
+                <div class="flex flex-col gap-2 p-4 md:p-5 bg-cyan-50/50 rounded-2xl border border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4">
+                        <div class="md:w-1/3 font-bold text-cyan-900 text-lg md:text-xl">${item.word}</div>
+                        <div class="md:w-2/3 flex items-center gap-4">
+                            <select id="${item.id}" class="flex-1 p-3 border border-slate-300 rounded-xl text-base md:text-lg focus:outline-none focus:border-cyan-500 cursor-pointer bg-white">
+                                ${specificOptions}
+                            </select>
+                            <div id="feedback-${item.id}" class="w-auto flex-shrink-0 text-2xl font-bold min-w-[30px]"></div>
+                        </div>
+                    </div>
+                    <div id="explain-${item.id}" class="hidden mt-3 p-4 bg-cyan-100 text-cyan-900 text-base md:text-lg rounded-xl border border-cyan-200"></div>
+                </div>
+            `}).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col gap-3 p-4 md:p-6 border-b border-emerald-100 last:border-0 hover:bg-emerald-50/30 transition-colors rounded-xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between">
+                        <span class="text-lg md:text-xl text-slate-700 mb-4 sm:mb-0 w-full sm:w-2/3 font-medium">${item.text}</span>
+                        <div class="flex items-center gap-6 md:gap-8 text-lg md:text-xl font-bold">
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-600 p-2 rounded-lg hover:bg-emerald-100/50">
+                                <input type="radio" name="${item.id}" value="True" class="w-5 h-5 md:w-6 md:h-6 accent-emerald-600"> True
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-600 p-2 rounded-lg hover:bg-emerald-100/50">
+                                <input type="radio" name="${item.id}" value="False" class="w-5 h-5 md:w-6 md:h-6 accent-emerald-600"> False
+                            </label>
+                            <span id="feedback-${item.id}" class="w-8 md:w-10 flex justify-center text-xl md:text-2xl"></span>
+                        </div>
+                    </div>
+                    <div id="explain-${item.id}" class="hidden mt-2 p-4 bg-emerald-100 text-emerald-900 text-base md:text-lg rounded-xl border border-emerald-200 shadow-sm"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    select.classList.add('border-green-500', 'bg-green-50');
+                    select.disabled = true;
+                    explainDiv.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-sm font-bold text-red-600 bg-red-100 px-2 rounded">Ans: ${item.correct.toUpperCase()}</span>`;
+                        explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct.toUpperCase()}</strong><br>${item.explanation}`;
+                        explainDiv.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    }
+                    select.classList.add('border-red-300');
+                }
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    radios.forEach(r => r.disabled = true);
+                    explainDiv.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-sm font-bold text-red-600 bg-red-100 px-2 rounded">Ans: ${item.correct}</span>`;
+                        explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct}</strong><br>${item.explanation}`;
+                        explainDiv.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                    }
+                }
+            });
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Answer";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                for (const key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+                document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                document.querySelectorAll('select').forEach(s => { s.value = ""; s.disabled = false; s.classList.remove('border-green-500', 'bg-green-50', 'border-red-300'); });
+                
+                // Clear Feedback & Explanations
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('[id^="explain-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.add('hidden');
+                });
+                
+                // Hide Answers
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+                
+                // Reset Buttons
+                document.querySelectorAll('button').forEach(btn => {
+                   if(btn.innerText.includes("Hide")) btn.innerText = "Show Answer"; 
+                });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderTF();
+        });
+
+    </script>
+</body>
+</html>

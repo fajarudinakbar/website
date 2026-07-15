@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>TOEFL iBT Reading Skill Building Worksheet</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            
+            /* STRICT ENFORCEMENT: No Word Breaks */
+            word-break: normal !important;
+            overflow-wrap: normal !important;
+            hyphens: none !important;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        @media (min-width: 768px) {
+            ::-webkit-scrollbar { width: 10px; height: 10px; }
+        }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+        }
+        .text-input {
+            width: 100%;
+            max-width: 100%;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+            box-sizing: border-box;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        
+        select.text-input {
+            padding-right: 2.5rem;
+            white-space: normal;
+        }
+
+        /* Complete the Words Inputs */
+        .ctw-input {
+            border: 3px solid #0f172a;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+            background-color: #ffffff;
+            text-align: center;
+            font-weight: 800;
+            color: #0f172a;
+            padding: 0.1rem 0.25rem;
+            outline: none;
+            transition: all 0.1s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0 0.15rem;
+        }
+        .ctw-input::placeholder {
+            color: #94a3b8;
+            letter-spacing: 1px;
+        }
+        .ctw-input:focus {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            background-color: #e0f2fe;
+            border-color: #0284c7;
+        }
+        .ctw-input.correct {
+            background-color: #4ade80 !important;
+            border-color: #0f172a !important;
+            color: #0f172a !important;
+        }
+        .ctw-input.incorrect {
+            background-color: #f87171 !important;
+            border-color: #0f172a !important;
+            color: #ffffff !important;
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-align: center;
+            white-space: nowrap !important; 
+        }
+        .neo-btn:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .neo-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Option Labels (Radios) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+            font-weight: 700;
+            width: 100%;
+        }
+        @media (min-width: 640px) {
+            .option-label { gap: 1rem; }
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #0f172a;
+            flex-shrink: 0;
+            border: 2px solid #0f172a;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+
+        /* Word Chips - Neo-Brutalist */
+        .word-chip {
+            display: inline-block;
+            background-color: #ffffff;
+            border: 3px solid #0f172a;
+            color: #0f172a;
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            font-weight: 800;
+            padding: 0.35rem 0.85rem;
+            margin: 0.25rem;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.1s;
+            font-size: 0.9rem;
+            cursor: pointer;
+            word-break: normal;
+            white-space: nowrap !important;
+        }
+        .word-chip:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #facc15;
+        }
+        .word-chip:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px 0px #0f172a;
+        }
+        
+        .highlight-chip {
+            white-space: nowrap !important;
+            display: inline-block;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Modal Background */
+        #custom-modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-5 md:p-8 text-base md:text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-4 sm:p-6 lg:p-10 border-4 border-dark shadow-neo overflow-hidden">
+        
+        <div class="text-xs sm:text-sm text-dark mb-6 md:mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">TOEFL iBT®</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4 shrink-0"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">Reading Section</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4 shrink-0"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">Complete the Words</span>
+        </div>
+
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div class="w-full lg:w-auto">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-dark uppercase tracking-tighter mb-2 md:mb-3 leading-tight w-full">
+                    Complete the Words <span class="whitespace-nowrap">(B2 Level)</span>
+                </h1>
+                <p class="text-sm sm:text-base md:text-lg lg:text-xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-2 border-2 border-dark text-pretty">
+                    Topic: Cognitive Science & Sustainability | Skill: Lexical & Grammatical Processing
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0 w-full lg:w-auto mt-2 lg:mt-0">
+                <button onclick="resetAll()" class="neo-btn w-full flex items-center justify-center gap-2 px-5 py-2 md:py-3 text-sm md:text-base text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4 md:w-5 md:h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-[#e0e7ff] border-3 border-dark p-4 sm:p-5 md:p-6 mb-8 md:mb-12 shadow-neo-sm flex flex-col sm:flex-row items-start gap-4">
+            <div class="bg-[#818cf8] p-2 border-2 border-dark shrink-0 hidden sm:block">
+                <i data-lucide="puzzle" class="w-6 h-6 text-white"></i>
+            </div>
+            <p class="text-sm sm:text-base md:text-lg text-dark font-bold leading-relaxed text-pretty w-full">
+                <span class="uppercase font-black text-base md:text-xl mr-2 block sm:inline-block mb-1 sm:mb-0"><i data-lucide="puzzle" class="w-5 h-5 inline sm:hidden mr-2 text-[#818cf8]"></i>Welcome to B2 Level!</span> In this advanced version of the <em>Complete the Words</em> task, you will face more complex academic vocabulary, abstract concepts, and intricate sentence structures. The core rule remains: <strong>the second half of every second word is deleted</strong>. Rely heavily on grammatical prefixes, suffixes, and contextual logic to fill in the missing letters.
+            </p>
+        </div>
+
+        <div class="space-y-6 md:space-y-8">
+
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('step1')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            1
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Global Connection: The Power of Context</span>
+                    </div>
+                    <div id="icon-wrapper-step1" class="transition-transform duration-300 transform rotate-180 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step1" class="accordion-content active border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-slate-800 font-bold mb-4 text-sm sm:text-base md:text-lg leading-relaxed text-justify">
+                            Imagine reading a corrupted digital file where some characters have been lost: <br><br>
+                            <em class="text-[#4338ca] bg-[#e0e7ff] px-3 py-2 border-2 border-dark shadow-sm inline-block font-black tracking-wide text-center w-full sm:w-auto">"The researcher submitted the final docu____ for the pro____."</em><br><br>
+                            Even at a higher academic level, your brain seamlessly reconstructs <strong>"document"</strong> and <strong>"project"</strong>. It calculates probability using syntactic structures and semantic fields. This exercise builds that exact cognitive reflex for the TOEFL test.
+                        </p>
+                        <div class="bg-[#fefce8] border-3 border-dark p-4 md:p-5 rounded-lg flex flex-col sm:flex-row items-start gap-3 md:gap-4 shadow-neo-sm mt-6">
+                            <div class="bg-white p-2 border-2 border-dark shrink-0"><i data-lucide="lightbulb" class="w-4 h-4 md:w-5 md:h-5 text-[#eab308]"></i></div>
+                            <p class="text-sm md:text-base lg:text-lg text-dark font-bold leading-relaxed text-pretty">
+                                <strong class="uppercase font-black block mb-1">Metacognitive Question:</strong> 
+                                When you read advanced texts, do you notice how suffixes (like tion, ment, ity) often signal the part of speech before you even finish reading the word?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('step2')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            2
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Vocab Mastery (B2 Academic Lexicon)</span>
+                    </div>
+                    <div id="icon-wrapper-step2" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-slate-800 font-bold mb-6 text-sm sm:text-base md:text-lg text-pretty">
+                            A robust B2 vocabulary is essential for predicting missing letters. Match these 15 advanced academic terms to their correct definitions. (2 Attempts)
+                        </p>
+                        <div id="vocab-container" class="grid grid-cols-1 gap-4 md:gap-6">
+                            </div>
+                        <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t-4 border-dark">
+                            <div id="vocab-feedback-general" class="text-sm md:text-base font-black w-full md:w-2/3 text-center md:text-left"></div>
+                            <button onclick="checkVocab()" class="neo-btn w-full md:w-auto bg-[#4ade80] text-dark px-6 py-2 md:py-3 text-sm sm:text-base md:text-lg">
+                                Check Vocabulary
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#f3e8ff]">
+                <button onclick="toggleAccordion('step3')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#c084fc] hover:bg-[#a855f7] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            3
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Strategy Workshop: Decoding the Missing Halves</span>
+                    </div>
+                    <div id="icon-wrapper-step3" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 md:p-6 lg:p-10 space-y-4 text-slate-700 text-sm md:text-base leading-relaxed">
+                        <h3 class="font-black text-lg md:text-xl lg:text-2xl text-dark border-b-4 border-dark pb-2 uppercase w-full">How to Beat "Complete the Words" at B2</h3>
+                        <p class="font-bold text-slate-800 text-sm sm:text-base md:text-lg">In this task, the rule is strict: <strong>The second half of every second word is deleted.</strong> At the B2 level, your strategy must evolve:</p>
+                        
+                        <div class="grid grid-cols-1 gap-6 mt-6">
+                            <div class="bg-slate-50 p-5 md:p-6 border-3 border-dark shadow-neo-sm flex flex-col sm:flex-row gap-4">
+                                <div class="bg-white border-2 border-dark p-3 shrink-0 h-min mt-1 hidden sm:block">
+                                    <i data-lucide="book-open" class="w-8 h-8 text-[#c084fc]"></i>
+                                </div>
+                                <div>
+                                    <div class="font-black text-base md:text-lg lg:text-xl text-dark mb-2 uppercase">1. Anchor on the First Sentence</div>
+                                    <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed">
+                                        The intact first sentence is your thematic anchor. If it discusses "Cognition," expect words like <em class="bg-[#f3e8ff] px-1 border-2 border-dark">memory, retention,</em> or <em class="bg-[#f3e8ff] px-1 border-2 border-dark">brain</em> to appear later in the text.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-5 md:p-6 border-3 border-dark shadow-neo-sm flex flex-col sm:flex-row gap-4">
+                                <div class="bg-white border-2 border-dark p-3 shrink-0 h-min mt-1 hidden sm:block">
+                                    <i data-lucide="network" class="w-8 h-8 text-[#c084fc]"></i>
+                                </div>
+                                <div>
+                                    <div class="font-black text-base md:text-lg lg:text-xl text-dark mb-2 uppercase">2. Leverage Word Families</div>
+                                    <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed">
+                                        Use syntactic clues to determine suffixes. If an adjective is needed after "is," <code class="bg-white px-1 border-2 border-dark text-[#c084fc]">fundam_____</code> becomes <em class="font-bold">fundamental</em>. If a noun follows an article, <code class="bg-white px-1 border-2 border-dark text-[#c084fc]">reten____</code> becomes <em class="font-bold">retention</em>.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-5 md:p-6 border-3 border-dark shadow-neo-sm flex flex-col sm:flex-row gap-4">
+                                <div class="bg-white border-2 border-dark p-3 shrink-0 h-min mt-1 hidden sm:block">
+                                    <i data-lucide="split" class="w-8 h-8 text-[#c084fc]"></i>
+                                </div>
+                                <div>
+                                    <div class="font-black text-base md:text-lg lg:text-xl text-dark mb-2 uppercase">3. The Half Word Math</div>
+                                    <p class="text-sm md:text-base text-slate-800 font-medium leading-relaxed">
+                                        Pay attention to the blanks! A word with 5 letters usually keeps 2 and misses 3 (<code class="bg-white px-1 border-2 border-dark text-[#c084fc]">hu___</code> for human). An 8 letter word keeps 4 and misses 4 (<code class="bg-white px-1 border-2 border-dark text-[#c084fc]">indu____</code> for industry).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#fee2e2] border-3 border-dark shadow-neo-sm p-5 mt-6">
+                            <h4 class="font-black text-[#b91c1c] text-base md:text-lg uppercase tracking-wide mb-2 flex items-center"><i data-lucide="alert-triangle" class="w-5 h-5 mr-2 text-[#ef4444]"></i>Beware of the "Sound Trap"</h4>
+                            <p class="text-sm md:text-base font-bold text-slate-800 leading-relaxed">
+                                English spelling doesn't always match its sound. A common mistake is writing the letters you <em>hear</em> (e.g., spelling "process" as "prosses"). Double check your spelling before moving on!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#dbeafe]">
+                <button onclick="toggleAccordion('step4')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            4
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Targeted Input: Paragraph Analysis</span>
+                    </div>
+                    <div id="icon-wrapper-step4" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step4" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-sm sm:text-base md:text-lg text-slate-800 font-bold mb-4 text-pretty">
+                            Read this fully intact B2 paragraph about Cognitive Psychology. We will use this to practice our strategy in the next steps.
+                        </p>
+                        
+                        <div class="bg-[#eff6ff] p-5 md:p-8 border-4 border-dark shadow-inner">
+                            <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo-sm relative">
+                                <i data-lucide="quote" class="absolute top-4 left-4 text-slate-200 w-8 h-8 opacity-50"></i>
+                                <p class="text-base md:text-lg font-bold text-slate-800 leading-relaxed text-justify relative z-10 pl-4 md:pl-8">
+                                    Human memory is not a single, unified system but rather a complex network of cognitive processes. When we learn new information, our brain must first encode the data before storing it. This initial stage is crucial for building a strong foundation for future learning.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#ffe4e6]">
+                <button onclick="toggleAccordion('step5')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#fb7185] hover:bg-[#f43f5e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            5
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Strategy Check: Metacognition</span>
+                    </div>
+                    <div id="icon-wrapper-step5" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <div class="mb-6">
+                            <label class="block font-black text-dark uppercase mb-4 text-sm sm:text-base md:text-lg lg:text-xl text-balance">How does recognizing "word families" (e.g., retain, retention, retentive) help you solve the blanks faster?</label>
+                            <textarea id="metacog-input" class="text-input text-sm sm:text-base md:text-lg font-medium min-h-[6rem] md:min-h-[8rem] resize-y" placeholder="Type your reasoning here..."></textarea>
+                        </div>
+                        <button onclick="showMetaAnswer()" class="neo-btn w-full sm:w-auto bg-[#fb7185] text-dark px-5 py-2 md:py-3 text-xs sm:text-sm md:text-base">
+                            Show Explanation
+                        </button>
+                        <div id="meta-answer" class="hidden mt-6 p-4 md:p-6 bg-[#fff1f2] border-4 border-dark shadow-neo-sm text-sm sm:text-base md:text-lg text-slate-800 font-medium transition-opacity">
+                            <strong class="uppercase font-black text-dark mb-3 block"><i data-lucide="check-circle" class="w-4 h-4 md:w-5 md:h-5 inline mr-2 text-[#e11d48]"></i>Explanation:</strong>
+                            <p class="bg-white p-4 border-2 border-dark italic text-pretty">Because the first half of the word is provided, your brain already knows the root (e.g., <code class="bg-[#ffe4e6] px-1 border border-dark">reten____</code>). By looking at the grammatical context (e.g., does it follow an adjective or a verb?), you instantly know which suffix from the word family to apply (e.g., the noun suffix <em>tion</em>).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#ccfbf1]">
+                <button onclick="toggleAccordion('step6')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#2dd4bf] hover:bg-[#14b8a6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            6
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">High Volume Practice: Context & Grammar (MCQ)</span>
+                    </div>
+                    <div id="icon-wrapper-step6" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step6" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-sm sm:text-base md:text-lg text-slate-800 font-bold mb-8 text-pretty">
+                            Let's practice identifying the correct B2 missing word based on context and grammar. Choose the word that perfectly fits the grammatical space. (2 Attempts)
+                        </p>
+                        <div id="mcq-container" class="space-y-8">
+                            </div>
+                        <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t-4 border-dark">
+                            <div id="mcq-feedback-general" class="text-sm sm:text-base font-black w-full md:w-2/3 text-center md:text-left"></div>
+                            <button onclick="checkSection('mcq', mcqData)" class="neo-btn w-full md:w-auto bg-[#2dd4bf] text-dark px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base">
+                                Check Answers
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#ffedd5]">
+                <button onclick="toggleAccordion('step7')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            7
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">The Master Drill: Complete the Words</span>
+                    </div>
+                    <div id="icon-wrapper-step7" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step7" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <div class="flex items-center gap-3 mb-6 border-b-4 border-slate-200 pb-4">
+                            <i data-lucide="edit-3" class="w-6 h-6 md:w-8 md:h-8 text-orange-600 shrink-0"></i>
+                            <p class="text-sm md:text-base font-bold text-slate-800 leading-relaxed text-pretty">
+                                <strong class="uppercase text-dark tracking-wide mr-2">Instructions:</strong> Based on the Cognitive Science topic from Step 4, fill in the missing letters. The second half of every second word has been deleted. (10 blanks total).
+                            </p>
+                        </div>
+                        
+                        <div class="bg-[#fff7ed] p-5 md:p-8 rounded-xl border-4 border-dark shadow-inner mb-8">
+                            <div class="text-base md:text-lg xl:text-xl leading-loose md:leading-loose xl:leading-loose text-slate-800 font-bold bg-white p-6 md:p-8 border-3 border-dark shadow-neo-sm">
+                                When students actively engage with new information, their retention improves significantly.<br><br>
+                                This ac<input type="text" id="md-1" maxlength="4" placeholder="____" class="ctw-input w-16" data-answer="tive"> 
+                                process st<input type="text" id="md-2" maxlength="9" placeholder="_________" class="ctw-input w-32" data-answer="rengthens"> 
+                                neurological pa<input type="text" id="md-3" maxlength="6" placeholder="______" class="ctw-input w-24" data-answer="thways"> 
+                                inside th<input type="text" id="md-4" maxlength="1" placeholder="_" class="ctw-input w-8" data-answer="e"> 
+                                human br<input type="text" id="md-5" maxlength="3" placeholder="___" class="ctw-input w-12" data-answer="ain">. 
+                                Regular pr<input type="text" id="md-6" maxlength="6" placeholder="______" class="ctw-input w-24" data-answer="actice"> 
+                                helps to fa<input type="text" id="md-7" maxlength="8" placeholder="________" class="ctw-input w-28" data-answer="cilitate"> 
+                                the tr<input type="text" id="md-8" maxlength="6" placeholder="______" class="ctw-input w-24" data-answer="ansfer"> 
+                                of sk<input type="text" id="md-9" maxlength="4" placeholder="____" class="ctw-input w-16" data-answer="ills"> 
+                                into lo<input type="text" id="md-10" maxlength="2" placeholder="__" class="ctw-input w-10" data-answer="ng"> term memory.
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t-4 border-dark">
+                            <div id="md-feedback-general" class="text-sm sm:text-base font-black w-full md:w-2/3 text-center md:text-left"></div>
+                            <button onclick="checkDrill('md')" class="neo-btn w-full md:w-auto bg-[#fb923c] text-dark px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base">
+                                Verify Letters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#fae8ff]">
+                <button onclick="toggleAccordion('step8')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            8
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Syntax Scaffolding: Build a Sentence</span>
+                    </div>
+                    <div id="icon-wrapper-step8" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step8" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 md:p-6 lg:p-10 space-y-6">
+                        <p class="text-sm sm:text-base md:text-lg text-slate-800 font-bold mb-8 text-pretty">
+                            Syntax and word order dictate the missing suffixes. Reorder the words below to form grammatically correct B2 level sentences. Click a word to add it to the sentence, click it again in the answer box to remove it. (2 Attempts)
+                        </p>
+                        
+                        <div id="syntax-container" class="space-y-10">
+                            </div>
+
+                        <div class="mt-10 flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t-4 border-dark">
+                            <div id="syntax-feedback-general" class="text-sm sm:text-base font-black w-full md:w-2/3 text-center md:text-left"></div>
+                            <button onclick="checkSyntax()" class="neo-btn w-full md:w-auto bg-[#e879f9] text-dark px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base">
+                                Check Sentences
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('step9')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            9
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Strategy Application: Mini Drill</span>
+                    </div>
+                    <div id="icon-wrapper-step9" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step9" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 md:p-6 lg:p-10 space-y-6">
+                        <p class="text-sm sm:text-base md:text-lg text-slate-800 font-bold mb-6 text-pretty">
+                            Let's apply the rule to a new B2 context (Sustainable Architecture). Fill in the 5 missing blanks. (2 Attempts)
+                        </p>
+                        
+                        <div class="bg-[#eff6ff] p-5 md:p-8 rounded-xl border-4 border-dark shadow-inner mb-8">
+                            <div class="text-base md:text-lg xl:text-xl leading-loose md:leading-loose xl:leading-loose text-slate-800 font-bold bg-white p-6 md:p-8 border-3 border-dark shadow-neo-sm">
+                                Modern architecture focuses on sustainable design to reduce environmental impact.<br><br>
+                                Many archi<input type="text" id="mini-1" maxlength="5" placeholder="_____" class="ctw-input w-20" data-answer="tects"> 
+                                rely hea<input type="text" id="mini-2" maxlength="4" placeholder="____" class="ctw-input w-16" data-answer="vily"> 
+                                on sustai<input type="text" id="mini-3" maxlength="5" placeholder="_____" class="ctw-input w-20" data-answer="nable"> 
+                                building princ<input type="text" id="mini-4" maxlength="5" placeholder="_____" class="ctw-input w-20" data-answer="iples"> 
+                                to red<input type="text" id="mini-5" maxlength="3" placeholder="___" class="ctw-input w-12" data-answer="uce"> waste.
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4 border-t-4 border-dark pt-6">
+                            <div id="mini-feedback-general" class="text-sm sm:text-base font-black w-full md:w-2/3 text-center md:text-left"></div>
+                            <button onclick="checkDrill('mini')" class="neo-btn w-full md:w-auto bg-[#38bdf8] text-dark px-6 py-2 md:py-3 text-xs sm:text-sm md:text-base">
+                                Verify Letters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#e0e7ff]">
+                <button onclick="toggleAccordion('step10')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#818cf8] hover:bg-[#6366f1] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            10
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Simulation & AI Extension</span>
+                    </div>
+                    <div id="icon-wrapper-step10" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step10" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 md:p-6 lg:p-10 space-y-10">
+                        
+                        <div>
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 w-full">
+                                <h3 class="font-black text-lg sm:text-xl md:text-2xl lg:text-3xl text-dark uppercase flex items-center gap-3 text-balance">
+                                    <i data-lucide="factory" class="w-6 h-6 md:w-8 md:h-8 text-brand-600"></i> The Simulation: Economics of Fast Fashion
+                                </h3>
+                                <span class="bg-[#facc15] text-dark text-xs sm:text-sm md:text-base font-black px-3 py-1 md:px-4 md:py-2 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] uppercase tracking-wide shrink-0">Score Goal: 10/10</span>
+                            </div>
+                            <p class="text-sm md:text-base text-slate-800 font-bold mb-8 text-pretty">This is a full scale B2 simulation. The second half of every second word is deleted. Type the missing letters. (2 Attempts)</p>
+                            
+                            <div class="bg-[#f8fafc] p-5 md:p-8 rounded-xl border-4 border-dark shadow-inner mb-8">
+                                <div class="text-base md:text-lg xl:text-xl leading-loose md:leading-loose xl:leading-loose text-slate-800 font-bold bg-white p-6 md:p-8 border-3 border-dark shadow-neo-sm">
+                                    The fast fashion industry produces millions of cheap garments every single year.<br><br>
+                                    However, th<input type="text" id="sim-1" maxlength="2" placeholder="__" class="ctw-input w-10" data-answer="is"> 
+                                    rapid produ<input type="text" id="sim-2" maxlength="5" placeholder="_____" class="ctw-input w-20" data-answer="ction"> 
+                                    cycle cre<input type="text" id="sim-3" maxlength="4" placeholder="____" class="ctw-input w-16" data-answer="ates"> 
+                                    severe environ<input type="text" id="sim-4" maxlength="6" placeholder="______" class="ctw-input w-24" data-answer="mental"> 
+                                    damage. Consu<input type="text" id="sim-5" maxlength="4" placeholder="____" class="ctw-input w-16" data-answer="mers"> 
+                                    are begi<input type="text" id="sim-6" maxlength="5" placeholder="_____" class="ctw-input w-20" data-answer="nning"> 
+                                    to real<input type="text" id="sim-7" maxlength="3" placeholder="___" class="ctw-input w-12" data-answer="ize"> 
+                                    that th<input type="text" id="sim-8" maxlength="3" placeholder="___" class="ctw-input w-12" data-answer="ese"> 
+                                    practices a<input type="text" id="sim-9" maxlength="2" placeholder="__" class="ctw-input w-10" data-answer="re"> 
+                                    not sustai<input type="text" id="sim-10" maxlength="5" placeholder="_____" class="ctw-input w-20" data-answer="nable">.
+                                </div>
+                            </div>
+
+                            <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4 border-t-4 border-dark pt-6">
+                                <div id="sim-feedback-general" class="text-sm sm:text-base font-black w-full md:w-2/3 text-center md:text-left"></div>
+                                <button onclick="checkDrill('sim')" class="neo-btn w-full md:w-auto bg-[#818cf8] text-white px-8 py-3 text-base md:text-lg font-bold shadow-lg transition-transform hover:scale-105 whitespace-nowrap">
+                                    Submit Simulation
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-12 border-t-4 border-dark pt-8 md:pt-10">
+                            <h3 class="font-black text-lg md:text-xl lg:text-2xl text-dark uppercase mb-4 flex items-center gap-3 w-full text-balance"><i data-lucide="bot" class="w-6 h-6 md:w-8 md:h-8 text-[#10b981]"></i> Adaptive AI Prompt</h3>
+                            <p class="text-sm sm:text-base md:text-lg text-slate-800 font-bold mb-6 text-pretty">Copy the prompt below and paste it into ChatGPT, Gemini, or Claude to continue your personalized TOEFL practice.</p>
+                            
+                            <div class="bg-dark p-4 md:p-6 border-4 border-[#4ade80] shadow-neo-sm flex flex-col gap-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[#4ade80] font-bold text-xs md:text-sm uppercase tracking-wider">Prompt Template</span>
+                                    <button onclick="copyPrompt()" class="neo-btn bg-[#facc15] text-dark px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm flex items-center gap-2 w-fit">
+                                        <i data-lucide="copy" class="w-4 h-4"></i> Copy
+                                    </button>
+                                </div>
+                                <textarea id="ai-prompt" readonly class="w-full bg-transparent text-[#4ade80] text-sm md:text-base font-mono h-48 focus:outline-none resize-y leading-relaxed font-bold selection:bg-white selection:text-dark">You are an AI Tutor for the TOEFL iBT®. I have just completed a B2 lesson on Reading: Complete the Words. Using the 'Grammar and Context' strategy, please generate 3 new practice items based on a complex academic topic (e.g., Sociology or Engineering). After I answer, evaluate my performance using the 1-6 banded scoring scale, highlight my grammatical errors, and suggest one way to make my vocabulary more sophisticated.</textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center mb-6">
+            <p class="text-dark text-sm md:text-base font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm text-balance">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-4 sm:px-6 py-3 sm:py-4 shadow-[6px_6px_0_0_#0f172a] transition-all duration-300 translate-y-24 opacity-0 z-50 flex items-center gap-2 sm:gap-3 font-black text-xs sm:text-sm md:text-base uppercase tracking-wide w-11/12 sm:w-max max-w-[90vw]">
+        <i data-lucide="info" class="w-5 h-5 sm:w-6 sm:h-6 shrink-0 text-brand-600"></i> <span id="toast-msg">Notification</span>
+    </div>
+
+    <script>
+        // --- Theme Color Dictionary for JS Elements ---
+        const themeColors = {
+            teal: { btn: 'bg-[#2dd4bf] hover:bg-[#14b8a6]' },
+            cyan: { btn: 'bg-[#38bdf8] hover:bg-[#0ea5e9]' },
+            orange: { btn: 'bg-[#fb923c] hover:bg-[#ea580c]' },
+            indigo: { btn: 'bg-[#818cf8] hover:bg-[#6366f1]' },
+            fuchsia: { btn: 'bg-[#e879f9] hover:bg-[#d946ef]' }
+        };
+
+        // --- Init Lucide Icons ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+
+        // --- Data Configuration ---
+
+        // Step 2: Vocab Data (B2 Level)
+        const vocabData = [
+            { id: "v1", word: "1. Cognitive", correct: "c", options: { a: "Related to physical exercise", b: "A type of machinery", c: "Relating to mental processes like thinking", d: "Occurring in the ocean" } },
+            { id: "v2", word: "2. Retention", correct: "a", options: { a: "The ability to remember or keep things", b: "To lose focus quickly", c: "A type of punishment", d: "Building a structure" } },
+            { id: "v3", word: "3. Facilitate", correct: "b", options: { a: "To break down completely", b: "To make an action or process easier", c: "To ignore someone", d: "To heat up a substance" } },
+            { id: "v4", word: "4. Crucial", correct: "d", options: { a: "Very small", b: "Made of crystal", c: "Happening by accident", d: "Extremely important or necessary" } },
+            { id: "v5", word: "5. Mechanism", correct: "a", options: { a: "A process or system that produces a result", b: "A loud sound", c: "A type of metal", d: "A philosophical idea" } },
+            { id: "v6", word: "6. Capacity", correct: "c", options: { a: "A style of clothing", b: "The center of a city", c: "The maximum amount something can contain", d: "A lack of resources" } },
+            { id: "v7", word: "7. Retrieval", correct: "b", options: { a: "Throwing something away", b: "The process of getting something back from memory", c: "Running long distances", d: "A type of dog breed" } },
+            { id: "v8", word: "8. Sequential", correct: "a", options: { a: "Following in a logical or chronological order", b: "Happening randomly", c: "Very quiet", d: "Pertaining to art" } },
+            { id: "v9", word: "9. Stimulate", correct: "d", options: { a: "To imitate closely", b: "To pause an activity", c: "To calculate math", d: "To encourage interest or physiological activity" } },
+            { id: "v10", word: "10. Fundamental", correct: "b", options: { a: "Very funny", b: "Forming a necessary base or core", c: "Related to finance", d: "Temporary and fleeting" } },
+            { id: "v11", word: "11. Transfer", correct: "c", options: { a: "To stay in one place", b: "To translate a language", c: "To move from one place or context to another", d: "To forget quickly" } },
+            { id: "v12", word: "12. Associate", correct: "a", options: { a: "To connect someone or something in your mind", b: "To divide into pieces", c: "A type of social gathering", d: "To measure exactly" } },
+            { id: "v13", word: "13. Temporary", correct: "d", options: { a: "Related to temperature", b: "Permanent and unchanging", c: "A type of rhythm", d: "Lasting for only a limited period of time" } },
+            { id: "v14", word: "14. Neurological", correct: "b", options: { a: "Relating to deep space", b: "Relating to the functions and disorders of nerves", c: "A new logical theory", d: "Related to ancient history" } },
+            { id: "v15", word: "15. Strategy", correct: "c", options: { a: "A sudden emotion", b: "A type of measurement", c: "A plan of action designed to achieve a major goal", d: "A straight line" } }
+        ];
+
+        // Shared helper for generating Question Blocks
+        function getQuestionHTML(item, prefix, index) {
+            return `
+                <div class="bg-white p-4 sm:p-5 md:p-6 border-3 border-dark shadow-neo-sm hover:-translate-y-1 transition-transform mb-6">
+                    <div class="flex items-center gap-3 mb-5 border-b-2 border-dark pb-3 mt-4">
+                         <span class="font-black text-white bg-dark border-2 border-dark shadow-[2px_2px_0_0_#cbd5e1] h-8 w-8 flex items-center justify-center text-sm md:text-base shrink-0">${index + 1}</span>
+                         <h4 class="font-black text-dark text-base md:text-lg leading-relaxed text-pretty"><i data-lucide="help-circle" class="w-5 h-5 inline text-brand-600 mr-2"></i>${item.question}</h4>
+                    </div>
+                    <div class="space-y-4">
+                        ${item.options.map((opt, idx) => {
+                            const val = ['a','b','c','d'][idx];
+                            return `
+                            <label class="option-label">
+                                <input type="radio" name="${prefix}-${index}" value="${val}">
+                                <span>${opt}</span>
+                            </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div id="feedback-${prefix}-${index}" class="text-base md:text-lg font-black mt-5 h-auto min-h-[1.5rem]"></div>
+                </div>
+            `;
+        }
+
+        // Step 6: MCQ Data (B2 Level)
+        const mcqData = [
+            { id: "m1", question: "If the sentence reads: 'They needed to fa________ (facilitate) the meeting.', what part of speech is missing?", correct: "b", options: ["a. Noun", "b. Base Verb", "c. Adjective", "d. Preposition"], color: "teal", exp: "Following 'to', we typically need a base verb. The missing suffix is '-cilitate'." },
+            { id: "m2", question: "Which word best fits this context: 'The brain's natural me_______ for storing data is complex.'?", correct: "a", options: ["a. mechanism", "b. mechanic", "c. metadata", "d. metaphor"], color: "teal", exp: "In the context of the brain and storing data, 'mechanism' is the most appropriate B2 academic noun." },
+            { id: "m3", question: "If the sentence is 'Therefore, the primary fo___ must be on retention.', what is the missing word?", correct: "c", options: ["a. form", "b. food", "c. focus", "d. fold"], color: "teal", exp: "'primary focus' is a common academic collocation fitting this grammatical slot." },
+            { id: "m4", question: "Which missing word fits best: 'Despite the challenges, the overall im____ was positive.'?", correct: "d", options: ["a. image", "b. imply", "c. import", "d. impact"], color: "teal", exp: "Following 'overall', the noun 'impact' makes the most sense in an academic evaluation context." },
+            { id: "m5", question: "A 12 letter B2 word has the second half missing: <code class='bg-slate-100 px-1 border border-slate-300'>neuro_______</code>. In a context about the brain, what is it likely to be?", correct: "b", options: ["a. neurosurgeon", "b. neurological", "c. neuroscience", "d. neuroplastic"], color: "teal", exp: "While all are related, 'neurological' fits the typical 12-letter structure discussed in the strategy section." },
+            { id: "m6", question: "Identify the word that fits: 'This lack of resources creates a tem______ problem.'", correct: "a", options: ["a. temporary", "b. temple", "c. temperate", "d. temptation"], color: "teal", exp: "'Temporary' perfectly modifies the noun 'problem' in this context." },
+            { id: "m7", question: "Why is recognizing word families (like retain -> retention) useful for this task?", correct: "c", options: ["a. It helps you guess the first letter.", "b. It allows you to ignore grammar completely.", "c. It helps predict the missing suffix based on grammatical context.", "d. It provides the exact spelling of synonyms."], color: "teal", exp: "As covered in the strategy section, word families help you quickly determine the required suffix based on the surrounding syntax." },
+            { id: "m8", question: "Identify the missing word: 'The professor asked the students to ana____ the data.'", correct: "b", options: ["a. analogy", "b. analyze", "c. anatomy", "d. anarchy"], color: "teal", exp: "Following 'to', we need the verb form 'analyze'." },
+            { id: "m9", question: "If the topic is 'Learning Strategies', what is the likely word here: 'This is a cru____ step in the process.'?", correct: "a", options: ["a. crucial", "b. crumble", "c. crusade", "d. crustal"], color: "teal", exp: "'Crucial' is the correct B2 adjective to modify 'step' in an academic context." },
+            { id: "m10", question: "According to the half word rule, how does a 7 letter word like 'process' typically appear?", correct: "b", options: ["a. pro____", "b. proc___", "c. pr_____", "d. proces_"], color: "teal", exp: "A 7 letter word usually keeps the first 4 letters (proc) and omits the last 3 (ess)." }
+        ];
+
+        // Step 8: Syntax Scaffolding Data (B2 Level)
+        const syntaxData = [
+            { id: "syn1", words: ["Cognitive", "psychologists", "study", "how", "the", "brain", "processes", "information."], correct: "Cognitive psychologists study how the brain processes information.", color: "fuchsia" },
+            { id: "syn2", words: ["Active", "engagement", "is", "crucial", "for", "long term", "memory", "retention."], correct: "Active engagement is crucial for long term memory retention.", color: "fuchsia" },
+            { id: "syn3", words: ["Sequential", "learning", "helps", "to", "facilitate", "the", "transfer", "of", "skills."], correct: "Sequential learning helps to facilitate the transfer of skills.", color: "fuchsia" },
+            { id: "syn4", words: ["Students", "must", "develop", "effective", "strategies", "to", "overcome", "forgetting."], correct: "Students must develop effective strategies to overcome forgetting.", color: "fuchsia" },
+            { id: "syn5", words: ["The", "fundamental", "mechanism", "of", "memory", "relies", "on", "neurological", "connections."], correct: "The fundamental mechanism of memory relies on neurological connections.", color: "fuchsia" }
+        ];
+
+        // Unified Attempts State
+        const attempts = {
+            vocab: 0,
+            mcq: 0,
+            syntax: 0
+        };
+
+        const drillAttempts = { md: 0, mini: 0, sim: 0 };
+        const drillExplanations = {
+            md: "Explanation: This ac[tive] process st[rengthens] neurological pa[thways] inside th[e] human br[ain]. Regular pr[actice] helps to fa[cilitate] the tr[ansfer] of sk[ills] into lo[ng] term memory.",
+            mini: "Explanation: Many archi[tects] rely hea[vily] on sustai[nable] building princ[iples] to red[uce] waste.",
+            sim: "Explanation: However, th[is] rapid produ[ction] cycle cre[ates] severe environ[mental] damage. Consu[mers] are begi[nning] to real[ize] that th[ese] practices a[re] not sustai[nable]."
+        };
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="">Select definition...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-white border-3 border-dark shadow-neo-sm hover:-translate-y-1 hover:shadow-neo transition-all w-full min-w-0">
+                    <div class="font-black text-dark uppercase text-base md:text-lg sm:w-1/3 shrink-0 truncate" title="${item.word}">${item.word}</div>
+                    <div class="flex items-center gap-2 w-full sm:w-2/3 min-w-0">
+                        <select id="${item.id}" class="text-input !py-2 !mt-0 text-sm md:text-base cursor-pointer overflow-hidden text-ellipsis w-full max-w-full">
+                            ${optionsHtml}
+                        </select>
+                        <span id="feedback-${item.id}" class="w-6 flex justify-center text-lg shrink-0 font-black"></span>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function renderSection(containerId, dataArray, prefix) {
+            const container = document.getElementById(containerId);
+            if (!container) return; 
+            container.innerHTML = dataArray.map((item, index) => getQuestionHTML(item, prefix, index)).join('');
+        }
+
+        function renderSyntax() {
+            const container = document.getElementById('syntax-container');
+            container.innerHTML = syntaxData.map((item, index) => {
+                const shuffled = [...item.words].sort(() => Math.random() - 0.5);
+                const col = item.color;
+                
+                return `
+                <div class="syntax-block bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform mb-6" data-id="${item.id}" data-correct="${item.correct}">
+                    <div class="font-black text-white bg-dark px-3 py-1 uppercase tracking-widest text-sm inline-block mb-4 shadow-[2px_2px_0_0_#cbd5e1]">Sentence ${index + 1}</div>
+                    
+                    <div class="text-xs text-dark mb-1 uppercase tracking-wider font-black">Word Bank:</div>
+                    <div class="min-h-[60px] flex flex-wrap gap-2 mb-5 p-4 bg-slate-50 border-3 border-dark shadow-inner" id="bank-${item.id}">
+                        ${shuffled.map((word) => `
+                            <button onclick="moveWord(this, 'bank', 'ans')" class="word-chip">${word}</button>
+                        `).join('')}
+                    </div>
+
+                    <div class="text-xs text-dark mb-1 uppercase tracking-wider font-black">Your Arranged Sentence:</div>
+                    <div class="min-h-[80px] flex flex-wrap gap-2 p-4 bg-white border-3 border-dark shadow-neo-sm transition-colors" id="ans-${item.id}">
+                    </div>
+                    <div id="feedback-${item.id}" class="h-6 mt-4 text-sm md:text-base font-black flex items-center"></div>
+                </div>
+            `}).join('');
+        }
+
+        // --- UI Interactions ---
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        // Check Logic: Vocab
+        function checkVocab() {
+            if (attempts.vocab >= 2) return;
+            attempts.vocab++;
+            let correctCount = 0;
+            const isFinalAttempt = attempts.vocab === 2;
+
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                
+                // Reset styles
+                select.classList.remove('bg-[#4ade80]', 'text-dark', 'bg-[#f87171]', 'text-white', 'bg-[#fefce8]');
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6 text-[#22c55e]"></i>';
+                    select.classList.add('bg-[#4ade80]', 'text-dark');
+                    select.disabled = true;
+                    correctCount++;
+                } else {
+                    if (isFinalAttempt) {
+                        select.value = item.correct;
+                        feedback.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6 text-[#22c55e]"></i>';
+                        select.classList.add('bg-[#4ade80]', 'text-dark');
+                        select.disabled = true;
+                    } else if (select.value !== "") {
+                        feedback.innerHTML = '<i data-lucide="x-circle" class="w-6 h-6 text-[#ef4444]"></i>';
+                        select.classList.add('bg-[#f87171]', 'text-white');
+                    } else {
+                        feedback.innerHTML = '<i data-lucide="alert-triangle" class="w-6 h-6 text-[#eab308]" title="Attempt first!"></i>';
+                        select.classList.add('bg-[#fefce8]');
+                    }
+                }
+            });
+            lucide.createIcons();
+
+            const generalFeedback = document.getElementById('vocab-feedback-general');
+            if (correctCount === vocabData.length) {
+                showToast("Perfect! B2 Vocabulary mastered.");
+                generalFeedback.innerHTML = '';
+            } else if (isFinalAttempt) {
+                generalFeedback.innerHTML = `<div class="text-dark bg-[#e0e7ff] p-4 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-left w-full flex items-start sm:items-center gap-2"><i data-lucide="info" class="w-5 h-5 shrink-0 mt-0.5 sm:mt-0"></i> <span class="uppercase">Maximum attempts reached. Correct answers revealed.</span></div>`;
+                lucide.createIcons();
+            } else {
+                generalFeedback.innerHTML = `<span class="text-dark bg-[#fefce8] p-3 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] uppercase inline-block">You got ${correctCount} out of ${vocabData.length}. Try again! (Attempt ${attempts.vocab}/2)</span>`;
+            }
+        }
+
+        // Shared Check Logic: Radio Sections
+        function checkSection(prefix, dataArray) {
+            if (attempts[prefix] >= 2) return;
+            attempts[prefix]++;
+            let correctCount = 0;
+            const isFinalAttempt = attempts[prefix] === 2;
+
+            dataArray.forEach((item, index) => {
+                const radios = document.getElementsByName(`${prefix}-${index}`);
+                const feedback = document.getElementById(`feedback-${prefix}-${index}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = `<span class="text-dark bg-[#4ade80] px-3 py-2 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase"><i data-lucide="check" class="w-5 h-5"></i> Correct!</span>`;
+                    radios.forEach(r => r.disabled = true);
+                    correctCount++;
+                } else {
+                    if (isFinalAttempt) {
+                        radios.forEach(r => {
+                            r.disabled = true;
+                            if(r.value === item.correct) {
+                                r.checked = true;
+                                r.parentElement.classList.add('bg-[#e0e7ff]', 'border-[#4338ca]');
+                            }
+                        });
+                        feedback.innerHTML = `<div class="text-dark bg-[#e0e7ff] p-4 mt-3 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-base md:text-lg leading-relaxed"><i data-lucide="info" class="w-5 h-5 inline mr-1"></i> <strong class="uppercase">Explanation:</strong> ${item.exp}</div>`;
+                        
+                    } else if (userVal !== "") {
+                        feedback.innerHTML = `<span class="text-white bg-[#ef4444] px-3 py-2 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase"><i data-lucide="x" class="w-5 h-5"></i> Incorrect. Try again.</span>`;
+                    } else {
+                        feedback.innerHTML = `<span class="text-dark bg-[#facc15] px-3 py-2 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase"><i data-lucide="alert-triangle" class="w-5 h-5"></i> Please select an option.</span>`;
+                    }
+                }
+            });
+            lucide.createIcons();
+            
+            const generalFeedback = document.getElementById(`${prefix}-feedback-general`);
+            if (correctCount === dataArray.length) {
+                showToast("Excellent! Perfect score on this section.");
+                generalFeedback.innerHTML = '';
+            } else if (isFinalAttempt) {
+                generalFeedback.innerHTML = `<div class="text-dark bg-[#e0e7ff] p-4 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-left w-full flex items-start sm:items-center gap-2"><i data-lucide="info" class="w-5 h-5 shrink-0 mt-0.5 sm:mt-0"></i> <span class="uppercase">Maximum attempts reached. Explanations revealed.</span></div>`;
+                lucide.createIcons();
+            } else {
+                generalFeedback.innerHTML = `<span class="text-dark bg-[#fefce8] p-3 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] uppercase inline-block">You got ${correctCount} out of ${dataArray.length}. Try again! (Attempt ${attempts[prefix]}/2)</span>`;
+            }
+        }
+
+        // Drill Checker Logic (Complete the Words)
+        function checkDrill(prefix) {
+            if (drillAttempts[prefix] >= 2) return;
+            let correct = 0;
+            const inputs = document.querySelectorAll(`input[id^="${prefix}-"]`);
+            const total = inputs.length;
+            drillAttempts[prefix]++;
+            
+            inputs.forEach(input => {
+                const userAnswer = input.value.trim().toLowerCase();
+                const correctAnswer = input.getAttribute('data-answer').toLowerCase();
+                
+                input.classList.remove('correct', 'incorrect');
+                
+                if (userAnswer === correctAnswer) {
+                    input.classList.add('correct');
+                    correct++;
+                } else {
+                    input.classList.add('incorrect');
+                }
+            });
+            
+            const feedbackBox = document.getElementById(`${prefix}-feedback-general`);
+            if (correct === total) {
+                feedbackBox.innerHTML = `<span class="text-[#15803d]"><i data-lucide="check-circle" class="inline w-5 h-5 mr-1"></i> Perfect Score! (${correct}/${total})</span>`;
+                lucide.createIcons();
+                showToast("Outstanding! You completed all the words.");
+                inputs.forEach(input => input.disabled = true);
+            } else {
+                if (drillAttempts[prefix] >= 2) {
+                    inputs.forEach(input => {
+                        if (!input.classList.contains('correct')) {
+                            input.value = input.getAttribute('data-answer');
+                            input.classList.remove('incorrect');
+                            input.classList.add('correct');
+                            input.style.backgroundColor = '#e0e7ff'; 
+                        }
+                        input.disabled = true;
+                    });
+                    feedbackBox.innerHTML = `<div class="text-dark bg-[#e0e7ff] p-4 border-3 border-dark shadow-neo-sm text-left w-full"><i data-lucide="info" class="inline w-5 h-5 mr-1"></i> <strong>Maximum attempts reached. Correct answers revealed.</strong><br><span class="text-sm mt-2 block">${drillExplanations[prefix]}</span></div>`;
+                    lucide.createIcons();
+                } else {
+                    feedbackBox.innerHTML = `<span class="text-[#ea580c]"><i data-lucide="alert-triangle" class="inline w-5 h-5 mr-1"></i> You got ${correct} out of ${total}. Review the red fields and try again! (Attempt ${drillAttempts[prefix]}/2)</span>`;
+                    lucide.createIcons();
+                }
+            }
+        }
+
+        // Meta Answer
+        function showMetaAnswer() {
+            document.getElementById('meta-answer').classList.remove('hidden');
+        }
+
+        // Syntax Logic
+        function moveWord(btn, from, to) {
+            const block = btn.closest('.syntax-block');
+            const blockId = block.getAttribute('data-id');
+
+            const targetContainer = document.getElementById(from === 'bank' ? `ans-${blockId}` : `bank-${blockId}`);
+            const newFrom = from === 'bank' ? 'ans' : 'bank';
+            
+            btn.setAttribute('onclick', `moveWord(this, '${newFrom}', '')`);
+            
+            if (newFrom === 'ans') {
+                btn.classList.add('bg-[#fefce8]');
+            } else {
+                btn.classList.remove('bg-[#fefce8]');
+            }
+            
+            targetContainer.appendChild(btn);
+        }
+
+        function checkSyntax() {
+            if (attempts.syntax >= 2) return;
+            attempts.syntax++;
+            let allCorrect = true;
+            let correctCount = 0;
+            const isFinalAttempt = attempts.syntax === 2;
+
+            syntaxData.forEach(item => {
+                const block = document.querySelector(`.syntax-block[data-id="${item.id}"]`);
+                const ansContainer = document.getElementById(`ans-${item.id}`);
+                const bankContainer = document.getElementById(`bank-${item.id}`);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const col = "fuchsia";
+                
+                const userSentence = Array.from(ansContainer.children).map(btn => btn.innerText).join(' ');
+                
+                // Reset styles
+                ansContainer.classList.remove('bg-[#f0fdf4]', 'bg-[#fef2f2]');
+                Array.from(ansContainer.children).forEach(btn => {
+                   btn.classList.remove('bg-[#f87171]', 'text-white'); 
+                });
+                
+                if (userSentence === item.correct) {
+                    feedback.innerHTML = '<span class="text-dark bg-[#4ade80] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase"><i data-lucide="check" class="w-4 h-4"></i> Perfect syntax!</span>';
+                    ansContainer.classList.remove(`border-${col}-200`, 'border-red-300', 'bg-red-50');
+                    ansContainer.classList.add('border-green-400', 'bg-green-50');
+                    correctCount++;
+                } else {
+                    allCorrect = false;
+                    if (isFinalAttempt) {
+                        ansContainer.innerHTML = item.correct.split(' ').map(word => `<button class="word-chip !cursor-default !bg-[#f0fdf4]">${word}</button>`).join('');
+                        bankContainer.innerHTML = '';
+                        ansContainer.classList.remove('border-red-300', 'bg-red-50', `border-${col}-200`, `bg-${col}-50`);
+                        ansContainer.classList.add('border-green-400', 'bg-green-50');
+                        feedback.innerHTML = '<span class="text-dark bg-[#e0e7ff] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase"><i data-lucide="info" class="w-4 h-4"></i> Correct order revealed.</span>';
+                    } else if (userSentence.length > 0) {
+                        feedback.innerHTML = '<span class="text-white bg-[#ef4444] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase"><i data-lucide="x" class="w-4 h-4"></i> Incorrect order. Try again.</span>';
+                        ansContainer.classList.remove(`border-${col}-200`, `bg-${col}-50`, 'border-green-400', 'bg-green-50');
+                        ansContainer.classList.add('border-red-300', 'bg-red-50');
+                    } else {
+                        feedback.innerHTML = '<span class="text-dark bg-[#facc15] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Please move words.</span>';
+                    }
+                }
+            });
+            lucide.createIcons();
+
+            const generalFeedback = document.getElementById('syntax-feedback-general');
+            if (allCorrect) {
+                showToast("All logical structures are correct!");
+                generalFeedback.innerHTML = '';
+            } else if (isFinalAttempt) {
+                generalFeedback.innerHTML = `<div class="text-dark bg-[#e0e7ff] p-4 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] text-left w-full flex items-start sm:items-center gap-2"><i data-lucide="info" class="w-5 h-5 shrink-0 mt-0.5 sm:mt-0"></i> <span class="uppercase">Maximum attempts reached. Correct answers revealed.</span></div>`;
+                lucide.createIcons();
+            } else {
+                generalFeedback.innerHTML = `<span class="text-dark bg-[#fefce8] p-3 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] uppercase inline-block">Some sentences are incorrect. Review and try again! (Attempt ${attempts.syntax}/2)</span>`;
+            }
+        }
+
+        // Copy Prompt
+        function copyPrompt() {
+            const promptText = document.getElementById('ai-prompt');
+            promptText.select();
+            promptText.setSelectionRange(0, 99999); 
+            try {
+                document.execCommand('copy');
+                showToast("AI Prompt copied to clipboard!");
+            } catch (err) {
+                showToast("Failed to copy text.");
+            }
+        }
+
+        // Reset All
+        function resetAll() {
+            if(confirm("Are you sure you want to clear all your progress?")) {
+
+                // Texts/Inputs
+                document.querySelectorAll('input[type="text"], textarea').forEach(t => {
+                    if (t.id !== 'ai-prompt') {
+                        t.value = "";
+                        t.classList.remove('correct', 'incorrect');
+                        t.style.backgroundColor = '';
+                        t.style.color = '';
+                        t.disabled = false;
+                    }
+                });
+                
+                // Radios
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                
+                // Selects
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.className = "text-input !py-2 !mt-0 text-xs sm:text-sm cursor-pointer overflow-hidden text-ellipsis w-full max-w-full"; 
+                });
+                
+                // Feedbacks
+                document.querySelectorAll('[id^="feedback-"], [id$="-feedback"]').forEach(f => f.innerHTML = "");
+                
+                // Meta Answer
+                document.getElementById('meta-answer').classList.add('hidden');
+                
+                // Reset Attempts
+                Object.keys(attempts).forEach(k => attempts[k] = 0);
+                drillAttempts.md = 0;
+                drillAttempts.mini = 0;
+                drillAttempts.sim = 0;
+
+                // Clear General Feedbacks
+                const genFeedbacks = ['vocab-feedback-general', 'mcq-feedback-general', 'md-feedback-general', 'mini-feedback-general', 'sim-feedback-general', 'syntax-feedback-general'];
+                genFeedbacks.forEach(id => {
+                    if (document.getElementById(id)) document.getElementById(id).innerHTML = "";
+                });
+                
+                // Re-render Dynamic Sections
+                renderVocab();
+                renderSection('mcq-container', mcqData, 'mcq');
+                renderSyntax();
+                
+                lucide.createIcons();
+                showToast("All progress has been reset.");
+            }
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderSection('mcq-container', mcqData, 'mcq');
+            renderSyntax();
+            
+            // Auto-open first accordion
+            toggleAccordion('step1');
+            lucide.createIcons();
+        });
+
+    </script>
+</body>
+</html>

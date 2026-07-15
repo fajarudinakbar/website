@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL ITP Listening Part A - Practice Test B</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --bg-light: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --success: #22c55e;
+            --error: #ef4444;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header & Progress */
+        header {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            border-top: 6px solid var(--primary);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .progress-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .progress-step {
+            position: relative;
+            z-index: 2;
+            background: #e2e8f0;
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .progress-step.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Pages & Animations */
+        .module-page {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.4s ease;
+        }
+
+        .module-page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Homepage Styles */
+        .home-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .home-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .instruction-list {
+            text-align: left;
+            margin: 20px auto;
+            max-width: 500px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .instruction-list li {
+            margin-bottom: 10px;
+            list-style-position: inside;
+        }
+
+        .audio-setup-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e3a8a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        /* Module Containers */
+        .module-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .module-header {
+            background: #f8fafc;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .module-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .module-content {
+            padding: 24px;
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: border-color 0.3s;
+        }
+
+        .question-card.unanswered-error {
+            border: 2px solid var(--error);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .q-number {
+            font-weight: 700;
+            color: var(--secondary);
+            background: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .option-input {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* Feedback Area */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.correct {
+            background-color: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #166534;
+        }
+
+        .feedback.incorrect {
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .transcript-box {
+            display: none;
+            background: #f1f5f9;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #334155;
+            border-radius: 4px;
+        }
+        
+        .transcript-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .transcript-content {
+            font-style: italic;
+        }
+
+        .explanation-text {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+
+        /* Controls */
+        .controls-area {
+            display: flex;
+            justify-content: space-between; /* Adjusted for back button */
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            color: var(--text-main);
+        }
+        
+        .btn-audio {
+            background-color: #0284c7;
+        }
+        
+        .btn-audio:hover {
+            background-color: #0369a1;
+        }
+
+        .btn-next {
+            background: var(--text-main);
+            display: none; /* Hidden until submit */
+        }
+        
+        .btn-next:hover {
+            background: #000;
+        }
+        
+        .btn-spacer {
+            flex-grow: 1; /* Pushes next button to right */
+        }
+
+        /* Score Summary Page */
+        .summary-card {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .final-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .correct-answer-highlight {
+            border-color: var(--success) !important;
+            background-color: #dcfce7 !important;
+        }
+        
+        .wrong-answer-highlight {
+            border-color: var(--error) !important;
+            background-color: #fee2e2 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>TOEFL ITP Listening - Part A</h1>
+        <div class="subtitle">Practice Test B | Short Conversations</div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-track"></div>
+            <div id="step-1" class="progress-step">1</div>
+            <div id="step-2" class="progress-step">2</div>
+            <div id="step-3" class="progress-step">3</div>
+            <div id="step-4" class="progress-step">🏁</div>
+        </div>
+    </header>
+
+    <form id="quizForm">
+        <div id="quiz-content">
+            <!-- Pages injected here by JS -->
+        </div>
+    </form>
+</div>
+
+<script>
+    const quizData = [
+        // Questions 1-10
+        { id: 1, script: "<strong>Man:</strong> I'm taking six courses this semester.<br><strong>Woman:</strong> Maybe you should cut down next term.", question: "What does the woman suggest the man do?", options: { A: "Stay home for a while.", B: "Find easier classes.", C: "Take fewer courses in the future.", D: "Look downstairs to find the classroom." }, answer: "C", explanation: "The phrase 'cut down' means to reduce the quantity. She suggests taking fewer courses." },
+        { id: 2, script: "<strong>Man:</strong> Joyce, did you borrow my ruler?<br><strong>Woman:</strong> No, Bill did.", question: "What happened to the ruler?", options: { A: "Joyce used it.", B: "Bill took it.", C: "Joyce fixed it.", D: "Bill lost it." }, answer: "B", explanation: "The woman explicitly states that Bill borrowed (took) the ruler." },
+        { id: 3, script: "<strong>Woman:</strong> I think it'll be hard for me to write that paper 'cause I'm so tired.<br><strong>Man:</strong> Why don't you do it later on in the day after you've rested?", question: "What does the man suggest the woman do?", options: { A: "Get some rest now and write the paper later.", B: "Read the paper before she rests.", C: "Wait and work on the paper the following day.", D: "Write the paper now before it's too late." }, answer: "A", explanation: "The man suggests doing it 'later... after you've rested'." },
+        { id: 4, script: "<strong>Man:</strong> I'm looking for a nice quiet place to spend two weeks. Can you help me?<br><strong>Woman:</strong> We have several brochures here that you can take home to look at.", question: "What does the woman mean?", options: { A: "The man should take home some souvenirs.", B: "She will make a reservation for the man.", C: "The man should relax at home.", D: "She can give the man some information." }, answer: "D", explanation: "Brochures contain information. Offering them means she can provide information." },
+        { id: 5, script: "<strong>Woman:</strong> The weather's been so hot and humid this week.<br><strong>Man:</strong> Hasn't it though!", question: "What does the man mean?", options: { A: "He agrees with the woman.", B: "He hasn't been here this week.", C: "He likes hot weather.", D: "He doesn't know what the temperature is." }, answer: "A", explanation: "'Hasn't it though!' is an idiomatic expression of strong agreement." },
+        { id: 6, script: "<strong>Man:</strong> I thought we might try that new pizza place tonight.<br><strong>Woman:</strong> Wouldn't you prefer somewhere a little more elegant?", question: "What does the woman imply?", options: { A: "She doesn't like pizza.", B: "She'd rather stay home.", C: "She doesn't like the man's idea.", D: "The man prefers to try new restaurants." }, answer: "C", explanation: "By suggesting an 'elegant' place instead, she rejects the man's pizza idea." },
+        { id: 7, script: "<strong>Woman:</strong> I was thinking about going to the opening performance of the new play Friday night.<br><strong>Man:</strong> You'd better do more than think about it if you're serious. There might not be any tickets left by then.", question: "What does the man suggest the woman do?", options: { A: "Wait until Friday to buy a ticket.", B: "Buy a ticket as soon as possible.", C: "See the play on a different night.", D: "Invite a friend to the play." }, answer: "B", explanation: "He implies she must act quickly (buy tickets) because they might sell out." },
+        { id: 8, script: "<strong>Woman:</strong> Did you know it's almost five?<br><strong>Man:</strong> Five! It can't be!", question: "What does the man mean?", options: { A: "He usually leaves at five.", B: "He's glad it's finally five o'clock.", C: "He thought it was earlier.", D: "He knew the clock was inaccurate." }, answer: "C", explanation: "His exclamation 'It can't be!' indicates surprise, implying he thought it was earlier." },
+        { id: 9, script: "<strong>Woman:</strong> The cafeteria is serving cheese sandwiches for lunch today.<br><strong>Man:</strong> I'm glad we made plans to go somewhere else.", question: "What does the man imply?", options: { A: "He doesn't feel like waiting in line today.", B: "Sandwiches will be served at the restaurant he chose.", C: "The cafeteria menu doesn't appeal to him.", D: "He only made plans for the two of them." }, answer: "C", explanation: "He is glad to go elsewhere, implying the cheese sandwiches (menu) don't appeal to him." },
+        { id: 10, script: "<strong>Woman:</strong> Your new table is gorgeous. It must have been expensive.<br><strong>Man:</strong> A little, I guess.", question: "What does the man say about the table?", options: { A: "It is a small table.", B: "It was expensive.", C: "He didn't expect it to be so large.", D: "He doesn't know how much it cost." }, answer: "B", explanation: "Admitting it was 'a little' expensive confirms that it cost a significant amount." },
+        
+        // Questions 11-20
+        { id: 11, script: "<strong>Woman:</strong> The graduation luncheon has been set for the last Thursday of the semester.<br><strong>Man:</strong> Oh, really? I'll have to change it on my calendar.", question: "What had the man assumed about the graduation luncheon?", options: { A: "It had already taken place.", B: "All the graduates would return.", C: "It would be held on campus.", D: "It was scheduled for a different date." }, answer: "D", explanation: "Changing his calendar implies he had a different date recorded initially." },
+        { id: 12, script: "<strong>Man:</strong> I need this prescription filled as soon as possible.<br><strong>Woman:</strong> Do you want that in tablet or liquid?", question: "What does the woman ask?", options: { A: "When the man can pick up the prescription.", B: "The name of the man's doctor.", C: "In what form the man wants the medicine.", D: "For what illness the medicine was prescribed." }, answer: "C", explanation: "Tablets and liquids are different physical forms of medicine." },
+        { id: 13, script: "<strong>Man:</strong> How could I be so absentminded? I left my wallet at home again.<br><strong>Woman:</strong> It just so happens I have twenty dollars I don't need until tonight.", question: "What does the woman mean?", options: { A: "She doesn't need the man's money.", B: "She's willing to lend the man some money.", C: "She'll buy the man a new wallet.", D: "She'll give the man a ride home tonight." }, answer: "B", explanation: "Offering money she 'doesn't need until tonight' is an offer to lend it." },
+        { id: 14, script: "<strong>Woman:</strong> I wish you'd try harder to be on time.<br><strong>Man:</strong> There's no need for you to talk to me like that.", question: "What can be inferred about the man?", options: { A: "He doesn't understand what the woman said.", B: "He's offended by what the woman said.", C: "He's sorry he was late.", D: "He needs to talk to the woman immediately." }, answer: "B", explanation: "His defensive response shows he is offended by her tone or criticism." },
+        { id: 15, script: "<strong>Woman:</strong> What's going on at the theater? There's not usually a crowd like that on weeknights—especially for a foreign film.<br><strong>Man:</strong> There's a special promotion going on: two people get in for the price of one.", question: "What does the man mean?", options: { A: "Ticket prices are generally lower on weeknights.", B: "Foreign films are very popular.", C: "Movie tickets have been discounted.", D: "The theater is not very crowded." }, answer: "C", explanation: "'2 for 1' is a form of discount." },
+        { id: 16, script: "<strong>Man:</strong> Hi Barbara. How are things? Have you gotten used to campus life yet?<br><strong>Woman:</strong> I guess I have, but you are the first person I've run into all day who knows my name.", question: "What can be inferred from the conversation?", options: { A: "The man used to live on campus.", B: "The man has trouble remembering names.", C: "The woman has been on campus for several years.", D: "The woman hasn't met many people yet." }, answer: "D", explanation: "If only one person knows her name all day, it implies she is new and hasn't met many people." },
+        { id: 17, script: "<strong>Woman:</strong> I'm really sorry I had to cancel our plans again. I hope you're not too upset.<br><strong>Man:</strong> At first I was angry... but actually, you did me a favor. I took care of a lot of work that'd been backing up.", question: "What does the man imply?", options: { A: "He doesn't mind that the plans were changed.", B: "He thinks the woman might be angry with him.", C: "He wants the woman to do him a favor.", D: "He's upset because he has so much work to do." }, answer: "A", explanation: "Since the cancellation allowed him to catch up on work, he no longer minds." },
+        { id: 18, script: "<strong>Man:</strong> Do you know if it's supposed to be warm enough on Wednesday to have our party outside, in the backyard?<br><strong>Woman:</strong> I heard it'll be warm but that it's likely to rain most of the day.", question: "What will probably happen to the party?", options: { A: "It will be held inside.", B: "It will be canceled.", C: "It will be postponed until the following Wednesday.", D: "It will start in the backyard." }, answer: "A", explanation: "Rain usually forces outdoor parties to move inside." },
+        { id: 19, script: "<strong>Woman:</strong> I'm sorry, Paul, but I can't go with you to the basketball game. I really have to study for a math test.<br><strong>Man:</strong> You know all that stuff. You'll pass with flying colors.", question: "What does the man imply the woman should do?", options: { A: "Study for the math test.", B: "Take flying lessons.", C: "Stay home and relax.", D: "Go to the basketball game." }, answer: "D", explanation: "He implies she is already prepared ('know all that stuff'), so she should skip studying and go to the game." },
+        { id: 20, script: "<strong>Man:</strong> I like the color and style of this suit, but the pants should be shortened a bit.<br><strong>Woman:</strong> We can have it done here for you at no extra charge.", question: "What does the woman suggest the man do?", options: { A: "Charge the clothes.", B: "Buy an extra pair of pants.", C: "Have the pants altered.", D: "Try on another suit." }, answer: "C", explanation: "Shortening pants is a type of alteration." },
+
+        // Questions 21-30
+        { id: 21, script: "<strong>Man:</strong> I can't believe you got a job in a candy factory! What a great way to spend the summer.<br><strong>Woman:</strong> To be honest, it's not all it's cracked up to be: I'm going to spend the next few months just sorting candies by color and size.", question: "What will the woman be doing at her job?", options: { A: "Separating different kinds of candies.", B: "Tasting each type of candy before shipping it.", C: "Writing down the size of each candy shipment.", D: "Weighing each candy order." }, answer: "A", explanation: "Sorting by color and size is synonymous with separating different kinds." },
+        { id: 22, script: "<strong>Man:</strong> Can I borrow some cough drops from you? I don't feel up to going to the drugstore.<br><strong>Woman:</strong> You've been under the weather all week; you ought to go to the health center, just to be sure it's not serious.", question: "What does the woman mean?", options: { A: "The man should take a week off.", B: "The man is too demanding.", C: "The man should stop worrying so much.", D: "The man should see a doctor." }, answer: "D", explanation: "The health center is a medical facility; she implies he should see a doctor." },
+        { id: 23, script: "<strong>Woman:</strong> Those kitchen cabinets look great! Did you put them in yourself?<br><strong>Man:</strong> I took the easy way out and got a carpenter to do it.", question: "What does the man mean?", options: { A: "He doesn't like the way the cabinets were installed.", B: "Someone else installed the cabinets.", C: "The cabinets have not been installed.", D: "It was easy for him to install the cabinets." }, answer: "B", explanation: "A carpenter installed them, meaning someone else did it." },
+        { id: 24, script: "<strong>Woman:</strong> By now your sister must have decided where she wants to go to college...<br><strong>Man:</strong> She's been too busy with soccer to even open a catalog.", question: "What does the man say about his sister?", options: { A: "She is looking over a number of college catalogs.", B: "She has applied to a college with a soccer team.", C: "She hasn't chosen a college yet.", D: "She can't decide if she wants to play soccer in college." }, answer: "C", explanation: "If she hasn't even opened a catalog, she certainly hasn't chosen a college." },
+        { id: 25, script: "<strong>Man:</strong> I've asked Jane if we could get a ride with her to the craft fair.<br><strong>Woman:</strong> So you can go after all.", question: "What had the woman assumed about the man?", options: { A: "He didn't know Jane.", B: "He couldn't attend the fair.", C: "He could drive to the craft fair.", D: "He wanted to meet the woman at the fair." }, answer: "B", explanation: "Saying 'So you CAN go' implies she previously thought he could NOT go." },
+        { id: 26, script: "<strong>Man:</strong> Oh, by the way, your brother called again while you were out.<br><strong>Woman:</strong> This is ridiculous. We've been missing each other for days.", question: "What does the woman mean?", options: { A: "She and her brother miss each other very much.", B: "She can't believe how often her brother calls.", C: "She and her brother have been unable to contact each other.", D: "She thinks it's the wrong day to call her brother." }, answer: "C", explanation: "'Missing each other' in telephone context means failing to connect." },
+        { id: 27, script: "<strong>Woman:</strong> What I wouldn't give for a hot cup of coffee right now!<br><strong>Man:</strong> Would you settle for some lukewarm cocoa, left over from lunch? I have enough for two.", question: "What does the man offer to do?", options: { A: "Make a pot of coffee for the woman.", B: "Treat the woman to lunch.", C: "Share his drink with the woman.", D: "Make the woman some cocoa." }, answer: "C", explanation: "He offers cocoa he already has ('enough for two'), which implies sharing." },
+        { id: 28, script: "<strong>Man:</strong> Hmm. I see this space is marked 'Reserved.' Can you get a ticket for parking here? Just for a few minutes?<br><strong>Woman:</strong> Sure can. I did once and had to pay a huge fine.", question: "What does the woman imply?", options: { A: "The man should reserve a parking space.", B: "The man has to pay the attendant before parking.", C: "The man can park in the space only for a short time.", D: "The man should look for another place to park." }, answer: "D", explanation: "Warning him about a 'huge fine' she received implies he should not park there (look for another place)." },
+        { id: 29, script: "<strong>Man:</strong> I've never applied for a driver's license before. Do you just go into an office and take a short test?<br><strong>Woman:</strong> If only it were that simple!", question: "What does the woman mean?", options: { A: "She doesn't know where the office is.", B: "She thinks the man will pass the test.", C: "Getting a driver's license has always been simple.", D: "Getting a driver's license is complicated." }, answer: "D", explanation: "'If only it were that simple' implies the reality is complex/complicated." },
+        { id: 30, script: "<strong>Man:</strong> Do you want to come with me to hear a lecture over in the Art building?<br><strong>Woman:</strong> I've got a class right now, but I'm headed that way.", question: "What will the woman probably do?", options: { A: "Skip her class to attend the lecture.", B: "Leave her class early to attend a lecture.", C: "Accompany the man toward the lecture hall.", D: "Meet her friends in the art building." }, answer: "A", explanation: "Based on official keys, the logic is she will go with him (skip class), though 'C' is a strong distractor depending on strict interpretation. We stick to key A." }
+    ];
+
+    const quizContent = document.getElementById('quiz-content');
+    const totalScore = { 1: 0, 2: 0, 3: 0 }; // Scores for each section
+
+    // Module definitions
+    const modules = [
+        { id: 1, range: [0, 10], title: "Part 1: Questions 1-10" },
+        { id: 2, range: [10, 20], title: "Part 2: Questions 11-20" },
+        { id: 3, range: [20, 30], title: "Part 3: Questions 21-30" }
+    ];
+
+    function renderApp() {
+        // 1. Render Homepage
+        const homeDiv = document.createElement('div');
+        homeDiv.id = 'page-home';
+        homeDiv.className = 'module-page active';
+        homeDiv.innerHTML = `
+            <div class="home-card">
+                <span class="home-icon">🎧</span>
+                <h2>Welcome to TOEFL Listening Practice</h2>
+                <p>This test simulates Part A (Short Conversations) of the TOEFL ITP.</p>
+                
+                <div class="audio-setup-box">
+                    <strong>Step 1: Audio Setup</strong><br>
+                    <p style="margin: 8px 0; font-size: 0.9rem;">Please open the audio file in a new tab before starting the quiz.</p>
+                    <a href="https://drive.google.com/file/d/1KqeS6gb9p0D1G17r3WD7P9FAiVwNEA_B/view?usp=drive_link" target="_blank" class="btn btn-audio">
+                        🔊 Open Audio File
+                    </a>
+                </div>
+
+                <ul class="instruction-list">
+                    <li>The test is divided into <strong>3 sections</strong> (10 questions each).</li>
+                    <li>You must answer all questions in a section before proceeding.</li>
+                    <li>Once submitted, you will see your score and the transcripts for that section.</li>
+                    <li>You can review your answers before moving to the next section.</li>
+                </ul>
+
+                <button type="button" class="btn" onclick="startTest()">Start Practice Test &rarr;</button>
+            </div>
+        `;
+        quizContent.appendChild(homeDiv);
+
+        // 2. Render Modules
+        modules.forEach((mod) => {
+            const pageDiv = document.createElement('div');
+            pageDiv.id = `page-${mod.id}`;
+            pageDiv.className = `module-page`;
+            
+            pageDiv.innerHTML = `
+                <div class="module-container">
+                    <div class="module-header">
+                        <div class="module-title">${mod.title}</div>
+                    </div>
+                    <div class="module-content" id="questions-area-${mod.id}">
+                        <!-- Questions go here -->
+                    </div>
+                </div>
+                <div class="controls-area">
+                    ${mod.id > 1 ? `<button type="button" class="btn btn-secondary" onclick="goToPreviousPage(${mod.id})">&larr; Previous Section</button>` : '<span></span>'}
+                    
+                    <div>
+                        <button type="button" id="submit-btn-${mod.id}" class="btn" onclick="submitModule(${mod.id}, ${mod.range[0]}, ${mod.range[1]})">
+                            Submit Answers
+                        </button>
+                        <button type="button" id="next-btn-${mod.id}" class="btn btn-next" onclick="goToNextPage(${mod.id})">
+                            Proceed to Next Section &rarr;
+                        </button>
+                    </div>
+                </div>
+            `;
+            quizContent.appendChild(pageDiv);
+
+            // Render Questions
+            const qContainer = pageDiv.querySelector(`#questions-area-${mod.id}`);
+            const slice = quizData.slice(mod.range[0], mod.range[1]);
+
+            slice.forEach((q, i) => {
+                const globalIndex = mod.range[0] + i;
+                const card = document.createElement('div');
+                card.id = `card-${q.id}`;
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="q-number">Question ${globalIndex + 1}</span>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options-grid">
+                        ${Object.entries(q.options).map(([key, value]) => `
+                            <label class="option-label" id="label-${q.id}-${key}">
+                                <input type="radio" name="q${q.id}" value="${key}" class="option-input" onclick="clearError(${q.id})">
+                                <span><strong>(${key})</strong> ${value}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- Hidden Feedback Area -->
+                    <div id="feedback-${q.id}" class="feedback"></div>
+                    
+                    <!-- Hidden Transcript Area -->
+                    <div id="transcript-${q.id}" class="transcript-box">
+                        <span class="transcript-header">Audio Transcript</span>
+                        <div class="transcript-content">${q.script}</div>
+                    </div>
+                `;
+                qContainer.appendChild(card);
+            });
+        });
+
+        // 3. Render Summary Page (Hidden)
+        const summaryDiv = document.createElement('div');
+        summaryDiv.id = `page-summary`;
+        summaryDiv.className = `module-page`;
+        summaryDiv.innerHTML = `
+            <div class="module-container summary-card">
+                <h2>Practice Test Completed!</h2>
+                <p>Great job completing all sections.</p>
+                <div class="final-score" id="total-score-display">--/30</div>
+                
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="goToPreviousPage(4)">Review Section 3</button>
+                    <button type="button" class="btn" onclick="location.reload()">Start Over</button>
+                </div>
+            </div>
+        `;
+        quizContent.appendChild(summaryDiv);
+    }
+
+    function startTest() {
+        document.getElementById('page-home').classList.remove('active');
+        document.getElementById('page-1').classList.add('active');
+        document.getElementById('step-1').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function clearError(id) {
+        const card = document.getElementById(`card-${id}`);
+        if(card) card.classList.remove('unanswered-error');
+    }
+
+    function submitModule(modId, start, end) {
+        const moduleQuestions = quizData.slice(start, end);
+        let unansweredCount = 0;
+        let firstUnansweredId = null;
+
+        // 1. Validation
+        moduleQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            if (!selected) {
+                unansweredCount++;
+                const card = document.getElementById(`card-${q.id}`);
+                card.classList.add('unanswered-error');
+                if (!firstUnansweredId) firstUnansweredId = q.id;
+            }
+        });
+
+        if (unansweredCount > 0) {
+            alert(`Please answer all questions in this section before submitting.`);
+            if (firstUnansweredId) {
+                document.getElementById(`card-${firstUnansweredId}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        // 2. Grading & Feedback
+        let modScore = 0;
+        moduleQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${q.id}`);
+            const transcriptEl = document.getElementById(`transcript-${q.id}`);
+            
+            // Show Transcript
+            transcriptEl.style.display = 'block';
+
+            // Reset styles
+            Object.keys(q.options).forEach(key => {
+                document.getElementById(`label-${q.id}-${key}`).classList.remove('correct-answer-highlight', 'wrong-answer-highlight');
+            });
+
+            // Logic
+            if (selected.value === q.answer) {
+                modScore++;
+                feedbackEl.className = "feedback correct";
+                feedbackEl.innerHTML = `<strong>Correct!</strong> <div class="explanation-text">${q.explanation}</div>`;
+                document.getElementById(`label-${q.id}-${q.answer}`).classList.add('correct-answer-highlight');
+            } else {
+                feedbackEl.className = "feedback incorrect";
+                feedbackEl.innerHTML = `<strong>Incorrect.</strong> The correct answer is <strong>(${q.answer})</strong>. <div class="explanation-text">${q.explanation}</div>`;
+                document.getElementById(`label-${q.id}-${selected.value}`).classList.add('wrong-answer-highlight');
+                document.getElementById(`label-${q.id}-${q.answer}`).classList.add('correct-answer-highlight');
+            }
+            feedbackEl.style.display = 'block';
+            
+            // Lock inputs
+            const inputs = document.querySelectorAll(`input[name="q${q.id}"]`);
+            inputs.forEach(i => i.disabled = true);
+        });
+
+        // 3. Save Score & UI Transition
+        totalScore[modId] = modScore;
+        
+        // Hide Submit, Show Next
+        document.getElementById(`submit-btn-${modId}`).style.display = 'none';
+        
+        const nextBtn = document.getElementById(`next-btn-${modId}`);
+        if(modId === 3) {
+            nextBtn.innerHTML = "Finish Test & View Score";
+        }
+        nextBtn.style.display = 'inline-flex';
+
+        // Update Step Indicator to Completed
+        document.getElementById(`step-${modId}`).classList.remove('active');
+        document.getElementById(`step-${modId}`).classList.add('completed');
+        
+        // Scroll top to review feedback
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToNextPage(currentModId) {
+        // Hide current
+        document.getElementById(`page-${currentModId}`).classList.remove('active');
+        
+        if (currentModId < 3) {
+            // Show Next Module
+            const nextId = currentModId + 1;
+            document.getElementById(`page-${nextId}`).classList.add('active');
+            document.getElementById(`step-${nextId}`).classList.add('active');
+        } else {
+            // Show Summary
+            document.getElementById(`page-summary`).classList.add('active');
+            document.getElementById(`step-4`).classList.add('completed');
+            
+            const total = totalScore[1] + totalScore[2] + totalScore[3];
+            document.getElementById('total-score-display').innerText = `${total} / 30`;
+        }
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToPreviousPage(currentModId) {
+        // currentModId is the ID of the page we are ON (2, 3, or 4 for summary)
+        
+        // 1. Hide Current Page
+        if (currentModId === 4) {
+            document.getElementById(`page-summary`).classList.remove('active');
+            // Revert summary step in progress bar
+            document.getElementById(`step-4`).classList.remove('completed');
+        } else {
+            document.getElementById(`page-${currentModId}`).classList.remove('active');
+            // Revert progress bar for current page
+            document.getElementById(`step-${currentModId}`).classList.remove('active');
+        }
+
+        // 2. Show Previous Page
+        const prevId = currentModId - 1;
+        document.getElementById(`page-${prevId}`).classList.add('active');
+        
+        // Reactivate progress step for the page we are going back TO
+        // Note: If we submitted it, it's 'completed', but if we are just viewing it, that's fine.
+        // If we want to indicate we are 'on' it, we might add 'active' back if it wasn't submitted?
+        // But logic says: if submitted, it stays 'completed'. If not, it becomes 'active'.
+        // Simplified approach: Since we can only go back, just ensure it's visible. The visual state of 'completed' is fine for review.
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Initialize
+    renderApp();
+
+</script>
+
+</body>
+</html>

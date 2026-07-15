@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Academic Reading - TFNG & Skimming/Scanning (B2)</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+/* Accordion Transitions */
+.accordion-content {
+transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+max-height: 0;
+opacity: 0;
+overflow: hidden;
+}
+.accordion-content.active { opacity: 1; }
+
+/* Answer Fade In */
+.answer-box { transition: all 0.3s ease; }
+.answer-box.hidden { display: none; opacity: 0; }
+.answer-box.visible { display: block; opacity: 1; animation: fadeIn 0.3s forwards; }
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(-5px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* Explanation Box */
+.explanation-text {
+    font-size: 0.85rem;
+    color: #475569;
+    background-color: #f1f5f9;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    margin-top: 0.5rem;
+    border-left: 3px solid #10b981; /* Emerald for Reading */
+    display: none;
+}
+
+/* Strategy Diagram Styles */
+.strategy-step {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    position: relative;
+}
+.strategy-step::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 40px;
+    width: 2px;
+    height: 10px;
+    background-color: #cbd5e1;
+}
+.strategy-step:last-child::after {
+    display: none;
+}
+.icon-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+/* Form Elements */
+textarea, input[type="text"] { resize: vertical; }
+select {
+appearance: none;
+background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+background-position: right 0.5rem center;
+background-repeat: no-repeat;
+background-size: 1.5em 1.5em;
+}
+</style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8">
+
+<div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-100">
+
+<!-- HEADER SECTION -->
+<div class="text-xs text-slate-400 mb-6 flex gap-2 font-medium uppercase tracking-wider">
+<span>IELTS Preparation</span> <span>&gt;</span>
+<span>Academic Reading</span> <span>&gt;</span>
+<span class="text-blue-600 font-bold">B2 Intermediate</span>
+</div>
+
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
+<div>
+<h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-blue-800 tracking-tight mb-2">
+Mastering True / False / Not Given
+</h1>
+<p class="text-slate-500 font-medium">Topic: Integrating <strong>Skimming</strong> and <strong>Scanning</strong> strategies.</p>
+</div>
+<div class="flex gap-2">
+<button onclick="resetAll()" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-red-500 transition-colors font-medium hover:bg-red-50 rounded-lg">
+<i class="fas fa-rotate-right"></i> Reset All
+</button>
+</div>
+</div>
+
+<div class="bg-slate-50 border-l-4 border-emerald-500 p-4 mb-8 rounded-r-lg">
+<p class="text-slate-700">
+<i class="fas fa-info-circle mr-2 text-emerald-500"></i>
+<strong>Instructions:</strong> True/False/Not Given questions test your ability to locate specific information and understand factual details. You cannot read every word. You must learn to <strong>skim</strong> for the main idea, <strong>scan</strong> for keywords, and then read carefully to find the match.
+</p>
+</div>
+
+<!-- PART 1: PREPARATION (Cyan Theme) -->
+<div class="mb-4 rounded-xl overflow-hidden border border-cyan-100 shadow-sm">
+<button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 bg-cyan-50 hover:bg-cyan-100 border-l-4 border-cyan-500 transition-colors text-left group">
+<div class="flex items-center gap-3">
+<div class="bg-cyan-200 text-cyan-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">1</div>
+<span class="text-lg font-bold text-cyan-900">Preparation: Context & Vocab</span>
+</div>
+<i id="icon-part1" class="fas fa-chevron-down text-cyan-600 transition-transform duration-300"></i>
+</button>
+<div id="content-part1" class="accordion-content">
+<div class="p-6 bg-white space-y-8">
+
+<!-- Task 1: Context/Warm-up -->
+<div>
+<div class="flex justify-between items-center mb-3">
+<h3 class="font-bold text-cyan-800"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Task 1</span> Cultural Connection: Reading Habits</h3>
+<button onclick="toggleAnswer('ans-t1', this)" class="text-xs font-bold text-cyan-600 border border-cyan-200 bg-white px-3 py-1 rounded hover:bg-cyan-50">Show Perspective</button>
+</div>
+<p class="text-sm text-slate-600 mb-2">
+Think about how you read a long WhatsApp message forwarded to a family group (often full of hoaxes or news). Do you read every single word from start to finish? Or do your eyes jump around looking for names, dates, and the main point? Describe your natural reading process.
+</p>
+<textarea placeholder="Usually, I just look at the title and then..." class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 outline-none h-20"></textarea>
+<div id="ans-t1" class="answer-box hidden mt-3 p-4 bg-cyan-50 rounded-lg border border-cyan-100 text-sm text-slate-700">
+<strong>Teacher's Note:</strong> When you look for specific names or dates in a WhatsApp message, you are <strong>Scanning</strong>. When you quickly read to see if the message is a joke, a warning, or news, you are <strong>Skimming</strong>. You already do this naturally; now we apply it to IELTS!
+</div>
+</div>
+
+<!-- Task 2: Vocabulary (Data Driven) -->
+<div>
+<h3 class="font-bold text-cyan-800 mb-3"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Task 2</span> Paraphrasing (Synonym Match)</h3>
+<p class="text-sm text-slate-500 mb-3">IELTS Reading is a vocabulary test. The keywords in the question will be <strong>paraphrased</strong> in the text. Match the synonyms below.</p>
+<!-- Container for Vocabulary -->
+<div id="vocab-container" class="space-y-3"></div>
+<div class="mt-4 flex justify-end">
+<button onclick="checkVocab()" id="btn-vocab" class="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+Check Vocabulary
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- PART 2: INPUT MATERIAL (Blue Theme) -->
+<div class="mb-4 rounded-xl overflow-hidden border border-blue-100 shadow-sm">
+<button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500 transition-colors text-left group">
+<div class="flex items-center gap-3">
+<div class="bg-blue-200 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-book-open"></i></div>
+<span class="text-lg font-bold text-blue-900">Input: The Strategy & Text</span>
+</div>
+<i id="icon-part2" class="fas fa-chevron-down text-blue-600 transition-transform duration-300"></i>
+</button>
+<div id="content-part2" class="accordion-content">
+<div class="p-6 bg-white prose prose-slate max-w-none text-justify leading-relaxed text-sm md:text-base border-t border-blue-50">
+<h3 class="text-xl font-bold text-slate-800 mb-4">The 3-Step Reading Process</h3>
+
+<!-- Strategy Visual -->
+<div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-6">
+    <div class="strategy-step">
+        <div class="icon-container bg-blue-400"><i class="fas fa-wind"></i></div>
+        <div>
+            <h4 class="font-bold text-blue-900 m-0">1. Skim (1-2 minutes)</h4>
+            <p class="text-xs text-slate-600 m-0 mt-1">Read the title, first paragraph, and first sentences of other paragraphs. Understand the <strong>gist</strong> (the main idea). Do not stop for difficult words.</p>
+        </div>
+    </div>
+    <div class="strategy-step">
+        <div class="icon-container bg-emerald-500"><i class="fas fa-search"></i></div>
+        <div>
+            <h4 class="font-bold text-emerald-900 m-0">2. Scan (Locate the Area)</h4>
+            <p class="text-xs text-slate-600 m-0 mt-1">Read the question. Underline <strong>keywords</strong> (names, dates, unique nouns). Let your eyes fly over the text to find those words or their synonyms.</p>
+        </div>
+    </div>
+    <div class="strategy-step border-emerald-400 border-2">
+        <div class="icon-container bg-orange-500"><i class="fas fa-microscope"></i></div>
+        <div>
+            <h4 class="font-bold text-orange-900 m-0">3. Read for Detail (The TFNG Decision)</h4>
+            <p class="text-xs text-slate-600 m-0 mt-1">Once you find the sentence, read it carefully. Is it exactly the same (<strong>True</strong>)? Is it the opposite (<strong>False</strong>)? Or is the specific information missing (<strong>Not Given</strong>)?</p>
+        </div>
+    </div>
+</div>
+
+<h4 class="font-bold text-indigo-800 border-b pb-2">Reading Passage: The Evolution of Jamu</h4>
+<div class="bg-white p-5 rounded border border-slate-200 shadow-sm mt-4 text-slate-700">
+    <p class="mb-3">
+        Jamu, Indonesia's traditional herbal medicine, has a history spanning over a thousand years. Originally developed within the royal courts of Java, particularly during the Mataram Kingdom, these secret recipes were initially reserved exclusively for the nobility and royal family members.
+    </p>
+    <p class="mb-3">
+        It was only during the 20th century that the practice became widely commercialized and accessible to the general public. Street vendors, traditionally women carrying baskets of bottled jamu on their backs (known as <em>jamu gendong</em>), became a common sight in villages and cities alike. 
+    </p>
+    <p class="mb-3">
+        Today, while modern Western medicine is prevalent and widely trusted, up to 80% of Indonesians still utilize jamu for various ailments, according to recent data from the Ministry of Health. It is frequently consumed for health maintenance rather than just curing sickness.
+    </p>
+    <p>
+        However, despite its immense domestic popularity, jamu has struggled to achieve the same lucrative global recognition as Traditional Chinese Medicine (TCM). Experts suggest this is primarily due to a lack of standardized clinical trials and complex international patenting regulations, which make export difficult.
+    </p>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- PART 3: PRACTICE DRILLS (Emerald Theme) -->
+<div class="mb-4 rounded-xl overflow-hidden border border-emerald-100 shadow-sm">
+<button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 bg-emerald-50 hover:bg-emerald-100 border-l-4 border-emerald-500 transition-colors text-left group">
+<div class="flex items-center gap-3">
+<div class="bg-emerald-200 text-emerald-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">3</div>
+<span class="text-lg font-bold text-emerald-900">Practice Drills</span>
+</div>
+<i id="icon-part3" class="fas fa-chevron-down text-emerald-600 transition-transform duration-300"></i>
+</button>
+<div id="content-part3" class="accordion-content">
+<div class="p-6 bg-white space-y-8">
+
+<!-- Task 3: Concept Check -->
+<div>
+<div class="flex justify-between items-center mb-3">
+<h3 class="font-bold text-emerald-800"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Task 3</span> Identifying Scanning Keywords</h3>
+<button onclick="toggleAnswer('ans-t3', this)" class="text-xs font-bold text-emerald-600 border border-emerald-200 bg-white px-3 py-1 rounded hover:bg-emerald-50">Show Answer</button>
+</div>
+<p class="text-sm text-slate-600 mb-2">Look at this question: <em>"Jamu was made available to ordinary citizens in the 19th century."</em> <br>Which <strong>two words/phrases</strong> are the best keywords to scan for in the text?</p>
+<textarea placeholder="Write the keywords here..." class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none h-16"></textarea>
+<div id="ans-t3" class="answer-box hidden mt-3 p-4 bg-emerald-50 rounded-lg border border-emerald-100 text-sm text-slate-700">
+<strong>Answer:</strong> You should scan for <strong>"ordinary citizens"</strong> (or public/people) and <strong>"19th century"</strong> (or dates/centuries). Names and numbers are always the best scanning targets!
+</div>
+</div>
+
+<!-- Task 4: MCQ (Data Driven) -->
+<div>
+<h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Task 4</span> Strategy & Comprehension Quiz</h3>
+<p class="text-sm text-slate-500 mb-4">Test your understanding of the reading strategies and the passage.</p>
+<!-- Container for MCQ -->
+<div id="mcq-container" class="space-y-6"></div>
+<div class="mt-4 flex justify-end">
+<button onclick="checkMCQ()" id="btn-mcq" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+Check Answers
+</button>
+</div>
+</div>
+
+<!-- Task 5: True/False/Not Given (Data Driven) -->
+<div>
+<h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Task 5</span> True / False / Not Given</h3>
+<p class="text-sm text-slate-500 mb-4">Read the passage in Part 2. Decide if the statements are True, False, or Not Given.</p>
+<!-- Container for T/F/NG -->
+<div id="tf-container" class="space-y-4"></div>
+<div class="mt-4 flex justify-end">
+<button onclick="checkTF()" id="btn-tf" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+Check Answers
+</button>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- PART 4: ANALYSIS (Orange Theme) -->
+<div class="mb-4 rounded-xl overflow-hidden border border-orange-100 shadow-sm">
+<button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 bg-orange-50 hover:bg-orange-100 border-l-4 border-orange-500 transition-colors text-left group">
+<div class="flex items-center gap-3">
+<div class="bg-orange-200 text-orange-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">4</div>
+<span class="text-lg font-bold text-orange-900">Analysis: The "Not Given" Trap</span>
+</div>
+<i id="icon-part4" class="fas fa-chevron-down text-orange-600 transition-transform duration-300"></i>
+</button>
+<div id="content-part4" class="accordion-content">
+<div class="p-6 bg-white space-y-8">
+
+<!-- Task 6: Critical Analysis -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-bold text-orange-800"><span class="bg-orange-100 px-2 py-0.5 rounded text-sm mr-2">Task 6</span> Why is it Not Given?</h3>
+<button onclick="toggleAnswer('ans-t6', this)" class="text-xs font-bold text-orange-600 border border-orange-200 bg-white px-3 py-1 rounded hover:bg-orange-50">Show Analysis</button>
+</div>
+<p class="text-sm text-slate-600 mb-4">
+Look at this statement based on the text:<br>
+<em>"Jamu is considerably cheaper to purchase than modern Western medicine."</em><br><br>
+Many students mark this as TRUE because in real life in Indonesia, Jamu is usually cheaper. Why is the correct IELTS answer <strong>Not Given</strong>?
+</p>
+<textarea class="w-full p-4 border border-orange-200 rounded text-sm focus:ring-2 focus:ring-orange-400 outline-none h-24" placeholder="It is Not Given because..."></textarea>
+<div id="ans-t6" class="answer-box hidden mt-2 text-sm text-slate-700 bg-orange-50 p-4 rounded border border-orange-100">
+<strong>Analysis:</strong><br>
+The text mentions that "modern Western medicine is prevalent" and "80% of Indonesians still utilize jamu". However, there is absolutely <strong>no mention of price or cost comparison</strong> in the text. <br><br>
+<strong>Crucial Rule:</strong> In IELTS Reading, you must leave your general knowledge at the door. If the text does not say it, it is Not Given!
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- PART 5: PRODUCTION (Violet Theme) -->
+<div class="mb-8 rounded-xl overflow-hidden border border-violet-100 shadow-sm">
+<button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 bg-violet-50 hover:bg-violet-100 border-l-4 border-violet-500 transition-colors text-left group">
+<div class="flex items-center gap-3">
+<div class="bg-violet-200 text-violet-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">5</div>
+<span class="text-lg font-bold text-violet-900">Active Production</span>
+</div>
+<i id="icon-part5" class="fas fa-chevron-down text-violet-600 transition-transform duration-300"></i>
+</button>
+<div id="content-part5" class="accordion-content">
+<div class="p-6 bg-white space-y-6">
+
+<!-- Task 7: Production Task -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-bold text-violet-800"><span class="bg-violet-100 px-2 py-0.5 rounded text-sm mr-2">Task 7</span> Write the Trick</h3>
+<button onclick="toggleAnswer('ans-t7', this)" class="text-xs font-bold text-violet-600 border border-violet-200 bg-white px-3 py-1 rounded hover:bg-violet-50">Show Example</button>
+</div>
+<p class="text-sm text-slate-500 mb-4">
+To truly understand how IELTS questions are made, you must become the examiner. Look at this sentence:<br><br>
+<em>"In 2018, the government introduced a new tax on imported electronics to protect local manufacturers."</em><br><br>
+Write one <strong>FALSE</strong> statement and one <strong>NOT GIVEN</strong> statement based on that sentence.
+</p>
+
+<!-- Input Area -->
+<div class="border border-slate-300 rounded-lg overflow-hidden shadow-sm">
+<div class="bg-slate-100 border-b border-slate-300 px-3 py-2 flex justify-between items-center text-xs text-slate-500 font-medium">
+<span>Drafting Area</span>
+</div>
+<textarea id="production-area" class="w-full p-5 text-sm focus:outline-none h-32 resize-y" placeholder="FALSE Statement: ...
+NOT GIVEN Statement: ..."></textarea>
+</div>
+
+<div id="ans-t7" class="answer-box hidden mt-4 p-5 bg-violet-50 rounded-lg border border-violet-100 text-sm text-slate-700 shadow-inner">
+<strong>Example Statements:</strong><br><br>
+<strong>FALSE:</strong> The government removed taxes on imported electronics in 2018. <em>(It says they introduced a new tax, not removed it.)</em><br><br>
+<strong>NOT GIVEN:</strong> The new tax caused the price of local electronics to drop. <em>(We know they wanted to protect local manufacturers, but we don't know the result on the price.)</em>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Footer -->
+<footer class="mt-12 pt-8 border-t border-slate-100 text-center">
+<p class="text-slate-400 text-sm font-medium">
+Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-emerald-600 transition-colors">fajarudinakbar.online</a>
+</p>
+</footer>
+
+</div>
+
+<script>
+/* ================================================================
+TEACHER FAJAR'S CONTROL PANEL
+================================================================ */
+
+// 1. VOCABULARY DATA 
+const vocabData = [
+{
+id: "v1",
+word: "1. Exclusively",
+correct: "c",
+options: {
+a: "Frequently",
+b: "Inexpensively",
+c: "Only / Solely",
+d: "Publicly"
+},
+explanation: "If something is 'exclusively' for the royal family, it means ONLY the royal family can have it."
+},
+{
+id: "v2",
+word: "2. Prevalent",
+correct: "a",
+options: {
+a: "Widespread / Common",
+b: "Rare",
+c: "Dangerous",
+d: "Effective"
+},
+explanation: "Modern medicine is 'prevalent', meaning it is widespread and exists everywhere."
+},
+{
+id: "v3",
+word: "3. Ailment",
+correct: "d",
+options: {
+a: "Ingredient",
+b: "Doctor",
+c: "Treatment",
+d: "Illness / Disease"
+},
+explanation: "An ailment is a minor illness. People use Jamu to treat various ailments."
+},
+{
+id: "v4",
+word: "4. Initially",
+correct: "b",
+options: {
+a: "Finally",
+b: "At the beginning",
+c: "Quickly",
+d: "Officially"
+},
+explanation: "'Initially' means at first or at the beginning. This is a very common IELTS keyword."
+}
+];
+
+// 2. MULTIPLE CHOICE DATA (8 items)
+const mcqData = [
+{
+id: "m1",
+question: "What is the primary purpose of 'Skimming'?",
+correct: "b",
+options: ["a. To find specific dates.", "b. To understand the general idea (gist).", "c. To answer True/False questions directly.", "d. To read every word carefully."],
+explanation: "Skimming is fast reading to get the big picture or gist of the text."
+},
+{
+id: "m2",
+question: "When should you use 'Scanning'?",
+correct: "a",
+options: ["a. When you are looking for a specific name, number, or keyword.", "b. When you read the first paragraph.", "c. When you are checking your answers at the end.", "d. When you don't understand a word."],
+explanation: "Scanning is like searching for a file on your computer; you are looking for a specific target word."
+},
+{
+id: "m3",
+question: "If a statement matches the information in the text, but uses synonyms, the answer is:",
+correct: "a",
+options: ["a. True", "b. False", "c. Not Given", "d. Cannot be answered"],
+explanation: "If the meaning is identical, it is TRUE, even if the vocabulary has changed."
+},
+{
+id: "m4",
+question: "Based on the text, who originally used jamu?",
+correct: "c",
+options: ["a. Street vendors", "b. The general public", "c. The nobility and royal family", "d. Modern doctors"],
+explanation: "The text says: 'these secret recipes were initially reserved exclusively for the nobility and royal family'."
+},
+{
+id: "m5",
+question: "When did jamu become widely available to the public?",
+correct: "d",
+options: ["a. A thousand years ago", "b. During the Mataram Kingdom", "c. In the 19th century", "d. In the 20th century"],
+explanation: "The text explicitly states: 'It was only during the 20th century that the practice became widely commercialized'."
+},
+{
+id: "m6",
+question: "According to the text, why do people drink jamu today?",
+correct: "b",
+options: ["a. Only when they are very sick.", "b. For curing sickness and health maintenance.", "c. Because modern medicine is not trusted.", "d. Because it is cheaper."],
+explanation: "It says: 'It is frequently consumed for health maintenance rather than just curing sickness.'"
+},
+{
+id: "m7",
+question: "Which of the following is preventing jamu from being a global success?",
+correct: "c",
+options: ["a. A lack of domestic popularity.", "b. The bitter taste.", "c. Lack of standardized clinical trials.", "d. Competition from Western medicine."],
+explanation: "The text notes the struggle is 'primarily due to a lack of standardized clinical trials and complex international patenting regulations'."
+},
+{
+id: "m8",
+question: "If the text says 'Many people like coffee' and the question says 'All people like coffee', the answer is:",
+correct: "b",
+options: ["a. True", "b. False", "c. Not Given", "d. Yes"],
+explanation: "'Many' does not mean 'All'. Because the statement contradicts the text's limitation, it is FALSE."
+}
+];
+
+// 3. TFNG DATA (True, False, Not Given)
+const tfData = [
+{ 
+    id: "tf1", 
+    text: "1. Jamu was originally created for ordinary citizens.", 
+    correct: "False", 
+    explanation: "The text states it was 'reserved exclusively for the nobility', which contradicts 'ordinary citizens'." 
+},
+{ 
+    id: "tf2", 
+    text: "2. Jamu became accessible to the general public in the 1900s.", 
+    correct: "True", 
+    explanation: "The 1900s is a synonym for 'the 20th century'. The text says 'It was only during the 20th century that the practice became widely commercialized'." 
+},
+{ 
+    id: "tf3", 
+    text: "3. Jamu is cheaper than modern Western medicine.", 
+    correct: "Not Given", 
+    explanation: "The text compares their popularity, but there is no information about the price comparison." 
+},
+{ 
+    id: "tf4", 
+    text: "4. Most Indonesians currently use jamu.", 
+    correct: "True", 
+    explanation: "'Most' means more than 50%. The text states 'up to 80% of Indonesians still utilize jamu'." 
+},
+{ 
+    id: "tf5", 
+    text: "5. Traditional Chinese Medicine has achieved greater global recognition than jamu.", 
+    correct: "True", 
+    explanation: "The text says jamu has struggled to achieve 'the same lucrative global recognition as Traditional Chinese Medicine'." 
+},
+{ 
+    id: "tf6", 
+    text: "6. The Indonesian government plans to fund clinical trials for jamu next year.", 
+    correct: "Not Given", 
+    explanation: "The text mentions a 'lack of standardized clinical trials', but there is no mention of government plans for next year." 
+}
+];
+
+/* ================================================================
+LOGIC HANDLERS
+================================================================ */
+
+// Attempt Counters
+let vocabAttempts = 0;
+let mcqAttempts = 0;
+let tfAttempts = 0;
+
+function renderVocab() {
+    const container = document.getElementById('vocab-container');
+    if(!container || vocabData.length === 0) return;
+    container.innerHTML = vocabData.map(item => {
+        let optionsHtml = '<option value="">Select synonym...</option>';
+        for (const [key, value] of Object.entries(item.options)) {
+            optionsHtml += `<option value="${key}">${value}</option>`;
+        }
+        return `
+        <div class="p-4 bg-white rounded-lg border border-cyan-100 hover:border-cyan-300 transition-colors shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center gap-3">
+                <div class="md:w-1/3 font-bold text-cyan-900">${item.word}</div>
+                <div class="md:w-2/3 flex items-center gap-2">
+                    <select id="${item.id}" class="flex-1 p-2 text-sm border border-slate-200 rounded bg-cyan-50 focus:ring-1 focus:ring-cyan-500 outline-none cursor-pointer">
+                        ${optionsHtml}
+                    </select>
+                    <span id="feedback-${item.id}" class="w-6 flex justify-center"></span>
+                </div>
+            </div>
+            <div id="exp-${item.id}" class="explanation-text border-l-cyan-500">
+                <strong>Why?</strong> ${item.explanation}
+            </div>
+        </div>
+        `
+    }).join('');
+}
+
+function renderMCQ() {
+    const container = document.getElementById('mcq-container');
+    if(!container || mcqData.length === 0) return;
+    container.innerHTML = mcqData.map((item, index) => `
+    <div class="p-5 border border-slate-100 rounded-lg bg-slate-50 shadow-sm mb-4">
+        <div class="flex gap-3 mb-4 bg-white p-3 rounded border border-slate-200 shadow-sm">
+            <span class="font-bold text-emerald-600 bg-emerald-50 h-6 w-6 flex items-center justify-center rounded-full text-xs flex-shrink-0">${index + 1}</span>
+            <div class="font-medium text-slate-800 text-sm leading-relaxed">${item.question}</div>
+        </div>
+        <div class="space-y-2 ml-2">
+            ${item.options.map((opt, idx) => {
+                const val = ['a','b','c','d'][idx];
+                return `
+                <label class="flex items-start gap-2 p-2 rounded hover:bg-emerald-100 cursor-pointer text-sm transition-colors group">
+                    <input type="radio" name="${item.id}" value="${val}" class="accent-emerald-600 mt-1">
+                    <span class="group-hover:text-emerald-900">${opt}</span>
+                </label>
+                `;
+            }).join('')}
+        </div>
+        <div id="feedback-${item.id}" class="text-sm font-bold h-5 mt-2 ml-2"></div>
+        <div id="exp-${item.id}" class="explanation-text border-l-emerald-500">
+            <strong>Explanation:</strong> ${item.explanation}
+        </div>
+    </div>
+    `).join('');
+}
+
+function renderTF() {
+    const container = document.getElementById('tf-container');
+    if(!container || tfData.length === 0) return;
+    container.innerHTML = tfData.map(item => `
+    <div class="flex flex-col border-b border-emerald-50 last:border-0 pb-4 mb-4">
+        <div class="flex flex-col xl:flex-row xl:items-start justify-between" id="row-${item.id}">
+            <span class="text-sm text-slate-700 mb-3 xl:mb-0 w-full xl:w-1/2 leading-relaxed pr-2">${item.text}</span>
+            <div class="flex items-center gap-3 text-sm font-medium bg-white p-2 rounded shadow-sm border border-slate-100 w-full xl:w-auto overflow-x-auto">
+                <label class="flex items-center gap-1 cursor-pointer hover:text-emerald-600 whitespace-nowrap">
+                    <input type="radio" name="${item.id}" value="True" class="accent-emerald-600"> True
+                </label>
+                <label class="flex items-center gap-1 cursor-pointer hover:text-red-600 whitespace-nowrap">
+                    <input type="radio" name="${item.id}" value="False" class="accent-red-600"> False
+                </label>
+                <label class="flex items-center gap-1 cursor-pointer hover:text-slate-600 whitespace-nowrap">
+                    <input type="radio" name="${item.id}" value="Not Given" class="accent-slate-600"> Not Given
+                </label>
+                <span id="feedback-${item.id}" class="ml-1 w-6"></span>
+            </div>
+        </div>
+        <div id="exp-${item.id}" class="explanation-text border-l-emerald-500 mt-3">
+            <strong>Analysis:</strong> ${item.explanation}
+        </div>
+    </div>
+    `).join('');
+}
+
+function checkVocab() {
+    vocabAttempts++;
+    const btn = document.getElementById('btn-vocab');
+    let allCorrect = true;
+
+    vocabData.forEach(item => {
+        const select = document.getElementById(item.id);
+        if(!select) return;
+        const feedback = document.getElementById(`feedback-${item.id}`);
+        const expDiv = document.getElementById(`exp-${item.id}`);
+        
+        if (select.value === item.correct) {
+            feedback.innerHTML = '<i class="fas fa-check-circle text-green-500 text-lg"></i>';
+            select.classList.add('border-green-500', 'bg-green-50');
+            select.classList.remove('border-red-300');
+            select.disabled = true; 
+        } else {
+            allCorrect = false;
+            feedback.innerHTML = '<i class="fas fa-times-circle text-red-500 text-lg"></i>';
+            select.classList.add('border-red-300');
+            select.disabled = (vocabAttempts >= 2); 
+        }
+
+        if (vocabAttempts >= 2) {
+             expDiv.style.display = 'block';
+             if(select.value !== item.correct) {
+                 select.value = item.correct; 
+                 select.classList.add('text-cyan-600', 'font-bold');
+             }
+        }
+    });
+
+    if (allCorrect) {
+        btn.innerText = "All Correct!";
+        btn.disabled = true;
+        btn.classList.add('bg-green-600');
+    } else if (vocabAttempts < 2) {
+        btn.innerText = "Try Again (1 Attempt Left)";
+        btn.classList.add('bg-orange-500');
+    } else {
+        btn.innerText = "Answers Revealed";
+        btn.disabled = true;
+        btn.classList.add('bg-slate-400');
+    }
+}
+
+function checkMCQ() {
+    mcqAttempts++;
+    const btn = document.getElementById('btn-mcq');
+    let allCorrect = true;
+
+    mcqData.forEach(item => {
+        const radios = document.getElementsByName(item.id);
+        const feedback = document.getElementById(`feedback-${item.id}`);
+        const expDiv = document.getElementById(`exp-${item.id}`);
+        let userVal = "";
+        radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+        if (userVal === item.correct) {
+            feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check mr-1"></i> Correct!</span>';
+            radios.forEach(r => r.disabled = true);
+        } else {
+            allCorrect = false;
+            if (userVal !== "") feedback.innerHTML = '<span class="text-red-500"><i class="fas fa-times mr-1"></i> Incorrect.</span>';
+            radios.forEach(r => r.disabled = (mcqAttempts >= 2));
+        }
+
+        if (mcqAttempts >= 2) {
+            expDiv.style.display = 'block';
+            radios.forEach(r => {
+                if(r.value === item.correct) r.parentElement.classList.add('bg-emerald-50', 'font-bold', 'text-emerald-800', 'border', 'border-emerald-200');
+            });
+        }
+    });
+
+    if (allCorrect) {
+        btn.innerText = "Great Job!";
+        btn.disabled = true;
+        btn.classList.add('bg-green-600');
+    } else if (mcqAttempts < 2) {
+        btn.innerText = "Try Again (1 Attempt Left)";
+        btn.classList.add('bg-orange-500');
+    } else {
+        btn.innerText = "Review Explanations";
+        btn.disabled = true;
+        btn.classList.add('bg-slate-400');
+    }
+}
+
+function checkTF() {
+    tfAttempts++;
+    const btn = document.getElementById('btn-tf');
+    let allCorrect = true;
+
+    tfData.forEach(item => {
+        const radios = document.getElementsByName(item.id);
+        const feedback = document.getElementById(`feedback-${item.id}`);
+        const expDiv = document.getElementById(`exp-${item.id}`);
+        let userVal = "";
+        radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+        if (userVal === item.correct) {
+            feedback.innerHTML = '<i class="fas fa-check text-green-500 text-lg"></i>';
+            radios.forEach(r => r.disabled = true);
+        } else {
+            allCorrect = false;
+            if (userVal !== "") feedback.innerHTML = '<i class="fas fa-times text-red-500 text-lg"></i>';
+            radios.forEach(r => r.disabled = (tfAttempts >= 2));
+        }
+
+        if (tfAttempts >= 2) {
+            expDiv.style.display = 'block';
+             radios.forEach(r => {
+                if(r.value === item.correct) {
+                    r.parentElement.classList.add('bg-emerald-100', 'rounded', 'px-2', 'font-bold');
+                }
+            });
+        }
+    });
+
+    if (allCorrect) {
+        btn.innerText = "Perfect Analysis!";
+        btn.disabled = true;
+        btn.classList.add('bg-green-600');
+    } else if (tfAttempts < 2) {
+        btn.innerText = "Try Again (1 Left)";
+        btn.classList.add('bg-orange-500');
+    } else {
+        btn.innerText = "Answers Revealed";
+        btn.disabled = true;
+        btn.classList.add('bg-slate-400');
+    }
+}
+
+function toggleAnswer(elementId, btn) {
+    const el = document.getElementById(elementId);
+    if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        el.classList.add('visible');
+        btn.innerText = "Hide";
+    } else {
+        el.classList.remove('visible');
+        el.classList.add('hidden');
+        btn.innerText = "Show";
+    }
+}
+
+function toggleAccordion(id) {
+    const content = document.getElementById(`content-${id}`);
+    const icon = document.getElementById(`icon-${id}`);
+    if (content.classList.contains('active')) {
+        content.style.maxHeight = '0px';
+        content.classList.remove('active');
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        content.style.maxHeight = '8000px';
+        content.classList.add('active');
+        icon.style.transform = 'rotate(180deg)';
+    }
+}
+
+function resetAll() {
+    if(confirm("Clear all data and restart the module?")) {
+        location.reload(); 
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderVocab();
+    renderMCQ();
+    renderTF();
+});
+</script>
+</body>
+</html>

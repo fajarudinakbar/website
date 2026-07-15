@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Listening Practice - Part 1 Shipping Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                        print: ['"Noto Serif"', 'serif'],
+                    },
+                    colors: {
+                        ielts: {
+                            red: '#e11d48',
+                            dark: '#1e293b',
+                            paper: '#ffffff',
+                            bg: '#f3f4f6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f3f4f6;
+        }
+
+        /* Paper Document Effect */
+        .exam-paper {
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #94a3b8;
+            position: relative;
+        }
+
+        /* Handwritten Input Style */
+        .handwritten-input {
+            font-family: 'Inter', sans-serif;
+            color: #2563eb;
+            font-weight: 600;
+            border: none;
+            border-bottom: 2px dotted #94a3b8;
+            background: rgba(241, 245, 249, 0.3);
+            transition: all 0.3s ease;
+            padding-right: 4px; /* Only right padding needed here, left is handled by Tailwind classes */
+            height: 28px;
+            width: 100%;
+        }
+
+        .handwritten-input:focus {
+            outline: none;
+            border-bottom: 2px solid #2563eb;
+            background: rgba(239, 246, 255, 0.8);
+        }
+
+        .handwritten-input::placeholder {
+            color: #cbd5e1;
+            font-weight: 400;
+            font-size: 0.8em;
+        }
+
+        /* Status Styles */
+        .status-correct .handwritten-input {
+            border-bottom: 2px solid #22c55e !important;
+            background-color: #f0fdf4;
+            color: #15803d;
+        }
+        
+        .status-incorrect .handwritten-input {
+            border-bottom: 2px solid #ef4444 !important;
+            background-color: #fef2f2;
+            color: #b91c1c;
+        }
+
+        /* Custom Radio Circle Animation */
+        .radio-circle::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+            display: block;
+            margin: 3px;
+            transform: scale(0);
+            transition: transform 0.2s ease;
+        }
+        
+        input:checked ~ div .radio-circle {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+        
+        input:checked ~ div .radio-circle::after {
+            transform: scale(1);
+        }
+
+        /* Feedback Animations */
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feedback-msg {
+            animation: slideDown 0.3s ease forwards;
+        }
+
+        /* SVG Styles */
+        .diagram-line {
+            stroke: #000;
+            stroke-width: 1.5;
+            fill: none;
+        }
+        .diagram-fill {
+            fill: #e5e7eb;
+            stroke: #000;
+            stroke-width: 1.5;
+        }
+        .diagram-arrow {
+            stroke: #000;
+            stroke-width: 1.5;
+            stroke-dasharray: 4, 2;
+            marker-end: url(#arrowhead);
+            marker-start: url(#arrowhead-rev);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Sticky Header & Audio Player -->
+    <header class="sticky top-0 z-50 bg-white shadow-md border-b border-gray-200">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 text-white p-2 rounded-lg">
+                    <i class="fas fa-headphones-alt text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-slate-800 uppercase tracking-wide">IELTS Listening</h1>
+                    <p class="text-xs text-slate-500">Part 1: Shipping Agency</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="text-right">
+                    <div class="text-xs text-slate-500 font-medium uppercase">Progress</div>
+                    <div id="progressText" class="text-sm font-bold text-blue-600">0/10</div>
+                </div>
+                <div class="w-12 h-12 relative flex items-center justify-center">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle cx="24" cy="24" r="18" stroke="#e2e8f0" stroke-width="3" fill="none"></circle>
+                        <circle id="circularProgress" cx="24" cy="24" r="18" stroke="#3b82f6" stroke-width="3" fill="none" stroke-dasharray="113" stroke-dashoffset="113" class="transition-all duration-500"></circle>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full max-w-4xl mx-auto px-4 py-8 space-y-8">
+
+        <form id="ieltsForm" class="space-y-10">
+
+            <!-- Intro Card -->
+            <div class="bg-blue-50 border border-blue-100 rounded-xl p-6 flex gap-4 items-start">
+                <i class="fas fa-info-circle text-blue-500 mt-1"></i>
+                <div>
+                    <h3 class="font-bold text-blue-900 mb-1">Instructions</h3>
+                    <p class="text-sm text-blue-800">
+                        Complete the form below. Write <strong>NO MORE THAN THREE WORDS AND/OR A NUMBER</strong> for each answer.
+                    </p>
+                </div>
+            </div>
+
+            <!-- SECTION 1: THE FORM -->
+            <section>
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="bg-slate-800 text-white text-xs font-bold px-2 py-1 rounded">Questions 1-8</span>
+                </div>
+                
+                <div class="exam-paper p-8 md:p-12 font-print text-slate-900 leading-relaxed">
+                    
+                    <div class="text-center mb-8">
+                        <h2 class="text-xl md:text-2xl font-bold uppercase tracking-tight text-black border-b-2 border-transparent inline-block pb-1">
+                            PACKHAM’S SHIPPING AGENCY – customer quotation form
+                        </h2>
+                    </div>
+
+                    <div class="border border-black bg-gray-200 p-4 mb-10 max-w-2xl mx-auto md:ml-12">
+                        <div class="italic mb-2 font-serif">Example</div>
+                        <div class="flex justify-between items-center max-w-sm">
+                            <span>Country of destination:</span>
+                            <span class="font-bold">Kenya...</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6 md:ml-12 text-lg">
+                        
+                        <!-- Name -->
+                        <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-12">
+                            <label class="w-24 text-right">Name:</label>
+                            <div class="flex items-baseline gap-2 flex-grow max-w-md">
+                                <span>Jacob</span>
+                                <div class="relative input-wrapper flex-grow flex items-baseline gap-2">
+                                    <span class="absolute left-2 top-1/2 -translate-y-1/2 font-bold text-slate-500 text-sm select-none">1</span>
+                                    <input type="text" id="q1" class="handwritten-input pl-8" placeholder="...">
+                                    <div class="absolute right-0 top-1/2 -translate-y-1/2 feedback-icon text-lg"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="correct-q1" class="feedback-msg hidden text-sm md:ml-40 text-red-600 mb-2"></div>
+
+                        <!-- Address -->
+                        <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-4">
+                            <label class="w-auto md:w-56 text-right whitespace-nowrap">Address to be collected from:</label>
+                            <div class="flex items-baseline gap-2 flex-grow max-w-md">
+                                <div class="relative input-wrapper w-32 md:w-40 flex items-baseline gap-2">
+                                    <span class="absolute left-2 top-1/2 -translate-y-1/2 font-bold text-slate-500 text-sm select-none">2</span>
+                                    <input type="text" id="q2" class="handwritten-input pl-8" placeholder="...">
+                                    <div class="absolute right-0 top-1/2 -translate-y-1/2 feedback-icon text-lg"></div>
+                                </div>
+                                <span>College, Downlands Rd</span>
+                            </div>
+                        </div>
+                        <div id="correct-q2" class="feedback-msg hidden text-sm md:ml-64 text-red-600 mb-2"></div>
+
+                        <!-- Town -->
+                        <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-12">
+                            <label class="w-auto md:w-56 md:text-right md:pr-4">Town:</label>
+                            <div class="font-bold">Bristol</div>
+                        </div>
+
+                        <!-- Postcode -->
+                        <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-12">
+                            <label class="w-auto md:w-56 md:text-right md:pr-4">Postcode:</label>
+                            <div class="relative input-wrapper w-40 flex items-baseline gap-2">
+                                <span class="absolute left-2 top-1/2 -translate-y-1/2 font-bold text-slate-500 text-sm select-none">3</span>
+                                <input type="text" id="q3" class="handwritten-input uppercase pl-8" placeholder="...">
+                                <div class="absolute right-0 top-1/2 -translate-y-1/2 feedback-icon text-lg"></div>
+                            </div>
+                        </div>
+                        <div id="correct-q3" class="feedback-msg hidden text-sm md:ml-64 text-red-600 mb-2"></div>
+
+                        <!-- Diagram -->
+                        <div class="mt-12 pt-4 relative">
+                            <div class="md:absolute md:left-0 md:top-20 font-serif">Size of container:</div>
+                            
+                            <div class="flex justify-center md:pl-20 py-8 relative">
+                                <svg width="500" height="300" viewBox="0 0 500 300" class="max-w-full h-auto overflow-visible">
+                                    <defs>
+                                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                            <polygon points="0 0, 10 3.5, 0 7" fill="#000" />
+                                        </marker>
+                                        <marker id="arrowhead-rev" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                            <polygon points="10 0, 0 3.5, 10 7" fill="#000" />
+                                        </marker>
+                                    </defs>
+                                    <path d="M150 100 L250 100 L370 150 L270 150 Z" class="diagram-line" fill="white"/>
+                                    <rect x="270" y="150" width="100" height="80" class="diagram-fill" />
+                                    <path d="M150 100 L270 150 L270 230 L150 180 Z" class="diagram-line" fill="white"/>
+                                    <line x1="270" y1="150" x2="270" y2="230" stroke="black" stroke-width="1.5" />
+
+                                    <text x="30" y="195" font-family="'Noto Serif', serif" font-weight="bold" font-size="16">Length: 1.5m</text>
+                                    <line x1="80" y1="205" x2="180" y2="215" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)" />
+                                    <line x1="150" y1="190" x2="260" y2="240" class="diagram-arrow" />
+
+                                    <text x="245" y="290" font-family="'Noto Serif', serif" font-size="16">Width: </text>
+                                    <line x1="270" y1="240" x2="370" y2="240" class="diagram-arrow" />
+                                    <line x1="260" y1="260" x2="275" y2="245" stroke="black" stroke-width="1.5" />
+
+                                    <text x="420" y="290" font-family="'Noto Serif', serif" font-size="16">Height: </text>
+                                    <line x1="380" y1="150" x2="380" y2="230" class="diagram-arrow" />
+                                    <line x1="390" y1="200" x2="435" y2="260" stroke="black" stroke-width="1.5" marker-end="url(#arrowhead)" />
+                                </svg>
+
+                                <div class="absolute" style="bottom: 0px; left: 50%; transform: translateX(-20%);">
+                                    <div class="flex items-center gap-1">
+                                        <div class="relative input-wrapper w-24">
+                                            <span class="absolute left-2 top-1/2 -translate-y-1/2 font-bold text-slate-500 text-sm select-none">4</span>
+                                            <input type="text" id="q4" class="handwritten-input pl-6 text-center" placeholder="...">
+                                            <div class="absolute right-0 top-1/2 -translate-y-1/2 feedback-icon text-sm"></div>
+                                        </div>
+                                    </div>
+                                    <div id="correct-q4" class="feedback-msg hidden text-xs text-red-600 mt-1"></div>
+                                </div>
+
+                                <div class="absolute" style="bottom: 0px; right: 0;">
+                                    <div class="flex items-center gap-1">
+                                        <div class="relative input-wrapper w-24">
+                                            <span class="absolute left-2 top-1/2 -translate-y-1/2 font-bold text-slate-500 text-sm select-none">5</span>
+                                            <input type="text" id="q5" class="handwritten-input pl-6 text-center" placeholder="...">
+                                            <div class="absolute right-0 top-1/2 -translate-y-1/2 feedback-icon text-sm"></div>
+                                        </div>
+                                    </div>
+                                    <div id="correct-q5" class="feedback-msg hidden text-xs text-red-600 mt-1"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contents -->
+                        <div class="flex flex-col md:flex-row gap-2 md:gap-12 mt-8">
+                            <label class="w-24 md:text-right">Contents:</label>
+                            <div class="space-y-4 flex-grow">
+                                <div>clothes</div>
+                                
+                                <div class="flex items-center gap-2">
+                                    <div class="relative input-wrapper max-w-xs w-full">
+                                        <span class="absolute left-2 top-1/2 -translate-y-1/2 font-bold text-slate-500 text-sm select-none">6</span>
+                                        <input type="text" id="q6" class="handwritten-input pl-8" placeholder="...">
+                                        <div class="absolute right-0 top-1/2 -translate-y-1/2 feedback-icon"></div>
+                                    </div>
+                                </div>
+                                <div id="correct-q6" class="feedback-msg hidden text-sm text-red-600"></div>
+
+                                <div class="flex items-center gap-2">
+                                    <div class="relative input-wrapper max-w-xs w-full">
+                                        <span class="absolute left-2 top-1/2 -translate-y-1/2 font-bold text-slate-500 text-sm select-none">7</span>
+                                        <input type="text" id="q7" class="handwritten-input pl-8" placeholder="...">
+                                        <div class="absolute right-0 top-1/2 -translate-y-1/2 feedback-icon"></div>
+                                    </div>
+                                </div>
+                                <div id="correct-q7" class="feedback-msg hidden text-sm text-red-600"></div>
+                            </div>
+                        </div>
+
+                        <!-- Total Value -->
+                        <div class="mt-12">
+                            <div class="flex items-center gap-2">
+                                <span class="font-serif">Total estimated value:</span>
+                                <span class="font-serif">£</span>
+                                <div class="relative input-wrapper w-32">
+                                    <span class="absolute left-2 top-1/2 -translate-y-1/2 font-bold text-slate-500 text-sm select-none">8</span>
+                                    <input type="text" id="q8" class="handwritten-input pl-8" placeholder="...">
+                                    <div class="absolute right-0 top-1/2 -translate-y-1/2 feedback-icon"></div>
+                                </div>
+                            </div>
+                            <div id="correct-q8" class="feedback-msg hidden text-sm text-red-600 mt-1 ml-40"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: MULTIPLE CHOICE -->
+            <section>
+                <div class="flex items-center gap-2 mb-4 mt-12">
+                    <span class="bg-slate-800 text-white text-xs font-bold px-2 py-1 rounded">Questions 9-10</span>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 md:p-10 font-sans">
+                    <p class="text-slate-600 mb-6 italic">Choose the correct letter, <strong>A, B</strong> or <strong>C</strong>.</p>
+
+                    <div class="grid md:grid-cols-2 gap-8">
+                        
+                        <!-- Q9 -->
+                        <div class="space-y-4" id="q9-group">
+                            <h4 class="font-bold text-lg text-slate-800">9. Type of insurance chosen:</h4>
+                            <div class="space-y-3">
+                                <label class="cursor-pointer relative block">
+                                    <input type="radio" name="q9" value="A" class="peer sr-only">
+                                    <div class="p-4 rounded-lg border border-gray-200 hover:bg-slate-50 peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500 transition-all flex items-center gap-3">
+                                        <div class="radio-circle w-5 h-5 border-2 border-gray-300 rounded-full flex-shrink-0"></div>
+                                        <span class="font-medium text-slate-700"><span class="font-bold mr-2 text-slate-900">A</span> Economy</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer relative block">
+                                    <input type="radio" name="q9" value="B" class="peer sr-only">
+                                    <div class="p-4 rounded-lg border border-gray-200 hover:bg-slate-50 peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500 transition-all flex items-center gap-3">
+                                        <div class="radio-circle w-5 h-5 border-2 border-gray-300 rounded-full flex-shrink-0"></div>
+                                        <span class="font-medium text-slate-700"><span class="font-bold mr-2 text-slate-900">B</span> Standard</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer relative block">
+                                    <input type="radio" name="q9" value="C" class="peer sr-only">
+                                    <div class="p-4 rounded-lg border border-gray-200 hover:bg-slate-50 peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500 transition-all flex items-center gap-3">
+                                        <div class="radio-circle w-5 h-5 border-2 border-gray-300 rounded-full flex-shrink-0"></div>
+                                        <span class="font-medium text-slate-700"><span class="font-bold mr-2 text-slate-900">C</span> Premium</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div id="correct-q9" class="feedback-msg hidden p-3 rounded bg-red-50 border border-red-100 text-red-700 text-sm font-medium"></div>
+                        </div>
+
+                        <!-- Q10 -->
+                        <div class="space-y-4" id="q10-group">
+                            <h4 class="font-bold text-lg text-slate-800">10. Delivery location:</h4>
+                            <div class="space-y-3">
+                                <label class="cursor-pointer relative block">
+                                    <input type="radio" name="q10" value="A" class="peer sr-only">
+                                    <div class="p-4 rounded-lg border border-gray-200 hover:bg-slate-50 peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500 transition-all flex items-center gap-3">
+                                        <div class="radio-circle w-5 h-5 border-2 border-gray-300 rounded-full flex-shrink-0"></div>
+                                        <span class="font-medium text-slate-700"><span class="font-bold mr-2 text-slate-900">A</span> Port</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer relative block">
+                                    <input type="radio" name="q10" value="B" class="peer sr-only">
+                                    <div class="p-4 rounded-lg border border-gray-200 hover:bg-slate-50 peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500 transition-all flex items-center gap-3">
+                                        <div class="radio-circle w-5 h-5 border-2 border-gray-300 rounded-full flex-shrink-0"></div>
+                                        <span class="font-medium text-slate-700"><span class="font-bold mr-2 text-slate-900">B</span> Home</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer relative block">
+                                    <input type="radio" name="q10" value="C" class="peer sr-only">
+                                    <div class="p-4 rounded-lg border border-gray-200 hover:bg-slate-50 peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:ring-1 peer-checked:ring-blue-500 transition-all flex items-center gap-3">
+                                        <div class="radio-circle w-5 h-5 border-2 border-gray-300 rounded-full flex-shrink-0"></div>
+                                        <span class="font-medium text-slate-700"><span class="font-bold mr-2 text-slate-900">C</span> Depot</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div id="correct-q10" class="feedback-msg hidden p-3 rounded bg-red-50 border border-red-100 text-red-700 text-sm font-medium"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Actions Footer (Fixed Button) -->
+            <div class="mt-12 bg-white border border-gray-200 shadow-sm rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-4xl mx-auto">
+                <div id="scoreContainer" class="hidden animate-bounce">
+                    <div class="bg-amber-100 text-amber-800 px-4 py-2 rounded-lg font-bold border border-amber-200 flex items-center gap-2">
+                        <i class="fas fa-star"></i> Score: <span id="score">0</span> / 10
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 w-full sm:w-auto">
+                    <button type="button" id="resetBtn" class="flex-1 sm:flex-none py-2.5 px-6 rounded-lg font-semibold text-slate-600 hover:bg-slate-100 border border-transparent hover:border-slate-200 transition">
+                        Reset
+                    </button>
+                    <!-- Fixed button: Removed logic that disables it, ensuring you can always check/retry -->
+                    <button type="button" id="checkAnswersBtn" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg shadow-lg hover:shadow-blue-500/30 transition transform hover:-translate-y-0.5">
+                        Check Answers
+                    </button>
+                </div>
+            </div>
+
+            <!-- Transcript Section -->
+            <div class="border-t border-gray-200 pt-8 pb-12">
+                <div class="text-center">
+                    <button type="button" id="toggleTranscriptBtn" class="text-sm font-medium text-slate-500 hover:text-blue-600 flex items-center gap-2 mx-auto transition">
+                        <span>Show Transcript</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                
+                <div id="transcriptContainer" class="hidden mt-6 bg-white p-8 rounded-xl border border-gray-200 shadow-sm font-serif leading-relaxed text-slate-700 max-w-3xl mx-auto">
+                    <h4 class="font-sans font-bold text-slate-900 mb-4 border-b pb-2">Audio Transcript</h4>
+                    <div class="space-y-3">
+                         <p><strong class="text-blue-900">A:</strong> Good morning Packham's Shipping Agents. Can I help you?</p>
+                        <p><strong class="text-slate-900">B:</strong> Oh yes, I'm ringing to make enquiries about sending a large box, a container, back home to Kenya from the UK.</p>
+                        <p><strong class="text-blue-900">A:</strong> Yes, of course. Would you like me to try and find some quotations for you?</p>
+                        <p><strong class="text-slate-900">B:</strong> Yes, that'd be great. Thank you.</p>
+                        <p><strong class="text-blue-900">A:</strong> Well first of all, I need a few details from you.</p>
+                        <p><strong class="text-slate-900">B:</strong> Fine.</p>
+                        <p><strong class="text-blue-900">A:</strong> Can I take your name?</p>
+                        <p><strong class="text-slate-900">B:</strong> It's Jacob <mark class="bg-yellow-200 px-1 rounded">Mkere</mark>.</p>
+                        <p><strong class="text-blue-900">A:</strong> Can you spell your surname, please?</p>
+                        <p><strong class="text-slate-900">B:</strong> Yes, it's M-K-E-R-E.</p>
+                        <p><strong class="text-blue-900">A:</strong> Is that 'M' for mother?</p>
+                        <p><strong class="text-slate-900">B:</strong> Yes.</p>
+                        <p><strong class="text-blue-900">A:</strong> And where would you like the box picked up from?</p>
+                        <p><strong class="text-slate-900">B:</strong> From college, if possible.</p>
+                        <p><strong class="text-blue-900">A:</strong> Yes, of course. I'll take down the address now.</p>
+                        <p><strong class="text-slate-900">B:</strong> It's <mark class="bg-yellow-200 px-1 rounded">Westall</mark> College.</p>
+                        <p><strong class="text-blue-900">A:</strong> Is that W-E-S-T-A-L-L?</p>
+                        <p><strong class="text-slate-900">B:</strong> Yes, ... college.</p>
+                        <p><strong class="text-blue-900">A:</strong> Westall College. And where's that?</p>
+                        <p><strong class="text-slate-900">B:</strong> It's Downlands Road, in Bristol.</p>
+                        <p><strong class="text-blue-900">A:</strong> Oh yes, I know it. And the postcode?</p>
+                        <p><strong class="text-slate-900">B:</strong> It's <mark class="bg-yellow-200 px-1 rounded">BS8 9PU</mark>.</p>
+                        <p><strong class="text-blue-900">A:</strong> Right ... and I need to know the size.</p>
+                        <p><strong class="text-slate-900">B:</strong> Yes, I've measured it carefully and it's 1.5m long...</p>
+                        <p><strong class="text-blue-900">A:</strong> Right.</p>
+                        <p><strong class="text-slate-900">B:</strong> <mark class="bg-yellow-200 px-1 rounded">0.75m wide</mark>...</p>
+                        <p><strong class="text-blue-900">A:</strong> OK.</p>
+                        <p><strong class="text-slate-900">B:</strong> And it's <mark class="bg-yellow-200 px-1 rounded">0.5m high</mark> or deep.</p>
+                        <p><strong class="text-blue-900">A:</strong> Great. So I'll calculate the volume in a moment and get some quotes for that. But first can you tell me, you know, very generally, what will be in the box?</p>
+                        <p><strong class="text-slate-900">B:</strong> Yes there's mostly clothes.</p>
+                        <p><strong class="text-blue-900">A:</strong> OK. [writing down]</p>
+                        <p><strong class="text-slate-900">B:</strong> And there's <mark class="bg-yellow-200 px-1 rounded">some books</mark>.</p>
+                        <p><strong class="text-blue-900">A:</strong> OK. Good. Um... Anything else?</p>
+                        <p><strong class="text-slate-900">B:</strong> Yes, there's also <mark class="bg-yellow-200 px-1 rounded">some toys</mark>.</p>
+                        <p><strong class="text-blue-900">A:</strong> OK and what is the total value, do you think, of the contents?</p>
+                        <p><strong class="text-slate-900">B:</strong> Well the main costs are the clothes and the books - they'll be about £1500 but then the toys are about another two hundred - so I'd put down <mark class="bg-yellow-200 px-1 rounded">£1700</mark>.</p>
+                        <p><strong class="text-blue-900">A:</strong> OK right. Now obviously insurance is an important thing to consider... There's really three rates according to quality of insurance cover - there's the highest comprehensive cover which is Premium rate, then there's standard rate and then there's economy rate...</p>
+                        <p><strong class="text-slate-900">B:</strong> Oh I've been stung before with economy insurance so <mark class="bg-yellow-200 px-1 rounded">I'll go for the highest</mark>.</p>
+                        <p><strong class="text-blue-900">A:</strong> Mh'hm and can I just check would you want home delivery or to a local depot or would you want to pick it up at the nearest port?</p>
+                        <p><strong class="text-slate-900">B:</strong> <mark class="bg-yellow-200 px-1 rounded">The port'd be fine</mark> - I've got transport that end.</p>
+                        <p><strong class="text-blue-900">A:</strong> Fine and will you be paying by credit card?</p>
+                        <p><strong class="text-slate-900">B:</strong> Can I pay by cheque?</p>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- STATE & CONFIGURATION ---
+            // Removed MAX_ATTEMPTS logic to allow infinite retries
+            const questions = [
+                { id: 'q1', type: 'simple', correct: 'Mkere' },
+                { id: 'q2', type: 'simple', correct: 'Westall' },
+                { id: 'q3', type: 'simple', correct: 'BS8 9PU' },
+                { id: 'q4', type: 'array', correct: ["0.75m", "0.75 m", "75cm", "75 cm", "three quarters of a metre", "three quarters of a meter", "0.75m wide", "0.75"] },
+                { id: 'q5', type: 'array', correct: ["0.5m", "0.5 m", "50cm", "50 cm", "half a metre", "half a meter", "0.5m high", "0.5"] },
+                { id: 'q6', type: 'paired', pairId: 'q7', correct: [["books", "toys"], ["some books", "some toys"]] },
+                { id: 'q7', type: 'paired', pairId: 'q6', correct: [["books", "toys"], ["some books", "some toys"]] },
+                { id: 'q8', type: 'simple', correct: '1700' },
+                { id: 'q9', type: 'radio', correct: 'C' },
+                { id: 'q10', type: 'radio', correct: 'A' }
+            ];
+
+            const form = document.getElementById('ieltsForm');
+            const checkAnswersBtn = document.getElementById('checkAnswersBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const scoreContainer = document.getElementById('scoreContainer');
+            const scoreEl = document.getElementById('score');
+            const toggleTranscriptBtn = document.getElementById('toggleTranscriptBtn');
+            const transcriptContainer = document.getElementById('transcriptContainer');
+            const progressText = document.getElementById('progressText');
+            const circularProgress = document.getElementById('circularProgress');
+            const fullDashArray = 113;
+
+            const normalize = (str) => str ? str.toLowerCase().trim().replace(/\s+/g, ' ') : '';
+
+            const getUserAnswer = (id, type) => {
+                if (type === 'radio') {
+                    const checkedRadio = form.querySelector(`input[name="${id}"]:checked`);
+                    return checkedRadio ? checkedRadio.value : "";
+                }
+                return document.getElementById(id).value;
+            };
+            
+            const updateProgress = () => {
+                const uniqueInputs = new Set(questions.map(q => q.id));
+                let filledCount = 0;
+                uniqueInputs.forEach(id => {
+                    const q = questions.find(q => q.id === id);
+                    if(getUserAnswer(id, q.type).trim() !== '') {
+                        filledCount++;
+                    }
+                });
+
+                progressText.textContent = `${filledCount}/${uniqueInputs.size}`;
+                const fraction = filledCount / uniqueInputs.size;
+                const offset = fullDashArray - (fraction * fullDashArray);
+                circularProgress.style.strokeDashoffset = offset;
+            };
+
+            const setInputStatus = (container, isCorrect, showFeedback) => {
+                container.classList.remove('status-correct', 'status-incorrect');
+                if (showFeedback) {
+                    container.classList.add(isCorrect ? 'status-correct' : 'status-incorrect');
+                }
+            };
+
+            const provideFeedback = (q, isCorrect) => {
+                const el = document.getElementById(q.id) || document.getElementById(`${q.id}-group`);
+                const feedbackIconEl = el.closest('.input-wrapper')?.querySelector('.feedback-icon');
+                const correctAnsEl = document.getElementById(`correct-${q.id}`);
+                
+                let container;
+                if (q.type === 'radio') {
+                    container = document.getElementById(`${q.id}-group`);
+                } else {
+                    container = el.closest('.input-wrapper');
+                }
+                
+                if (!container) return;
+
+                if (q.type !== 'radio') {
+                    setInputStatus(container, isCorrect, true);
+                    if (feedbackIconEl) {
+                        feedbackIconEl.innerHTML = isCorrect 
+                            ? '<i class="fas fa-check text-green-600"></i>' 
+                            : '<i class="fas fa-times text-red-500"></i>';
+                    }
+                }
+
+                if (correctAnsEl) {
+                    correctAnsEl.classList.add('hidden');
+                    // Removed attempts check, always show if wrong on check
+                    if (!isCorrect) {
+                        const feedbackText = q.type === 'array' ? q.correct[0] : q.correct;
+                        // For radios, map A/B/C to meaningful text if possible, but for now show letter is standard
+                        // or just highlight. We will keep showing correct text for clarity.
+                        if (q.type === 'radio') {
+                            // Highlight the correct radio visually if incorrect
+                            const options = container.querySelectorAll('label');
+                            options.forEach(lbl => {
+                                const input = lbl.querySelector('input');
+                                const div = lbl.querySelector('div');
+                                if (input.value === q.correct) {
+                                    div.classList.add('ring-2', 'ring-green-500', 'bg-green-50');
+                                } else {
+                                     div.classList.remove('ring-2', 'ring-green-500', 'bg-green-50');
+                                }
+                            });
+                        } else {
+                            correctAnsEl.innerHTML = `<span class="font-bold">Correct:</span> ${feedbackText}`;
+                            correctAnsEl.classList.remove('hidden');
+                        }
+                    } else {
+                        // If correct now, remove radio highlights
+                         if (q.type === 'radio') {
+                            const options = container.querySelectorAll('label div');
+                            options.forEach(div => div.classList.remove('ring-2', 'ring-green-500', 'bg-green-50'));
+                        }
+                    }
+                }
+            };
+
+            const checkAllAnswers = () => {
+                let score = 0;
+                let pairedChecked = new Set();
+
+                questions.forEach(q => {
+                    if (pairedChecked.has(q.id)) return;
+
+                    const userAnswer = getUserAnswer(q.id, q.type);
+                    let isCorrect = false;
+
+                    switch (q.type) {
+                        case 'simple':
+                            isCorrect = normalize(userAnswer) === normalize(q.correct);
+                            if (isCorrect) score++;
+                            provideFeedback(q, isCorrect);
+                            break;
+                        case 'array':
+                            isCorrect = q.correct.some(ans => normalize(userAnswer) === normalize(ans));
+                            if (isCorrect) score++;
+                            provideFeedback(q, isCorrect);
+                            break;
+                        case 'radio':
+                            isCorrect = userAnswer === q.correct;
+                            if (isCorrect) score++;
+                            provideFeedback(q, isCorrect);
+                            break;
+                        case 'paired':
+                            const pairAnswer = getUserAnswer(q.pairId, q.type);
+                            const normUser1 = normalize(userAnswer);
+                            const normUser2 = normalize(pairAnswer);
+                            
+                            const isPairCorrect = q.correct.some(pair => 
+                                (normalize(pair[0]) === normUser1 && normalize(pair[1]) === normUser2) ||
+                                (normalize(pair[0]) === normUser2 && normalize(pair[1]) === normUser1)
+                            );
+
+                            if (isPairCorrect) {
+                                score += 2;
+                                provideFeedback(q, true);
+                                provideFeedback(questions.find(p => p.id === q.pairId), true);
+                            } else {
+                                const flatAnswers = q.correct.flat().map(normalize);
+                                const q1Correct = flatAnswers.includes(normUser1);
+                                const q2Correct = flatAnswers.includes(normUser2);
+                                if (q1Correct) score++;
+                                if (q2Correct && normUser1 !== normUser2) score++;
+                                provideFeedback(q, q1Correct);
+                                provideFeedback(questions.find(p => p.id === q.pairId), q2Correct);
+                            }
+                            pairedChecked.add(q.pairId);
+                            break;
+                    }
+                });
+
+                scoreEl.textContent = score;
+                scoreContainer.classList.remove('hidden');
+                scoreContainer.classList.add('flex');
+                
+                if (score === questions.length + 1) { // 10 points total but logic above is simple
+                     checkAnswersBtn.textContent = 'Perfect Score!';
+                } else {
+                    checkAnswersBtn.textContent = 'Check Again';
+                }
+                // No button disabling
+            };
+            
+            const resetForm = () => {
+                form.reset();
+                document.querySelectorAll('.status-correct, .status-incorrect').forEach(el => el.classList.remove('status-correct', 'status-incorrect'));
+                document.querySelectorAll('.feedback-msg').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.feedback-icon').forEach(el => el.innerHTML = '');
+                
+                // Reset radio styling (remove green rings)
+                 document.querySelectorAll('.radio-card-label').forEach(l => l.classList.remove('ring-2', 'ring-green-500', 'bg-green-50')); // fallback
+                 const radioDivs = document.querySelectorAll('input[type="radio"] ~ div');
+                 radioDivs.forEach(div => div.classList.remove('ring-2', 'ring-green-500', 'bg-green-50'));
+
+                scoreContainer.classList.add('hidden');
+                scoreContainer.classList.remove('flex');
+                
+                checkAnswersBtn.disabled = false;
+                checkAnswersBtn.textContent = 'Check Answers';
+                
+                transcriptContainer.classList.add('hidden');
+                const icon = toggleTranscriptBtn.querySelector('i');
+                icon.classList.remove('rotate-180');
+                
+                updateProgress();
+            };
+
+            form.addEventListener('input', updateProgress);
+            form.addEventListener('change', updateProgress);
+
+            checkAnswersBtn.addEventListener('click', () => {
+                checkAllAnswers();
+            });
+            
+            toggleTranscriptBtn.addEventListener('click', () => {
+                const isHidden = transcriptContainer.classList.contains('hidden');
+                const icon = toggleTranscriptBtn.querySelector('i');
+                if (isHidden) {
+                    transcriptContainer.classList.remove('hidden');
+                    icon.classList.add('rotate-180');
+                } else {
+                    transcriptContainer.classList.add('hidden');
+                    icon.classList.remove('rotate-180');
+                }
+            });
+
+            resetBtn.addEventListener('click', resetForm);
+            updateProgress();
+        });
+    </script>
+</body>
+</html>

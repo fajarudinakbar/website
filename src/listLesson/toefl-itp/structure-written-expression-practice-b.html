@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL ITP Structure and Written Expression | Practice Test B</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .written-expression-segment { 
+            display: inline-block;
+            padding: 0 2px;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .written-expression-segment:hover {
+            background-color: #eff6ff;
+            border-bottom-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-pen-nib text-emerald-600 text-2xl"></i>
+                <h1 class="font-bold text-slate-700 text-lg md:text-xl">TOEFL ITP Structure and Written Expression Practice</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="progress-display" class="hidden text-sm font-medium bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-100">
+                    Question <span id="current-q-num">1</span> of 40
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="w-full bg-slate-200 h-1.5">
+        <div id="progress-bar" class="bg-emerald-600 h-1.5 transition-all duration-300 w-0"></div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-4xl mx-auto w-full p-4 md:p-6 flex flex-col">
+        
+        <!-- View: Intro (Home Page) -->
+        <div id="view-intro" class="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto mt-8 fade-in text-center">
+            <div class="mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mb-4">
+                    <i class="fa-solid fa-pen-nib text-3xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">Structure and Written Expression</h2>
+                <p class="text-slate-500 font-medium">TOEFL ITP Section 2 Simulation (Set B)</p>
+            </div>
+
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed max-w-lg mx-auto">
+                This practice test is designed to simulate the grammar section of the TOEFL ITP exam. You will encounter advanced sentence completion tasks and error identification questions, focusing on inversions, conditional clauses, and parallel structures.
+            </p>
+            
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 mb-8 text-left mx-auto max-w-lg">
+                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-emerald-500"></i> Test Overview
+                </h3>
+                <ul class="space-y-3 text-slate-700">
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                        <span><strong>Part A:</strong> Structure (Questions 1 to 15) Complete the sentence.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                        <span><strong>Part B:</strong> Written Expression (Questions 16 to 40) Identify the error.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-clock text-emerald-500 mt-1"></i>
+                        <span><strong>Time:</strong> 25 minutes (Recommended).</span>
+                    </li>
+                </ul>
+            </div>
+
+            <button onclick="startTest()" class="w-full md:w-auto md:px-12 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-lg transition shadow-md flex items-center justify-center gap-2 mx-auto text-lg">
+                Start Practice Test <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- View: Test -->
+        <div id="view-test" class="hidden fade-in flex flex-col gap-6">
+            
+            <!-- Question Box -->
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mt-4">
+                <div class="mb-4 flex justify-between items-center">
+                    <span id="part-badge" class="bg-slate-200 text-slate-600 text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">Structure</span>
+                    <span class="text-slate-400 text-sm italic">Select the answer choice that is incorrect</span>
+                </div>
+                
+                <!-- Question Text Area -->
+                <div class="mb-8">
+                    <h2 id="question-text" class="text-xl md:text-2xl font-medium text-slate-800 leading-relaxed">
+                        <!-- Question content injected here -->
+                    </h2>
+                </div>
+
+                <!-- Options Area -->
+                <div id="options-container" class="space-y-3">
+                    <!-- Options injected here -->
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-4">
+                <button onclick="prevQuestion()" id="btn-prev" class="px-6 py-3 rounded-lg font-bold text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center gap-2">
+                    <i class="fa-solid fa-chevron-left"></i> Previous
+                </button>
+                <button onclick="nextQuestion()" id="btn-next" class="px-8 py-3 bg-slate-800 text-white rounded-lg font-bold hover:bg-slate-900 transition shadow-lg flex items-center gap-2">
+                    Next <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- View: Results -->
+        <div id="view-results" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 text-center text-slate-800">Test Results</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-slate-100 p-6 rounded-xl text-center">
+                        <div class="text-sm text-slate-500 uppercase tracking-wide font-bold">Raw Score</div>
+                        <div class="text-4xl font-bold text-slate-900"><span id="score-raw">0</span> / 40</div>
+                    </div>
+                    <div class="bg-emerald-600 p-6 rounded-xl text-center text-white">
+                        <div class="text-sm text-emerald-100 uppercase tracking-wide font-bold">TOEFL Scaled Score</div>
+                        <div class="text-5xl font-bold" id="score-scaled">31</div>
+                        <div class="text-xs text-emerald-200 mt-2">Section 2 Scoring Table</div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold border-b pb-4 mb-6 text-slate-700">Detailed Review & Explanations</h3>
+                <div id="review-container" class="space-y-6">
+                    <!-- Review items injected here -->
+                </div>
+
+                <button onclick="location.reload()" class="mt-8 w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 shadow-md transition">
+                    <i class="fa-solid fa-rotate"></i> Retake Test
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        // --- DATA ---
+        // 1 to 15: Structure (Multiple Choice)
+        // 16 to 40: Written Expression (Error Identification)
+        const testData = [
+            // PART A: STRUCTURE
+            {
+                id: 1, type: 'structure',
+                question: "Not until the late 1990s ______ a common household necessity.",
+                options: ["the personal computer became", "did the personal computer become", "when the personal computer became", "the personal computer becoming"],
+                answer: 1,
+                explanation: "<strong>Inversion:</strong> When a sentence begins with a negative adverbial phrase like 'Not until', the subject and auxiliary verb must be inverted. 'Did the personal computer become' follows this rule."
+            },
+            {
+                id: 2, type: 'structure',
+                question: "______ remains one of the greatest challenges of modern astrophysics.",
+                options: ["How the universe began", "The universe began", "That the universe beginning", "How did the universe begin"],
+                answer: 0,
+                explanation: "<strong>Noun Clause Subject:</strong> The sentence needs a subject for the verb 'remains'. The noun clause 'How the universe began' functions perfectly as the subject."
+            },
+            {
+                id: 3, type: 'structure',
+                question: "Located in the bustling financial district, ______ a primary hub for international trade.",
+                options: ["the new center is", "is the new center", "where the new center is", "the new center"],
+                answer: 0,
+                explanation: "<strong>Participial Phrase:</strong> The introductory phrase describes a subject. We need a main clause consisting of a subject and a verb. Option (A) provides the subject 'the new center' and the verb 'is'."
+            },
+            {
+                id: 4, type: 'structure',
+                question: "______ the potential market risks, the investors would have backed out of the project immediately.",
+                options: ["If they know", "They had known", "Had they known", "Have they known"],
+                answer: 2,
+                explanation: "<strong>Conditional Inversion:</strong> In formal English, 'if' can be omitted from a past unreal conditional clause by inverting the subject and auxiliary verb. 'Had they known' is equivalent to 'If they had known'."
+            },
+            {
+                id: 5, type: 'structure',
+                question: "The regulatory committee strongly advised that the facility ______ to prevent further environmental contamination.",
+                options: ["is closed", "closed", "be closed", "closing"],
+                answer: 2,
+                explanation: "<strong>Subjunctive Mood:</strong> Verbs like 'advise', 'recommend', and 'demand' are followed by 'that' and the base form of the verb. The passive base form is 'be closed'."
+            },
+            {
+                id: 6, type: 'structure',
+                question: "The more effort you put into understanding the algorithm, ______ to optimize the code.",
+                options: ["it is easier", "easier it is", "the easier it will be", "the easiest it will be"],
+                answer: 2,
+                explanation: "<strong>Double Comparative:</strong> This structure requires 'the' + comparative adjective/adverb in both clauses. 'The more effort..., the easier it will be...' is the correct pattern."
+            },
+            {
+                id: 7, type: 'structure',
+                question: "The technical proposals ______ by the engineering team aim to reduce global energy consumption.",
+                options: ["submitted", "were submitted", "submitting", "they submitted"],
+                answer: 0,
+                explanation: "<strong>Reduced Relative Clause:</strong> The sentence already has a main verb ('aim'). The blank needs a participial phrase to modify 'proposals'. 'Submitted' is the reduced form of 'which were submitted'."
+            },
+            {
+                id: 8, type: 'structure',
+                question: "Among the most critical components of the computer system ______ the central processing unit.",
+                options: ["are", "is", "being", "they are"],
+                answer: 1,
+                explanation: "<strong>Prepositional Fronting:</strong> When a prepositional phrase expressing location or position begins a sentence, the verb precedes the subject. The subject is 'the central processing unit' (singular), so the verb 'is' must be used."
+            },
+            {
+                id: 9, type: 'structure',
+                question: "______ the corporate network against sophisticated cyber threats, the IT department installed advanced firewalls.",
+                options: ["Protecting", "To protect", "Protected", "For protecting"],
+                answer: 1,
+                explanation: "<strong>Infinitive of Purpose:</strong> To express the purpose of an action, the infinitive phrase ('To protect') is used."
+            },
+            {
+                id: 10, type: 'structure',
+                question: "The keynote speaker delivered ______ that the audience gave a standing ovation.",
+                options: ["such an inspiring presentation", "so an inspiring presentation", "an inspiring presentation so", "such inspiring presentation"],
+                answer: 0,
+                explanation: "<strong>So / Such ... That:</strong> 'Such' is used before an adjective + noun phrase ('such an inspiring presentation'). 'So' is used before an adjective or adverb alone."
+            },
+            {
+                id: 11, type: 'structure',
+                question: "Successful project management involves planning meticulously, communicating clearly, and ______ to unexpected changes.",
+                options: ["adapt", "adapted", "adapting", "to adapt"],
+                answer: 2,
+                explanation: "<strong>Parallel Structure:</strong> Items in a series must have the same grammatical form. The list uses gerunds ('planning', 'communicating'), so the third item must also be a gerund ('adapting')."
+            },
+            {
+                id: 12, type: 'structure',
+                question: "Once the quarterly financial reports ______, the executive management team will schedule a strategy meeting.",
+                options: ["are finalized", "will be finalized", "finalized", "finalizes"],
+                answer: 0,
+                explanation: "<strong>Adverbial Clause of Time:</strong> Clauses beginning with words like 'once', 'when', or 'after' referring to the future use the present tense. 'Are finalized' is the correct passive present tense."
+            },
+            {
+                id: 13, type: 'structure',
+                question: "______ multiple high-resolution applications simultaneously requires a substantial amount of computer memory.",
+                options: ["Run", "Running", "To running", "Run to"],
+                answer: 1,
+                explanation: "<strong>Gerund Subject:</strong> The sentence needs a subject for the verb 'requires'. A gerund ('Running') functions as a noun and serves perfectly as the subject of the sentence."
+            },
+            {
+                id: 14, type: 'structure',
+                question: "The marketing director had the graphic designer ______ the entire promotional brochure before the launch.",
+                options: ["to redesign", "redesigned", "redesign", "redesigning"],
+                answer: 2,
+                explanation: "<strong>Causative Verb:</strong> The causative verb 'have' (in the past tense 'had') followed by a person ('the graphic designer') takes the base form of the verb ('redesign')."
+            },
+            {
+                id: 15, type: 'structure',
+                question: "A pioneering figure in modern architecture, ______ the concept of open-plan residential workspaces.",
+                options: ["Frank Lloyd Wright popularizing", "Frank Lloyd Wright popularized", "the popularization by Frank Lloyd Wright", "it was Frank Lloyd Wright who popularized"],
+                answer: 1,
+                explanation: "<strong>Appositive Modifier:</strong> The introductory noun phrase describes the subject. The main clause must start with the subject ('Frank Lloyd Wright') followed immediately by the main verb ('popularized')."
+            },
+
+            // PART B: WRITTEN EXPRESSION
+            {
+                id: 16, type: 'written',
+                questionParts: [
+                    "Before starting the ",
+                    { text: "experiment", label: "A" },
+                    ", the ",
+                    { text: "researchers", label: "B" },
+                    " gathered ",
+                    { text: "many", label: "C" },
+                    " ",
+                    { text: "equipment", label: "D" },
+                    " from the laboratory supply room."
+                ],
+                options: ["experiment", "researchers", "many", "equipment"],
+                answer: 2,
+                explanation: "<strong>Noun Countability:</strong> 'Equipment' is an uncountable noun. It must be modified by 'much' or a phrase like 'a lot of', not 'many'."
+            },
+            {
+                id: 17, type: 'written',
+                questionParts: [
+                    "The ",
+                    { text: "cost", label: "A" },
+                    " of maintaining the corporate ",
+                    { text: "servers", label: "B" },
+                    " ",
+                    { text: "have", label: "C" },
+                    " increased significantly ",
+                    { text: "over", label: "D" },
+                    " the last decade."
+                ],
+                options: ["cost", "servers", "have", "over"],
+                answer: 2,
+                explanation: "<strong>Subject-Verb Agreement:</strong> The true subject of the sentence is the singular noun 'cost', not the plural intervening noun 'servers'. The verb must be singular ('has')."
+            },
+            {
+                id: 18, type: 'written',
+                questionParts: [
+                    "The new ",
+                    { text: "software", label: "A" },
+                    " update is designed to fix ",
+                    { text: "bugs", label: "B" },
+                    ", improve performance, and ",
+                    { text: "enhancing", label: "C" },
+                    " user ",
+                    { text: "security", label: "D" },
+                    "."
+                ],
+                options: ["software", "bugs", "enhancing", "security"],
+                answer: 2,
+                explanation: "<strong>Parallel Structure:</strong> The verbs in the list must match. 'Fix' and 'improve' are base verbs, so 'enhancing' should be changed to the base verb 'enhance'."
+            },
+            {
+                id: 19, type: 'written',
+                questionParts: [
+                    "When a ",
+                    { text: "company", label: "A" },
+                    " wishes to ",
+                    { text: "expand", label: "B" },
+                    " into global markets, ",
+                    { text: "they", label: "C" },
+                    " must conduct thorough ",
+                    { text: "research", label: "D" },
+                    "."
+                ],
+                options: ["company", "expand", "they", "research"],
+                answer: 2,
+                explanation: "<strong>Pronoun Reference:</strong> The pronoun refers to 'a company', which is a singular entity. The pronoun 'it' should be used instead of 'they'."
+            },
+            {
+                id: 20, type: 'written',
+                questionParts: [
+                    "The automated ",
+                    { text: "machinery", label: "A" },
+                    " on the assembly line ",
+                    { text: "operates", label: "B" },
+                    " incredibly ",
+                    { text: "efficient", label: "C" },
+                    " during peak production ",
+                    { text: "hours", label: "D" },
+                    "."
+                ],
+                options: ["machinery", "operates", "efficient", "hours"],
+                answer: 2,
+                explanation: "<strong>Adverb vs Adjective:</strong> An adverb is required to modify the verb 'operates'. The correct form is 'efficiently'."
+            },
+            {
+                id: 21, type: 'written',
+                questionParts: [
+                    "The success of the ",
+                    { text: "marketing", label: "A" },
+                    " campaign will ",
+                    { text: "depend", label: "B" },
+                    " heavily ",
+                    { text: "in", label: "C" },
+                    " consumer ",
+                    { text: "engagement", label: "D" },
+                    "."
+                ],
+                options: ["marketing", "depend", "in", "engagement"],
+                answer: 2,
+                explanation: "<strong>Prepositions:</strong> The verb 'depend' is idiomatically followed by the preposition 'on', not 'in'."
+            },
+            {
+                id: 22, type: 'written',
+                questionParts: [
+                    "After the ",
+                    { text: "meeting", label: "A" },
+                    " concluded, the manager asked the team to ",
+                    { text: "return", label: "B" },
+                    " ",
+                    { text: "back", label: "C" },
+                    " to their ",
+                    { text: "respective", label: "D" },
+                    " departments."
+                ],
+                options: ["meeting", "return", "back", "respective"],
+                answer: 2,
+                explanation: "<strong>Redundancy:</strong> The verb 'return' already means to go back. Using 'back' immediately after 'return' is redundant."
+            },
+            {
+                id: 23, type: 'written',
+                questionParts: [
+                    "Earning ",
+                    { text: "a", label: "A" },
+                    " MBA from a ",
+                    { text: "prestigious", label: "B" },
+                    " university can significantly ",
+                    { text: "boost", label: "C" },
+                    " your career ",
+                    { text: "prospects", label: "D" },
+                    "."
+                ],
+                options: ["a", "prestigious", "boost", "prospects"],
+                answer: 0,
+                explanation: "<strong>Article Usage:</strong> The acronym 'MBA' begins with a vowel sound (em-bee-ay). Therefore, the article 'an' must be used instead of 'a'."
+            },
+            {
+                id: 24, type: 'written',
+                questionParts: [
+                    "A careful ",
+                    { text: "analyze", label: "A" },
+                    " of the financial ",
+                    { text: "statements", label: "B" },
+                    " revealed several ",
+                    { text: "discrepancies", label: "C" },
+                    " in the annual ",
+                    { text: "budget", label: "D" },
+                    "."
+                ],
+                options: ["analyze", "statements", "discrepancies", "budget"],
+                answer: 0,
+                explanation: "<strong>Word Form:</strong> 'Analyze' is a verb. The sentence requires a noun to serve as the subject. The correct noun form is 'analysis'."
+            },
+            {
+                id: 25, type: 'written',
+                questionParts: [
+                    { text: "Despite", label: "A" },
+                    " the weather conditions ",
+                    { text: "were", label: "B" },
+                    " severe, the construction crew ",
+                    { text: "managed", label: "C" },
+                    " to complete the bridge on ",
+                    { text: "time", label: "D" },
+                    "."
+                ],
+                options: ["Despite", "were", "managed", "time"],
+                answer: 0,
+                explanation: "<strong>Conjunctions:</strong> 'Despite' is a preposition and must be followed by a noun phrase. Because a full clause follows ('the weather conditions were severe'), the conjunction 'Although' must be used."
+            },
+            {
+                id: 26, type: 'written',
+                questionParts: [
+                    "The board of ",
+                    { text: "directors", label: "A" },
+                    " is ",
+                    { text: "looking", label: "B" },
+                    " forward to ",
+                    { text: "review", label: "C" },
+                    " the upcoming quarterly ",
+                    { text: "results", label: "D" },
+                    "."
+                ],
+                options: ["directors", "looking", "review", "results"],
+                answer: 2,
+                explanation: "<strong>Infinitive vs Gerund:</strong> The phrase 'look forward to' is a prepositional phrase where 'to' is a preposition, not part of an infinitive. It must be followed by a gerund ('reviewing')."
+            },
+            {
+                id: 27, type: 'written',
+                questionParts: [
+                    { text: "Everyone", label: "A" },
+                    " in the accounting department ",
+                    { text: "are", label: "B" },
+                    " expected to attend the mandatory ",
+                    { text: "training", label: "C" },
+                    " session tomorrow ",
+                    { text: "morning", label: "D" },
+                    "."
+                ],
+                options: ["Everyone", "are", "training", "morning"],
+                answer: 1,
+                explanation: "<strong>Subject-Verb Agreement:</strong> Indefinite pronouns like 'Everyone' take a singular verb. 'Are' should be changed to 'is'."
+            },
+            {
+                id: 28, type: 'written',
+                questionParts: [
+                    "The ",
+                    { text: "receptionist", label: "A" },
+                    " placed the urgent ",
+                    { text: "documents", label: "B" },
+                    " on the ",
+                    { text: "manager", label: "C" },
+                    " desk for immediate ",
+                    { text: "review", label: "D" },
+                    "."
+                ],
+                options: ["receptionist", "documents", "manager", "review"],
+                answer: 2,
+                explanation: "<strong>Possessive Nouns:</strong> To show ownership of the desk, the noun 'manager' must be in the possessive form ('manager\\'s')."
+            },
+            {
+                id: 29, type: 'written',
+                questionParts: [
+                    "The executive ",
+                    { text: "carried", label: "A" },
+                    " a ",
+                    { text: "leather black", label: "B" },
+                    " briefcase to the ",
+                    { text: "important", label: "C" },
+                    " corporate ",
+                    { text: "negotiation", label: "D" },
+                    "."
+                ],
+                options: ["carried", "leather black", "important", "negotiation"],
+                answer: 1,
+                explanation: "<strong>Order of Adjectives:</strong> In English, adjectives of color generally precede adjectives of material. It should be 'black leather'."
+            },
+            {
+                id: 30, type: 'written',
+                questionParts: [
+                    "The ",
+                    { text: "consultant", label: "A" },
+                    " ",
+                    { text: "which", label: "B" },
+                    " designed the new database ",
+                    { text: "architecture", label: "C" },
+                    " received an award for ",
+                    { text: "innovation", label: "D" },
+                    "."
+                ],
+                options: ["consultant", "which", "architecture", "innovation"],
+                answer: 1,
+                explanation: "<strong>Relative Pronouns:</strong> The pronoun refers to a person ('The consultant'). 'Who' must be used instead of 'which'."
+            },
+            {
+                id: 31, type: 'written',
+                questionParts: [
+                    "The comprehensive ",
+                    { text: "report", label: "A" },
+                    " detailing the market ",
+                    { text: "trends", label: "B" },
+                    " was ",
+                    { text: "wrote", label: "C" },
+                    " by the senior ",
+                    { text: "analyst", label: "D" },
+                    "."
+                ],
+                options: ["report", "trends", "wrote", "analyst"],
+                answer: 2,
+                explanation: "<strong>Passive Voice Formation:</strong> The passive voice uses 'be' + the past participle. The past participle of 'write' is 'written', not 'wrote'."
+            },
+            {
+                id: 32, type: 'written',
+                questionParts: [
+                    "It is ",
+                    { text: "crucial", label: "A" },
+                    " that the project manager ",
+                    { text: "verifies", label: "B" },
+                    " all the ",
+                    { text: "data", label: "C" },
+                    " before submitting the final ",
+                    { text: "proposal", label: "D" },
+                    "."
+                ],
+                options: ["crucial", "verifies", "data", "proposal"],
+                answer: 1,
+                explanation: "<strong>Subjunctive Mood:</strong> Phrases like 'It is crucial that' trigger the subjunctive mood, which requires the base form of the verb. It should be 'verify'."
+            },
+            {
+                id: 33, type: 'written',
+                questionParts: [
+                    "The ",
+                    { text: "employees", label: "A" },
+                    " are ",
+                    { text: "slowly", label: "B" },
+                    " getting used to ",
+                    { text: "work", label: "C" },
+                    " with the newly implemented software ",
+                    { text: "system", label: "D" },
+                    "."
+                ],
+                options: ["employees", "slowly", "work", "system"],
+                answer: 2,
+                explanation: "<strong>Be Used To:</strong> The idiom 'getting used to' or 'be used to' is followed by a gerund. It should be 'working'."
+            },
+            {
+                id: 34, type: 'written',
+                questionParts: [
+                    "The candidate ",
+                    { text: "spoke", label: "A" },
+                    " so softly during the ",
+                    { text: "interview", label: "B" },
+                    " that the panel could ",
+                    { text: "barely", label: "C" },
+                    " ",
+                    { text: "not", label: "D" },
+                    " hear her."
+                ],
+                options: ["spoke", "interview", "barely", "not"],
+                answer: 3,
+                explanation: "<strong>Double Negative:</strong> The word 'barely' already contains a negative meaning. Adding 'not' creates an incorrect double negative. 'Not' should be removed."
+            },
+            {
+                id: 35, type: 'written',
+                questionParts: [
+                    "In order to ",
+                    { text: "solve", label: "A" },
+                    " the complex problem, the engineers had to ",
+                    { text: "do", label: "B" },
+                    " a difficult ",
+                    { text: "decision", label: "C" },
+                    " regarding the ",
+                    { text: "design", label: "D" },
+                    "."
+                ],
+                options: ["solve", "do", "decision", "design"],
+                answer: 1,
+                explanation: "<strong>Make vs Do:</strong> In English, the correct collocation is to 'make a decision', not 'do a decision'."
+            },
+            {
+                id: 36, type: 'written',
+                questionParts: [
+                    "The new corporate ",
+                    { text: "policy", label: "A" },
+                    " will positively ",
+                    { text: "effect", label: "B" },
+                    " the overall ",
+                    { text: "productivity", label: "C" },
+                    " of the ",
+                    { text: "workforce", label: "D" },
+                    "."
+                ],
+                options: ["policy", "effect", "productivity", "workforce"],
+                answer: 1,
+                explanation: "<strong>Word Choice:</strong> The sentence requires a verb. 'Effect' is usually a noun; the correct verb form here is 'affect'."
+            },
+            {
+                id: 37, type: 'written',
+                questionParts: [
+                    "The executive committee ",
+                    { text: "approved", label: "A" },
+                    " a ",
+                    { text: "five-years-old", label: "B" },
+                    " plan to ",
+                    { text: "modernize", label: "C" },
+                    " the company's IT ",
+                    { text: "infrastructure", label: "D" },
+                    "."
+                ],
+                options: ["approved", "five-years-old", "modernize", "infrastructure"],
+                answer: 1,
+                explanation: "<strong>Compound Adjectives:</strong> When a number and a noun are combined to form a hyphenated adjective before another noun, the singular form must be used. It should be 'five-year-old'."
+            },
+            {
+                id: 38, type: 'written',
+                questionParts: [
+                    "The client ",
+                    { text: "stated", label: "A" },
+                    " that he ",
+                    { text: "will", label: "B" },
+                    " sign the ",
+                    { text: "contract", label: "C" },
+                    " as soon as the terms were ",
+                    { text: "finalized", label: "D" },
+                    "."
+                ],
+                options: ["stated", "will", "contract", "finalized"],
+                answer: 1,
+                explanation: "<strong>Tense Agreement:</strong> In reported speech, since the reporting verb ('stated') is in the past tense, the future auxiliary 'will' must change to its past form 'would'."
+            },
+            {
+                id: 39, type: 'written',
+                questionParts: [
+                    "The ",
+                    { text: "latest", label: "A" },
+                    " smartphone model is much ",
+                    { text: "more", label: "B" },
+                    " ",
+                    { text: "lighter", label: "C" },
+                    " than its ",
+                    { text: "predecessor", label: "D" },
+                    "."
+                ],
+                options: ["latest", "more", "lighter", "predecessor"],
+                answer: 1,
+                explanation: "<strong>Double Comparative:</strong> The adjective 'light' forms its comparative by adding '-er' (lighter). Using 'more' with 'lighter' is a redundant double comparative."
+            },
+            {
+                id: 40, type: 'written',
+                questionParts: [
+                    "The ",
+                    { text: "documents", label: "A" },
+                    " ",
+                    { text: "printing", label: "B" },
+                    " in the mailroom yesterday ",
+                    { text: "contained", label: "C" },
+                    " highly confidential ",
+                    { text: "information", label: "D" },
+                    "."
+                ],
+                options: ["documents", "printing", "contained", "information"],
+                answer: 1,
+                explanation: "<strong>Participial Adjectives:</strong> Documents do not print themselves; they are printed. The past participle 'printed' must be used instead of the active present participle 'printing'."
+            }
+        ];
+
+        // --- STATE ---
+        let currentIdx = 0;
+        let userAnswers = {};
+
+        // --- DOM ELEMENTS ---
+        const viewIntro = document.getElementById('view-intro');
+        const viewTest = document.getElementById('view-test');
+        const viewResults = document.getElementById('view-results');
+        
+        const progressBar = document.getElementById('progress-bar');
+        const progressDisplay = document.getElementById('progress-display');
+        const currentQNum = document.getElementById('current-q-num');
+        
+        const partBadge = document.getElementById('part-badge');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        // --- LOGIC ---
+
+        function startTest() {
+            viewIntro.classList.add('hidden');
+            viewTest.classList.remove('hidden');
+            progressDisplay.classList.remove('hidden');
+            loadQuestion(0);
+        }
+
+        function loadQuestion(idx) {
+            currentIdx = idx;
+            const q = testData[idx];
+
+            // Update Header
+            currentQNum.innerText = idx + 1;
+            progressBar.style.width = `${((idx + 1) / testData.length) * 100}%`;
+            
+            // UI Content
+            if (q.type === 'structure') {
+                partBadge.innerText = 'Structure';
+                questionText.innerHTML = q.question.replace('______', '<span class="border-b-2 border-emerald-500 text-emerald-700 px-2 bg-emerald-50">______</span>');
+                renderOptions(q.options, q.id);
+            } else {
+                partBadge.innerText = 'Written Expression';
+                renderWrittenQuestion(q);
+                renderOptions(q.options, q.id); 
+            }
+
+            // Navigation State
+            btnPrev.disabled = (idx === 0);
+            if (idx === testData.length - 1) {
+                btnNext.innerHTML = 'Finish Test <i class="fa-solid fa-check"></i>';
+                btnNext.onclick = finishTest;
+            } else {
+                btnNext.innerHTML = 'Next <i class="fa-solid fa-chevron-right"></i>';
+                btnNext.onclick = nextQuestion;
+            }
+        }
+
+        function renderWrittenQuestion(q) {
+            let html = '';
+            q.questionParts.forEach(part => {
+                if (typeof part === 'string') {
+                    html += `<span>${part} </span>`;
+                } else {
+                    html += `<span class="font-bold text-emerald-700 mx-1">(${part.label})</span>`;
+                    html += `<span class="border-b-2 border-slate-300 pb-0.5 hover:bg-slate-100">${part.text}</span> `;
+                }
+            });
+            questionText.innerHTML = html;
+        }
+
+        function renderOptions(options, qId) {
+            optionsContainer.innerHTML = '';
+            options.forEach((opt, optIdx) => {
+                const isSelected = userAnswers[qId] === optIdx;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 rounded-lg border-2 transition-all flex items-center gap-3 group ${
+                    isSelected 
+                    ? 'border-emerald-600 bg-emerald-50' 
+                    : 'border-slate-200 hover:border-emerald-300 hover:bg-slate-50'
+                }`;
+                btn.onclick = () => selectAnswer(optIdx);
+                
+                const badge = document.createElement('span');
+                badge.className = `w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition ${
+                    isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'
+                }`;
+                badge.innerText = String.fromCharCode(65 + optIdx);
+                
+                const text = document.createElement('span');
+                text.className = 'text-lg text-slate-700 font-medium';
+                text.innerText = opt;
+
+                btn.appendChild(badge);
+                btn.appendChild(text);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(optIdx) {
+            const qId = testData[currentIdx].id;
+            userAnswers[qId] = optIdx;
+            loadQuestion(currentIdx);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < testData.length - 1) {
+                loadQuestion(currentIdx + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                loadQuestion(currentIdx - 1);
+            }
+        }
+
+        function calculateScaledScore(raw) {
+            if (raw >= 40) return 68;
+            if (raw >= 38) return 65;
+            if (raw >= 35) return 60;
+            if (raw >= 30) return 54;
+            if (raw >= 25) return 49;
+            if (raw >= 20) return 44;
+            if (raw >= 15) return 40;
+            if (raw >= 10) return 33;
+            if (raw >= 5) return 25;
+            return 20;
+        }
+
+        function finishTest() {
+            let rawScore = 0;
+            testData.forEach(q => {
+                if (userAnswers[q.id] === q.answer) rawScore++;
+            });
+
+            const scaledScore = calculateScaledScore(rawScore);
+
+            document.getElementById('score-raw').innerText = rawScore;
+            document.getElementById('score-scaled').innerText = scaledScore;
+
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            testData.forEach((q, idx) => {
+                const isCorrect = userAnswers[q.id] === q.answer;
+                const userOptIdx = userAnswers[q.id];
+                
+                const item = document.createElement('div');
+                item.className = `p-6 rounded-lg border-2 ${isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`;
+                
+                let reviewHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="font-bold text-slate-700">Question ${idx + 1} (${q.type === 'structure' ? 'Structure' : 'Written Exp.'})</div>
+                        ${isCorrect 
+                            ? '<span class="text-green-600 font-bold"><i class="fa-solid fa-check-circle"></i> Correct</span>' 
+                            : '<span class="text-red-600 font-bold"><i class="fa-solid fa-times-circle"></i> Incorrect</span>'}
+                    </div>
+                `;
+
+                if (q.type === 'structure') {
+                    reviewHTML += `<p class="mb-3 text-lg font-medium text-slate-800">${q.question}</p>`;
+                } else {
+                    let txt = '';
+                    q.questionParts.forEach(part => {
+                        if (typeof part === 'string') txt += part + ' ';
+                        else txt += `<b>(${part.label})</b> <u>${part.text}</u> `;
+                    });
+                    reviewHTML += `<p class="mb-3 text-lg text-slate-800">${txt}</p>`;
+                }
+                
+                reviewHTML += `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
+                        <div class="${isCorrect ? 'text-green-800' : 'text-red-800'}">
+                            <span class="font-bold">Your Answer:</span> ${userOptIdx !== undefined ? q.options[userOptIdx] : 'No Answer'}
+                        </div>
+                        <div class="text-slate-700">
+                            <span class="font-bold">Correct Answer:</span> ${q.options[q.answer]}
+                        </div>
+                    </div>
+                `;
+
+                if (q.explanation) {
+                    reviewHTML += `
+                        <div class="bg-blue-100 border-l-4 border-blue-500 p-4 rounded text-slate-800 text-sm">
+                            <span class="font-bold block mb-1 text-blue-800"><i class="fa-solid fa-lightbulb"></i> Explanation:</span>
+                            ${q.explanation}
+                        </div>
+                    `;
+                }
+
+                item.innerHTML = reviewHTML;
+                reviewContainer.appendChild(item);
+            });
+
+            viewTest.classList.add('hidden');
+            viewResults.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+    </script>
+</body>
+</html>

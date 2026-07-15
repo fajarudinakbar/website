@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>50 Items for Build a Sentence Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --border-width: 3px;
+            --border-color: #000;
+            --shadow-color: #000;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #fdfbf7;
+            background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+            background-size: 20px 20px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Neo-Brutalist Utilities */
+        .neo-border {
+            border: var(--border-width) solid var(--border-color);
+        }
+
+        .neo-shadow {
+            box-shadow: 4px 4px 0px var(--shadow-color);
+        }
+
+        .neo-card {
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 6px 6px 0px var(--shadow-color);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .neo-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px var(--shadow-color);
+        }
+
+        .neo-btn {
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 4px 4px 0px var(--shadow-color);
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .neo-btn:active {
+            transform: translate(4px, 4px) !important;
+            box-shadow: 0px 0px 0px var(--shadow-color) !important;
+        }
+
+        .neo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 4px 4px 0px var(--shadow-color) !important;
+            background-color: #e2e8f0 !important;
+        }
+
+        .word-chip {
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 3px 3px 0px var(--shadow-color);
+            transition: all 0.1s;
+            user-select: none;
+            cursor: pointer;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        
+        .word-chip:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0px 0px 0px var(--shadow-color);
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-2deg); }
+            50% { transform: translateX(5px) rotate(2deg); }
+            75% { transform: translateX(-5px) rotate(-2deg); }
+        }
+
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        
+        /* Invisible Scrollbar Utilities */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="text-black h-screen w-screen overflow-hidden">
+
+    <div id="app" class="flex flex-col h-full w-full"></div>
+
+    <script>
+        // --- DATA STRUCTURE ---
+        const appData = {
+            title: "Build a Sentence Practice",
+            modules: [
+                {
+                    id: 1,
+                    title: "TOEFL iBT® Practice Test 1",
+                    level: "B1 to B2",
+                    description: "Direct reproductions of the practice test, focusing on relative clauses and indirect questions.",
+                    icon: "graduation-cap",
+                    color: "bg-[#A7F3D0]", 
+                    bg_light: "bg-[#34D399]", 
+                    text_color: "text-black",
+                    tasks: [
+                        { id: 1, context: "Speaker A: What was the highlight of your trip?", scrambled: ["were", "the", "was", "old_city", "showed_us_around", "who", "tour_guides", "The", "fantastic"], correct: "The tour_guides who showed_us_around the old_city were fantastic.", explanation: "Use the plural verb 'were' to match the plural subject head 'tour guides'." },
+                        { id: 2, context: "Speaker A: I heard Anna got a promotion.", scrambled: ["a_different_department", "if", "moving_to", "know", "Do", "you", "she_will_be"], correct: "Do you know if she_will_be moving_to a_different_department?", explanation: "In indirect questions, use standard statement word order ('she will be moving') rather than inverted question order." },
+                        { id: 3, context: "Speaker A: We're planning a trip to the mountains next weekend.", scrambled: ["the_cabins", "available", "whether", "Can", "will_be", "you", "tell_me"], correct: "Can you tell_me whether the_cabins will_be available?", explanation: "Noun clauses introduced by 'whether' express alternative possibilities and follow standard subject verb order." },
+                        { id: 4, context: "Speaker A: I'm looking forward to the concert this weekend.", scrambled: ["does", "What", "time", "it", "start"], correct: "What time does it start?", explanation: "Form simple present questions for scheduled events using the auxiliary verb 'does'." },
+                        { id: 5, context: "Speaker A: The museum exhibition opens next month.", scrambled: ["Do", "you", "how", "know", "tickets", "will_cost", "much"], correct: "Do you know how much tickets will_cost?", explanation: "The embedded noun clause 'how much tickets will cost' acts as the object of the verb and must maintain standard statement order." },
+                        { id: 6, context: "Speaker A: I'm planning to go to the beach tomorrow.", scrambled: ["is", "time_of_year", "What", "the_water", "this", "like", "temperature"], correct: "What is the_water temperature like this time_of_year?", explanation: "The phrase 'what is something like' is standard for asking for a description. Avoid pairing 'how' directly with 'like'." },
+                        { id: 7, context: "Speaker A: I need to buy groceries today.", scrambled: ["list", "Do", "a", "have", "shopping", "you"], correct: "Do you have a shopping list?", explanation: "Simple present questions with active main verbs require the auxiliary verb 'do' to precede the subject pronoun." },
+                        { id: 8, context: "Speaker A: I'll be taking a cooking class this weekend.", scrambled: ["learn", "What", "will", "you", "recipes"], correct: "What recipes will you learn?", explanation: "Future information questions place the question phrase and the modal verb 'will' directly before the subject." },
+                        { id: 9, context: "Speaker A: What did Maria ask you about the book you're reading?", scrambled: ["She", "she", "wanted", "a_copy", "buy", "to_know", "could", "where"], correct: "She wanted to_know where she could buy a_copy.", explanation: "When reporting questions in the past tense, shift the modal 'can' to 'could' and maintain statement word order." },
+                        { id: 10, context: "Speaker A: How did you prepare for the exam?", scrambled: ["by", "the_professor", "that", "the_study_guide", "was_provided", "it", "I_used"], correct: "I_used the_study_guide that was_provided by the_professor.", explanation: "A passive relative clause highlights the resource while placing the performing agent into a trailing prepositional phrase." }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Campus Life & Logistics",
+                    level: "B1 to B2",
+                    description: "Everyday campus situations: asking for directions, making plans, and navigating facilities.",
+                    icon: "map",
+                    color: "bg-[#FBCFE8]", 
+                    bg_light: "bg-[#F472B6]",
+                    text_color: "text-black",
+                    tasks: [
+                        { id: 1, context: "Speaker A: I need to buy my textbooks for the semester.", scrambled: ["is", "tell_me", "where", "the_bookstore", "Can", "you", "are"], correct: "Can you tell_me where the_bookstore is?", explanation: "Indirect questions place the verb ('is') at the end of the clause." },
+                        { id: 2, context: "Speaker A: The cafeteria is closed for renovations.", scrambled: ["eat", "we", "where", "will", "do", "lunch", "So"], correct: "So where will we eat lunch?", explanation: "Standard future question structure requires the modal 'will' before the subject." },
+                        { id: 3, context: "Speaker A: Have you finished your registration?", scrambled: ["a_few", "still", "classes", "I", "need_to", "add", "adding"], correct: "I still need_to add a_few classes.", explanation: "The phrase 'need to' is directly followed by the base form of the verb." },
+                        { id: 4, context: "Speaker A: The parking lot is completely full.", scrambled: ["Where", "am_I", "supposed_to", "park", "my_car", "parking"], correct: "Where am_I supposed_to park my_car?", explanation: "The chunk 'supposed to' expresses an obligation or rule and takes a base verb." },
+                        { id: 5, context: "Speaker A: I left my jacket in the lecture hall.", scrambled: ["it", "find", "you", "Did", "go_back", "to", "and"], correct: "Did you go_back to find it?", explanation: "Infinitive phrases of purpose ('to find it') explain the reason for the main action." },
+                        { id: 6, context: "Speaker A: We have a group meeting at four o'clock.", scrambled: ["we", "meeting", "Where", "are", "do"], correct: "Where are we meeting?", explanation: "Present continuous can be used to ask about confirmed future arrangements." },
+                        { id: 7, context: "Speaker A: My roommate is very noisy.", scrambled: ["have", "to", "you", "spoken", "him", "about_it", "speaking"], correct: "Have you spoken to him about_it?", explanation: "Present perfect 'have you spoken' connects a past action to the current situation." },
+                        { id: 8, context: "Speaker A: I'm thinking of joining a club.", scrambled: ["join", "would", "Which", "one", "you", "like_to"], correct: "Which one would you like_to join?", explanation: "The chunk 'would like to' is a polite way to ask about preferences." },
+                        { id: 9, context: "Speaker A: The library printers are out of paper.", scrambled: ["should", "we", "Who", "the_issue", "about", "tell"], correct: "Who should we tell about the_issue?", explanation: "The verb 'tell' takes an object and the preposition 'about' for the topic." },
+                        { id: 10, context: "Speaker A: How do I get to the science building?", scrambled: ["it_is", "the", "right_next_to", "student_center", "is_it"], correct: "It_is right_next_to the student_center.", explanation: "The phrase 'right next to' acts as a prepositional chunk giving exact location." }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Academic Advising",
+                    level: "B1 to B2",
+                    description: "Consulting on academic progress: schedules, prerequisites, and deadlines.",
+                    icon: "briefcase",
+                    color: "bg-[#BFDBFE]", 
+                    bg_light: "bg-[#60A5FA]",
+                    text_color: "text-black",
+                    tasks: [
+                        { id: 1, context: "Speaker A: I'm not sure which major to choose.", scrambled: ["to_discuss", "an_appointment", "You", "should_make", "your_options", "making"], correct: "You should_make an_appointment to_discuss your_options.", explanation: "Collocate 'make' with 'appointment', followed by an infinitive of purpose." },
+                        { id: 2, context: "Speaker A: This biology course is really difficult.", scrambled: ["thinking_about", "dropping", "Are", "it", "you", "think"], correct: "Are you thinking_about dropping it?", explanation: "Prepositions like 'about' must be followed by a gerund form ('dropping')." },
+                        { id: 3, context: "Speaker A: When is the deadline to submit the essay?", scrambled: ["is", "due", "Friday", "It", "next", "on"], correct: "It is due next Friday.", explanation: "Do not use the preposition 'on' when using time markers like 'next'." },
+                        { id: 4, context: "Speaker A: Can I take an advanced class next semester?", scrambled: ["you", "take", "You", "must", "first", "the_prerequisite", "taking"], correct: "You must take the_prerequisite first.", explanation: "The modal 'must' requires a bare infinitive without the 'to' marker." },
+                        { id: 5, context: "Speaker A: I missed the midterm exam.", scrambled: ["to", "will", "the_professor", "You", "have", "talk", "talking"], correct: "You will have to talk to the_professor.", explanation: "'Have to' expresses strong obligation and takes a base verb." },
+                        { id: 6, context: "Speaker A: What did the advisor say about your schedule?", scrambled: ["She", "suggested", "taking", "fewer", "this_semester", "classes", "to_take"], correct: "She suggested taking fewer classes this_semester.", explanation: "The verb 'suggest' is directly followed by a gerund ('taking'), not an infinitive." },
+                        { id: 7, context: "Speaker A: I want to study abroad in Spain.", scrambled: ["Do", "the", "you", "know", "language_requirements", "how"], correct: "Do you know the language_requirements?", explanation: "This is a direct yes or no question requiring standard auxiliary inversion." },
+                        { id: 8, context: "Speaker A: How many credits do I need to graduate?", scrambled: ["check", "the", "online_catalog", "You", "can", "to_find_out"], correct: "You can check the online_catalog to_find_out.", explanation: "Place the object 'the online catalog' immediately after the active verb 'check'." },
+                        { id: 9, context: "Speaker A: I'm struggling with the research paper.", scrambled: ["the", "why", "writing_center", "visit", "don't", "you", "not"], correct: "Why don't you visit the writing_center?", explanation: "'Why don't you' is a fixed functional chunk used for giving polite advice." },
+                        { id: 10, context: "Speaker A: Can I get an extension on the assignment?", scrambled: ["ask", "for", "It", "never", "hurts", "to", "asking"], correct: "It never hurts to ask.", explanation: "The conversational phrase 'it never hurts to' is followed by a base verb." }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Classroom Discussions",
+                    level: "B2",
+                    description: "Participating in seminars: sharing opinions, evaluating data, and grouping ideas.",
+                    icon: "users",
+                    color: "bg-[#FDE047]", 
+                    bg_light: "bg-[#FACC15]",
+                    text_color: "text-black",
+                    tasks: [
+                        { id: 1, context: "Speaker A: I don't understand the main character's motivation.", scrambled: ["he", "was", "trying", "protect", "to", "his_family", "think", "I"], correct: "I think he was trying to protect his_family.", explanation: "The past continuous 'was trying' shows an ongoing action in the narrative." },
+                        { id: 2, context: "Speaker A: Does anyone have a different perspective?", scrambled: ["disagree", "with", "I", "author's", "the", "conclusion", "disagreeing"], correct: "I disagree with the author's conclusion.", explanation: "The verb 'disagree' is followed by the preposition 'with' when referring to people or ideas." },
+                        { id: 3, context: "Speaker A: Why did the experiment fail?", scrambled: ["might_have", "the", "temperature", "We", "miscalculated", "miscalculate"], correct: "We might_have miscalculated the temperature.", explanation: "Use 'might have' plus a past participle to express a past possibility." },
+                        { id: 4, context: "Speaker A: The data doesn't match our hypothesis.", scrambled: ["should", "run", "the", "test", "We", "probably", "again", "running"], correct: "We should probably run the test again.", explanation: "Place adverbs like 'probably' between the modal verb and the main verb." },
+                        { id: 5, context: "Speaker A: What is the main theme of this poem?", scrambled: ["focuses", "on", "It", "the", "passage_of_time", "focusing"], correct: "It focuses on the passage_of_time.", explanation: "The verb 'focus' is consistently collocated with the preposition 'on'." },
+                        { id: 6, context: "Speaker A: Did you read the article for today?", scrambled: ["only", "the", "I", "had", "time_to", "skim", "introduction", "skimming"], correct: "I only had time_to skim the introduction.", explanation: "The noun 'time' is modified by an infinitive phrase ('to skim') to explain purpose." },
+                        { id: 7, context: "Speaker A: I found the lecture very confusing.", scrambled: ["could", "go_over", "notes", "We", "our", "together", "going"], correct: "We could go_over our notes together.", explanation: "The phrasal verb 'go over' means to review something carefully." },
+                        { id: 8, context: "Speaker A: Should we include this quote in our presentation?", scrambled: ["it", "supports", "our", "main_argument", "Yes", "because", "supporting"], correct: "Yes because it supports our main_argument.", explanation: "The conjunction 'because' introduces a dependent clause explaining a reason." },
+                        { id: 9, context: "Speaker A: How long does the presentation need to be?", scrambled: ["said", "it", "be", "minutes", "ten", "should", "He", "is"], correct: "He said it should be ten minutes.", explanation: "When reporting instructions, use a 'that' clause (with 'that' omitted here) maintaining the modal 'should'." },
+                        { id: 10, context: "Speaker A: What did you think of the documentary?", scrambled: ["found", "it", "informative", "to_be", "highly", "I", "finding"], correct: "I found it to_be highly informative.", explanation: "The structure 'find something to be' is a common academic way to express an opinion." }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Career & Internships",
+                    level: "B2",
+                    description: "Professional readiness: interviews, follow ups, and workplace functional language.",
+                    icon: "message-circle",
+                    color: "bg-[#E9D5FF]", 
+                    bg_light: "bg-[#C084FC]",
+                    text_color: "text-black",
+                    tasks: [
+                        { id: 1, context: "Speaker A: I have an interview for a summer internship.", scrambled: ["kind_of", "will", "What", "questions", "ask", "they", "asking"], correct: "What kind_of questions will they ask?", explanation: "The question phrase 'what kind of questions' stays together before the auxiliary 'will'." },
+                        { id: 2, context: "Speaker A: Did they offer you the job?", scrambled: ["are", "They", "call", "going_to", "me", "tomorrow", "calling"], correct: "They are going_to call me tomorrow.", explanation: "Use 'going to' for future plans that have already been arranged." },
+                        { id: 3, context: "Speaker A: I need to update my resume.", scrambled: ["help", "you", "format", "I", "can", "it", "formatting"], correct: "I can help you format it.", explanation: "The verb 'help' can be followed by an object and a bare infinitive ('format')." },
+                        { id: 4, context: "Speaker A: The salary they offered is very low.", scrambled: ["you", "try", "to_negotiate", "a_better_rate", "Should", "trying"], correct: "Should you try to_negotiate a_better_rate?", explanation: "When using 'try' to mean 'attempt an effort', follow it with an infinitive." },
+                        { id: 5, context: "Speaker A: Why do you want to work in marketing?", scrambled: ["enjoy", "creative", "I", "problem_solving", "really", "enjoying"], correct: "I really enjoy creative problem_solving.", explanation: "The verb 'enjoy' must always be followed by a noun or a gerund form." },
+                        { id: 6, context: "Speaker A: I don't have any professional experience yet.", scrambled: ["highlight", "your", "academic", "projects", "You", "can", "instead", "highlighting"], correct: "You can highlight your academic projects instead.", explanation: "The adverb 'instead' typically sits at the end of the clause in conversational English." },
+                        { id: 7, context: "Speaker A: What should I wear to the job fair?", scrambled: ["is", "always", "a", "good_idea", "Business_casual", "be"], correct: "Business_casual is always a good_idea.", explanation: "Place adverbs of frequency like 'always' directly after the verb 'to be'." },
+                        { id: 8, context: "Speaker A: When does the internship start?", scrambled: ["begins", "the", "first", "It", "week_of", "June", "beginning"], correct: "It begins the first week_of June.", explanation: "Conversational English often drops the preposition 'on' or 'in' before specific time chunks." },
+                        { id: 9, context: "Speaker A: Did you send a thank you email?", scrambled: ["am", "to", "it", "send", "I", "planning", "tonight", "plan"], correct: "I am planning to send it tonight.", explanation: "The present continuous 'am planning' effectively communicates a current intention." },
+                        { id: 10, context: "Speaker A: The company hasn't responded to my application.", scrambled: ["might", "take", "weeks", "to", "process", "It", "a_few", "taking"], correct: "It might take a_few weeks to process.", explanation: "The structure 'it takes time to do something' uses an infinitive to show the required action." }
+                    ]
+                }
+            ]
+        };
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            view: 'home', 
+            lastView: null, 
+            currentModule: null,
+            currentTaskIndex: 0,
+            userAnswers: [], 
+            shuffledBanks: [], 
+            score: 0,
+            timeLeft: 600,
+            timerInterval: null
+        };
+
+        // --- UTILITY ---
+        // Keeps original capitalization for review screens
+        function formatWord(word) {
+            if (!word) return "";
+            return word.replace(/_/g, ' ');
+        }
+
+        // Lowercases the first letter for interactive blocks to remove orthographic clues
+        function formatBlockText(word) {
+            if (!word) return "";
+            let formatted = word.replace(/_/g, ' ');
+            return formatted.charAt(0).toLowerCase() + formatted.slice(1);
+        }
+
+        // --- LOGIC FUNCTIONS ---
+        function initApp() {
+            render();
+            if(window.lucide) lucide.createIcons();
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function startModule(moduleId) {
+            const module = appData.modules.find(m => m.id === moduleId);
+            if (!module) return;
+
+            state.currentModule = module;
+            state.currentTaskIndex = 0;
+            state.score = 0;
+            state.view = 'quiz';
+            state.timeLeft = 600; 
+            
+            state.userAnswers = module.tasks.map(task => 
+                task.startWith ? [...task.startWith] : []
+            );
+
+            state.shuffledBanks = module.tasks.map(task => {
+                const bank = [...task.scrambled];
+                for (let i = bank.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [bank[i], bank[j]] = [bank[j], bank[i]];
+                }
+                return bank;
+            });
+            
+            render();
+            startTimer();
+        }
+
+        function returnToHome() {
+            stopTimer();
+            state.view = 'home';
+            state.currentModule = null;
+            state.userAnswers = [];
+            render();
+        }
+
+        function startTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                if (state.timeLeft > 0) {
+                    state.timeLeft--;
+                    const timerEl = document.getElementById('timer-display');
+                    if (timerEl) timerEl.innerText = formatTime(state.timeLeft);
+                } else {
+                    clearInterval(state.timerInterval);
+                    finishModule();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function handleWordClick(word, fromSource, index, event) {
+            const task = state.currentModule.tasks[state.currentTaskIndex];
+            const currentSentence = [...(state.userAnswers[state.currentTaskIndex] || [])];
+            
+            const expectedSlots = [];
+            task.correct.trim().split(/\s+/).forEach((w) => {
+                const match = w.match(/^([^.,?!]+)([.,?!]*)$/);
+                expectedSlots.push(match ? { word: match[1] } : { word: w });
+            });
+            const targetLength = expectedSlots.length;
+            
+            if (fromSource === 'bank') {
+                if (currentSentence.length < targetLength) {
+                    currentSentence.push(word);
+                    state.userAnswers[state.currentTaskIndex] = currentSentence;
+                    render(); 
+                } else {
+                    if (event && event.currentTarget) {
+                        const btn = event.currentTarget;
+                        btn.classList.add('animate-shake', 'bg-red-400', 'text-white');
+                        setTimeout(() => {
+                            btn.classList.remove('animate-shake', 'bg-red-400', 'text-white');
+                        }, 400);
+                    }
+                }
+            } else {
+                currentSentence.splice(index, 1);
+                state.userAnswers[state.currentTaskIndex] = currentSentence;
+                render(); 
+            }
+        }
+
+        function resetCurrentTask() {
+            const task = state.currentModule.tasks[state.currentTaskIndex];
+            state.userAnswers[state.currentTaskIndex] = task.startWith ? [...task.startWith] : [];
+            render();
+        }
+
+        function nextQuestion() {
+            if (state.currentTaskIndex < state.currentModule.tasks.length - 1) {
+                state.currentTaskIndex++;
+                render();
+            }
+        }
+
+        function prevQuestion() {
+            if (state.currentTaskIndex > 0) {
+                state.currentTaskIndex--;
+                render();
+            }
+        }
+
+        function getWordBankForCurrentTask() {
+            const sourceList = state.shuffledBanks[state.currentTaskIndex];
+            const currentSentence = state.userAnswers[state.currentTaskIndex] || [];
+            
+            const usedCounts = {};
+            currentSentence.forEach(word => {
+                usedCounts[word] = (usedCounts[word] || 0) + 1;
+            });
+
+            const availableWords = [];
+            sourceList.forEach(word => {
+                if (usedCounts[word] > 0) {
+                    usedCounts[word]--;
+                } else {
+                    availableWords.push(word);
+                }
+            });
+            
+            return availableWords;
+        }
+
+        function finishModule() {
+            stopTimer();
+            let newScore = 0;
+            state.currentModule.tasks.forEach((task, index) => {
+                const userAnsArray = state.userAnswers[index] || [];
+                const cleanUser = userAnsArray.join(" ").replace(/_/g, ' ').replace(/[.,?!]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+                const cleanCorrect = task.correct.replace(/_/g, ' ').replace(/[.,?!]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+                
+                if (cleanUser === cleanCorrect) {
+                    newScore++;
+                }
+            });
+            state.score = newScore;
+            state.view = 'result';
+            render();
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderHeader() {
+            return `
+            <header class="w-full shrink-0 h-16 bg-white border-b-[3px] border-black flex items-center justify-between px-4 md:px-6 z-20">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="returnToHome()">
+                    <span class="text-black text-lg md:text-xl font-black tracking-tight uppercase hidden md:block">
+                        Build a Sentence <span class="bg-yellow-300 px-2 py-0.5 border-[3px] border-black ml-1">Practice</span>
+                    </span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleFullscreen()" class="neo-btn bg-white px-3 py-1.5 flex items-center space-x-2 text-black hover:bg-slate-100" title="Toggle Fullscreen">
+                        <i data-lucide="maximize" class="w-5 h-5"></i>
+                    </button>
+                    ${state.view === 'quiz' ? `
+                        <button onclick="returnToHome()" class="neo-btn bg-[#FF6B6B] text-white px-3 py-1.5 flex items-center space-x-2 hover:bg-red-500">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                            <span class="hidden md:inline">EXIT</span>
+                        </button>
+                    ` : ''}
+                </div>
+            </header>
+            `;
+        }
+
+        function renderHome() {
+            const moduleCards = appData.modules.map(mod => `
+                <div onclick="startModule(${mod.id})" class="bg-white neo-card p-6 cursor-pointer group relative overflow-hidden flex flex-col h-full">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="w-14 h-14 ${mod.color} border-[3px] border-black flex items-center justify-center neo-shadow">
+                            <i data-lucide="${mod.icon}" class="w-7 h-7 text-black"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-white border-[3px] border-black text-black text-sm font-bold uppercase neo-shadow">Mod ${mod.id} • ${mod.level}</span>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-black text-black mb-3 uppercase leading-tight group-hover:underline decoration-4 underline-offset-4">${mod.title}</h3>
+                    <p class="text-black font-medium text-base mb-6 flex-grow border-l-4 pl-3 border-black">${mod.description}</p>
+                    <div class="flex items-center text-sm font-bold text-black pt-4 border-t-[3px] border-black border-dashed mt-auto">
+                        <i data-lucide="list" class="w-4 h-4 mr-2"></i> 10 Questions
+                        <span class="mx-3">|</span>
+                        <i data-lucide="clock" class="w-4 h-4 mr-2"></i> 10 Mins
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+            <div class="flex-grow overflow-y-auto no-scrollbar w-full p-4 md:p-8 max-w-7xl mx-auto animate-slide-up">
+                <div class="text-center mb-12 pt-6">
+                    <h1 class="text-4xl md:text-6xl font-black text-black mb-4 uppercase tracking-tighter" style="-webkit-text-stroke: 1px black; text-shadow: 4px 4px 0 #A7F3D0;">Build a Sentence</h1>
+                    <p class="text-black font-bold text-lg md:text-xl max-w-2xl mx-auto bg-white border-[3px] border-black inline-block px-4 py-2 neo-shadow">Chunking for Authentic Fluency</p>
+                </div>
+
+                <div class="bg-[#FDE047] neo-card p-6 md:p-8 mb-12 text-left">
+                    <h2 class="text-2xl font-black text-black mb-6 uppercase flex items-center">
+                        <i data-lucide="zap" class="w-8 h-8 mr-3 text-black fill-white"></i>
+                        How to Practice
+                    </h2>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-6 text-black font-medium text-lg">
+                        <li class="flex items-start">
+                            <span class="bg-black text-white font-black border-[3px] border-black w-8 h-8 flex items-center justify-center text-sm mr-4 shrink-0 neo-shadow">1</span>
+                            <span><strong>Read the Context:</strong> Understand the dialogue and situation.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-black text-white font-black border-[3px] border-black w-8 h-8 flex items-center justify-center text-sm mr-4 shrink-0 neo-shadow">2</span>
+                            <span><strong>Spot the Chunks:</strong> Notice collocations grouped as single blocks.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-black text-white font-black border-[3px] border-black w-8 h-8 flex items-center justify-center text-sm mr-4 shrink-0 neo-shadow">3</span>
+                            <span><strong>Avoid Distractors:</strong> Filter out grammatically incorrect options.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-black text-white font-black border-[3px] border-black w-8 h-8 flex items-center justify-center text-sm mr-4 shrink-0 neo-shadow">4</span>
+                            <span><strong>Submit & Review:</strong> Check the detailed grammar focus at the end.</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
+                    ${moduleCards}
+                </div>
+            </div>
+            `;
+        }
+
+        function renderQuizStructure() {
+            return `
+            <div class="w-full shrink-0 bg-white border-b-[3px] border-black z-10 flex flex-col">
+                <div class="w-full bg-white h-4 border-b-[3px] border-black flex">
+                    <div id="progress-bar" class="${state.currentModule.color} h-full border-r-[3px] border-black transition-all duration-300 ease-out" style="width: 0%"></div>
+                </div>
+                <div class="px-4 md:px-6 py-3 flex justify-between items-center bg-slate-50">
+                    <div class="flex items-center">
+                         <span class="w-10 h-10 bg-white border-[3px] border-black flex items-center justify-center font-black text-lg mr-4 neo-shadow">
+                            ${state.currentTaskIndex + 1}
+                         </span>
+                         <span class="font-black text-black text-lg uppercase hidden md:block">${state.currentModule.title}</span>
+                         <span id="mobile-q-counter" class="md:hidden font-black text-black text-lg"></span>
+                    </div>
+                    
+                    <div class="flex items-center text-black font-black text-lg bg-[#A7F3D0] px-4 py-2 border-[3px] border-black neo-shadow">
+                        <i data-lucide="clock" class="mr-2 w-5 h-5"></i>
+                        <span id="timer-display">${formatTime(state.timeLeft)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-grow overflow-y-auto no-scrollbar w-full p-4 md:p-8 pb-32">
+                <div class="max-w-4xl mx-auto">
+                    
+                    <div class="flex gap-4 md:gap-6 mb-8 items-start animate-slide-up">
+                        <div class="w-14 h-14 md:w-20 md:h-20 shrink-0 bg-[#A7F3D0] border-[3px] border-black neo-shadow flex items-center justify-center overflow-hidden">
+                             <i data-lucide="message-square" class="w-7 h-7 md:w-10 md:h-10 text-black"></i>
+                        </div>
+                        <div class="bg-white border-[3px] border-black p-4 md:p-6 neo-shadow relative transition-opacity duration-300">
+                            <div class="absolute -left-3 top-4 w-4 h-4 bg-white border-l-[3px] border-b-[3px] border-black transform rotate-45"></div>
+                            <div id="speaker-a-text" class="text-xl md:text-2xl text-black font-bold"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 md:gap-6 items-start mb-12 animate-slide-up" style="animation-delay: 0.1s">
+                        <div class="w-14 h-14 md:w-20 md:h-20 shrink-0 bg-[#FBCFE8] border-[3px] border-black neo-shadow flex items-center justify-center overflow-hidden order-last md:order-none">
+                             <i data-lucide="edit-3" class="w-7 h-7 md:w-10 md:h-10 text-black"></i>
+                        </div>
+                        
+                        <div class="w-full order-first md:order-none">
+                            <h2 class="text-lg font-black text-black mb-4 uppercase bg-yellow-300 inline-block px-3 py-1 border-[3px] border-black">Construct Response:</h2>
+                            
+                            <div id="sentence-container" class="min-h-[80px] border-[3px] border-black bg-white p-4 flex flex-wrap items-end gap-x-2 gap-y-4 mb-6 neo-shadow"></div>
+
+                            <div id="word-bank-container" class="border-[3px] border-black p-4 md:p-6 flex flex-wrap gap-3 md:gap-4 justify-start bg-slate-100 neo-shadow"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center gap-4 mt-8 pt-8 border-t-[3px] border-black border-dashed">
+                        <button id="btn-prev" onclick="prevQuestion()" 
+                                class="neo-btn bg-white text-black px-6 py-3 flex items-center hover:bg-slate-200">
+                            <i data-lucide="arrow-left" class="mr-2 w-5 h-5"></i>
+                            <span class="hidden md:inline">PREV</span>
+                        </button>
+
+                        <div class="flex items-center gap-4">
+                            <button onclick="resetCurrentTask()" class="text-black font-bold underline decoration-4 underline-offset-4 hover:bg-black hover:text-white px-2 py-1 transition-colors uppercase">
+                                Clear
+                            </button>
+                            
+                            <button id="btn-next" onclick="nextQuestion()" 
+                                    class="neo-btn bg-[#60A5FA] text-black px-8 py-3 flex items-center hover:bg-blue-500 text-lg">
+                                NEXT
+                                <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                            </button>
+                            
+                            <button id="btn-submit" onclick="finishModule()" 
+                                    class="hidden neo-btn bg-[#34D399] text-black px-8 py-3 flex items-center hover:bg-emerald-500 text-lg">
+                                SUBMIT
+                                <i data-lucide="check-square" class="ml-2 w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function updateQuizUI() {
+            const task = state.currentModule.tasks[state.currentTaskIndex];
+            const currentSentence = state.userAnswers[state.currentTaskIndex] || [];
+            const availableBank = getWordBankForCurrentTask();
+
+            const progress = ((state.currentTaskIndex + 1) / state.currentModule.tasks.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            const qCounter = document.getElementById('mobile-q-counter');
+            const newCounterText = `Q${state.currentTaskIndex + 1}/${state.currentModule.tasks.length}`;
+            const speakerTextEl = document.getElementById('speaker-a-text');
+            
+            if(qCounter.innerText !== newCounterText) {
+                qCounter.innerText = newCounterText;
+                speakerTextEl.innerText = task.context.split(": ")[1] || task.context;
+            }
+
+            const expectedSlots = [];
+            const wordsRaw = task.correct.trim().split(/\s+/);
+            wordsRaw.forEach((w) => {
+                const match = w.match(/^([^.,?!]+)([.,?!]*)$/);
+                if(match) {
+                    expectedSlots.push({ word: match[1], punc: match[2] });
+                } else {
+                    expectedSlots.push({ word: w, punc: '' });
+                }
+            });
+            const targetLength = expectedSlots.length;
+
+            const sentenceContainer = document.getElementById('sentence-container');
+            let slotsHtml = '';
+            
+            for (let i = 0; i < targetLength; i++) {
+                const word = currentSentence[i];
+                const punc = expectedSlots[i].punc;
+                
+                slotsHtml += `<div class="flex items-end">`;
+                
+                if (word) {
+                    slotsHtml += `
+                        <button onclick="handleWordClick(this.getAttribute('data-word'), 'sentence', ${i}, event)" 
+                                data-word="${word.replace(/"/g, '&quot;')}"
+                                class="word-chip bg-[#FDE047] text-black text-lg md:text-xl px-3 py-1.5 hover:bg-red-400 hover:text-white mb-1">
+                            ${formatBlockText(word)}
+                        </button>`;
+                } else {
+                    slotsHtml += `
+                        <div class="w-12 md:w-16 h-10 inline-block border-[3px] border-black border-dashed bg-slate-50 opacity-50 mb-1 transition-all duration-300"></div>`;
+                }
+                
+                if (punc) {
+                    slotsHtml += `<span class="text-2xl md:text-3xl font-black text-black ml-1 leading-none self-end pb-1.5 md:pb-2">${punc}</span>`;
+                }
+                
+                slotsHtml += `</div>`;
+            }
+            sentenceContainer.innerHTML = slotsHtml;
+
+            const wordBankContainer = document.getElementById('word-bank-container');
+            wordBankContainer.innerHTML = availableBank.map((word, index) => `
+                <button onclick="handleWordClick(this.getAttribute('data-word'), 'bank', ${index}, event)" 
+                        data-word="${word.replace(/"/g, '&quot;')}"
+                        class="word-chip bg-white text-black px-4 py-2 text-lg md:text-xl hover:bg-slate-200">
+                    ${formatBlockText(word)}
+                </button>
+            `).join('');
+
+            document.getElementById('btn-prev').disabled = state.currentTaskIndex === 0;
+            const isLast = state.currentTaskIndex === state.currentModule.tasks.length - 1;
+            const nextBtn = document.getElementById('btn-next');
+            const submitBtn = document.getElementById('btn-submit');
+            
+            if (isLast) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        function renderResult() {
+            const percentage = Math.round((state.score / state.currentModule.tasks.length) * 100);
+            let message = "";
+            let bannerColor = "";
+
+            if (percentage >= 80) {
+                message = "OUTSTANDING! YOU NAILED IT.";
+                bannerColor = "bg-[#34D399]";
+            } else if (percentage >= 50) {
+                message = "GOOD EFFORT. REVIEW & RETRY.";
+                bannerColor = "bg-[#FACC15]";
+            } else {
+                message = "KEEP PRACTICING. YOU'LL GET IT.";
+                bannerColor = "bg-[#F472B6]";
+            }
+
+            const reviewHtml = state.currentModule.tasks.map((task, index) => {
+                const userAnsArray = state.userAnswers[index] || [];
+                
+                const expectedSlots = [];
+                task.correct.trim().split(/\s+/).forEach((w) => {
+                    const match = w.match(/^([^.,?!]+)([.,?!]*)$/);
+                    if(match) {
+                        expectedSlots.push({ word: match[1], punc: match[2] });
+                    } else {
+                        expectedSlots.push({ word: w, punc: '' });
+                    }
+                });
+
+                let userSentDisplay = "";
+                expectedSlots.forEach((slot, i) => {
+                    if (userAnsArray[i]) {
+                        userSentDisplay += formatWord(userAnsArray[i]) + slot.punc + " ";
+                    } else {
+                        userSentDisplay += "___" + slot.punc + " ";
+                    }
+                });
+                userSentDisplay = userSentDisplay.trim();
+                
+                // Capitalize the first letter of the user's sentence display for visual polish
+                if (userSentDisplay.length > 0 && userSentDisplay !== "___") {
+                    userSentDisplay = userSentDisplay.charAt(0).toUpperCase() + userSentDisplay.slice(1);
+                }
+
+                const cleanUser = userAnsArray.join(" ").replace(/_/g, ' ').replace(/[.,?!]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+                const cleanCorrect = task.correct.replace(/_/g, ' ').replace(/[.,?!]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+                const isCorrect = cleanUser === cleanCorrect;
+                
+                return `
+                <div class="neo-card bg-white p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4 border-b-[3px] border-black pb-2">
+                        <div class="text-sm font-black text-black uppercase bg-slate-200 px-2 py-1 border-[2px] border-black">Q${index + 1}</div>
+                        ${isCorrect 
+                            ? '<span class="bg-[#34D399] px-3 py-1 border-[3px] border-black text-black text-sm font-black uppercase flex items-center neo-shadow"><i data-lucide="check" class="w-4 h-4 mr-1"></i> Correct</span>'
+                            : '<span class="bg-[#FF6B6B] px-3 py-1 border-[3px] border-black text-black text-sm font-black uppercase flex items-center neo-shadow text-white"><i data-lucide="x" class="w-4 h-4 mr-1"></i> Incorrect</span>'
+                        }
+                    </div>
+                    
+                    <div class="flex gap-4 mb-6 items-start">
+                        <div class="w-12 h-12 bg-[#A7F3D0] border-[3px] border-black shrink-0 flex items-center justify-center overflow-hidden">
+                            <i data-lucide="message-square" class="w-6 h-6 text-black"></i>
+                        </div>
+                        <div class="text-lg font-bold text-black border-l-4 border-black pl-3 pt-1">
+                            "${task.context.split(": ")[1] || task.context}"
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4 pl-0 md:pl-16">
+                        <div>
+                             <div class="text-sm font-black text-black uppercase mb-1">Your Construction:</div>
+                             <div class="font-bold text-xl p-3 border-[3px] border-black ${isCorrect ? 'bg-[#A7F3D0]' : 'bg-red-100'}">
+                                ${userAnsArray.length > 0 ? userSentDisplay : '<span class="italic text-slate-500 uppercase">NO ANSWER</span>'}
+                             </div>
+                        </div>
+
+                        ${!isCorrect ? `
+                            <div>
+                                 <div class="text-sm font-black text-black uppercase mb-1">Correct Construction:</div>
+                                 <div class="font-bold text-xl p-3 border-[3px] border-black bg-white">
+                                    ${formatWord(task.correct)}
+                                 </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="bg-[#FDE047] p-4 border-[3px] border-black mt-4 neo-shadow">
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="zap" class="w-6 h-6 text-black shrink-0 fill-white mt-1"></i>
+                                <div class="text-base text-black font-medium">
+                                    <span class="font-black uppercase block mb-1">Grammar Focus</span> 
+                                    ${task.explanation}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            return `
+            <div class="flex-grow overflow-y-auto no-scrollbar w-full p-4 md:p-8 flex flex-col items-center animate-slide-up">
+                <div class="max-w-3xl w-full">
+                    <div class="neo-card bg-white mb-12">
+                        <div class="${bannerColor} p-10 text-center border-b-[3px] border-black">
+                            <h2 class="text-3xl md:text-4xl font-black mb-2 uppercase text-black">Module Complete</h2>
+                            <div class="text-7xl font-black tracking-tighter mb-4 text-black bg-white inline-block px-6 py-2 border-[4px] border-black neo-shadow">
+                                ${state.score}<span class="text-4xl">/${state.currentModule.tasks.length}</span>
+                            </div>
+                            <p class="text-black font-black text-xl bg-white inline-block px-4 py-1 border-[2px] border-black">${message}</p>
+                        </div>
+                        
+                        <div class="p-6 md:p-8 bg-slate-100 flex flex-col md:flex-row gap-4 justify-center">
+                            <button onclick="startModule(${state.currentModule.id})" class="neo-btn bg-[#60A5FA] text-black py-4 px-8 text-xl flex justify-center items-center hover:bg-blue-500 flex-1">
+                                <i data-lucide="rotate-ccw" class="w-6 h-6 mr-3"></i> RETRY
+                            </button>
+                            <button onclick="returnToHome()" class="neo-btn bg-white text-black py-4 px-8 text-xl flex justify-center items-center hover:bg-slate-200 flex-1">
+                                <i data-lucide="grid" class="w-6 h-6 mr-3"></i> MENU
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-8 flex items-center justify-center">
+                        <h3 class="text-black font-black uppercase text-2xl tracking-tight bg-[#A7F3D0] border-[3px] border-black px-6 py-2 neo-shadow">
+                            Detailed Analysis
+                        </h3>
+                    </div>
+
+                    <div class="space-y-8 pb-12">
+                        ${reviewHtml}
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // --- MAIN RENDER LOOP ---
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (state.view !== state.lastView) {
+                let content = renderHeader();
+                if (state.view === 'home') content += renderHome();
+                else if (state.view === 'quiz') content += renderQuizStructure();
+                else if (state.view === 'result') content += renderResult();
+                
+                app.innerHTML = content;
+                state.lastView = state.view;
+                
+                if (window.lucide) lucide.createIcons();
+                
+                if (state.view === 'quiz') {
+                    updateQuizUI();
+                }
+            } else {
+                if (state.view === 'quiz') {
+                    updateQuizUI();
+                }
+            }
+        }
+
+        window.addEventListener('load', initApp);
+
+    </script>
+</body>
+</html>

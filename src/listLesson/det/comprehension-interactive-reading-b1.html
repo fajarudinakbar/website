@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Skill Building: Interactive Reading | CEFR B1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-sm md:text-base text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Literacy</span> <span>&gt;</span> 
+            <span>Reading</span> <span>&gt;</span> 
+            <span>CEFR B1</span> <span>&gt;</span> 
+            <span class="text-indigo-700 font-bold">Interactive Reading</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-violet-600 tracking-tight mb-3">
+                    Interactive Reading Strategy
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-500 font-medium">Score Range: 60–90 | Focus: Logical Flow & Text Completion</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-lg text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-indigo-600 p-6 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-xl text-slate-700 leading-relaxed">
+                <i class="fas fa-book-reader mr-3 text-indigo-600"></i> 
+                <strong>Instructions:</strong> Follow the strategic steps below. Use the interactive tools to practice connecting ideas logically within a text.
+            </p>
+        </div>
+
+        <!-- Section 1: Preparation (Cyan Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-2xl font-bold text-cyan-900">Step 1-3: Foundation & Strategy</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-2xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-10 bg-white space-y-12">
+                    
+                    <!-- Task 1: Concept -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-cyan-800"><span class="bg-cyan-100 px-3 py-1 rounded text-lg mr-3">Step 1</span> Concept Breakdown</h3>
+                        </div>
+                        <div class="bg-cyan-50/50 p-6 rounded-xl border border-cyan-100 mb-4 text-lg leading-relaxed text-slate-700">
+                            <p><strong>Interactive Reading</strong> evaluates how well you understand the "big picture" of a text. It's not just "what happened," but "how does this fit together?" You will fill in missing words, complete paragraphs, and identify main titles.</p>
+                        </div>
+                        <textarea placeholder="Why is understanding logical flow important in reading?" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none h-32"></textarea>
+                    </div>
+
+                    <!-- Task 2: Warm-up (Transitions) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-cyan-800"><span class="bg-cyan-100 px-3 py-1 rounded text-lg mr-3">Step 2</span> Foundation Warm-up: Contextual Matching</h3>
+                            <button onclick="checkVocab()" class="text-base font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-5 py-2.5 rounded-lg hover:bg-cyan-50 transition-colors shadow-sm">Check Logic</button>
+                        </div>
+                        <p class="text-xl text-slate-600 mb-6">Match the transition words to their function. This is key for the "Complete the Passage" section.</p>
+                        <div id="vocab-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Task 3: Strategy -->
+                    <div>
+                         <div class="flex justify-between items-center mb-6">
+                             <h3 class="text-2xl font-bold text-cyan-800"><span class="bg-cyan-100 px-3 py-1 rounded text-lg mr-3">Step 3</span> Strategic Roadmap</h3>
+                             <button onclick="toggleAnswer('ans-t3', this)" class="text-base font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-5 py-2.5 rounded-lg hover:bg-cyan-50 transition-colors shadow-sm">Show Tips</button>
+                          </div>
+                          <div class="grid md:grid-cols-3 gap-6 mb-4">
+                              <div class="p-6 bg-white border border-slate-200 rounded-xl hover:shadow-lg transition-shadow">
+                                  <div class="text-cyan-600 text-3xl mb-3"><i class="fas fa-arrows-left-right"></i></div>
+                                  <h4 class="font-bold text-cyan-800 text-lg mb-2">1. The "Surrounding Clue" Rule</h4>
+                                  <p class="text-base text-slate-600">Read the sentence <em>before</em> and <em>after</em> the blank. The answer connects both sides.</p>
+                              </div>
+                              <div class="p-6 bg-white border border-slate-200 rounded-xl hover:shadow-lg transition-shadow">
+                                  <div class="text-cyan-600 text-3xl mb-3"><i class="fas fa-clock"></i></div>
+                                  <h4 class="font-bold text-cyan-800 text-lg mb-2">2. Grammar Consistency</h4>
+                                  <p class="text-base text-slate-600">Check tenses (past/present). Look for "s" on verbs for third-person subjects.</p>
+                              </div>
+                              <div class="p-6 bg-white border border-slate-200 rounded-xl hover:shadow-lg transition-shadow">
+                                  <div class="text-cyan-600 text-3xl mb-3"><i class="fas fa-hourglass-half"></i></div>
+                                  <h4 class="font-bold text-cyan-800 text-lg mb-2">3. Time Management</h4>
+                                  <p class="text-base text-slate-600">You have ~7-8 minutes for the whole passage. Don't get stuck on one blank.</p>
+                              </div>
+                          </div>
+                          <textarea placeholder="Which strategy will you focus on most?" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none h-24"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Core Content (Blue Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-lightbulb"></i></div>
+                    <span class="text-2xl font-bold text-blue-900">Step 4-5: Patterns & Context</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white border-t border-blue-50">
+                    
+                    <div class="mb-10">
+                        <h3 class="text-3xl font-bold text-slate-800 mb-6"><span class="bg-blue-100 px-3 py-1 rounded text-lg mr-3 text-blue-800 align-middle">Step 4</span> Recognition Drill</h3>
+                        <p class="text-xl text-slate-700 mb-6 leading-relaxed">You will encounter these three variations:</p>
+                        
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                                <h4 class="font-bold text-blue-800 mb-3 text-lg"><i class="fas fa-pen-nib mr-2"></i>Read and Complete</h4>
+                                <p class="text-lg text-slate-700">"The house <span class="text-blue-600 font-bold bg-white px-1 rounded">w__</span> built in 1990."</p>
+                                <p class="mt-2 text-sm text-slate-500">Task: Fill missing letters.</p>
+                            </div>
+                            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                                <h4 class="font-bold text-blue-800 mb-3 text-lg"><i class="fas fa-puzzle-piece mr-2"></i>Complete the Passage</h4>
+                                <p class="text-lg text-slate-700">Choose the best sentence to fill a gap between paragraphs.</p>
+                                <p class="mt-2 text-sm text-slate-500">Task: Ensure logical flow.</p>
+                            </div>
+                            <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                                <h4 class="font-bold text-blue-800 mb-3 text-lg"><i class="fas fa-heading mr-2"></i>Identify Main Idea</h4>
+                                <p class="text-lg text-slate-700">Select the best title for the entire passage.</p>
+                                <p class="mt-2 text-sm text-slate-500">Task: Summarize the whole text.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-3xl font-bold text-slate-800 mb-6"><span class="bg-indigo-100 px-3 py-1 rounded text-lg mr-3 text-indigo-800 align-middle">Step 5</span> Indonesian Context Bridge</h3>
+                        <div class="bg-indigo-50 p-6 rounded-xl border-l-4 border-indigo-500 shadow-sm">
+                            <p class="text-xl text-slate-700 leading-relaxed">
+                                In Indonesia’s tech and tourism sectors, this skill is like reading a project brief. Imagine working for a Jakarta startup and getting a memo about a partnership. You need to <strong>"fill in the blanks"</strong> of what is expected based on context. Spotting logical flow prevents misunderstandings in contracts or client requests.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Guided Practice (Orange Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-orange-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-orange-50 hover:bg-orange-100 border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-orange-200 text-orange-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-2xl font-bold text-orange-900">Step 6: Guided Practice</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-orange-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white space-y-8">
+                    
+                    <div>
+                         <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-orange-800"><span class="bg-orange-100 px-3 py-1 rounded text-lg mr-3">Step 6</span> Complete the Transition</h3>
+                            <button onclick="toggleAnswer('ans-guided', this)" class="text-base font-bold text-orange-600 border-2 border-orange-200 bg-white px-5 py-2.5 rounded-lg hover:bg-orange-50 transition-colors shadow-sm">Show Model</button>
+                        </div>
+                        
+                        <div class="bg-orange-50/30 p-8 rounded-2xl border border-orange-200 text-2xl leading-loose font-serif text-slate-800">
+                            "Many tourists visit Bali for its beautiful beaches. 
+                            <input type="text" id="guided-input" class="border-b-4 border-orange-300 p-2 text-center bg-white rounded focus:outline-none focus:border-orange-500 w-64 placeholder:text-slate-300 placeholder:text-lg" placeholder="Type a transition...">, 
+                            the island also offers rich cultural experiences in towns like Ubud."
+                        </div>
+
+                        <div class="mt-6 grid md:grid-cols-2 gap-6">
+                             <div class="p-6 bg-white border border-slate-200 rounded-xl">
+                                <h4 class="font-bold text-orange-800 mb-3 text-xl">Thinking Prompts:</h4>
+                                <ul class="list-disc pl-5 space-y-2 text-slate-600 text-lg">
+                                    <li>Is the second sentence adding similar info or contrasting?</li>
+                                    <li>Does "also offers" suggest the first point was only one part?</li>
+                                </ul>
+                            </div>
+                             <div id="ans-guided" class="hidden p-6 bg-orange-100 border border-orange-200 rounded-xl answer-box">
+                                <h4 class="font-bold text-orange-900 mb-3 text-xl">C1 Model Responses:</h4>
+                                <ul class="list-disc pl-5 space-y-2 text-orange-900 text-lg">
+                                    <li><strong>"However"</strong> (Acceptable B1)</li>
+                                    <li><strong>"Nevertheless"</strong> (Sophisticated)</li>
+                                    <li><strong>"Beyond the coastline"</strong> (High-level cohesion)</li>
+                                </ul>
+                                <p class="mt-3 text-sm text-orange-800 italic">Why? These acknowledge the first sentence while introducing a new topic.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Technical Simulation (Emerald Theme) -->
+         <div class="mb-6 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-2xl font-bold text-emerald-900">Step 7: Technical Simulation</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-emerald-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white">
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold text-emerald-900 mb-4"><span class="bg-emerald-100 px-3 py-1 rounded text-lg mr-3">Step 7</span> DIY Simulation Protocol</h3>
+                        <ol class="list-decimal pl-6 space-y-4 text-lg text-slate-700">
+                            <li>Open a blank document (Word/Docs).</li>
+                            <li>Set a timer for <strong>3 minutes</strong>.</li>
+                            <li>Find a medium-length English news article. copy one paragraph.</li>
+                            <li>Delete 5 random adjectives or verbs.</li>
+                            <li><strong>Task:</strong> Fill them back in from logic/memory before the timer hits zero.</li>
+                        </ol>
+                        <div class="mt-6 p-4 bg-white rounded-xl border border-emerald-200 flex items-center gap-4">
+                            <i class="fas fa-shield-alt text-3xl text-emerald-600"></i>
+                            <p class="text-slate-600"><strong>Pro-Tip:</strong> Use a "Distraction Blocker" extension to mimic the locked-down browser.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Independent Challenge (Violet Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-2xl font-bold text-violet-900">Step 8-9: Independent Challenge</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white space-y-8">
+                    
+                    <!-- Exam Simulation -->
+                    <div>
+                         <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-violet-800"><span class="bg-violet-100 px-3 py-1 rounded text-lg mr-3">Step 8</span> Exam Task: Select the Best Sentence</h3>
+                            <button onclick="checkChallenge()" class="text-base font-bold text-white bg-violet-600 px-6 py-3 rounded-lg hover:bg-violet-700 transition-colors shadow-md">Submit Answer</button>
+                        </div>
+                        
+                        <div class="p-8 rounded-2xl border-2 border-slate-200 text-xl leading-loose font-serif text-slate-800 shadow-inner bg-white mb-6">
+                            "Digital payment systems have become very popular in Southeast Asia over the last five years. Most people now use mobile apps to pay for groceries and transport. 
+                            <span class="bg-violet-100 border-b-2 border-violet-400 px-2 font-bold text-violet-900">[ ___________ ]</span> 
+                            This shift has allowed small businesses to reach more customers than ever before."
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-violet-50 transition-colors">
+                                <input type="radio" name="challenge" value="A" class="w-6 h-6 accent-violet-600">
+                                <span class="text-lg">A) Mobile phones are getting more expensive every year.</span>
+                            </label>
+                            <label class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-violet-50 transition-colors">
+                                <input type="radio" name="challenge" value="B" class="w-6 h-6 accent-violet-600">
+                                <span class="text-lg">B) Consequently, even street vendors now accept QR code payments.</span>
+                            </label>
+                            <label class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-violet-50 transition-colors">
+                                <input type="radio" name="challenge" value="C" class="w-6 h-6 accent-violet-600">
+                                <span class="text-lg">C) I prefer using cash when I travel to different countries.</span>
+                            </label>
+                        </div>
+                        <div id="challenge-feedback" class="mt-6 text-xl font-bold min-h-[3rem]"></div>
+
+                        <div class="mt-8 pt-8 border-t border-slate-100">
+                            <h4 class="font-bold text-violet-800 mb-4 text-xl"><span class="bg-violet-100 px-3 py-1 rounded text-lg mr-3">Step 9</span> Performance Checklist</h4>
+                            <div class="space-y-3 text-lg">
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span>I identified the "clue words" (mobile apps, groceries -> street vendors).</span>
+                                </label>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span>I checked the tense (present/present perfect).</span>
+                                </label>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span>I finished in under 90 seconds.</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Reflection (Rose Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">6</div>
+                    <span class="text-2xl font-bold text-rose-900">Step 10: Feedback Loop</span>
+                </div>
+                <i id="icon-part6" class="fas fa-chevron-down text-rose-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part6" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white space-y-8">
+                    <div>
+                        <h3 class="text-2xl font-bold text-rose-800 mb-4">Reflective Questions</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-xl text-slate-700 font-medium mb-2">1. My "Aha!" Moment:</label>
+                                <textarea placeholder="e.g., I realized that the sentence after the blank is just as important..." class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xl text-slate-700 font-medium mb-2">2. My Roadblock:</label>
+                                <textarea placeholder="e.g., I struggle with choosing between two words..." class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-lg font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data Configuration ---
+        
+        // Attempts Tracking
+        const attempts = {};
+
+        // Step 2: Contextual Matching (Formerly Step 4)
+        const vocabData = [
+            { 
+                id: "v1", 
+                word: "However", 
+                correct: "c", 
+                options: { a: "Shows result/consequence", b: "Provides specific instance", c: "Shows contrast/different opinion" } 
+            },
+            { 
+                id: "v2", 
+                word: "Therefore", 
+                correct: "a", 
+                options: { a: "Shows result/consequence", b: "Provides specific instance", c: "Shows contrast/different opinion" } 
+            },
+            { 
+                id: "v3", 
+                word: "For example", 
+                correct: "b", 
+                options: { a: "Shows result/consequence", b: "Provides specific instance", c: "Shows contrast/different opinion" } 
+            }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col gap-3 p-4 bg-white rounded-xl border border-cyan-100 hover:border-cyan-300 transition-colors shadow-sm">
+                    <div class="font-bold text-xl text-cyan-900 border-b border-cyan-50 pb-2">${item.word}</div>
+                    <div class="flex flex-col gap-2">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-cyan-50">
+                            <input type="radio" name="${item.id}" value="a" class="w-5 h-5 accent-cyan-600"> 
+                            <span class="text-lg text-slate-700">${item.options.a}</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-cyan-50">
+                            <input type="radio" name="${item.id}" value="b" class="w-5 h-5 accent-cyan-600"> 
+                            <span class="text-lg text-slate-700">${item.options.b}</span>
+                        </label>
+                         <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-cyan-50">
+                            <input type="radio" name="${item.id}" value="c" class="w-5 h-5 accent-cyan-600"> 
+                            <span class="text-lg text-slate-700">${item.options.c}</span>
+                        </label>
+                    </div>
+                    <div id="feedback-${item.id}" class="min-h-[1.5rem] text-lg font-bold mt-1"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                // Initialize attempts
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check mr-2"></i>Correct</span>';
+                    radios.forEach(r => r.disabled = true);
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if (attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-600 font-bold"><i class="fas fa-times-circle mr-2"></i>Incorrect. Answer: ${item.options[item.correct]}</span>`;
+                        radios.forEach(r => r.disabled = true);
+                    } else {
+                        feedback.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-circle mr-2"></i>Try again</span>';
+                    }
+                }
+            });
+        }
+
+        function checkChallenge() {
+            const radios = document.getElementsByName('challenge');
+            const feedback = document.getElementById('challenge-feedback');
+            
+            if (!attempts['challenge']) attempts['challenge'] = 0;
+
+            let userVal = "";
+            radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+            if (userVal === "B") {
+                feedback.innerHTML = `
+                    <div class="p-4 bg-green-50 border border-green-200 rounded-xl text-green-900">
+                        <i class="fas fa-check-circle mr-2"></i><strong>Correct!</strong> 
+                        It connects "mobile apps" (previous) to "small businesses" (next) using "Consequently".
+                    </div>`;
+                radios.forEach(r => r.disabled = true);
+            } else if (userVal !== "") {
+                attempts['challenge']++;
+                if (attempts['challenge'] >= 2) {
+                    feedback.innerHTML = `
+                    <div class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-900">
+                        <i class="fas fa-times-circle mr-2"></i><strong>Incorrect.</strong> The correct answer is B. <br>
+                        <em>Explanation: It connects "mobile apps" (previous) to "small businesses" (next) using "Consequently".</em>
+                    </div>`;
+                    radios.forEach(r => r.disabled = true);
+                } else {
+                    feedback.innerHTML = `<span class="text-orange-500 font-bold"><i class="fas fa-exclamation-circle mr-2"></i>Incorrect. Try again.</span>`;
+                }
+            }
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Model";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Model";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '4000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers?")) {
+                // Reset attempts
+                for (const key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                document.querySelectorAll('input[type="checkbox"]').forEach(c => { c.checked = false; });
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.getElementById('challenge-feedback').innerHTML = "";
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+        });
+
+    </script>
+</body>
+</html>

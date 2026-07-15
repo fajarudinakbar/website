@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>TOEFL iBT Skill-Building Worksheet</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            
+            /* STRICT ENFORCEMENT: No Word Breaks */
+            word-break: normal !important;
+            overflow-wrap: normal !important;
+            hyphens: none !important;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        @media (min-width: 768px) {
+            ::-webkit-scrollbar { width: 10px; height: 10px; }
+        }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea { resize: vertical; }
+        .text-input {
+            width: 100%;
+            max-width: 100%;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+            box-sizing: border-box;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        
+        select.text-input {
+            padding-right: 2.5rem;
+            white-space: normal;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-align: center;
+            white-space: nowrap !important; 
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+            transform: none;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+
+        /* Option Labels (Radios/Multiple Choice) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+            font-weight: 700;
+            width: 100%;
+        }
+        @media (min-width: 640px) { .option-label { gap: 1rem; } }
+        .option-label:hover:not(:disabled) {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        .option-label.correct {
+            background-color: #4ade80 !important;
+            color: #0f172a !important;
+        }
+        .option-label.incorrect {
+            background-color: #f87171 !important;
+            color: #ffffff !important;
+        }
+
+        /* T/F Buttons */
+        .tf-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            background-color: white;
+        }
+        .tf-btn:hover:not(:disabled) {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            background-color: #f8fafc;
+        }
+        .tf-btn:active:not(:disabled) {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px 0px #0f172a;
+        }
+        .tf-btn.selected, .option-label.selected {
+            background-color: #d0d4ff !important;
+            border-color: #545be0 !important;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        .tf-btn.correct {
+            background-color: #4ade80 !important;
+            color: #0f172a !important;
+        }
+        .tf-btn.incorrect {
+            background-color: #f87171 !important;
+            color: #ffffff !important;
+        }
+        .tf-btn:disabled, .option-label:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* Input Feedback States */
+        .input-correct {
+            border-color: #15803d !important;
+            background-color: #dcfce7 !important;
+            color: #14532d !important;
+        }
+        .input-incorrect {
+            border-color: #b91c1c !important;
+            background-color: #fee2e2 !important;
+            color: #7f1d1d !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-5 md:p-8 text-base md:text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-4 sm:p-6 lg:p-10 border-4 border-dark shadow-neo overflow-hidden relative">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs sm:text-sm text-dark mb-6 md:mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">TOEFL iBT®</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4 shrink-0"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">Reading Section</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4 shrink-0"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] whitespace-nowrap">Read an Academic Passage</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div class="w-full lg:w-auto">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-dark uppercase tracking-tighter mb-2 md:mb-3 leading-tight w-full">
+                    Read an Academic Passage <span class="whitespace-nowrap">(A2 Level)</span>
+                </h1>
+                <p class="text-sm sm:text-base md:text-lg lg:text-xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-2 border-2 border-dark text-pretty">
+                    Skill Focus: Understanding Main Ideas and Details
+                </p>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center gap-4 shrink-0 w-full lg:w-auto mt-2 lg:mt-0">
+                <div id="score-tracker" class="bg-[#facc15] border-3 border-dark shadow-neo-sm px-4 py-2 font-black text-dark uppercase tracking-wider whitespace-nowrap w-full sm:w-auto text-center flex items-center justify-center gap-2 text-sm md:text-base">
+                    <!-- Adjusted total score to 14 correctly matching the questions -->
+                    <i data-lucide="star" class="w-4 h-4 md:w-5 md:h-5"></i> Score: <span id="score">0</span> / <span id="total">14</span>
+                </div>
+                <button onclick="openResetModal()" class="neo-btn w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2 md:py-3 text-sm md:text-base text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4 md:w-5 md:h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Accordion Container -->
+        <div class="space-y-6 md:space-y-8">
+
+            <!-- Step 1: Vocabulary -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('step1')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            1
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Vocabulary Preparation: Key Academic Words</span>
+                    </div>
+                    <div id="icon-wrapper-step1" class="transition-transform duration-300 transform rotate-180 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step1" class="accordion-content active border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-slate-800 font-bold mb-4 text-sm sm:text-base md:text-lg leading-relaxed text-pretty">
+                            Match the words with their meanings by selecting the correct definition from the dropdown list.
+                        </p>
+                        
+                        <div class="grid grid-cols-1 gap-4 md:gap-6">
+                            <!-- Item 1 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-slate-50 rounded-lg border-3 border-dark shadow-neo-sm hover:translate-y-[-2px] hover:shadow-neo transition-all w-full min-w-0">
+                                <span class="font-black text-dark text-sm sm:text-base sm:w-1/3 shrink-0 uppercase tracking-wide truncate">1. research</span>
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-2/3 min-w-0">
+                                    <select id="match1" class="text-input !py-2 !mt-0 text-xs sm:text-sm cursor-pointer overflow-hidden text-ellipsis w-full">
+                                        <option value="">Select a meaning...</option>
+                                        <option value="a">a. information or numbers collected in a study</option>
+                                        <option value="b">b. a test to find out something new</option>
+                                        <option value="c">c. to find something for the first time</option>
+                                        <option value="d">d. a study done to learn more about something</option>
+                                        <option value="e">e. what you learn from a study or test</option>
+                                    </select>
+                                    <span id="feedback-match1"></span>
+                                </div>
+                            </div>
+                            <!-- Item 2 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-slate-50 rounded-lg border-3 border-dark shadow-neo-sm hover:translate-y-[-2px] hover:shadow-neo transition-all w-full min-w-0">
+                                <span class="font-black text-dark text-sm sm:text-base sm:w-1/3 shrink-0 uppercase tracking-wide truncate">2. experiment</span>
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-2/3 min-w-0">
+                                    <select id="match2" class="text-input !py-2 !mt-0 text-xs sm:text-sm cursor-pointer overflow-hidden text-ellipsis w-full">
+                                        <option value="">Select a meaning...</option>
+                                        <option value="a">a. information or numbers collected in a study</option>
+                                        <option value="b">b. a test to find out something new</option>
+                                        <option value="c">c. to find something for the first time</option>
+                                        <option value="d">d. a study done to learn more about something</option>
+                                        <option value="e">e. what you learn from a study or test</option>
+                                    </select>
+                                    <span id="feedback-match2"></span>
+                                </div>
+                            </div>
+                            <!-- Item 3 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-slate-50 rounded-lg border-3 border-dark shadow-neo-sm hover:translate-y-[-2px] hover:shadow-neo transition-all w-full min-w-0">
+                                <span class="font-black text-dark text-sm sm:text-base sm:w-1/3 shrink-0 uppercase tracking-wide truncate">3. discover</span>
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-2/3 min-w-0">
+                                    <select id="match3" class="text-input !py-2 !mt-0 text-xs sm:text-sm cursor-pointer overflow-hidden text-ellipsis w-full">
+                                        <option value="">Select a meaning...</option>
+                                        <option value="a">a. information or numbers collected in a study</option>
+                                        <option value="b">b. a test to find out something new</option>
+                                        <option value="c">c. to find something for the first time</option>
+                                        <option value="d">d. a study done to learn more about something</option>
+                                        <option value="e">e. what you learn from a study or test</option>
+                                    </select>
+                                    <span id="feedback-match3"></span>
+                                </div>
+                            </div>
+                            <!-- Item 4 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-slate-50 rounded-lg border-3 border-dark shadow-neo-sm hover:translate-y-[-2px] hover:shadow-neo transition-all w-full min-w-0">
+                                <span class="font-black text-dark text-sm sm:text-base sm:w-1/3 shrink-0 uppercase tracking-wide truncate">4. data</span>
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-2/3 min-w-0">
+                                    <select id="match4" class="text-input !py-2 !mt-0 text-xs sm:text-sm cursor-pointer overflow-hidden text-ellipsis w-full">
+                                        <option value="">Select a meaning...</option>
+                                        <option value="a">a. information or numbers collected in a study</option>
+                                        <option value="b">b. a test to find out something new</option>
+                                        <option value="c">c. to find something for the first time</option>
+                                        <option value="d">d. a study done to learn more about something</option>
+                                        <option value="e">e. what you learn from a study or test</option>
+                                    </select>
+                                    <span id="feedback-match4"></span>
+                                </div>
+                            </div>
+                            <!-- Item 5 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-slate-50 rounded-lg border-3 border-dark shadow-neo-sm hover:translate-y-[-2px] hover:shadow-neo transition-all w-full min-w-0">
+                                <span class="font-black text-dark text-sm sm:text-base sm:w-1/3 shrink-0 uppercase tracking-wide truncate">5. result</span>
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-2/3 min-w-0">
+                                    <select id="match5" class="text-input !py-2 !mt-0 text-xs sm:text-sm cursor-pointer overflow-hidden text-ellipsis w-full">
+                                        <option value="">Select a meaning...</option>
+                                        <option value="a">a. information or numbers collected in a study</option>
+                                        <option value="b">b. a test to find out something new</option>
+                                        <option value="c">c. to find something for the first time</option>
+                                        <option value="d">d. a study done to learn more about something</option>
+                                        <option value="e">e. what you learn from a study or test</option>
+                                    </select>
+                                    <span id="feedback-match5"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t-4 border-dark">
+                            <div id="feedback1" class="text-sm md:text-base font-black w-full md:w-2/3 text-center md:text-left uppercase"></div>
+                            <button id="checkStep1" class="neo-btn w-full md:w-auto bg-[#38bdf8] text-dark px-6 py-2 md:py-3 text-sm sm:text-base md:text-lg">
+                                Check Answers
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Background Knowledge -->
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('step2')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            2
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Build Background Knowledge</span>
+                    </div>
+                    <div id="icon-wrapper-step2" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-slate-800 font-bold mb-6 text-sm sm:text-base md:text-lg text-pretty">
+                            Read these short sentences about science. Choose T (True) or F (False).
+                        </p>
+                        
+                        <div class="space-y-4">
+                            <!-- Q1 -->
+                            <div class="flex flex-col sm:flex-row justify-between sm:items-center p-4 bg-slate-50 border-3 border-dark shadow-neo-sm gap-4">
+                                <p class="font-bold text-sm md:text-base text-dark">1. Scientists use experiments to learn new things.</p>
+                                <div class="choice-container flex gap-2 flex-shrink-0" data-answered="false" data-step="2">
+                                    <button data-correct="true" class="tf-btn w-12 h-10 flex items-center justify-center">T</button>
+                                    <button data-correct="false" class="tf-btn w-12 h-10 flex items-center justify-center">F</button>
+                                </div>
+                            </div>
+                            <!-- Q2 -->
+                            <div class="flex flex-col sm:flex-row justify-between sm:items-center p-4 bg-slate-50 border-3 border-dark shadow-neo-sm gap-4">
+                                <p class="font-bold text-sm md:text-base text-dark">2. Data means a person’s opinion.</p>
+                                <div class="choice-container flex gap-2 flex-shrink-0" data-answered="false" data-step="2">
+                                    <button data-correct="false" class="tf-btn w-12 h-10 flex items-center justify-center">T</button>
+                                    <button data-correct="true" class="tf-btn w-12 h-10 flex items-center justify-center">F</button>
+                                </div>
+                            </div>
+                            <!-- Q3 -->
+                            <div class="flex flex-col sm:flex-row justify-between sm:items-center p-4 bg-slate-50 border-3 border-dark shadow-neo-sm gap-4">
+                                <p class="font-bold text-sm md:text-base text-dark">3. Results show what happened in an experiment.</p>
+                                <div class="choice-container flex gap-2 flex-shrink-0" data-answered="false" data-step="2">
+                                    <button data-correct="true" class="tf-btn w-12 h-10 flex items-center justify-center">T</button>
+                                    <button data-correct="false" class="tf-btn w-12 h-10 flex items-center justify-center">F</button>
+                                </div>
+                            </div>
+                            <!-- Q4 -->
+                            <div class="flex flex-col sm:flex-row justify-between sm:items-center p-4 bg-slate-50 border-3 border-dark shadow-neo-sm gap-4">
+                                <p class="font-bold text-sm md:text-base text-dark">4. Research only happens in schools.</p>
+                                <div class="choice-container flex gap-2 flex-shrink-0" data-answered="false" data-step="2">
+                                    <button data-correct="false" class="tf-btn w-12 h-10 flex items-center justify-center">T</button>
+                                    <button data-correct="true" class="tf-btn w-12 h-10 flex items-center justify-center">F</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex justify-center sm:justify-start pt-4 border-t-4 border-dark">
+                            <button id="checkStep2" class="neo-btn bg-[#4ade80] text-dark px-8 py-3 text-sm md:text-base w-full sm:w-auto">Check Answers</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Reading Practice -->
+            <div class="border-4 border-dark shadow-neo bg-[#f3e8ff]">
+                <button onclick="toggleAccordion('step3')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#c084fc] hover:bg-[#a855f7] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            3
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Reading Practice: Short Paragraph</span>
+                    </div>
+                    <div id="icon-wrapper-step3" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 md:p-6 lg:p-10 space-y-6">
+                        <p class="font-bold text-slate-800 text-sm sm:text-base md:text-lg">Read the paragraph and choose the main idea.</p>
+                        
+                        <div class="bg-slate-50 p-5 rounded-lg border-3 border-dark shadow-neo-sm mb-6">
+                            <p class="text-base md:text-lg font-medium text-slate-800 leading-relaxed text-justify">
+                                Scientists often do research to answer important questions. They collect data from experiments and record what they find. Then, they look at the results to understand patterns or problems.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-white border-3 border-dark p-4 md:p-6 shadow-neo-sm">
+                            <p class="font-black text-lg text-dark mb-4 flex items-center gap-2 uppercase tracking-wide border-b-2 border-slate-200 pb-2"><i data-lucide="target" class="w-5 h-5 text-[#c084fc]"></i>What is the main idea?</p>
+                            <div class="choice-container space-y-4" data-answered="false" data-step="3">
+                                <button data-correct="false" class="option-label text-left w-full hover:bg-slate-50">a. Scientists like to work in schools.</button>
+                                <button data-correct="true" class="option-label text-left w-full hover:bg-slate-50">b. Scientists do research to learn new information.</button>
+                                <button data-correct="false" class="option-label text-left w-full hover:bg-slate-50">c. Data is not important in science.</button>
+                                <button data-correct="false" class="option-label text-left w-full hover:bg-slate-50">d. Experiments always fail.</button>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex justify-center sm:justify-start pt-4 border-t-4 border-dark">
+                            <button id="checkStep3" class="neo-btn bg-[#c084fc] text-dark px-8 py-3 text-sm md:text-base w-full sm:w-auto">Check Answer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Guided Comprehension -->
+            <div class="border-4 border-dark shadow-neo bg-[#dbeafe]">
+                <button onclick="toggleAccordion('step4')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            4
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Guided Comprehension Practice</span>
+                    </div>
+                    <div id="icon-wrapper-step4" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step4" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="font-bold text-slate-800 text-sm sm:text-base md:text-lg">Read the passage and answer the questions.</p>
+                        
+                        <div class="bg-[#eff6ff] p-5 rounded-lg border-3 border-dark shadow-neo-sm mb-6">
+                            <p class="text-base md:text-lg font-medium text-slate-800 leading-relaxed text-justify">
+                                Plants need sunlight, water, and air to grow. They use light from the sun to make food through a process called photosynthesis. If a plant does not get enough sunlight or water, it cannot make food and will stop growing.
+                            </p>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block font-black text-dark mb-2 text-sm md:text-base uppercase tracking-wide">1. What do plants need to grow?</label>
+                                <div class="flex flex-col sm:flex-row gap-3">
+                                    <input type="text" id="schedule1" class="text-input sm:w-2/3" placeholder="Type your answer here...">
+                                    <span id="feedback-schedule1"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-black text-dark mb-2 text-sm md:text-base uppercase tracking-wide">2. What do plants make using sunlight?</label>
+                                <div class="flex flex-col sm:flex-row gap-3">
+                                    <input type="text" id="schedule2" class="text-input sm:w-2/3" placeholder="Type your answer here...">
+                                    <span id="feedback-schedule2"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-black text-dark mb-2 text-sm md:text-base uppercase tracking-wide">3. What happens if a plant does not get enough water?</label>
+                                <div class="flex flex-col sm:flex-row gap-3">
+                                    <input type="text" id="schedule3" class="text-input sm:w-2/3" placeholder="Type your answer here...">
+                                    <span id="feedback-schedule3"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex justify-center sm:justify-start">
+                            <button id="checkStep4" class="neo-btn bg-[#60a5fa] text-dark px-8 py-3 text-sm md:text-base w-full sm:w-auto transition-transform hover:-translate-y-1">Check Answers</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: TOEFL Practice -->
+            <div class="border-4 border-dark shadow-neo bg-[#ffe4e6]">
+                <button onclick="toggleAccordion('step5')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#fb7185] hover:bg-[#f43f5e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            5
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">TOEFL-Style Practice Task</span>
+                    </div>
+                    <div id="icon-wrapper-step5" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="font-bold text-slate-800 text-sm sm:text-base md:text-lg">Read the short academic-style passage and answer the question.</p>
+                        
+                        <div class="bg-[#fff1f2] p-5 rounded-lg border-3 border-dark shadow-neo-sm mb-6">
+                            <p class="text-base md:text-lg font-medium text-slate-800 leading-relaxed text-justify">
+                                Water covers most of the Earth’s surface and is essential for all living things. Oceans, rivers, and lakes hold water that animals and plants use. Without water, life on Earth would not exist.
+                            </p>
+                        </div>
+
+                        <div class="bg-white border-3 border-dark p-4 md:p-6 shadow-neo-sm">
+                            <p class="font-black text-lg text-dark mb-4 flex items-center gap-2 uppercase tracking-wide border-b-2 border-slate-200 pb-2"><i data-lucide="help-circle" class="w-5 h-5 text-[#fb7185]"></i>What is the main idea of this passage?</p>
+                            <div class="choice-container space-y-4" data-answered="false" data-step="5">
+                                <button data-correct="true" class="option-label text-left w-full hover:bg-slate-50">a. Water is important for life on Earth.</button>
+                                <button data-correct="false" class="option-label text-left w-full hover:bg-slate-50">b. Oceans are larger than rivers.</button>
+                                <button data-correct="false" class="option-label text-left w-full hover:bg-slate-50">c. Animals do not need water.</button>
+                                <button data-correct="false" class="option-label text-left w-full hover:bg-slate-50">d. The Earth’s surface is flat.</button>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex justify-center sm:justify-start pt-4 border-t-4 border-dark">
+                            <button id="checkStep5" class="neo-btn bg-[#fb7185] text-dark px-8 py-3 text-sm md:text-base w-full sm:w-auto">Check Answer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center mb-6">
+            <p class="text-dark text-sm md:text-base font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm text-balance">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="reset-modal" class="fixed inset-0 bg-dark/50 hidden items-center justify-center z-50 backdrop-blur-sm px-4">
+        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8 max-w-md w-full">
+            <h2 class="text-2xl font-black uppercase tracking-tight text-dark mb-4 flex items-center gap-2">
+                <i data-lucide="alert-triangle" class="text-[#f87171] w-6 h-6"></i> Reset Progress?
+            </h2>
+            <p class="text-slate-800 font-bold mb-8">Are you sure you want to clear all your progress? This action cannot be undone.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-end">
+                <button onclick="closeResetModal()" class="neo-btn bg-slate-200 text-dark px-6 py-2">Cancel</button>
+                <button onclick="confirmReset()" class="neo-btn bg-[#f87171] text-dark px-6 py-2">Yes, Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            // Score Tracker Logic
+            let score = 0;
+            const scoreElement = document.getElementById('score');
+            
+            const updateScore = (points) => {
+                score += points;
+                scoreElement.textContent = score;
+            };
+
+            // Accordion Logic
+            window.toggleAccordion = function(id) {
+                const content = document.getElementById(`content-${id}`);
+                const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+                if (content.classList.contains('active')) {
+                    content.classList.remove('active');
+                    iconWrapper.style.transform = 'rotate(0deg)';
+                } else {
+                    content.classList.add('active');
+                    iconWrapper.style.transform = 'rotate(180deg)';
+                }
+            };
+
+            // --- Step 1: Vocabulary Matching ---
+            const checkStep1Btn = document.getElementById('checkStep1');
+            const answersStep1 = { match1: 'd', match2: 'b', match3: 'c', match4: 'a', match5: 'e' };
+            
+            checkStep1Btn.addEventListener('click', () => {
+                let correctCount = 0;
+                let alreadyScored = checkStep1Btn.disabled;
+                if(alreadyScored) return;
+
+                Object.keys(answersStep1).forEach(key => {
+                    const select = document.getElementById(key);
+                    const feedbackSpan = document.getElementById(`feedback-${key}`);
+                    const isCorrect = select.value === answersStep1[key];
+                    
+                    select.classList.remove('input-correct', 'input-incorrect');
+                    
+                    if(isCorrect) {
+                        select.classList.add('input-correct');
+                        feedbackSpan.className = `text-xs font-black uppercase tracking-wider text-[#15803d] shrink-0 mt-1 sm:mt-0 flex items-center`;
+                        feedbackSpan.innerHTML = `<i data-lucide="check" class="w-4 h-4 mr-1"></i> Correct`;
+                        correctCount++;
+                    } else {
+                        select.classList.add('input-incorrect');
+                        const correctLetter = answersStep1[key];
+                        const correctOption = select.querySelector(`option[value="${correctLetter}"]`);
+                        const correctText = correctOption ? correctOption.textContent.split('.')[0] : ''; 
+                        
+                        feedbackSpan.className = `text-xs font-black uppercase tracking-wider text-[#b91c1c] shrink-0 mt-1 sm:mt-0 flex items-center`;
+                        feedbackSpan.innerHTML = `<i data-lucide="x" class="w-4 h-4 mr-1"></i> Answer: ${correctText}`;
+                    }
+                    select.disabled = true;
+                });
+                
+                lucide.createIcons();
+                updateScore(correctCount);
+                checkStep1Btn.textContent = 'Checked!';
+                checkStep1Btn.disabled = true;
+                
+                const feedbackEl = document.getElementById('feedback1');
+                feedbackEl.textContent = `You got ${correctCount} out of 5 correct.`;
+                feedbackEl.className = correctCount > 2 ? 'text-[#15803d] mt-2 text-sm md:text-base font-black uppercase tracking-wide text-center md:text-left' : 'text-[#b91c1c] mt-2 text-sm md:text-base font-black uppercase tracking-wide text-center md:text-left';
+            });
+
+            // --- Step 2 & 3 & 5: Multiple Choice & T/F ---
+            const choiceContainers = document.querySelectorAll('.choice-container');
+            choiceContainers.forEach(container => {
+                container.addEventListener('click', (e) => {
+                    const btn = e.target.closest('button');
+                    if (btn && container.dataset.answered !== 'true') {
+                        // Deselect others and clear previous incorrect styling
+                        container.querySelectorAll('button').forEach(b => b.classList.remove('selected', 'incorrect'));
+                        // Select the clicked button
+                        btn.classList.add('selected');
+                    }
+                });
+            });
+
+            // Generic check function for steps 2, 3, and 5
+            function setupCheckMultipleChoice(stepNum, btnId) {
+                const checkBtn = document.getElementById(btnId);
+                if (!checkBtn) return;
+                
+                checkBtn.addEventListener('click', () => {
+                    if (checkBtn.disabled) return;
+                    
+                    const containers = document.querySelectorAll(`.choice-container[data-step="${stepNum}"]`);
+                    let stepCorrect = 0;
+                    let allAnswered = true;
+                    
+                    containers.forEach(container => {
+                        // Skip if this specific question is already successfully answered or out of attempts
+                        if (container.dataset.answered === 'true') return; 
+
+                        let attempts = parseInt(container.dataset.attempts || '0');
+                        attempts++;
+                        container.dataset.attempts = attempts;
+
+                        const selectedBtn = container.querySelector('button.selected');
+                        
+                        if (selectedBtn) {
+                            const isCorrect = selectedBtn.getAttribute('data-correct') === 'true';
+                            selectedBtn.classList.remove('selected');
+                            
+                            if (isCorrect) {
+                                selectedBtn.classList.add('correct');
+                                container.dataset.answered = 'true';
+                                stepCorrect++;
+                                container.querySelectorAll('button').forEach(b => b.disabled = true);
+                            } else {
+                                selectedBtn.classList.add('incorrect');
+                                if (attempts >= 2) {
+                                    // Out of attempts: reveal correct answer and lock
+                                    const correctBtn = container.querySelector('button[data-correct="true"]');
+                                    if (correctBtn) correctBtn.classList.add('correct');
+                                    container.dataset.answered = 'true';
+                                    container.querySelectorAll('button').forEach(b => b.disabled = true);
+                                } else {
+                                    // First attempt failed, allow trying again
+                                    allAnswered = false; 
+                                }
+                            }
+                        } else {
+                            // If nothing is selected, consume an attempt
+                            if (attempts >= 2) {
+                                const correctBtn = container.querySelector('button[data-correct="true"]');
+                                if (correctBtn) correctBtn.classList.add('correct');
+                                container.dataset.answered = 'true';
+                                container.querySelectorAll('button').forEach(b => b.disabled = true);
+                            } else {
+                                allAnswered = false;
+                            }
+                        }
+                    });
+                    
+                    updateScore(stepCorrect);
+                    
+                    if (allAnswered) {
+                        checkBtn.textContent = 'Checked!';
+                        checkBtn.disabled = true;
+                    } else {
+                        checkBtn.textContent = 'Try Again';
+                    }
+                });
+            }
+
+            // Initialize check buttons
+            setupCheckMultipleChoice('2', 'checkStep2');
+            setupCheckMultipleChoice('3', 'checkStep3');
+            setupCheckMultipleChoice('5', 'checkStep5');
+
+            // --- Step 4: Short Answer ---
+            const checkStep4Btn = document.getElementById('checkStep4');
+            const answersStep4 = {
+                schedule1: "sunlight, water, and air",
+                schedule2: "food",
+                schedule3: "it cannot make food and will stop growing"
+            };
+            
+            // Helper function to normalize text (remove punctuation, extra spaces)
+            const normalizeText = (text) => {
+                return text.toLowerCase()
+                           .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+                           .replace(/\s{2,}/g, " ")
+                           .trim();
+            };
+            
+            checkStep4Btn.addEventListener('click', () => {
+                 let alreadyScored = checkStep4Btn.disabled;
+                if(alreadyScored) return;
+
+                Object.keys(answersStep4).forEach(key => {
+                    const input = document.getElementById(key);
+                    const feedbackSpan = document.getElementById(`feedback-${key}`); 
+                    
+                    const userAnswer = normalizeText(input.value);
+                    const correctAnswer = normalizeText(answersStep4[key]); 
+                    
+                    input.classList.remove('input-correct', 'input-incorrect');
+
+                    if (userAnswer === correctAnswer) {
+                        input.classList.add('input-correct');
+                        feedbackSpan.className = `text-sm font-black uppercase tracking-wider flex items-center text-[#15803d] mt-2 sm:mt-0 shrink-0`;
+                        feedbackSpan.innerHTML = `<i data-lucide="check" class="w-5 h-5 mr-1"></i> Correct`;
+                        updateScore(1);
+                    } else {
+                        input.classList.add('input-incorrect');
+                        feedbackSpan.className = `text-sm font-black uppercase tracking-wider flex items-center text-[#b91c1c] mt-2 sm:mt-0 shrink-0`;
+                        feedbackSpan.innerHTML = `<i data-lucide="info" class="w-5 h-5 mr-1"></i> Answer: ${answersStep4[key]}`;
+                    }
+                    input.disabled = true;
+                });
+                
+                lucide.createIcons();
+                checkStep4Btn.textContent = 'Checked!';
+                checkStep4Btn.disabled = true;
+            });
+            
+            // Custom Modal Logic
+            const modal = document.getElementById('reset-modal');
+            window.openResetModal = function() {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            };
+            
+            window.closeResetModal = function() {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+
+            // Reset Function
+            window.confirmReset = function() {
+                closeResetModal();
+                
+                // Reset Score
+                score = 0;
+                scoreElement.textContent = score;
+
+                // Reset Step 1
+                Object.keys(answersStep1).forEach(key => {
+                    const select = document.getElementById(key);
+                    select.value = "";
+                    select.disabled = false;
+                    select.classList.remove('input-correct', 'input-incorrect');
+                    document.getElementById(`feedback-${key}`).innerHTML = '';
+                    document.getElementById(`feedback-${key}`).className = '';
+                });
+                checkStep1Btn.textContent = 'Check Answers';
+                checkStep1Btn.disabled = false;
+                document.getElementById('feedback1').textContent = '';
+                document.getElementById('feedback1').className = '';
+
+                // Reset Step 4
+                Object.keys(answersStep4).forEach(key => {
+                    const input = document.getElementById(key);
+                    input.value = "";
+                    input.disabled = false;
+                    input.classList.remove('input-correct', 'input-incorrect');
+                    document.getElementById(`feedback-${key}`).innerHTML = '';
+                    document.getElementById(`feedback-${key}`).className = '';
+                });
+                checkStep4Btn.textContent = 'Check Answers';
+                checkStep4Btn.disabled = false;
+
+                // Reset all button choices
+                document.querySelectorAll('.choice-container').forEach(container => {
+                    container.dataset.answered = 'false';
+                    container.dataset.attempts = '0';
+                    container.querySelectorAll('button').forEach(btn => {
+                        btn.classList.remove('correct', 'incorrect', 'selected');
+                        btn.disabled = false;
+                    });
+                });
+
+                // Reset Check Buttons for Step 2, 3, 5
+                ['checkStep2', 'checkStep3', 'checkStep5'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        btn.textContent = id === 'checkStep2' ? 'Check Answers' : 'Check Answer';
+                        btn.disabled = false;
+                    }
+                });
+            };
+            
+            // Auto open first tab
+            toggleAccordion('step1');
+        });
+    </script>
+</body>
+</html>

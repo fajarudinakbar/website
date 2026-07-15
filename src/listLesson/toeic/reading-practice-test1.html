@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC Reading Practice Test 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Load jsPDF for score report generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f3f4f6;
+            color: #333333;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            user-select: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e5e7eb; }
+        ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        /* Theme Colors */
+        .theme-text { color: #4338ca; }
+        .bg-theme-main { background-color: #4f46e5; }
+        .bg-theme-accent { background-color: #a5b4fc; }
+
+        /* Grid Item Styles */
+        .grid-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .grid-btn:hover { background: #f3f4f6; }
+        .grid-btn.answered { background: #9ca3af; color: #ffffff; border-color: #6b7280; }
+        .grid-btn.active { background: #4338ca; color: #ffffff; border-color: #4338ca; font-weight: bold; }
+
+        /* Review Grid Overrides */
+        .review-grid-btn.correct { background: #bbf7d0; color: #166534; border-color: #166534; }
+        .review-grid-btn.incorrect { background: #fecaca; color: #991b1b; border-color: #991b1b; }
+        .review-grid-btn.unanswered { background: #e5e7eb; color: #4b5563; border-color: #9ca3af; }
+
+        /* Classic Radio Options (CBT Style) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.75rem;
+            cursor: pointer;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+        .option-label:hover { background: #f8fafc; border-color: #e2e8f0; }
+        .option-label:hover .radio-circle { border-color: #4338ca; }
+        
+        .radio-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            background: #fff;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .option-label input[type="radio"] { display: none; }
+
+        .option-label.selected { background: #eef2ff; border-color: #c7d2fe; }
+        .option-label.selected .radio-circle { 
+            background: #333; 
+            color: #fff;
+            border-color: #333;
+        }
+
+        .option-text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #1f2937;
+        }
+
+        /* Full Screen Containers */
+        .screen {
+            display: none;
+            width: 100%;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+        }
+        .screen.active { display: flex; }
+
+        .cbt-card {
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-w: 1100px;
+        }
+
+        /* Passage Formatting */
+        .passage-content {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #111827;
+        }
+        .passage-content p { margin-bottom: 1rem; }
+        .passage-content table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.9rem;}
+        .passage-content th, .passage-content td { border: 1px solid #9ca3af; padding: 0.5rem; text-align: left; }
+        .passage-content th { background-color: #f3f4f6; }
+        .blank-space { display: inline-block; border-bottom: 1px solid #000; width: 60px; text-align: center; margin: 0 4px; font-weight: bold; font-family: Arial, sans-serif; font-size: 0.85rem;}
+    </style>
+</head>
+<body>
+
+<!-- Authentic CBT Header -->
+<header id="global-header" class="hidden flex-col w-full shrink-0 z-50 bg-white">
+    <div class="px-6 py-3 flex justify-between items-center relative">
+        <div class="flex items-center space-x-2">
+            <span class="italic text-[#4338ca] font-bold text-3xl tracking-tighter">TOEIC&reg; Practice</span>
+        </div>
+        <div class="absolute left-1/2 transform -translate-x-1/2 font-bold text-gray-800 text-lg">Reading</div>
+    </div>
+    <div class="h-1 bg-theme-accent w-full"></div>
+    <div class="h-5 bg-theme-main w-full"></div>
+</header>
+
+<!-- Global Time Control Subheader -->
+<div id="exam-subheader" class="hidden bg-[#e5e7eb] border-b border-[#d1d5db] p-2 w-full flex items-center justify-between z-40 shrink-0 shadow-sm px-6">
+    <div class="flex items-center space-x-4">
+        <span class="text-sm font-bold text-gray-700">Section II: Reading Test</span>
+    </div>
+    <div class="flex items-center space-x-4">
+        <div class="text-right flex items-center space-x-2 bg-white px-3 py-1 border border-gray-300">
+            <i class="far fa-clock text-gray-500 text-sm"></i>
+            <div id="timer" class="text-sm font-mono font-bold text-gray-800">75:00</div>
+        </div>
+        <button onclick="finishTest()" class="text-xs bg-red-50 text-red-700 border border-red-300 px-3 py-1 hover:bg-red-100 font-bold uppercase transition">End Practice</button>
+    </div>
+</div>
+
+<!-- Main Workspace Layout -->
+<div class="flex flex-1 overflow-hidden w-full relative">
+    
+    <!-- Left Nav Grid -->
+    <aside id="nav-sidebar" class="hidden w-64 bg-white border-r border-gray-300 flex-col shrink-0 z-30">
+        <div class="p-2 bg-gray-100 border-b border-gray-300 font-bold text-xs text-gray-600 uppercase tracking-wider text-center">
+            Item Review
+        </div>
+        <div class="p-3 overflow-y-auto flex-1">
+            <div id="question-grid" class="grid grid-cols-5 gap-1">
+                <!-- Grid items 101-200 generated by JS -->
+            </div>
+        </div>
+        <div class="p-2 bg-gray-50 border-t border-gray-300 flex justify-center space-x-3 text-[10px] font-bold text-gray-500 uppercase">
+            <div class="flex items-center"><div class="w-2.5 h-2.5 bg-gray-400 border border-gray-500 mr-1"></div>Answered</div>
+            <div class="flex items-center"><div class="w-2.5 h-2.5 bg-white border border-gray-300 mr-1"></div>Unanswered</div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <!-- Increased pb-6 to pb-24 to ensure bottom content clears the absolute footer -->
+    <main class="flex-1 flex flex-col items-center bg-[#f3f4f6] overflow-y-auto w-full relative pt-6 pb-24 px-4 md:px-6">
+        
+        <!-- Screen: Welcome (Home Page) -->
+        <div id="welcome-screen" class="screen active max-w-3xl cbt-card p-10 relative pb-10 mt-8">
+            <h1 class="text-2xl font-bold text-[#4338ca] mb-2">Computer-Based Test Simulation</h1>
+            <h2 class="text-lg text-gray-600 mb-6 pb-4 border-b border-gray-200">Reading Practice Test 1</h2>
+            
+            <div class="space-y-4 text-gray-700 text-sm mb-8 bg-indigo-50 border border-indigo-200 p-6">
+                <p class="font-bold text-[#4338ca]"><i class="fas fa-info-circle mr-2"></i> Instructions for Candidates:</p>
+                <p class="font-medium text-gray-800 mb-2">This is a full-length Reading test simulation. You will read a variety of texts and answer several different types of reading comprehension questions.</p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li>The entire Reading test will last exactly <strong>75 minutes</strong>.</li>
+                    <li>There are three parts (Part 5, Part 6, and Part 7).</li>
+                    <li>Once you click "Start Simulation", the exam timer will begin immediately.</li>
+                    <li>Do not use the browser's back or forward buttons during the simulation.</li>
+                    <li>You can navigate freely between questions 101 to 200 using the grid.</li>
+                </ul>
+            </div>
+            
+            <div class="flex justify-end">
+                <button onclick="startSimulation()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm uppercase transition">
+                    Start Simulation
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen: General Directions -->
+        <div id="general-directions-screen" class="screen max-w-4xl cbt-card mt-4">
+            <div class="p-8 space-y-6 text-gray-800 text-sm leading-relaxed">
+                <h2 class="text-xl font-bold text-[#4338ca] uppercase tracking-wide mb-4">Reading Test</h2>
+                <p>In the Reading test, you will read a variety of texts and answer several different types of reading comprehension questions. The entire Reading test will last 75 minutes. There are three parts, and directions are given for each part. You are encouraged to answer as many questions as possible within the time allowed.</p>
+                
+                <div class="border border-gray-300 p-6 mt-6">
+                    <h3 class="font-bold text-gray-700 mb-4 uppercase text-xs">Test Structure Overview</h3>
+                    <ul class="space-y-2 font-medium text-sm text-gray-600">
+                        <li class="flex items-center"><span class="w-20 font-bold text-gray-800">Part 5:</span> Incomplete Sentences (Questions 101 - 130)</li>
+                        <li class="flex items-center"><span class="w-20 font-bold text-gray-800">Part 6:</span> Text Completion (Questions 131 - 146)</li>
+                        <li class="flex items-center"><span class="w-20 font-bold text-gray-800">Part 7:</span> Reading Comprehension (Questions 147 - 200)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-gray-100 border-t border-gray-300 px-6 py-4 flex justify-end">
+                <button onclick="showDirectionScreen(5)" class="bg-white hover:bg-gray-50 text-[#4338ca] px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm">
+                    Continue to Part 5
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen: Part Directions -->
+        <div id="direction-screen" class="screen max-w-4xl cbt-card mt-4">
+            <div class="p-10 min-h-[300px]">
+                <h1 id="dir-title" class="text-xl font-bold text-[#4338ca] uppercase tracking-wide mb-4">PART X</h1>
+                <div id="dir-content" class="text-base text-gray-800 leading-relaxed mb-8">
+                    <!-- Directions injected via JS -->
+                </div>
+            </div>
+            <div class="bg-gray-100 border-t border-gray-300 px-6 py-4 flex justify-end">
+                <button onclick="startPartFromDirection()" class="bg-white hover:bg-gray-50 text-[#4338ca] px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm">
+                    Begin <span id="dir-btn-text">Part X</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen: Main Test Area -->
+        <div id="main-app" class="screen w-full max-w-[1100px]">
+            <!-- Instruction Banner -->
+            <div class="w-full bg-white border border-gray-300 p-3 shadow-sm mb-4 flex items-center justify-between shrink-0">
+                <div>
+                    <span id="part-badge" class="text-[#4338ca] font-bold uppercase mr-2 text-sm">PART 5</span>
+                    <span id="part-mini-dir" class="text-xs md:text-sm text-gray-600 hidden md:inline-block">Select the best answer to complete the sentence.</span>
+                </div>
+                <div class="text-sm font-bold text-gray-500 border border-gray-300 px-3 py-1 bg-gray-50">
+                    Question <span id="q-counter" class="text-[#4338ca]">101</span>
+                </div>
+            </div>
+
+            <!-- Content Area (Split for Reading) -->
+            <div class="w-full flex flex-col lg:flex-row gap-4 h-full min-h-[500px]">
+                
+                <!-- Left: Passage Area (Hidden in Part 5) -->
+                <div id="passage-container" class="hidden lg:w-1/2 bg-white border border-gray-300 shadow-sm flex-col">
+                    <div class="bg-gray-100 border-b border-gray-300 px-4 py-2 text-xs font-bold text-gray-500 uppercase">
+                        Reference Material
+                    </div>
+                    <div id="passage-content" class="p-6 overflow-y-auto passage-content max-h-[60vh] lg:max-h-[700px]">
+                        <!-- Passage injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Right/Full: Question Area -->
+                <div id="question-container" class="w-full bg-white border border-gray-300 shadow-sm flex flex-col relative">
+                    <div class="bg-gray-100 border-b border-gray-300 px-4 py-2 text-xs font-bold text-gray-500 uppercase flex justify-between">
+                        <span>Question</span>
+                    </div>
+                    <div class="p-6 md:p-10 flex-1 overflow-y-auto">
+                        <div id="question-text" class="text-lg font-medium text-gray-800 mb-8 leading-relaxed">
+                            <!-- Question Text -->
+                        </div>
+                        <div id="options-container" class="space-y-3">
+                            <!-- Options injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Screen: Results -->
+        <div id="results-screen" class="screen w-full max-w-4xl cbt-card relative mt-4">
+            <div class="bg-[#4338ca] px-6 py-4 border-b border-[#3730a3]">
+                <h1 class="text-lg font-bold text-white uppercase tracking-wide">Score Report - Reading</h1>
+            </div>
+            
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 border border-gray-300 p-6 flex flex-col items-center justify-center text-center">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Raw Score</p>
+                        <div class="text-3xl font-bold text-[#4338ca] mb-1"><span id="raw-score">0</span><span class="text-lg text-gray-400 font-medium">/100</span></div>
+                    </div>
+                    <div class="bg-gray-50 border border-gray-300 p-6 flex flex-col items-center justify-center text-center">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Estimated Scaled Score</p>
+                        <div class="text-3xl font-bold text-green-700 mb-1" id="scaled-score">5 - 15</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 mb-8 bg-indigo-50 border border-indigo-200 p-6 flex flex-col sm:flex-row items-center justify-between shadow-sm">
+                    <div class="mb-4 sm:mb-0">
+                        <h3 class="font-bold text-[#4338ca] text-lg">Download Score Report</h3>
+                        <p class="text-sm text-gray-600">Enter your name to generate your unofficial PDF score report.</p>
+                    </div>
+                    <div class="flex items-center space-x-3 w-full sm:w-auto">
+                        <input type="text" id="candidate-name" placeholder="Enter your name" class="border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-[#4338ca] flex-1 sm:w-48">
+                        <button onclick="downloadPDF()" class="bg-[#4338ca] hover:bg-[#3730a3] text-white px-5 py-2 text-sm font-bold shadow-sm transition whitespace-nowrap flex items-center">
+                            <i class="fas fa-file-pdf mr-2 text-lg"></i> Download
+                        </button>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-300 pt-6">
+                    <h2 class="text-base font-bold text-gray-800 mb-2 uppercase">Item Review</h2>
+                    <p class="text-sm text-gray-600 mb-6">Select a question number to review the passage, question, and correct answer.</p>
+                    
+                    <div class="flex items-center space-x-6 mb-6 text-xs font-bold uppercase text-gray-600">
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#bbf7d0] border border-[#166534] mr-2"></div> Correct</div>
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#fecaca] border border-[#991b1b] mr-2"></div> Incorrect</div>
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#e5e7eb] border border-[#9ca3af] mr-2"></div> Omitted</div>
+                    </div>
+
+                    <div id="review-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
+                        <!-- Review items generated by JS -->
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end">
+                     <button onclick="location.reload()" class="bg-white hover:bg-gray-50 text-[#4338ca] px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm uppercase">
+                        Start New Session
+                     </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="w-full max-w-4xl text-center py-6 mt-auto">
+            <!-- Removed 'hidden sm:block' so it's visible across all device sizes -->
+            <div class="text-xs text-gray-400 italic">Disclaimer: This simulation is an independent practice tool and is not affiliated with, approved, or endorsed by ETS. TOEIC&reg; is a registered trademark of ETS.</div>
+        </div>
+    </main>
+
+    <!-- Global Footer Navigation -->
+    <footer id="global-footer" class="hidden absolute bottom-0 left-0 right-0 h-14 bg-white border-t border-gray-300 z-40 flex justify-between items-center px-6 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+        <button onclick="goToQuestion(testData.currentQ - 1)" id="prev-btn" class="text-gray-700 hover:text-[#4338ca] font-bold text-sm uppercase disabled:opacity-30 disabled:cursor-not-allowed flex items-center transition">
+            <i class="fas fa-chevron-left mr-2"></i> Back
+        </button>
+        <button onclick="goToQuestion(testData.currentQ + 1)" id="next-btn" class="bg-[#4338ca] hover:bg-[#3730a3] text-white px-6 py-2 text-sm font-bold uppercase shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center">
+            Next <i class="fas fa-chevron-right ml-2"></i>
+        </button>
+    </footer>
+</div>
+
+<!-- Interactive Review Modal -->
+<div id="review-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[60] hidden flex items-center justify-center transition-opacity opacity-0 p-4">
+    <div id="review-modal-content" class="bg-white w-full max-w-4xl h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-transform duration-200 border border-gray-500 shadow-2xl">
+        <div class="p-3 border-b border-gray-300 flex justify-between items-center bg-[#4338ca] text-white shrink-0">
+            <h3 class="font-bold text-sm uppercase tracking-wide" id="modal-title">Question X Review</h3>
+            <button onclick="closeReviewModal()" class="text-gray-300 hover:text-white w-6 h-6 flex items-center justify-center transition">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-hidden flex flex-col md:flex-row bg-gray-50">
+            <!-- Modal Passage -->
+            <div id="modal-passage-container" class="hidden md:w-1/2 border-r border-gray-300 bg-white overflow-y-auto">
+                <div class="bg-gray-100 px-3 py-1.5 border-b border-gray-300 sticky top-0">
+                    <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-wider"><i class="fas fa-file-alt mr-2"></i>Reference Material</h4>
+                </div>
+                <div class="p-6 passage-content" id="modal-passage"></div>
+            </div>
+            
+            <!-- Modal Question & Answers -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <div class="flex space-x-4">
+                    <div class="flex-1 bg-white border border-gray-300 p-3 text-center shadow-sm">
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-1 tracking-wider">Your Selection</p>
+                        <p class="text-xl font-bold text-gray-800" id="modal-user-ans">-</p>
+                    </div>
+                    <div class="flex-1 bg-white border border-gray-300 p-3 text-center shadow-sm">
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-1 tracking-wider">Correct Key</p>
+                        <p class="text-xl font-bold text-green-700" id="modal-correct-ans">-</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-300 shadow-sm p-5">
+                    <p id="modal-q-text" class="text-base font-medium text-gray-800 mb-4 border-b border-gray-100 pb-4"></p>
+                    <div id="modal-options" class="space-y-2 text-sm"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    // State Variables
+    let testData = {
+        answers: {}, // Dynamic dictionary for keys 101-200
+        currentQ: 101,
+        currentPart: 0,
+        currentGroup: null,
+        timeRemaining: 75 * 60 // 75 minutes in seconds
+    };
+    let timerInterval = null;
+
+    // Reading Passages Data
+    const passagesData = {
+        "131-134": `
+            <div class="mb-4 text-sm font-sans">
+                <p>Liam Panzer<br>214 Maple Street<br>Montreal, Quebec H2L 3Y3</p>
+                <p class="mt-2">May 15</p>
+                <p class="mt-2">Dear Mr. Panzer,</p>
+            </div>
+            <p>Thank you for your recent purchase of season tickets to the Gardner Theater Summer Season of music and theater. Tickets for the first event <span class="blank-space">131</span> in the middle of June. You can also expect a Gardner Friends Card, which entitles you to <span class="blank-space">132</span> such as parking at reduced rates, replacement of lost tickets, and discounts at area restaurants.</p>
+            <p>So that we can provide you with regular electronic updates, please make sure we have <span class="blank-space">133</span> e-mail address. <span class="blank-space">134</span>.</p>
+            <p>We are sure you will enjoy the season's offerings.</p>
+            <div class="mt-4 text-sm font-sans">
+                <p>Sincerely,</p>
+                <p>Jorge Rodriguez<br>Gardner Theater</p>
+            </div>
+        `,
+        "135-138": `
+            <div class="border border-gray-300 p-2 mb-4 text-sm font-sans bg-gray-50">
+                <p><b>To:</b> Fang Zhou &lt;fzhou@bigstar.net&gt;</p>
+                <p><b>From:</b> Naveed Rouhani &lt;nrouhani@computerstodayinc.net&gt;</p>
+                <p><b>Subject:</b> Book reviews</p>
+                <p><b>Date:</b> October 10</p>
+            </div>
+            <p>The editors of <i>Computers Today</i> are pleased to invite you to join our list of book reviewers. As a reviewer, you <span class="blank-space">135</span> with one free copy of the book to be reviewed. <span class="blank-space">136</span>, the reviewer's name and professional affiliation appear in print alongside any review that is published.</p>
+            <p><span class="blank-space">137</span> reviews are approximately 600-800 words in length, though some may be longer. <span class="blank-space">138</span>.</p>
+            <p>If you are interested in contributing to our publication, please send me a copy of your résumé. I look forward to hearing from you.</p>
+            <div class="mt-4 text-sm font-sans">
+                <p>Sincerely,</p>
+                <p>Naveed Rouhani<br>Book Review Editor</p>
+            </div>
+        `,
+        "139-142": `
+            <div class="border-b border-gray-300 pb-2 mb-4 text-sm font-sans">
+                <p><b>To:</b> All Museum Employees</p>
+                <p><b>From:</b> Natasha Vasilyev</p>
+            </div>
+            <p>On April 25 at 7:30 P.M., noted art historian Clara Byers will deliver the first in a series of four lectures titled "Amazing Art of the Renaissance." I am pleased to let you know that all museum employees are eligible to <span class="blank-space">139</span> this series, which will culminate in a guided tour of a number of Renaissance masterpieces in the McKellen Gallery.</p>
+            <p>There is no charge for museum staff, but all participants must register in advance, as there is <span class="blank-space">140</span> seating. Stop by my office to sign up today for this <span class="blank-space">141</span> chance to hear Dr. Byers speak. <span class="blank-space">142</span>.</p>
+        `,
+        "143-146": `
+            <div class="mb-4 text-sm font-sans">
+                <p>June 30</p>
+                <p class="mt-2">Peter Mazzie<br>14 Wyndmoor Court, Apartment A<br>Edinburgh, EH5 2TU<br>Scotland</p>
+                <p class="mt-2">Dear Mr. Mazzie,</p>
+            </div>
+            <p>Your subscription to <i>Financial News Weekly</i> will expire on October 30. That's still four months away, but if you <span class="blank-space">143</span> before July 21, we will add one extra month to your subscription. <span class="blank-space">144</span>. You do not need to enclose your <span class="blank-space">145</span> at this time. We will send you an invoice, and you can send your money later. So mail the card today. You will not miss a <span class="blank-space">146</span> copy of <i>Financial News Weekly</i>, and you will receive an extra month for free!</p>
+            <div class="mt-4 text-sm font-sans">
+                <p>Sincerely,</p>
+                <p>Sharon Oatman<br>Circulation Manager</p>
+            </div>
+        `,
+        "147-148": `
+            <div class="max-w-md mx-auto border border-gray-300 bg-gray-50 rounded-lg p-4 font-sans text-sm shadow-sm space-y-3">
+                <div class="flex flex-col">
+                    <span class="font-bold text-blue-700">Roger Chandran [4:34 A.M.]</span>
+                    <span class="bg-white p-2 rounded border border-gray-200 mt-1 inline-block self-start">Hi Peter. I'll probably have to stay here another day. More meetings.</span>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="font-bold text-green-700">Peter Seville [4:35 A.M.]</span>
+                    <span class="bg-green-100 p-2 rounded border border-green-200 mt-1 inline-block self-end text-right">Roger! It's 4:30 in the morning in Taiwan! Why aren't you sleeping?</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-blue-700">Roger Chandran [4:36 A.M.]</span>
+                    <span class="bg-white p-2 rounded border border-gray-200 mt-1 inline-block self-start">Jetlag. I've been asleep and just woke up. So--if I email you the details, can you call the airline for me?</span>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="font-bold text-green-700">Peter Seville [4:37 A.M.]</span>
+                    <span class="bg-green-100 p-2 rounded border border-green-200 mt-1 inline-block self-end text-right">I can try. Wouldn't it be easier to handle it directly from there?</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-blue-700">Roger Chandran [4:38 A.M.]</span>
+                    <span class="bg-white p-2 rounded border border-gray-200 mt-1 inline-block self-start">Right. But the language and time differences complicate things.</span>
+                </div>
+            </div>
+        `,
+        "149-150": `
+            <div class="border-4 border-gray-800 p-8 text-center bg-white shadow-md">
+                <h1 class="text-3xl font-black mb-4 tracking-tight uppercase">Business World</h1>
+                <p class="mb-6 font-medium">For over twenty years, Business World has been the store for all of your business needs... from pens and paper to computers and printers.</p>
+                <div class="bg-gray-100 border-t-2 border-b-2 border-gray-400 py-4 mb-6">
+                    <h2 class="text-xl font-bold mb-3">Business World's Copy Center is now open.</h2>
+                    <table class="w-full max-w-sm mx-auto text-left mb-2">
+                        <tr><td class="py-1">Black-and-white copies</td><td class="py-1 text-right">$0.10 per page</td></tr>
+                        <tr><td class="py-1">Color copies</td><td class="py-1 text-right">$0.15 per page</td></tr>
+                        <tr><td class="py-1 font-bold">Business World preferred customers</td><td class="py-1 text-right font-bold">10% off your total order</td></tr>
+                    </table>
+                </div>
+                <p class="mb-6 italic">Copies can be made while you wait or while you finish your shopping.</p>
+                <div class="text-sm font-bold text-left w-full max-w-sm mx-auto">
+                    <p class="mb-2 uppercase text-gray-500">Store Hours:</p>
+                    <div class="flex justify-between border-b border-gray-200 py-1"><span>Sunday</span><span>11:00 A.M.-7:00 P.M.</span></div>
+                    <div class="flex justify-between border-b border-gray-200 py-1"><span>Monday-Friday</span><span>8:00 A.M.-9:00 P.M.</span></div>
+                    <div class="flex justify-between py-1"><span>Saturday</span><span>9:30 A.M.-8:00 P.M.</span></div>
+                </div>
+                <div class="mt-6 text-sm text-gray-600">
+                    <p class="font-bold">Business World</p>
+                    <p>4276 Grove Blvd.</p>
+                    <p>(Across from the 3rd St. train station)</p>
+                </div>
+            </div>
+        `,
+        "151-152": `
+            <div class="border-2 border-black p-6 max-w-md mx-auto bg-[#fffdf0] shadow-sm font-sans">
+                <h2 class="text-center font-black text-xl mb-4 uppercase border-b-2 border-black pb-2">Office Message</h2>
+                <div class="grid grid-cols-[60px_1fr] gap-2 text-sm font-bold mb-4">
+                    <div>TO:</div><div class="border-b border-gray-400 font-normal">Takashi Matsumoto</div>
+                    <div>FROM:</div><div class="border-b border-gray-400 font-normal">Karen Lang</div>
+                    <div>TIME:</div><div class="border-b border-gray-400 font-normal">9:30, Thursday</div>
+                </div>
+                <div class="flex space-x-4 mb-4 text-xs font-bold">
+                    <label class="flex items-center"><input type="checkbox" checked class="mr-1"> Telephone</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-1"> Fax</label>
+                    <label class="flex items-center"><input type="checkbox" class="mr-1"> Office Visit</label>
+                </div>
+                <div class="mb-6">
+                    <p class="font-bold text-sm mb-1">MESSAGE:</p>
+                    <div class="border border-gray-400 p-3 bg-white min-h-[100px] text-sm leading-relaxed">
+                        Karen Lang from C&P Accounting called. She wants to arrange a new meeting time with you. Instead of on Monday at 11, can you see her on Tuesday at 1:30? She'll be able to go over the contract with you then. She'll try to contact you again this afternoon.
+                    </div>
+                </div>
+                <div class="flex text-sm">
+                    <span class="font-bold mr-2">Taken By:</span> <span class="border-b border-gray-400 flex-1">Mike Nguyen</span>
+                </div>
+            </div>
+        `,
+        "153-155": `
+            <div class="border border-blue-800 p-8 text-center bg-blue-50">
+                <h1 class="text-2xl font-black text-blue-900 mb-2 uppercase tracking-wide">Silver Poseidon Cruises</h1>
+                <p class="text-lg italic text-blue-800 mb-6">Do you want to see the world?</p>
+                <p class="mb-4">Then plan to visit the Silver Poseidon Cruises Career Fair on <strong>Tuesday, November 15 from 9 A.M. to 4 P.M.</strong> or <strong>Wednesday, November 16 from 5 P.M. to 9 P.M.</strong></p>
+                <p class="mb-4">We are looking for food servers, entertainers, and maintenance staff to work aboard our many vessels. Free travel is just the beginning when you work for Silver Poseidon Cruises.</p>
+                <p class="mb-4">We offer paid training, great benefits, and opportunities to advance. Applicants should have at least three years of related work experience as well as good communication skills and be able to work nights and holidays.</p>
+                <p class="mb-6 font-bold">Selected applicants will be called back for a second interview by Sunday, November 20.</p>
+                <div class="bg-white border border-blue-200 p-4 mb-4 text-sm">
+                    For advance registration, please visit our Web site at<br>
+                    <a href="#" class="text-blue-600 font-bold">www.silverposeidoncruises.com</a><br>
+                    by Sunday, November 13.
+                </div>
+                <div class="text-sm">
+                    For more information,<br>
+                    please call <strong>1-800-555-7962</strong><br>
+                    or e-mail Elena Ruiz at<br>
+                    <a href="#" class="text-blue-600">eruiz@silverposeidoncruises.com</a>.
+                </div>
+            </div>
+        `,
+        "156-157": `
+            <div class="font-sans text-sm leading-relaxed">
+                <p class="mb-4">June 10</p>
+                <p class="mb-4">Ms. Ngaire Umaga<br>14 Raven Court<br>Hillsborough<br>Auckland 1041</p>
+                <div class="bg-gray-100 p-3 mb-4 inline-block border border-gray-300">
+                    <p><strong>Account ID:</strong> 3565</p>
+                    <p><strong>Trip No:</strong> Gr867</p>
+                    <p><strong>Trip:</strong> Greece, April 7-17</p>
+                    <p><strong>Group leader:</strong> Jeff Lorber</p>
+                </div>
+                <p class="mb-2">Dear Ms. Umaga:</p>
+                <p class="mb-4">We are pleased that you chose Explorer Voyage Travel Service to help you plan your trip to Greece. We have received your registration form and deposit. Your itinerary is enclosed with this letter.</p>
+                <p class="mb-4">You will soon be receiving an invoice listing your payments and the balance due. Please make sure that we receive your final payment by December 30 to avoid any late fees. Also, if you decide to cancel your trip, you must notify us in writing at least 10 days before your departure date to receive a full refund.</p>
+                <p>Sincerely,</p>
+                <p class="font-serif italic text-lg my-2 text-blue-900">Richard Donaldson</p>
+                <p>Richard Donaldson<br>Client Services</p>
+                <p class="mt-4 text-xs text-gray-500">Encl.</p>
+            </div>
+        `,
+        "158-160": `
+            <div class="font-serif text-base leading-relaxed bg-[#fafafa] p-6 border-l-4 border-gray-400 shadow-sm">
+                <p><em>From Coins to Credit: Banking Throughout the Ages</em> is a concise history of banks and the banking industry from ancient times to the present. James Gallagher, who has made a career of covering financial news for several newspapers, has done a careful job of investigating his subject. Although he presents the facts carefully, Mr. Gallagher has made what could have been a dry book into one that is interesting and enjoyable. By telling amusing anecdotes about historical figures, he makes them come alive. Even people who are not particularly attracted to the subject matter will find this book engrossing.</p>
+            </div>
+        `,
+        "161-163": `
+            <div class="font-serif leading-relaxed column-layout md:columns-2 gap-6 text-justify">
+                <p class="mb-4"><strong>MUMBAI, India, June 3</strong>—Star Airways, Mumbai's dominant airline for the past five years, has reported it is planning to replace its entire aircraft fleet with European-produced Skystream jets. Starting with an initial purchase of 90 jets, Star Airways expects the changeover to take a decade to complete.</p>
+                <p class="mb-4">The new planes will enable the airline to expand its international routes as well as providing replacements for its aging fleet of jet planes.</p>
+                <p>Star Airways and Skystream, in a joint announcement at the Brussels Air Show on Thursday, said that the order included seventeen of the new AWB850 aircraft. This will make Star Airways the first Indian carrier to fly the AWB850, an aim it has had since the powerful jets were first produced.</p>
+            </div>
+        `,
+        "164-167": `
+            <div class="border border-gray-300 p-4 mb-4 text-sm font-sans bg-white shadow-sm">
+                <table class="w-full text-left">
+                    <tr class="border-b border-gray-200"><th class="w-24 py-2 text-gray-600 bg-transparent border-0">From:</th><td class="py-2 border-0">orders@roslinggardens.com</td></tr>
+                    <tr class="border-b border-gray-200"><th class="py-2 text-gray-600 bg-transparent border-0">To:</th><td class="py-2 border-0">rkager@uopmail.net</td></tr>
+                    <tr class="border-b border-gray-200"><th class="py-2 text-gray-600 bg-transparent border-0">Subject:</th><td class="py-2 border-0 font-bold">Your order 3053</td></tr>
+                    <tr><th class="py-2 text-gray-600 bg-transparent border-0">Date:</th><td class="py-2 border-0">April 3</td></tr>
+                </table>
+            </div>
+            <div class="font-sans text-sm leading-relaxed space-y-4">
+                <p>Dear Mr. Kager,</p>
+                <p>We are having difficulty processing your credit card payment for your order 3053 from www.roslinggardens.com. Your credit card appears to be invalid. — [1] —.</p>
+                <p>As of now, your order is pending and will not be canceled. However, you must review your payment information and make sure it is correct and current. — [2] —. To do so, log in to your account on our website (www.roslinggardens.com) and click on "Change Payment Method." — [3] —.</p>
+                <p>Your order is ready to ship and will be dispatched to the address you provided as soon as we can successfully charge your credit card. — [4] —.</p>
+                <p>Regards,<br>Customer Service, Rosling Gardens</p>
+                <div class="border-t border-gray-300 pt-3 mt-4 text-xs text-gray-500">
+                    <strong>Please note:</strong> This e-mail was sent from a notification-only address that cannot accept incoming e-mail. If you wish to contact us, please do not reply to this message; instead, use the chat box on our website.
+                </div>
+            </div>
+        `,
+        "168-171": `
+            <div class="font-serif text-justify">
+                <h1 class="text-2xl font-bold text-center mb-6 font-sans">Plans Approved for Local Attraction</h1>
+                <p class="italic text-center mb-6">Tuesday, February 26</p>
+                
+                <p class="mb-4">After hearing recommendations proposed by the panel commissioned eight months ago to evaluate the Marsh Point Lighthouse, local officials announced on Monday that a major restoration of the lighthouse tower would begin in two months. To the untrained eye, the lighthouse appears to be in good shape. [1] However, according to chief engineer Edward Sayer, the tower is in dire need of repair to replace loose bricks and address severe corrosion at the base of the structure. President of the Marsh Point Historical Society Glenda Lewis remarks, "For almost 200 years, the lighthouse has been an aid to navigation. Restoring the lighthouse now may extend its service for another two centuries."</p>
+                
+                <p class="mb-4">[2]. As Stephanie Landsbury of the city tourist board notes, "The Marsh Point Lighthouse is a local landmark. It has been featured on posters and signs and even plays a pivotal role in the movie classic <em>A Clear Beam of Light</em>."</p>
+
+                <p class="mb-4">Restoration of the structure will be done in phases over the next eighteen months, and will include work on the interior as well as the exterior of the lighthouse. — [3]. Parts of the structure will remain open to the public while the work is being done, as will the museum and gift shop also on the premises. The completion of the project is expected to coincide with the building's bicentennial. Donations to help support the cost of the restoration are being solicited from local individuals and corporate sponsors. [4]—</p>
+            </div>
+        `,
+        "172-175": `
+            <div class="bg-[#f0f4f8] p-4 rounded-lg font-sans text-sm space-y-4 shadow-inner border border-gray-200">
+                <div>
+                    <p class="font-bold text-gray-800 border-b border-gray-300 pb-1 mb-1">Alice Myers [10:19 A.M.]</p>
+                    <p>Hello. I've reserved a car for July 2-8. The reservation number is X102W. Can I pick up the car right at the airport terminal, or do I need to take a shuttle bus?</p>
+                </div>
+                <div>
+                    <p class="font-bold text-blue-700 border-b border-gray-300 pb-1 mb-1">Jared Dubiel [10:20 A.M.]</p>
+                    <p>Let me find your reservation. You are flying to Boa Vista Airport, correct?</p>
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800 border-b border-gray-300 pb-1 mb-1">Alice Myers [10:20 A.M.]</p>
+                    <p>Yes.</p>
+                </div>
+                <div>
+                    <p class="font-bold text-blue-700 border-b border-gray-300 pb-1 mb-1">Jared Dubiel [10:22 A.M.]</p>
+                    <p>Here it is. Your car will be waiting for you at the parking area in front of the terminal. Go to the Allaire Rentals kiosk there and one of our representatives will give you the key.</p>
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800 border-b border-gray-300 pb-1 mb-1">Alice Myers [10:23 A.M.]</p>
+                    <p>OK. One more question. Is it possible to upgrade to a larger car at this point? I'm not sure the one I've reserved will be comfortable enough with 4 people plus luggage.</p>
+                </div>
+                <div>
+                    <p class="font-bold text-blue-700 border-b border-gray-300 pb-1 mb-1">Jared Dubiel [10:25 A.M.]</p>
+                    <p>It looks like you reserved a compact car. That may be tight for your group. Let me check with our agent at that location and see if there is something larger available. Christine, can you tell me if you have a mid-size car available for the week of July 2-8?</p>
+                </div>
+                <div>
+                    <p class="font-bold text-purple-700 border-b border-gray-300 pb-1 mb-1">Christine Lindquist [10:32 A.M.]</p>
+                    <p>Afraid not. We're busy because of the holiday. But we do have a full-size car and a small van.</p>
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800 border-b border-gray-300 pb-1 mb-1">Alice Myers [10:34 A.M.]</p>
+                    <p>Can you tell me how much the full-size car will cost?</p>
+                </div>
+                <div>
+                    <p class="font-bold text-blue-700 border-b border-gray-300 pb-1 mb-1">Jared Dubiel [10:36 A.M.]</p>
+                    <p>It would be an additional $150 for the week.</p>
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800 border-b border-gray-300 pb-1 mb-1">Alice Myers [10:37 A.M.]</p>
+                    <p>That's fine. I'll take it. Do I need a new reservation?</p>
+                </div>
+                <div>
+                    <p class="font-bold text-blue-700 border-b border-gray-300 pb-1 mb-1">Jared Dubiel [10:40 A.M.]</p>
+                    <p>No. I've noted the change in the paperwork and added the additional amount to your card. You're all set.</p>
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800 border-b border-gray-300 pb-1 mb-1">Alice Myers [10:41 A.M.]</p>
+                    <p>Wonderful. Thank you.</p>
+                </div>
+            </div>
+        `,
+        "176-180": `
+            <div class="border border-gray-400 p-4 mb-6 bg-white shadow-sm font-sans text-sm">
+                <div class="border-b border-gray-400 pb-2 mb-3">
+                    <p><strong>To:</strong> Mai Wu &lt;mwu@wilkersonbeverage.com&gt;</p>
+                    <p><strong>From:</strong> Alberto Ortega &lt;aortega@citywatch.com&gt;</p>
+                    <p><strong>Subject:</strong> Interview</p>
+                    <p><strong>Date:</strong> October 14</p>
+                </div>
+                <p class="mb-3">Dear Ms. Wu:</p>
+                <p class="mb-3">Thank you again for agreeing to be featured in <em>Citywatch Magazine</em>'s series entitled <em>New and Noteworthy People in Our City</em>. I enjoyed our interview. Attached is an advance copy of the article, which will be published in our December issue. If you have any questions, you can reach me at the e-mail address above, or you can call me at 555-0189.</p>
+                <p>Sincerely,<br>Alberto</p>
+            </div>
+            
+            <div class="border-2 border-black p-6 bg-[#fffdfa] max-w-lg mx-auto font-serif text-justify shadow-md">
+                <p class="mb-4">Mai Wu can often be seen sipping coffee early in the morning at a small café near her office in downtown Chicago. "I like to use the time to focus my thoughts before I start my day," says Wu.</p>
+                <p class="mb-4">Recently appointed vice president of Wilkerson Beverage Company, this notable resident transferred from the firm's office in Amsterdam to its main headquarters in Chicago. While in Amsterdam, Wu was marketing director of Wilkerson's European division. Before that, Wu worked in Taipei. She graduated from a university in Sydney with a degree in business.</p>
+                <p>Routinely working 16-hour days, the confident entrepreneur savors her quiet moments in the coffee shop. "I love this job," she confesses, "even though it's sometimes very difficult, and I love this city. It's a beautiful city, and the people are friendly."</p>
+            </div>
+        `,
+        "181-185": `
+            <div class="space-y-8 font-sans">
+                <!-- Press Release -->
+                <div class="border-l-4 border-indigo-600 pl-4 bg-gray-50 p-4">
+                    <p class="mb-3 text-justify"><strong>SEOUL, South Korea, March 15</strong>—On Monday, Seoul-based Jupiter Corporation announced it is opening a new automobile manufacturing plant in Daejeon. Sales of its newest four-door sedan, the Flame, have been increasing at a dramatic rate since the car model's release in February of last year.</p>
+                    <p class="mb-3 text-justify">According to a Jupiter Corporation spokesperson, sales of other cars produced by Jupiter Corporation are also at an all-time high. Jupiter expects the new factory will be able to meet consumer demand without any difficulty.</p>
+                    <p class="text-justify">The plant is anticipated to be in operation by late June, and the grand opening celebration is scheduled for July 5.</p>
+                </div>
+
+                <!-- Email -->
+                <div class="border border-gray-300 p-4 bg-white text-sm shadow-sm">
+                    <table class="w-full text-left mb-4">
+                        <tr><th class="py-1 w-20 border-0 bg-transparent">To:</th><td class="py-1 border-0">Ja-Hoon Lee &lt;jhlee@jupiterco.com&gt;</td></tr>
+                        <tr><th class="py-1 border-0 bg-transparent">From:</th><td class="py-1 border-0">Robin Bertolli &lt;rbertolli@jupiterco.com&gt;</td></tr>
+                        <tr><th class="py-1 border-0 bg-transparent">Date:</th><td class="py-1 border-0">March 17</td></tr>
+                        <tr><th class="py-1 border-0 bg-transparent border-b border-gray-200">Subject:</th><td class="py-1 border-0 border-b border-gray-200 font-bold">Press release</td></tr>
+                    </table>
+                    <p class="mb-3">Dear Ja-Hoon,</p>
+                    <p class="mb-3">I just read the press release, and I wanted to let you know that you're doing an excellent job as spokesperson for the company.</p>
+                    <p class="mb-3 text-justify">We're almost ready to start our advertising campaign in South America. The tentative schedule for the campaign hasn't changed very much, but I would like to brief you on the plan before your next press conference. I'll send you the documents later this week. Also, I'll be in Rio de Janeiro for the next few months, so e-mail is probably the fastest way for us to communicate with each other after I get there. I look forward to seeing you in Daejeon for the grand opening.</p>
+                    <p>Sincerely,<br>Robin</p>
+                </div>
+            </div>
+        `,
+        "186-190": `
+            <div class="space-y-6 font-sans text-sm">
+                <!-- Email 1 -->
+                <div class="border border-gray-300 p-4 bg-white shadow-sm">
+                    <table class="w-full text-left mb-3 text-xs md:text-sm">
+                        <tr><th class="py-1 w-20 border-0 bg-transparent">To:</th><td class="py-1 border-0">Klara Wagner &lt;kwagner@clearnet.net&gt;</td></tr>
+                        <tr><th class="py-1 border-0 bg-transparent">From:</th><td class="py-1 border-0">Front Desk &lt;reservations@persimmonroyal.com&gt;</td></tr>
+                        <tr><th class="py-1 border-0 bg-transparent">Subject:</th><td class="py-1 border-0 font-bold">Reservation Confirmation</td></tr>
+                        <tr><th class="py-1 border-0 bg-transparent border-b border-gray-200">Date:</th><td class="py-1 border-0 border-b border-gray-200">September 25</td></tr>
+                    </table>
+                    <p class="mb-2">Thank you for choosing the Persimmon Royal Hotel in Bangkok. This email is to confirm your reservation for November 15-22. Your confirmation number is KW27-40118.</p>
+                    <p class="mb-2 text-justify">While you stay with us, we hope that you will try Elan, our award-winning restaurant featuring the talents of chef Niwat Parnpradub, and Waterworks, our poolside café. If you would like to explore Bangkok, our concierge service is more than happy to recommend tourist activities and book you a table at any restaurant.</p>
+                    <p class="mb-2 text-justify">After your stay, please fill out the customer satisfaction survey that is available in each room and on our website. We will send you a voucher for one free night at any of our locations, including Sapporo and Melbourne. For a complete listing of locations and information about our next grand opening, please visit our website.</p>
+                    <p class="mb-3 text-justify">If you have any questions or concerns, please contact us at +66 2 555 8657.</p>
+                    <p class="italic">The Persimmon Royal Front Desk</p>
+                </div>
+
+                <!-- Survey -->
+                <div class="border-2 border-gray-800 p-5 bg-[#fafafa]">
+                    <h2 class="text-center font-bold text-lg uppercase tracking-wide mb-1">Persimmon Royal Hotel</h2>
+                    <h3 class="text-center text-sm text-gray-600 mb-4">Customer Satisfaction Survey</h3>
+                    
+                    <p class="mb-2"><strong>Name:</strong> Klara Wagner</p>
+                    <p class="mb-4"><strong>Where did you stay?</strong> Persimmon Royal Hotel, Bangkok</p>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-center border-collapse text-xs mb-4 min-w-[400px]">
+                            <tr class="bg-gray-200">
+                                <th class="border border-gray-400 p-2 text-left">Category</th>
+                                <th class="border border-gray-400 p-2">Excellent</th>
+                                <th class="border border-gray-400 p-2">Good</th>
+                                <th class="border border-gray-400 p-2">Average</th>
+                                <th class="border border-gray-400 p-2">Below average</th>
+                                <th class="border border-gray-400 p-2">Poor</th>
+                            </tr>
+                            <tr><td class="border border-gray-400 p-2 text-left">Menu variety</td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2 font-bold">X</td><td class="border border-gray-400 p-2"></td></tr>
+                            <tr><td class="border border-gray-400 p-2 text-left">Quality of service</td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2 font-bold">X</td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td></tr>
+                            <tr><td class="border border-gray-400 p-2 text-left">Quality of room</td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2 font-bold">X</td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td></tr>
+                            <tr><td class="border border-gray-400 p-2 text-left">Housekeeping staff</td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2 font-bold">X</td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td></tr>
+                            <tr><td class="border border-gray-400 p-2 text-left">Hospitality of staff</td><td class="border border-gray-400 p-2 font-bold">X</td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td><td class="border border-gray-400 p-2"></td></tr>
+                        </table>
+                    </div>
+                    
+                    <p class="font-bold mb-1">Comments and Questions:</p>
+                    <p class="text-justify italic bg-white p-3 border border-gray-300">This was my first visit to this hotel, though I've stayed at several of your other locations on business. This time, I was charged twice for poolside snacks that I didn't order. In fact, I didn't eat at the hotel at all; I only ate at Bai Makrut and Café Galanga, both restaurants outside of the hotel.<br><br>As for the voucher, will it be valid at your future location? I will be attending a conference there in March.</p>
+                </div>
+
+                <!-- Email 2 -->
+                <div class="border border-gray-300 p-4 bg-white shadow-sm">
+                    <table class="w-full text-left mb-3 text-xs md:text-sm">
+                        <tr><th class="py-1 w-20 border-0 bg-transparent">To:</th><td class="py-1 border-0">Klara Wagner &lt;kwagner@clearnet.net&gt;</td></tr>
+                        <tr><th class="py-1 border-0 bg-transparent">From:</th><td class="py-1 border-0">Front Desk &lt;reservations@persimmonroyal.com&gt;</td></tr>
+                        <tr><th class="py-1 border-0 bg-transparent">Subject:</th><td class="py-1 border-0 font-bold">Your recent stay</td></tr>
+                        <tr><th class="py-1 border-0 bg-transparent">Date:</th><td class="py-1 border-0">November 27</td></tr>
+                        <tr><th class="py-1 border-0 bg-transparent border-b border-gray-200">Attachment:</th><td class="py-1 border-0 border-b border-gray-200 italic text-blue-600">Voucher</td></tr>
+                    </table>
+                    <p class="mb-3">Dear Ms. Wagner,</p>
+                    <p class="mb-3 text-justify">Thank you for your feedback on your stay with us. We have checked your information and are happy to see that the problem you reported was resolved before you checked out.</p>
+                    <p class="mb-3 text-justify">In answer to your question, yes, the voucher (please see attached) is valid at any of our hotels at any time. As you have noted on our website, our newest hotel will open in Macau. The grand opening will take place in early February. The voucher has no expiration date.</p>
+                    <p>Warm wishes,<br>Raoul Fechter, Front Desk Manager</p>
+                </div>
+            </div>
+        `,
+        "191-195": `
+            <div class="space-y-6 font-sans text-sm">
+                <!-- Email 1 -->
+                <div class="border border-gray-300 p-5 bg-white shadow-sm">
+                    <div class="grid grid-cols-[80px_1fr] gap-2 mb-4 border-b border-gray-200 pb-3">
+                        <div class="font-bold text-gray-600">To:</div><div>All Staff</div>
+                        <div class="font-bold text-gray-600">From:</div><div>Sandra Gomez, General Manager</div>
+                        <div class="font-bold text-gray-600">Date:</div><div>April 15</div>
+                        <div class="font-bold text-gray-600">Subject:</div><div class="font-bold">Fisk Hardware Workshops</div>
+                        <div class="font-bold text-gray-600">Attachment:</div><div class="italic text-blue-600"><i class="fas fa-paperclip mr-1"></i> Workshop Schedule</div>
+                    </div>
+                    <p class="mb-3 text-justify">Thanks to all the volunteers who have agreed to lead our first in-store workshops. By offering these mini-trainings, we hope to attract more regular customers and familiarize them with our store's various departments. I think the workshops will be a big hit!</p>
+                    <p class="mb-3 text-justify">We have promoted these for several weeks now, and customers should understand that they can register through our website. Participation for each workshop is limited to fifteen people, a number that will ensure a safe and more interactive experience for everyone.</p>
+                    <p class="text-justify">Please review the attached schedule. Workshop facilitators, please confirm that you are available on the date you have been assigned.</p>
+                </div>
+
+                <!-- Schedule Attachment -->
+                <div class="bg-gray-50 border-2 border-gray-400 p-5 shadow-inner">
+                    <h3 class="text-center font-bold text-lg mb-1 uppercase tracking-wider">May Workshop Schedule</h3>
+                    <p class="text-center text-xs text-gray-600 mb-4 italic">Workshops take place on Saturdays from 9:30 A.M. to 12 noon.</p>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse bg-white text-xs shadow-sm">
+                            <tr class="bg-gray-800 text-white">
+                                <th class="border border-gray-300 p-2">Date</th>
+                                <th class="border border-gray-300 p-2 text-left">Topic</th>
+                                <th class="border border-gray-300 p-2">Facilitator</th>
+                                <th class="border border-gray-300 p-2">Registered Participants</th>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 p-2 text-center font-bold whitespace-nowrap">May 7</td>
+                                <td class="border border-gray-300 p-2">Selecting paint colors; techniques for achieving various visual effects</td>
+                                <td class="border border-gray-300 p-2 text-center">Candice Delaney</td>
+                                <td class="border border-gray-300 p-2 text-center">6</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border border-gray-300 p-2 text-center font-bold whitespace-nowrap">May 14</td>
+                                <td class="border border-gray-300 p-2">Learning to use a variety of tools for precise measuring and cutting. Each participant will construct a simple birdhouse.</td>
+                                <td class="border border-gray-300 p-2 text-center">Juan Faisal</td>
+                                <td class="border border-gray-300 p-2 text-center">10</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 p-2 text-center font-bold whitespace-nowrap">May 21</td>
+                                <td class="border border-gray-300 p-2">Learning common electrical wiring tasks; installing power outlets and replacing light fixtures</td>
+                                <td class="border border-gray-300 p-2 text-center">Oliver Zimmer</td>
+                                <td class="border border-gray-300 p-2 text-center text-red-600 font-bold">5</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border border-gray-300 p-2 text-center font-bold whitespace-nowrap">May 28</td>
+                                <td class="border border-gray-300 p-2">Measuring, cutting, and installing floor tiles; selecting the right flooring materials for rooms</td>
+                                <td class="border border-gray-300 p-2 text-center">Nell Jimenez</td>
+                                <td class="border border-gray-300 p-2 text-center">14</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Email 2 -->
+                <div class="border border-gray-300 p-5 bg-white shadow-sm">
+                    <div class="grid grid-cols-[80px_1fr] gap-2 mb-4 border-b border-gray-200 pb-3">
+                        <div class="font-bold text-gray-600">To:</div><div>Paul Czerny</div>
+                        <div class="font-bold text-gray-600">From:</div><div>Sandra Gomez, General Manager</div>
+                        <div class="font-bold text-gray-600">Date:</div><div>May 6</div>
+                        <div class="font-bold text-gray-600">Attachment:</div><div class="italic text-blue-600"><i class="fas fa-paperclip mr-1"></i> Saturday workshop</div>
+                    </div>
+                    <p class="mb-3">Dear Mr. Czerny,</p>
+                    <p class="mb-3 text-justify">I sincerely appreciate that you are stepping in to teach the electrical skills workshop after the original facilitator informed me of a scheduling conflict. This will be a good opportunity for you to demonstrate your expertise!</p>
+                    <p class="mb-3 text-justify">Please keep in mind that our workshops are intended for beginners, so we should not assume that participants have any prior skill or experience using tools. Your task is to present an overview with some safety tips and to carefully watch over participants during any hands-on activities. This will be a bit longer than the classes you've been teaching at the high school, but I'm sure you will have plenty of activities to fill the time slot. You can address specific questions participants may have about their own personal projects at the end of the workshop session.</p>
+                    <p>Thanks again,<br>Sandra Gomez</p>
+                </div>
+            </div>
+        `,
+        "196-200": `
+            <div class="space-y-8 font-sans text-sm">
+                <!-- Letter -->
+                <div class="bg-white border border-gray-300 p-6 shadow-sm">
+                    <h1 class="text-2xl font-serif font-bold text-center mb-6 border-b-2 border-gray-800 pb-2 uppercase tracking-widest">Wood Hollow Theatre</h1>
+                    <p class="mb-4">Dear Valued Member,</p>
+                    <p class="mb-4 text-justify leading-relaxed">Thank you for your support of the Wood Hollow Theatre. Not only do your donations help us to provide the community with quality arts and music programs but they also make you eligible for discounts and special events.</p>
+                    <p class="mb-4 text-justify leading-relaxed">Please join us as we proudly present the world premiere of <em>The Sun Princess</em>, a comic musical by Claude Jones. The delightful show is conducted by Akira Murata and stars England's most prominent vocalist, Margo Schmidt, in an entertaining role as the witty princess. As a member and sponsor of the Wood Hollow Theatre, you are invited to a special performance for members only on Thursday, June 17, at 7:30 P.M. Members at the patron level and above can receive two free tickets.</p>
+                    <p class="mb-6 text-justify leading-relaxed">Be the first to see what is sure to become a masterpiece. To reserve your tickets, fill out the order form below and send it to:<br><br>Wood Hollow Theatre<br>175 Marbury Drive<br>London EC5 3GP</p>
+                    <p>We look forward to seeing you there.</p>
+                    <div class="mt-4">
+                        <p>Sincerely,</p>
+                        <p class="font-serif italic text-lg text-blue-900 my-1">Mariam Abdulla</p>
+                        <p>Mariam Abdulla<br>Wood Hollow Theatre President</p>
+                    </div>
+                </div>
+
+                <!-- Price List Table -->
+                <div class="bg-gray-50 border border-gray-300 p-4">
+                    <h3 class="text-center font-bold text-lg mb-4 italic">The Sun Princess</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-center border-collapse bg-white text-sm">
+                            <tr class="bg-gray-200">
+                                <th class="border border-gray-400 p-2" rowspan="2">Show Date</th>
+                                <th class="border border-gray-400 p-2" rowspan="2">Show Time</th>
+                                <th class="border border-gray-400 p-2" colspan="3">Ticket Prices</th>
+                            </tr>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-400 p-2 text-xs">Regular Member</th>
+                                <th class="border border-gray-400 p-2 text-xs">Nonmember</th>
+                                <th class="border border-gray-400 p-2 text-xs">Student Member</th>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-400 p-2">June 17</td>
+                                <td class="border border-gray-400 p-2">7:30 P.M.</td>
+                                <td class="border border-gray-400 p-2">£12</td>
+                                <td class="border border-gray-400 p-2 text-gray-500 italic">n/a</td>
+                                <td class="border border-gray-400 p-2 text-gray-500 italic">n/a</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border border-gray-400 p-2">June 18</td>
+                                <td class="border border-gray-400 p-2">8:00 P.M.</td>
+                                <td class="border border-gray-400 p-2">£18</td>
+                                <td class="border border-gray-400 p-2">£23</td>
+                                <td class="border border-gray-400 p-2">£12</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-400 p-2">June 19</td>
+                                <td class="border border-gray-400 p-2">8:00 P.M.</td>
+                                <td class="border border-gray-400 p-2">£20</td>
+                                <td class="border border-gray-400 p-2">£25</td>
+                                <td class="border border-gray-400 p-2">£12</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border border-gray-400 p-2">June 20</td>
+                                <td class="border border-gray-400 p-2">7:00 P.M.</td>
+                                <td class="border border-gray-400 p-2">£18</td>
+                                <td class="border border-gray-400 p-2">£23</td>
+                                <td class="border border-gray-400 p-2">£10</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Order Form -->
+                <div class="border-2 border-dashed border-gray-500 p-6 bg-white max-w-lg mx-auto relative">
+                    <div class="absolute -top-3 left-6 bg-white px-2 text-gray-500 text-xs italic"><i class="fas fa-cut mr-1"></i> Clip here</div>
+                    <h3 class="font-bold text-center uppercase tracking-widest border-b border-gray-300 pb-2 mb-4">Wood Hollow Theatre<br>The Sun Princess<br>Order Form</h3>
+                    
+                    <div class="flex items-end mb-4 gap-2">
+                        <span class="font-bold whitespace-nowrap">Membership account number:</span>
+                        <span class="border-b border-gray-600 flex-1 font-mono text-center pb-1">654HB</span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <span class="font-bold block mb-2">Performance date:</span>
+                        <div class="flex flex-wrap gap-4 pl-4 text-xs font-bold">
+                            <label class="flex items-center"><input type="radio" checked class="mr-1"> June 17</label>
+                            <label class="flex items-center"><input type="radio" disabled class="mr-1"> June 18</label>
+                            <label class="flex items-center"><input type="radio" disabled class="mr-1"> June 19</label>
+                            <label class="flex items-center"><input type="radio" disabled class="mr-1"> June 20</label>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="flex items-end gap-2">
+                            <span class="font-bold">Price per ticket:</span>
+                            <span class="border-b border-gray-600 flex-1 text-center text-xs pb-1 italic">no payment necessary</span>
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <span class="font-bold">Number of tickets:</span>
+                            <span class="border-b border-gray-600 flex-1 text-center pb-1">2</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-end mb-6 gap-2 w-1/2">
+                        <span class="font-bold">Total:</span>
+                        <span class="border-b border-gray-600 flex-1"></span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-end gap-2">
+                            <span class="font-bold w-16">Name:</span>
+                            <span class="border-b border-gray-600 flex-1 pb-1 px-2">Hemant Bhatia</span>
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <span class="font-bold w-16">Address:</span>
+                            <span class="border-b border-gray-600 flex-1 pb-1 px-2">13 Kings Road, London, SE23 7NW</span>
+                        </div>
+                        <div class="flex items-end gap-2">
+                            <span class="font-bold w-16">E-mail:</span>
+                            <span class="border-b border-gray-600 flex-1 pb-1 px-2">hbhatia@biginternet.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    };
+
+    const questionsDB = {
+        101: { text: "Employees must let ----- supervisors know before taking time off work.", A: "they", B: "them", C: "their", D: "theirs", correct: "C" },
+        102: { text: "From July 1, it will be Mr. Ishibashi's ----- to review all corporate contracts.", A: "symptom", B: "responsibility", C: "quality", D: "discipline", correct: "B" },
+        103: { text: "We are pleased to offer you a sample copy of our ----- magazine, Office Innovations.", A: "popularly", B: "popularity", C: "popular", D: "popularize", correct: "C" },
+        104: { text: "Your security badge will be activated ----- the beginning of the work day tomorrow.", A: "by", B: "under", C: "onto", D: "as", correct: "A" },
+        105: { text: "One of Mr. Oh's primary duties is the ----- of the corporate food service.", A: "manage", B: "manages", C: "manageable", D: "management", correct: "D" },
+        106: { text: "A majority of customers rated Sasaki mobile phones as ----- good or excellent.", A: "either", B: "both", C: "although", D: "whether", correct: "A" },
+        107: { text: "The committee objected ----- to several of the conditions listed in the initial contract.", A: "badly", B: "safely", C: "strongly", D: "falsely", correct: "C" },
+        108: { text: "All interns in the marketing department are encouraged to attend the upcoming -----.", A: "subject", B: "division", C: "workshop", D: "plan", correct: "C" },
+        109: { text: "Fewer than ten firms in the country have received the Barstow Award ----- excellence in customer service.", A: "to", B: "for", C: "at", D: "with", correct: "B" },
+        110: { text: "----- of the shipment should be expected within ten days.", A: "Receive", B: "Received", C: "Receivable", D: "Receipt", correct: "D" },
+        111: { text: "Mi-Sun Park's artwork ----- combines classical elements with modern materials and techniques.", A: "skill", B: "skilled", C: "skillful", D: "skillfully", correct: "D" }, 
+        112: { text: "Tanner Publications is seeking a copy editor with previous experience ----- excellent communication skills.", A: "such", B: "but", C: "and", D: "unless", correct: "C" },
+        113: { text: "Ms. Reston and Mr. Parnthong were two of the senior partners ----- visited the clients last week.", A: "who", B: "when", C: "what", D: "whose", correct: "A" },
+        114: { text: "Silveira & Ogawa Corporation's successful new line of cookware has helped to boost the company's financial ----- this quarter.", A: "believable", B: "interested", C: "available", D: "performance", correct: "D" }, 
+        115: { text: "Before ----- the envelope, please be sure you have enclosed all of the documents listed in your orientation packet.", A: "seal", B: "sealing", C: "is sealed", D: "was sealed", correct: "B" },
+        116: { text: "Ms. Gupta has earned the ----- of her colleagues in the law firm and of the clients she represents.", A: "respect", B: "respectable", C: "respectably", D: "respecting", correct: "A" },
+        117: { text: "The CEO of Argall Enterprises is expected to ----- a statement to the press later this week.", A: "act", B: "issue", C: "speak", D: "reply", correct: "B" },
+        118: { text: "Kohler Gas has been the area's most ----- energy supplier for more than twenty years.", A: "relying", B: "reliable", C: "reliability", D: "reliably", correct: "B" },
+        119: { text: "A hotel shuttle will be available, but you are also welcome to arrange for your ----- transportation to the conference.", A: "any", B: "directly", C: "besides", D: "own", correct: "D" },
+        120: { text: "The advertising campaign for the new Cool Fizz soft drink will feature flavor ----- price.", A: "rather than", B: "in the event of", C: "except for", D: "as for", correct: "A" },
+        121: { text: "Many of the restaurants in the village open only on weekends ----- the tourist season is over.", A: "even", B: "once", C: "so", D: "always", correct: "B" },
+        122: { text: "Members are a vital part of the Global Musicians' Association, and finding ways to increase membership should be a high -----.", A: "basis", B: "force", C: "result", D: "priority", correct: "D" },
+        123: { text: "After ----- failing to win customer support, Tykon's upgraded software program has been withdrawn from the market.", A: "repeat", B: "repetition", C: "repeated", D: "repeatedly", correct: "D" }, 
+        124: { text: "Ms. Nwokolo is the ideal leader for the project because she has ----- worked in business management.", A: "yet", B: "especially", C: "previously", D: "ever", correct: "C" },
+        125: { text: "Because the teams in Beijing and Lisbon must work together closely, e-mail is the ----- method of communication for this project.", A: "prefer", B: "preferred", C: "preferably", D: "preference", correct: "B" },
+        126: { text: "The commission will review the designs for the new industrial center and ----- one to submit to the board of directors.", A: "agree", B: "operate", C: "apply", D: "choose", correct: "D" },
+        127: { text: "According to industry experts, it is very ----- that Aakster, Inc., and Dember Technologies will announce plans to merge in early May.", A: "likely", B: "confident", C: "advisable", D: "potential", correct: "A" },
+        128: { text: "Questions about the exhibit should be directed to Mr. Stanley, the museum's leading ----- on eighteenth-century art.", A: "authority", B: "station", C: "advantage", D: "example", correct: "A" },
+        129: { text: "Ms. Baxter and her former colleagues at the New York branch ----- in regular contact with one another.", A: "remain", B: "remains", C: "remaining", D: "has remained", correct: "A" },
+        130: { text: "Currently, the most ----- task is to finish designing the new corporate logo since no new publications can be printed without it.", A: "forceful", B: "eligible", C: "pressing", D: "decisive", correct: "C" },
+
+        // Part 6 (Texts)
+        131: { part: 6, group: "131-134", text: "Select the best answer for blank [ 131 ] in the passage.", A: "mails", B: "mailing", C: "were mailed", D: "will be mailed", correct: "D" },
+        132: { part: 6, group: "131-134", text: "Select the best answer for blank [ 132 ] in the passage.", A: "incomes", B: "gains", C: "benefits", D: "accounts", correct: "C" },
+        133: { part: 6, group: "131-134", text: "Select the best answer for blank [ 133 ] in the passage.", A: "you", B: "your", C: "yours", D: "yourself", correct: "B" },
+        134: { part: 6, group: "131-134", text: "Select the best sentence to fill blank [ 134 ] in the passage.", A: "Thank you for your e-mail of July 31.", B: "You can send it to us at GTSS@gst.com.", C: "This includes a café right next to the theater.", D: "We have found this performance to be very popular.", correct: "B" },
+        135: { part: 6, group: "135-138", text: "Select the best answer for blank [ 135 ] in the passage.", A: "were presenting", B: "to present", C: "will be presented", D: "have presented", correct: "C" }, 
+        136: { part: 6, group: "135-138", text: "Select the best answer for blank [ 136 ] in the passage.", A: "Specifically", B: "However", C: "Otherwise", D: "Additionally", correct: "D" },
+        137: { part: 6, group: "135-138", text: "Select the best answer for blank [ 137 ] in the passage.", A: "Most", B: "All", C: "Very", D: "More", correct: "A" },
+        138: { part: 6, group: "135-138", text: "Select the best sentence to fill blank [ 138 ] in the passage.", A: "Unfortunately, this review does not meet our requirements.", B: "More detailed guidelines for reviewers are available on our website.", C: "They were referred to us by a colleague at your place of work.", D: "We are sorry we are not able to do so at this time.", correct: "B" },
+        139: { part: 6, group: "139-142", text: "Select the best answer for blank [ 139 ] in the passage.", A: "offer", B: "attend", C: "lead", D: "apply", correct: "B" },
+        140: { part: 6, group: "139-142", text: "Select the best answer for blank [ 140 ] in the passage.", A: "limit", B: "limits", C: "limited", D: "to limit", correct: "C" },
+        141: { part: 6, group: "139-142", text: "Select the best answer for blank [ 141 ] in the passage.", A: "exceptional", B: "costly", C: "thoughtful", D: "required", correct: "A" },
+        142: { part: 6, group: "139-142", text: "Select the best sentence to fill blank [ 142 ] in the passage.", A: "There are directions to the gallery at the information desk.", B: "Copies of these paintings are on sale in the gift shop.", C: "She is famous for her creative use of color.", D: "This is an opportunity you will not want to miss.", correct: "D" },
+        143: { part: 6, group: "143-146", text: "Select the best answer for blank [ 143 ] in the passage.", A: "renew", B: "renewing", C: "had renewed", D: "will be renewed", correct: "A" },
+        144: { part: 6, group: "143-146", text: "Select the best sentence to fill blank [ 144 ] in the passage.", A: "There are four ways that this can be arranged.", B: "It appears that you have already canceled.", C: "All you have to do is complete and return the enclosed card.", D: "We are happy we could be of service to you.", correct: "C" },
+        145: { part: 6, group: "143-146", text: "Select the best answer for blank [ 145 ] in the passage.", A: "rent", B: "bill", C: "receipt", D: "payment", correct: "D" },
+        146: { part: 6, group: "143-146", text: "Select the best answer for blank [ 146 ] in the passage.", A: "single", B: "recognized", C: "treatable", D: "lonely", correct: "A" },
+
+        // Part 7 (Comprehension)
+        147: { part: 7, group: "147-148", text: "What does Mr. Chandran ask Mr. Seville to do?", A: "Join him on a business trip", B: "Help him with a translation", C: "Change some flight plans", D: "Set up some meetings", correct: "C" },
+        148: { part: 7, group: "147-148", text: "At 4:37 A.M., what does Mr. Seville mean when he writes, \"I can try\"?", A: "He wants to learn how to help.", B: "He is unsure that he will be successful.", C: "He has other work to finish today.", D: "He is happy to receive an invitation.", correct: "B" },
+        149: { part: 7, group: "149-150", text: "What is the purpose of the advertisement?", A: "To invite customers to a grand opening of a shop", B: "To introduce a new service offered at a store", C: "To announce the anniversary of a business", D: "To promote a sale on selected items", correct: "B" },
+        150: { part: 7, group: "149-150", text: "When does the store close on Sunday?", A: "At 7:00 P.M.", B: "At 8:00 P.M.", C: "At 9:00 P.M.", D: "At 9:30 P.M.", correct: "A" },
+        151: { part: 7, group: "151-152", text: "Why did Ms. Lang call Mr. Matsumoto?", A: "To reschedule an appointment with him", B: "To ask if he will be able to meet a deadline", C: "To inquire where a meeting will take place", D: "To request that he send a new copy of a contract", correct: "A" },
+        152: { part: 7, group: "151-152", text: "What will Ms. Lang probably do?", A: "See Mr. Matsumoto on Monday", B: "Call Mr. Matsumoto again this afternoon", C: "Contact a representative of C&P Accounting", D: "Make a reservation for a lunch meeting", correct: "B" },
+        153: { part: 7, group: "153-155", text: "Where will the employees who are hired for the advertised positions work?", A: "At an amusement park", B: "At a jewelry shop", C: "On a cruise ship", D: "In a factory", correct: "C" },
+        154: { part: 7, group: "153-155", text: "What benefit is NOT mentioned in the advertisement?", A: "Time off for holidays", B: "Free travel", C: "Career advancement opportunities", D: "Paid training programs", correct: "A" },
+        155: { part: 7, group: "153-155", text: "How are interested people instructed to register?", A: "By visiting the corporate office", B: "By calling Ms. Ruiz", C: "By sending an e-mail", D: "By going to the website", correct: "D" },
+        156: { part: 7, group: "156-157", text: "Who most likely is Richard Donaldson?", A: "A tour participant", B: "A group leader", C: "A travel agent", D: "A personal accountant", correct: "C" },
+        157: { part: 7, group: "156-157", text: "What is indicated about Ms. Umaga in the letter?", A: "She plans to cancel her trip.", B: "She has changed her trip itinerary.", C: "She must correct her registration form.", D: "She has paid for part of the cost of her trip.", correct: "D" },
+        158: { part: 7, group: "158-160", text: "What most likely is Mr. Gallagher's job?", A: "Banker", B: "Librarian", C: "Journalist", D: "Publisher", correct: "C" },
+        159: { part: 7, group: "158-160", text: "What does the reviewer NOT mention about the book?", A: "It is very long.", B: "It is entertaining.", C: "It describes people from the past.", D: "It is well researched.", correct: "A" },
+        160: { part: 7, group: "158-160", text: "What does the reviewer suggest?", A: "Most people are not interested in history.", B: "A follow-up volume will soon be available.", C: "Mr. Gallagher is an experienced lecturer.", D: "The book will appeal to different groups of people.", correct: "D" },
+        161: { part: 7, group: "161-163", text: "What is the purpose of the article?", A: "To report on the merger of two airlines", B: "To announce a new business agreement", C: "To inform investors of a change in project plans", D: "To describe recent renovations at an airport", correct: "B" },
+        162: { part: 7, group: "161-163", text: "How long is the change expected to take?", A: "Three years", B: "Five years", C: "Ten years", D: "Seventeen years", correct: "C" },
+        163: { part: 7, group: "161-163", text: "What is NOT reported as a goal of Star Airways?", A: "To relocate its international headquarters", B: "To be among the first to use a new aircraft", C: "To replace the older planes in its fleet", D: "To increase its number of flight destinations", correct: "A" },
+        164: { part: 7, group: "164-167", text: "Why was the e-mail sent?", A: "To tell of a new payment policy", B: "To report a problem with a payment", C: "To inquire about customer satisfaction", D: "To explain how to set up an account", correct: "B" },
+        165: { part: 7, group: "164-167", text: "What is indicated about Mr. Kager's order?", A: "It has been canceled.", B: "Some of the items are unavailable.", C: "It has been prepared for shipment.", D: "It includes an incorrect address.", correct: "C" },
+        166: { part: 7, group: "164-167", text: "What is Mr. Kager asked to avoid doing?", A: "Posting a notification", B: "Changing a shipping method", C: "Resubmitting an order", D: "Replying to an e-mail", correct: "D" },
+        167: { part: 7, group: "164-167", text: "In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? \"Once there, provide the number of the new credit card.\"", A: "[1]", B: "[2]", C: "[3]", D: "[4]", correct: "C" },
+        168: { part: 7, group: "168-171", text: "What is the article mainly about?", A: "The construction of a new museum", B: "The restoration of a historic landmark", C: "The filming of an upcoming movie", D: "The election of a local official", correct: "B" },
+        169: { part: 7, group: "168-171", text: "Who is Stephanie Landsbury?", A: "A chief engineer", B: "A bank official", C: "A historical society member", D: "A tourist board spokesperson", correct: "D" },
+        170: { part: 7, group: "168-171", text: "What is suggested about the lighthouse?", A: "It has been in operation for nearly two centuries.", B: "It is open only to members of the historical society.", C: "It was constructed for a movie set.", D: "It is in good condition.", correct: "A" },
+        171: { part: 7, group: "168-171", text: "In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? \"The lighthouse is also important for cultural reasons.\"", A: "[1]", B: "[2]", C: "[3]", D: "[4]", correct: "B" },
+        172: { part: 7, group: "172-175", text: "At 10:22 A.M., why does Mr. Dubiel write, \"Here it is\"?", A: "He found Ms. Myers' booking information.", B: "He located the Allaire Rentals kiosk.", C: "He is marking the airport's location on a map.", D: "He is telling Ms. Myers where she can find a form.", correct: "A" },
+        173: { part: 7, group: "172-175", text: "What does Mr. Dubiel tell Ms. Myers to do when she gets to the kiosk?", A: "Pay for her reservation", B: "Take a bus to the terminal", C: "Ask to speak to Mr. Dubiel", D: "Pick up the key to her vehicle", correct: "D" },
+        174: { part: 7, group: "172-175", text: "What is suggested about Ms. Lindquist?", A: "She is traveling during a holiday.", B: "She is located at Boa Vista Airport.", C: "She wants to change her travel plans.", D: "She wants to reserve a car for a week.", correct: "B" },
+        175: { part: 7, group: "172-175", text: "What size vehicle will Ms. Myers rent?", A: "A compact car", B: "A mid-size car", C: "A full-size car", D: "A small van", correct: "C" },
+        176: { part: 7, group: "176-180", text: "What city is the subject of Citywatch Magazine?", A: "Sydney", B: "Amsterdam", C: "Chicago", D: "Taipei", correct: "C" },
+        177: { part: 7, group: "176-180", text: "What is the purpose of the article?", A: "To profile a local businessperson", B: "To report on an increase in tourism", C: "To describe a local business event", D: "To discuss the opening of a new café", correct: "A" },
+        178: { part: 7, group: "176-180", text: "What is Ms. Wu's current position?", A: "Coffee shop owner", B: "Marketing director", C: "Business journalist", D: "Corporate executive", correct: "D" },
+        179: { part: 7, group: "176-180", text: "What is indicated about the Wilkerson Beverage Company?", A: "It plans to market new products in December.", B: "It operates offices in multiple cities.", C: "It has an opening for a vice president.", D: "It produces a line of coffee drinks.", correct: "B" },
+        180: { part: 7, group: "176-180", text: "What does Ms. Wu say about her job?", A: "It is temporary.", B: "It is challenging.", C: "It requires a lot of travel.", D: "It pays well.", correct: "B" },
+        181: { part: 7, group: "181-185", text: "What is the subject of the press release?", A: "An increase in car advertisements", B: "A decline in consumer confidence", C: "The building of a car parking garage", D: "The planned opening of a new factory", correct: "D" },
+        182: { part: 7, group: "181-185", text: "What is indicated about Jupiter Corporation?", A: "It will release a new car model next year.", B: "Its headquarters are in Seoul.", C: "It has received several customer complaints.", D: "Its sales have remained steady.", correct: "B" },
+        183: { part: 7, group: "181-185", text: "Who is Ja-Hoon Lee?", A: "A corporate spokesperson", B: "A factory employee", C: "An advertising manager", D: "An automobile salesperson", correct: "A" },
+        184: { part: 7, group: "181-185", text: "What will Robin Bertolli probably send to Ja-Hoon Lee?", A: "A schedule for the grand opening of a factory", B: "A report of the company's quarterly sales", C: "A summary of an advertising campaign", D: "A document containing construction plans", correct: "C" },
+        185: { part: 7, group: "181-185", text: "When does Robin Bertolli expect to see Ja-Hoon Lee?", A: "In February", B: "In March", C: "In June", D: "In July", correct: "D" },
+        186: { part: 7, group: "186-190", text: "What is the purpose of the first e-mail?", A: "To reserve a table at a hotel restaurant", B: "To inquire about hotel rates", C: "To confirm a hotel reservation", D: "To inform a hotel employee of a problem", correct: "C" },
+        187: { part: 7, group: "186-190", text: "What is NOT one of Ms. Wagner's opinions about the hotel?", A: "The quality of the housekeeping is good.", B: "The variety of menu options is below average.", C: "The quality of service at the hotel is average.", D: "The hospitality of the staff is average.", correct: "D" },
+        188: { part: 7, group: "186-190", text: "What is indicated about Ms. Wagner?", A: "She has stayed at other Persimmon Royal hotels.", B: "She feels the hotel restaurants are expensive.", C: "She will soon travel to Bangkok for business.", D: "She received a bill in the mail from the hotel.", correct: "A" },
+        189: { part: 7, group: "186-190", text: "What restaurant mistakenly charged Ms. Wagner?", A: "Bai Makrut", B: "Café Galanga", C: "Waterworks", D: "Elan", correct: "C" },
+        190: { part: 7, group: "186-190", text: "Where will Ms. Wagner attend a conference in March?", A: "In Bangkok", B: "In Macau", C: "In Sapporo", D: "In Melbourne", correct: "B" },
+        191: { part: 7, group: "191-195", text: "What is indicated about the workshops?", A: "They may be completed online.", B: "They are on topics requested by customers.", C: "They are a new initiative for the business.", D: "They will be followed by workshops with advanced-level topics.", correct: "C" },
+        192: { part: 7, group: "191-195", text: "What is suggested about the workshop on tile flooring?", A: "It is filled almost to capacity.", B: "It requires a fee to cover materials.", C: "It may have to be canceled.", D: "It is led by a high-school teacher.", correct: "A" },
+        193: { part: 7, group: "191-195", text: "Which facilitator is Mr. Czerny replacing?", A: "Ms. Delaney", B: "Mr. Faisal", C: "Mr. Zimmer", D: "Ms. Jimenez", correct: "C" },
+        194: { part: 7, group: "191-195", text: "What does Ms. Gomez tell Mr. Czerny about his workshop participants?", A: "They will require supervision.", B: "They must bring their own supplies.", C: "They are completing a work requirement.", D: "They will receive training materials in advance.", correct: "A" },
+        195: { part: 7, group: "191-195", text: "In the second e-mail, the word \"address\" in paragraph 2, line 5, is closest in meaning to", A: "lecture", B: "label", C: "send out", D: "respond to", correct: "D" },
+        196: { part: 7, group: "196-200", text: "What is suggested about The Sun Princess?", A: "It was written by Akira Murata.", B: "It will be Margo Schmidt's first role.", C: "It has received positive reviews from critics.", D: "It will be performed for the first time on June 17.", correct: "D" },
+        197: { part: 7, group: "196-200", text: "What is NOT suggested about the Wood Hollow Theatre in the letter?", A: "It accepts donations from people in the community.", B: "It offers reduced ticket prices to members.", C: "It organizes lecture tours on the arts.", D: "It hosts special performances for members.", correct: "C" },
+        198: { part: 7, group: "196-200", text: "In the letter, the word \"prominent\" in paragraph 2, line 3, is closest in meaning to", A: "talented", B: "famous", C: "protruding", D: "obvious", correct: "B" },
+        199: { part: 7, group: "196-200", text: "On what day will Mr. Bhatia attend the performance?", A: "Thursday", B: "Friday", C: "Saturday", D: "Sunday", correct: "A" },
+        200: { part: 7, group: "196-200", text: "What type of ticket is Mr. Bhatia ordering?", A: "Nonmember", B: "Student member", C: "Regular member", D: "Patron member", correct: "D" }
+    };
+
+    const partDirections = {
+        5: "<strong>Directions:</strong> A word or phrase is missing in each of the sentences below. Four answer choices are given below each sentence. Select the best answer to complete the sentence.",
+        6: "<strong>Directions:</strong> Read the texts that follow. A word, phrase, or sentence is missing in parts of each text. Four answer choices for each question are given below each text. Select the best answer to complete the text.",
+        7: "<strong>Directions:</strong> In this part you will read a selection of texts, such as magazine and newspaper articles, e-mails, and instant messages. Each text or set of texts is followed by several questions. Select the best answer for each question."
+    };
+
+    function startSimulation() {
+        document.getElementById('welcome-screen').classList.remove('active');
+        document.getElementById('general-directions-screen').classList.add('active');
+        
+        document.getElementById('global-header').classList.remove('hidden');
+        document.getElementById('global-header').classList.add('flex');
+        document.getElementById('exam-subheader').classList.remove('hidden');
+        document.getElementById('exam-subheader').classList.add('flex');
+        
+        startTimer();
+    }
+
+    function showDirectionScreen(partNum) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('direction-screen').classList.add('active');
+        document.getElementById('global-footer').classList.add('hidden');
+        
+        document.getElementById('nav-sidebar').classList.remove('hidden');
+        document.getElementById('nav-sidebar').classList.add('flex');
+        renderQuestionGrid();
+
+        document.getElementById('dir-title').innerText = `PART ${partNum}`;
+        document.getElementById('dir-content').innerHTML = partDirections[partNum];
+        document.getElementById('dir-btn-text').innerText = `Part ${partNum}`;
+        
+        testData.currentPart = partNum;
+    }
+
+    function startPartFromDirection() {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('main-app').classList.add('active');
+        document.getElementById('global-footer').classList.remove('hidden');
+        document.getElementById('global-footer').classList.add('flex');
+        
+        let firstQ = 101;
+        if (testData.currentPart === 6) firstQ = 131;
+        if (testData.currentPart === 7) firstQ = 147;
+        
+        goToQuestion(firstQ);
+    }
+
+    function switchPart(newPart) {
+        if(newPart !== testData.currentPart) {
+            showDirectionScreen(newPart);
+        }
+    }
+
+    function getPartFromQNum(qNum) {
+        if(qNum >= 101 && qNum <= 130) return 5;
+        if(qNum >= 131 && qNum <= 146) return 6;
+        if(qNum >= 147 && qNum <= 200) return 7;
+        return 5;
+    }
+
+    function startTimer() {
+        if(timerInterval) return; 
+        const timerEl = document.getElementById('timer');
+        timerInterval = setInterval(() => {
+            if (testData.timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                finishTest();
+                return;
+            }
+            testData.timeRemaining--;
+            
+            const m = Math.floor(testData.timeRemaining / 60);
+            const s = testData.timeRemaining % 60;
+            timerEl.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            
+            if(testData.timeRemaining < 300) {
+                timerEl.classList.add('text-red-600');
+            }
+        }, 1000);
+    }
+
+    function renderQuestionGrid() {
+        const grid = document.getElementById('question-grid');
+        grid.innerHTML = '';
+        for (let i = 101; i <= 200; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            btn.className = `grid-btn ${testData.answers[i] ? 'answered' : ''} ${i === testData.currentQ ? 'active' : ''}`;
+            btn.onclick = () => {
+                let targetPart = getPartFromQNum(i);
+                if(targetPart !== testData.currentPart && testData.currentPart !== 0) {
+                    testData.currentQ = i; 
+                    switchPart(targetPart);
+                } else {
+                    goToQuestion(i);
+                }
+            };
+            grid.appendChild(btn);
+        }
+    }
+
+    function goToQuestion(qNum) {
+        if (qNum < 101 || qNum > 200) return;
+        
+        let targetPart = getPartFromQNum(qNum);
+        
+        if(!document.getElementById('main-app').classList.contains('active')) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('main-app').classList.add('active');
+            document.getElementById('global-footer').classList.remove('hidden');
+            document.getElementById('global-footer').classList.add('flex');
+        }
+
+        testData.currentQ = qNum;
+        testData.currentPart = targetPart;
+        
+        const qData = questionsDB[qNum];
+        document.getElementById('q-counter').innerText = (qData && qData.group) ? qData.group : qNum;
+        document.getElementById('part-badge').innerText = `PART ${targetPart}`;
+        
+        let miniDir = targetPart === 5 ? "Select the best answer to complete the sentence." : 
+                      targetPart === 6 ? "Select the best answer to complete the text." :
+                                         "Select the best answer for each question.";
+        document.getElementById('part-mini-dir').innerText = miniDir;
+        
+        renderQuestionGrid();
+
+        const passageContainer = document.getElementById('passage-container');
+        const passageContent = document.getElementById('passage-content');
+        const questionContainer = document.getElementById('question-container');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+
+        if(targetPart === 5 || !qData.group) {
+            testData.currentGroup = null; // Reset group tracker
+            passageContainer.classList.add('hidden');
+            questionContainer.classList.remove('lg:w-1/2');
+            questionText.style.display = 'block';
+            
+            questionText.innerHTML = qData ? qData.text : "Question data unavailable.";
+            
+            let optionsHtml = '';
+            const letters = ['A', 'B', 'C', 'D'];
+            letters.forEach(letter => {
+                const isSelected = testData.answers[qNum] === letter;
+                const optText = qData ? qData[letter] : "Option unavailable";
+                optionsHtml += `
+                    <label class="option-label ${isSelected ? 'selected' : ''}" onclick="selectOption(${qNum}, '${letter}')">
+                        <div class="radio-circle">${letter}</div>
+                        <div class="option-text">${optText}</div>
+                        <input type="radio" name="q${qNum}" value="${letter}" ${isSelected ? 'checked' : ''}>
+                    </label>
+                `;
+            });
+            optionsContainer.innerHTML = optionsHtml;
+
+        } else {
+            // Check if we are already showing this group of questions
+            if (testData.currentGroup === qData.group && document.getElementById(`q-block-${qNum}`)) {
+                const qBlock = document.getElementById(`q-block-${qNum}`);
+                qBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                document.querySelectorAll('[id^="q-block-"]').forEach(el => el.classList.remove('bg-indigo-50', 'p-4', 'rounded-lg'));
+                qBlock.classList.add('bg-indigo-50', 'p-4', 'rounded-lg');
+                
+                if(targetPart === 6) {
+                    const blanks = passageContent.querySelectorAll('.blank-space');
+                    blanks.forEach(b => {
+                        b.classList.remove('bg-yellow-200', 'border-yellow-500', 'text-yellow-800');
+                        if(b.innerText == qNum) {
+                            b.classList.add('bg-yellow-200', 'border-yellow-500', 'text-yellow-800');
+                        }
+                    });
+                }
+            } else {
+                // Render a new group of questions
+                testData.currentGroup = qData.group;
+                passageContainer.classList.remove('hidden');
+                questionContainer.classList.add('lg:w-1/2');
+                passageContent.innerHTML = passagesData[qData.group] || "Passage data unavailable.";
+                
+                if(targetPart === 6) {
+                    const blanks = passageContent.querySelectorAll('.blank-space');
+                    blanks.forEach(b => {
+                        if(b.innerText == qNum) {
+                            b.classList.add('bg-yellow-200', 'border-yellow-500', 'text-yellow-800');
+                        }
+                    });
+                }
+                
+                passageContent.scrollTop = 0; // Reset passage scroll
+                questionText.style.display = 'none'; // Hide single question area
+                
+                // Fetch and render all questions associated with this passage
+                const groupQs = Object.keys(questionsDB)
+                    .filter(k => questionsDB[k].group === qData.group)
+                    .map(Number)
+                    .sort((a,b) => a-b);
+                    
+                let groupHtml = '';
+                groupQs.forEach(gqNum => {
+                    const gqData = questionsDB[gqNum];
+                    groupHtml += `
+                        <div class="mb-8 pb-6 border-b border-gray-200" id="q-block-${gqNum}">
+                            <div class="flex items-start mb-4">
+                                <div class="bg-[#4338ca] text-white text-xs font-bold px-2 py-1 mr-3 rounded shrink-0 mt-0.5">${gqNum}</div>
+                                <div class="text-base font-medium text-gray-800">${gqData.text}</div>
+                            </div>
+                            <div class="space-y-2 pl-10">
+                    `;
+                    
+                    ['A', 'B', 'C', 'D'].forEach(letter => {
+                        const isSelected = testData.answers[gqNum] === letter;
+                        const optText = gqData[letter];
+                        groupHtml += `
+                            <label class="option-label ${isSelected ? 'selected' : ''}" onclick="selectOption(${gqNum}, '${letter}')">
+                                <div class="radio-circle">${letter}</div>
+                                <div class="option-text">${optText}</div>
+                                <input type="radio" name="q${gqNum}" value="${letter}" ${isSelected ? 'checked' : ''}>
+                            </label>
+                        `;
+                    });
+                    groupHtml += `</div></div>`;
+                });
+                
+                optionsContainer.innerHTML = groupHtml;
+                
+                // Highlight and smoothly scroll down to the targeted question
+                setTimeout(() => {
+                    const qBlock = document.getElementById(`q-block-${qNum}`);
+                    if(qBlock) {
+                        qBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        document.querySelectorAll('[id^="q-block-"]').forEach(el => el.classList.remove('bg-indigo-50', 'p-4', 'rounded-lg'));
+                        qBlock.classList.add('bg-indigo-50', 'p-4', 'rounded-lg');
+                    }
+                }, 50);
+            }
+        }
+
+        document.getElementById('prev-btn').disabled = (qNum === 101);
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (qNum === 200) {
+            nextBtn.innerHTML = 'Finish <i class="fas fa-check ml-2"></i>';
+            nextBtn.onclick = () => finishTest();
+            nextBtn.classList.remove('bg-[#4338ca]', 'hover:bg-[#3730a3]', 'disabled:opacity-50', 'disabled:cursor-not-allowed');
+            nextBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+        } else {
+            nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right ml-2"></i>';
+            nextBtn.onclick = () => goToQuestion(testData.currentQ + 1);
+            nextBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+            nextBtn.classList.add('bg-[#4338ca]', 'hover:bg-[#3730a3]', 'disabled:opacity-50', 'disabled:cursor-not-allowed');
+        }
+    }
+
+    function selectOption(qNum, letter) {
+        testData.answers[qNum] = letter;
+        
+        // Update the radio visually without forcing a full screen re-render for grouped questions
+        const qLabels = document.querySelectorAll(`input[name="q${qNum}"]`);
+        if (qLabels.length > 0) {
+            qLabels.forEach(radio => {
+                radio.checked = (radio.value === letter);
+                if (radio.value === letter) {
+                    radio.parentElement.classList.add('selected');
+                } else {
+                    radio.parentElement.classList.remove('selected');
+                }
+            });
+            
+            // Advance active state 
+            testData.currentQ = qNum;
+            document.getElementById('q-counter').innerText = questionsDB[qNum].group ? questionsDB[qNum].group : qNum;
+            
+            // Re-highlight the question block if they clicked a group
+            const qBlock = document.getElementById(`q-block-${qNum}`);
+            if (qBlock) {
+                document.querySelectorAll('[id^="q-block-"]').forEach(el => el.classList.remove('bg-indigo-50', 'p-4', 'rounded-lg'));
+                qBlock.classList.add('bg-indigo-50', 'p-4', 'rounded-lg');
+            }
+            
+            renderQuestionGrid();
+        } else {
+            // Fallback for single questions
+            goToQuestion(qNum); 
+        }
+    }
+
+    function finishTest() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null; 
+        }
+        
+        let rawScore = 0;
+        for(let i = 101; i <= 200; i++) {
+            if(testData.answers[i] === questionsDB[i]?.correct) {
+                rawScore++;
+            }
+        }
+
+        let scaledMin = 5, scaledMax = 495;
+        if(rawScore >= 96) { scaledMin = 460; scaledMax = 495; }
+        else if(rawScore >= 91) { scaledMin = 420; scaledMax = 490; }
+        else if(rawScore >= 86) { scaledMin = 390; scaledMax = 460; }
+        else if(rawScore >= 81) { scaledMin = 355; scaledMax = 435; }
+        else if(rawScore >= 76) { scaledMin = 325; scaledMax = 410; }
+        else if(rawScore >= 71) { scaledMin = 295; scaledMax = 385; }
+        else if(rawScore >= 66) { scaledMin = 270; scaledMax = 360; }
+        else if(rawScore >= 61) { scaledMin = 235; scaledMax = 330; }
+        else if(rawScore >= 56) { scaledMin = 210; scaledMax = 300; }
+        else if(rawScore >= 51) { scaledMin = 180; scaledMax = 270; }
+        else if(rawScore >= 46) { scaledMin = 155; scaledMax = 240; }
+        else if(rawScore >= 41) { scaledMin = 135; scaledMax = 215; }
+        else if(rawScore >= 36) { scaledMin = 115; scaledMax = 180; }
+        else if(rawScore >= 31) { scaledMin = 95; scaledMax = 145; }
+        else if(rawScore >= 26) { scaledMin = 75; scaledMax = 120; }
+        else if(rawScore >= 21) { scaledMin = 60; scaledMax = 95; }
+        else if(rawScore >= 16) { scaledMin = 45; scaledMax = 75; }
+        else if(rawScore >= 11) { scaledMin = 30; scaledMax = 55; }
+        else if(rawScore >= 6)  { scaledMin = 10; scaledMax = 40; }
+        else if(rawScore >= 1)  { scaledMin = 5; scaledMax = 30; }
+        else { scaledMin = 5; scaledMax = 15; }
+
+        document.getElementById('raw-score').innerText = rawScore;
+        document.getElementById('scaled-score').innerText = `${scaledMin} - ${scaledMax}`;
+
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('nav-sidebar').classList.add('hidden');
+        document.getElementById('nav-sidebar').classList.remove('flex');
+        document.getElementById('global-footer').classList.add('hidden');
+        document.getElementById('global-footer').classList.remove('flex');
+        document.getElementById('results-screen').classList.add('active');
+        document.getElementById('exam-subheader').classList.add('hidden');
+        document.getElementById('exam-subheader').classList.remove('flex');
+
+        renderReviewGrid();
+    }
+
+    function renderReviewGrid() {
+        const grid = document.getElementById('review-grid');
+        grid.innerHTML = '';
+        for (let i = 101; i <= 200; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            let statusClass = 'unanswered';
+            if (testData.answers[i]) {
+                if (testData.answers[i] === questionsDB[i]?.correct) statusClass = 'correct';
+                else statusClass = 'incorrect';
+            }
+            btn.className = `grid-btn review-grid-btn ${statusClass}`;
+            btn.onclick = () => openReviewModal(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function openReviewModal(qNum) {
+        const modal = document.getElementById('review-modal');
+        const content = document.getElementById('review-modal-content');
+        const qData = questionsDB[qNum];
+        
+        document.getElementById('modal-title').innerText = `Question ${qNum} Review`;
+        document.getElementById('modal-user-ans').innerText = testData.answers[qNum] || "None";
+        document.getElementById('modal-correct-ans').innerText = qData.correct;
+        
+        const userAnsEl = document.getElementById('modal-user-ans');
+        if(testData.answers[qNum] === qData.correct) {
+            userAnsEl.className = "text-xl font-bold text-green-700";
+        } else {
+            userAnsEl.className = "text-xl font-bold text-red-600";
+        }
+
+        const pContainer = document.getElementById('modal-passage-container');
+        if (qData.group && passagesData[qData.group]) {
+            pContainer.classList.remove('hidden');
+            document.getElementById('modal-passage').innerHTML = passagesData[qData.group];
+        } else {
+            pContainer.classList.add('hidden');
+        }
+
+        document.getElementById('modal-q-text').innerHTML = qData.text;
+        
+        let opts = '';
+        ['A', 'B', 'C', 'D'].forEach(letter => {
+            const isCorr = letter === qData.correct;
+            const isUser = letter === testData.answers[qNum];
+            let colorCls = 'text-gray-600';
+            let icon = '';
+            
+            if(isCorr) { colorCls = 'text-green-700 font-bold bg-green-50 p-2 rounded'; icon = '<i class="fas fa-check text-green-600 mr-2"></i>'; }
+            else if(isUser) { colorCls = 'text-red-600 line-through p-2'; icon = '<i class="fas fa-times text-red-500 mr-2"></i>'; }
+            else { colorCls = 'p-2'; icon = '<span class="mr-6"></span>';}
+
+            opts += `<div class="${colorCls} flex items-start">${icon}<span><strong>(${letter})</strong> ${qData[letter]}</span></div>`;
+        });
+        document.getElementById('modal-options').innerHTML = opts;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeReviewModal() {
+        const modal = document.getElementById('review-modal');
+        const content = document.getElementById('review-modal-content');
+        modal.classList.add('opacity-0');
+        content.classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const nameInput = document.getElementById('candidate-name').value.trim();
+        const candidateName = nameInput ? nameInput : 'Candidate';
+        const rawScore = document.getElementById('raw-score').innerText;
+        const scaledScore = document.getElementById('scaled-score').innerText;
+        const numericRawScore = parseInt(rawScore);
+        
+        doc.setFillColor(67, 56, 202); // Indigo-700
+        doc.rect(0, 0, 210, 35, 'F');
+        
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
+        doc.text("TOEIC Reading Practice - Score Report", 105, 22, null, null, "center");
+        
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Name:`, 20, 55);
+        doc.setFont('helvetica', 'bold');
+        doc.text(candidateName, 40, 55);
+        
+        doc.setFont('helvetica', 'normal');
+        const today = new Date().toLocaleDateString('en-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+        doc.text(`Date:`, 130, 55);
+        doc.setFont('helvetica', 'bold');
+        doc.text(today, 145, 55);
+        
+        doc.setDrawColor(200, 200, 200);
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(20, 70, 170, 40, 3, 3, 'FD');
+        
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text("RAW SCORE", 60, 85, null, null, "center");
+        doc.text("ESTIMATED SCALED SCORE", 145, 85, null, null, "center");
+        
+        doc.setFontSize(24);
+        doc.setTextColor(67, 56, 202);
+        doc.text(`${rawScore} / 100`, 60, 100, null, null, "center");
+        
+        doc.setTextColor(22, 101, 52);
+        doc.text(scaledScore, 145, 100, null, null, "center");
+        
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Reading Performance Feedback", 20, 135);
+        
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        
+        let feedback = "";
+        if (numericRawScore >= 85) {
+            feedback = "Excellent reading comprehension! You easily navigate complex vocabulary, grasp nuanced meanings across multiple texts, and locate detailed information rapidly. Maintain this sharp focus!";
+        } else if (numericRawScore >= 60) {
+            feedback = "Good work! You have strong reading skills and can confidently handle business correspondence and articles. To improve, practice quickly scanning paired passages to connect related information efficiently.";
+        } else if (numericRawScore >= 35) {
+            feedback = "You have a solid foundation! You understand straightforward texts well. Focus on expanding your business vocabulary and practice pacing yourself so you don't run out of time on the longer Part 7 sections.";
+        } else {
+            feedback = "Keep practicing! Reading in a second language requires consistent effort. Build your skills by reading short English news articles daily and studying common grammar structures tested in Part 5.";
+        }
+        
+        const splitFeedback = doc.splitTextToSize(feedback, 170);
+        doc.text(splitFeedback, 20, 145);
+        
+        doc.setFontSize(9);
+        doc.setTextColor(120, 120, 120);
+        doc.setFont('helvetica', 'italic');
+        const disclaimer = "Disclaimer: This report is generated from an unofficial practice tool. The score provided is an estimation/prediction based on raw score conversions and is NOT endorsed by, affiliated with, or approved by ETS. TOEIC® is a registered trademark of ETS.";
+        const splitDisclaimer = doc.splitTextToSize(disclaimer, 170);
+        doc.text(splitDisclaimer, 20, 270);
+        
+        doc.save(`TOEIC_Reading_Report_${candidateName.replace(/\s+/g, '_')}.pdf`);
+    }
+</script>
+
+</body>
+</html>

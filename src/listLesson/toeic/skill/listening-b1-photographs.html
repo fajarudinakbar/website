@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>TOEIC Listening - B1 - Photographs</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .text-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            margin-top: 0.5rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+            font-weight: 700;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #0f172a;
+            cursor: pointer;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        
+        .tf-selected {
+            background-color: #3b82f6 !important;
+            color: #ffffff !important;
+            border-color: #0f172a !important;
+        }
+        
+        .option-label.correct-lock {
+            background-color: #4ade80 !important;
+            border-color: #0f172a;
+            color: #0f172a !important;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        .option-label.incorrect-lock {
+            background-color: #f87171 !important;
+            border-color: #0f172a;
+            color: #ffffff !important;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        .option-label.incorrect-lock span {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-6 md:p-8 text-sm md:text-base">
+
+    <div class="max-w-6xl mx-auto bg-white p-5 sm:p-8 lg:p-10 border-4 border-dark shadow-neo">
+        
+        <div class="text-xs sm:text-sm md:text-base text-dark mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">TOEIC</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Listening</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-[#facc15] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">B1</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Photographs</span>
+        </div>
+
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div>
+                <h1 class="text-1xl sm:text-2xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight mb-3 md:mb-4 text-balance">
+                    Understanding Part 1: Photographs
+                </h1>
+                <p class="text-lg sm:text-xl md:text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-1 border-2 border-dark text-pretty">
+                    Topic: Analyzing Actions, States, and Prepositions
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-2 px-5 py-3 text-sm md:text-base text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-[#fefce8] border-3 border-dark p-5 md:p-6 mb-8 md:mb-12 shadow-neo-sm flex items-start gap-4">
+            <div class="bg-[#facc15] p-2 border-2 border-dark shrink-0">
+                <i data-lucide="info" class="w-6 h-6 text-dark"></i>
+            </div>
+            <p class="text-base md:text-lg text-dark font-bold leading-relaxed text-pretty">
+                <span class="uppercase font-black text-xl mr-2">Instructions:</span> Work through the 10-Step Drill-Master approach. For quizzes, you have <strong class="text-brand-600">two attempts</strong> before the explanation and source citation are revealed. Use the Audio features to simulate the North American TTS test voices. All accordions are closed by default to build focus.
+            </p>
+        </div>
+
+        <div class="space-y-6 md:space-y-8">
+
+            <!-- Part 1: Preparation -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            1
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 1: Foundational Drills</span>
+                    </div>
+                    <div id="icon-wrapper-part1" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part1" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <!-- Task 1 -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#38bdf8] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 1</span> Skill Diagnostic
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t1', this, 'Show Diagnostic Baseline')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Diagnostic Baseline</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">When looking at a Part 1 photograph before the audio plays, what are the top 3 elements you should immediately identify in your mind?</p>
+                            <textarea class="text-input text-base font-medium" placeholder="1. I should look at..."></textarea>
+                            
+                            <div id="ans-t1" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="lightbulb" class="w-5 h-5 inline mr-1 text-[#eab308] fill-current"></i>Diagnostic Baseline:</strong>
+                                <ul class="list-disc pl-6 mt-2 space-y-2 font-medium text-base">
+                                    <li><strong>The Subject(s):</strong> Who or what is the main focus? (Man, woman, vehicles, nature).</li>
+                                    <li><strong>The Action:</strong> What are the main subjects actively doing? (Examine the verbs: carrying, writing, leaning).</li>
+                                    <li><strong>The Location/State:</strong> Where are things placed? (Examine the prepositions: next to, under, stacked on).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 2 -->
+                        <div class="bg-white border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-4 border-b-2 border-dark pb-3">
+                                <span class="bg-[#38bdf8] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 2</span> Lexical Match (10 Items)
+                            </h3>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-6 text-pretty">Part 1 tests highly specific vocabulary describing actions and states. Match these 10 common photograph terms to their definitions.</p>
+                            
+                            <div id="vocab-container" class="space-y-4">
+                                <!-- Populated by JS -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkVocab()" class="neo-btn w-full md:w-auto bg-[#38bdf8] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Vocabulary
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Task 3 -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#38bdf8] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 3</span> Pattern Identification
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t3', this, 'Show Pattern Analysis')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Pattern Analysis</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">A frequent trap in Part 1 is the <strong>"Wrong Action"</strong> distractor. If a photo shows a man standing next to a bicycle reading a map, why is the option <em>"The man is riding a bicycle"</em> incorrect, even though the noun "bicycle" is perfectly accurate?</p>
+                            <textarea class="text-input text-base font-medium" placeholder="This option is a trap because..."></textarea>
+                            
+                            <div id="ans-t3" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="eye" class="w-5 h-5 inline mr-1 text-[#eab308]"></i>Pattern Analysis:</strong>
+                                <p class="font-medium text-base text-pretty">Test makers often use the correct noun (bicycle) but pair it with a verb that is not happening (riding). Your eyes naturally gravitate toward the prominent object, but you must ensure the <strong>verb matches the present continuous action</strong> of the subject.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#eff6ff]">
+                <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            <i data-lucide="headphones" class="w-6 h-6 md:w-8 md:h-8"></i>
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 2: Input (Step 4)</span>
+                    </div>
+                    <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-6">
+                        
+                        <div class="bg-slate-50 border-4 border-dark p-6 md:p-10 shadow-inner">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b-4 border-dark pb-4 mb-6 gap-4">
+                                <h3 class="text-2xl md:text-3xl font-black text-dark uppercase text-balance">The Anchor Text: Photo Audio Simulator</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <button onclick="playTTS('anchor-text-content')" class="neo-btn bg-[#60a5fa] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#3b82f6]">
+                                        <i data-lucide="play" class="w-5 h-5 fill-current"></i> Listen
+                                    </button>
+                                    <button onclick="stopTTS()" class="neo-btn bg-[#f87171] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#ef4444]">
+                                        <i data-lucide="square" class="w-5 h-5 fill-current"></i> Stop
+                                    </button>
+                                    <button onclick="toggleTranscript('anchor-text-content')" id="btn-transcript-anchor-text-content" class="neo-btn bg-white text-dark px-4 py-2 text-sm md:text-base">
+                                        <i data-lucide="file-text" class="w-5 h-5"></i> Show Transcript
+                                    </button>
+                                    <button onclick="toggleAnchorExplanation()" id="btn-explanation-anchor-text" class="neo-btn bg-white text-dark px-4 py-2 text-sm md:text-base">
+                                        <i data-lucide="check-circle" class="w-5 h-5"></i> Show Explanations
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="mb-6 font-bold text-brand-700 italic border-l-4 border-brand-500 pl-4">Click "Listen" to hear the audio prompts for the visual descriptions. The smart TTS engine will automatically skip reading the speaker tags aloud to mimic a real exam environment.</p>
+                            
+                            <!-- Visual Context visible, audio script hidden -->
+                            <div class="space-y-8 text-base md:text-lg text-slate-800 font-medium">
+                                
+                                <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                    <strong class="uppercase text-dark bg-[#e0f2fe] px-2 py-1 border-2 border-dark text-sm block w-max mb-3">Photo 1</strong>
+                                    <!-- Embedded Real Photo -->
+                                    <img src="https://images.unsplash.com/photo-1602016736566-7ed6a58894bd?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Woman typing on a laptop keyboard" class="w-full max-w-2xl border-3 border-dark mb-4 object-cover max-h-96" onerror="this.onerror=null; this.src='https://placehold.co/800x500/cbd5e1/0f172a?text=Photo+Unavailable';">
+                                    <p class="text-pretty hidden">A woman is sitting at a desk and actively typing on a laptop keyboard.</p>
+                                </div>
+
+                                <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                                    <strong class="uppercase text-dark bg-[#e0f2fe] px-2 py-1 border-2 border-dark text-sm block w-max mb-3">Photo 2</strong>
+                                    <!-- Embedded Real Photo -->
+                                    <img src="https://plus.unsplash.com/premium_photo-1661778490723-371305b4fb06?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Business people in a meeting looking at a document" class="w-full max-w-2xl border-3 border-dark mb-4 object-cover max-h-96" onerror="this.onerror=null; this.src='https://placehold.co/800x500/fed7aa/0f172a?text=Photo+Unavailable';">
+                                    <p class="text-pretty hidden">A group of professionals are gathered around a table in a meeting room. One of the men is holding and pointing at a paper plan or document while others look on.</p>
+                                </div>
+
+                            </div>
+
+                            <div id="anchor-text-content" class="mt-8 pt-6 border-t-4 border-dark hidden space-y-6">
+                                <div class="bg-gray-100 p-4 border-2 border-dark text-base">
+                                    <h4 class="font-black text-brand-700 uppercase mb-2">Transcript: Photo 1</h4>
+                                    <p class="mb-2" data-speaker="narrator"><strong>Narrator:</strong> Number 1. Look at the picture marked number 1 in your test book.</p>
+                                    <p class="mb-1" data-speaker="male"><strong>Man:</strong> (A) She is typing on a keyboard.</p>
+                                    <p class="mb-1" data-speaker="male"><strong>Man:</strong> (B) She is examining a document.</p>
+                                    <p class="mb-1" data-speaker="male"><strong>Man:</strong> (C) She is closing a window.</p>
+                                    <p class="mb-1" data-speaker="male"><strong>Man:</strong> (D) She is drinking from a cup.</p>
+                                </div>
+                                <div class="bg-gray-100 p-4 border-2 border-dark text-base">
+                                    <h4 class="font-black text-brand-700 uppercase mb-2">Transcript: Photo 2</h4>
+                                    <p class="mb-2" data-speaker="narrator"><strong>Narrator:</strong> Number 2. Look at the picture marked number 2 in your test book.</p>
+                                    <p class="mb-1" data-speaker="female"><strong>Woman:</strong> (A) They are sweeping the floor.</p>
+                                    <p class="mb-1" data-speaker="female"><strong>Woman:</strong> (B) They are taking off their hats.</p>
+                                    <p class="mb-1" data-speaker="female"><strong>Woman:</strong> (C) One of the men is pointing at a plan.</p>
+                                    <p class="mb-1" data-speaker="female"><strong>Woman:</strong> (D) They are driving a truck.</p>
+                                </div>
+                            </div>
+                            
+                            <div id="anchor-text-explanation" class="answer-box hidden mt-6 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4"><i data-lucide="check-circle" class="w-5 h-5 inline mr-1 text-[#22c55e]"></i>Answer Key & Explanations:</strong>
+                                <ul class="space-y-4 font-medium text-base text-pretty mb-2 list-none">
+                                    <li class="bg-white p-4 border-2 border-dark shadow-sm">
+                                        <strong class="text-brand-700 uppercase block mb-1">Photo 1</strong>
+                                        <span class="block font-black text-dark mb-2">Correct Answer: (A) She is typing on a keyboard.</span>
+                                        <p class="text-sm"><em>Explanation:</em> The woman's hands are visibly positioned on the laptop keyboard, actively typing. Option (B) "examining a document" is now a trap because no paper document is the primary focus.</p>
+                                    </li>
+                                    <li class="bg-white p-4 border-2 border-dark shadow-sm">
+                                        <strong class="text-brand-700 uppercase block mb-1">Photo 2</strong>
+                                        <span class="block font-black text-dark mb-2">Correct Answer: (C) One of the men is pointing at a plan.</span>
+                                        <p class="text-sm"><em>Explanation:</em> The action matches the visual of the meeting where a man is drawing attention to the document/plan. Option (B) "taking off their hats" is a trap as they are indoors and not wearing hats.</p>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            3
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 3: Intensive Practice</span>
+                    </div>
+                    <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <!-- Task 4 -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 5</span> Rapid Gist Check
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t4', this, 'Show Target Gist')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Target Gist</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">You have 15 seconds. Based on <strong>Photo 2</strong> above, what is the primary state of the subjects and what action are they performing?</p>
+                            <textarea class="text-input h-24 text-base font-medium" placeholder="The state is... The action is..."></textarea>
+                            
+                            <div id="ans-t4" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="check-square" class="w-5 h-5 inline mr-1 text-[#22c55e]"></i>Sample Gist:</strong>
+                                <ul class="list-disc pl-6 mt-2 space-y-2 font-medium text-base">
+                                    <li><strong>State:</strong> Standing outdoors wearing safety gear.</li>
+                                    <li><strong>Action:</strong> Reviewing and pointing at a document/blueprint.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 5 (Interactive MCQ) -->
+                        <div class="bg-white border-3 border-dark shadow-neo p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 6</span> Core MCQ Set (5 Items)
+                            </h3>
+                            <p class="text-base font-bold text-slate-700 mb-4 bg-yellow-100 border-2 border-dark p-3 inline-block shadow-[2px_2px_0_0_#0f172a]"><i data-lucide="info" class="w-4 h-4 inline text-dark mr-1"></i> Answer the questions based on the embedded photographs and visual scenarios provided. You have 2 attempts per question.</p>
+                            <div id="mcq-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkMCQ()" class="neo-btn w-full md:w-auto bg-[#4ade80] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Answers
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Task 6 (Interactive T/F) -->
+                        <div class="bg-white border-3 border-dark shadow-neo p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 7</span> Evidence Verification (5 Items)
+                            </h3>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-6 text-pretty">Verify the statements based on TOEIC Part 1 strategy and the provided photographs. Select True or False.</p>
+                            <div id="tf-container" class="space-y-4">
+                                <!-- Populated by JS -->
+                            </div>
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkTF()" class="neo-btn w-full md:w-auto bg-[#4ade80] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Evidence
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Task 7 -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 8</span> Workplace Transformation
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t7', this, 'Show Transformation')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Transformation</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">In Part 1, you often hear passive sentences describing states. Rewrite this passive description into an active sentence: <br><br><em>"The document is being examined by the woman."</em></p>
+                            <textarea class="text-input h-24 text-base font-medium" placeholder="The woman..."></textarea>
+                            
+                            <div id="ans-t7" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="check-square" class="w-5 h-5 inline mr-1 text-[#22c55e]"></i>Sample Transformation:</strong>
+                                <ul class="list-disc pl-6 mt-2 space-y-2 font-medium text-base">
+                                    <li>"The woman is examining the document."</li>
+                                    <li><em>Note:</em> The TOEIC frequently uses both forms to test grammatical agility.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#ffedd5]">
+                <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            4
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 4: Error Recognition Sprint</span>
+                    </div>
+                    <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <!-- Task 8 (Step 9) -->
+                        <div class="bg-white border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#fb923c] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 9</span> The "Wrong-Option" Analysis (5 Items)
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t8', this, 'Show Analysis')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Analysis</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">Look at the distractors from Step 6. Why are these options <strong>incorrect</strong> traps? Label them as "Wrong Action", "Wrong State", or "Out of Context".</p>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <strong class="text-brand-700">1. (Q1) Distractor: "She is typing on a keyboard."</strong>
+                                    <textarea class="text-input h-16 text-sm font-medium mt-1" placeholder="It is a trap because..."></textarea>
+                                </div>
+                                <div>
+                                    <strong class="text-brand-700">2. (Q2) Distractor: "They are taking off their hats."</strong>
+                                    <textarea class="text-input h-16 text-sm font-medium mt-1" placeholder="It is a trap because..."></textarea>
+                                </div>
+                                <div>
+                                    <strong class="text-brand-700">3. (Q3) Distractor: "He is paying for groceries."</strong>
+                                    <textarea class="text-input h-16 text-sm font-medium mt-1" placeholder="It is a trap because..."></textarea>
+                                </div>
+                                <div>
+                                    <strong class="text-brand-700">4. (Q4) Distractor: "A waiter is serving food."</strong>
+                                    <textarea class="text-input h-16 text-sm font-medium mt-1" placeholder="It is a trap because..."></textarea>
+                                </div>
+                                <div>
+                                    <strong class="text-brand-700">5. (Q5) Distractor: "The boat is sailing on the ocean."</strong>
+                                    <textarea class="text-input h-16 text-sm font-medium mt-1" placeholder="It is a trap because..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <div id="ans-t8" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="arrow-right" class="w-5 h-5 inline mr-1 text-[#eab308]"></i>Analysis Key:</strong>
+                                <ul class="list-decimal pl-5 space-y-2 font-medium text-base text-pretty">
+                                    <li><strong>Wrong Action:</strong> The laptop is present, but she is holding a pen, not actively typing.</li>
+                                    <li><strong>Wrong Action/Opposite:</strong> They are currently wearing the hats, not actively removing them.</li>
+                                    <li><strong>Out of Context/Future:</strong> He is pushing the cart, not at a register paying yet.</li>
+                                    <li><strong>Out of Context/Ghost Noun:</strong> No people or waiters are visible in a description of stacked chairs.</li>
+                                    <li><strong>Wrong State:</strong> The boat is docked (stationary), not actively sailing.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-4 border-dark shadow-neo bg-[#fae8ff]">
+                <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            5
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 5: Mastery Simulation</span>
+                    </div>
+                    <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <!-- Task 10 -->
+                        <div class="bg-white border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#e879f9] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 10</span> Cumulative Speed Drill (5 Items)
+                                </h3>
+                                <div class="flex gap-2 flex-wrap">
+                                    <button onclick="toggleAnswer('ans-t10', this, 'Show Key')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Key</button>
+                                </div>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">Match the photograph to the correct grammatical observation or trap identification.</p>
+                            
+                            <div class="space-y-6 mt-6">
+                                <!-- Q1 Photo (Empty meeting room) -->
+                                <div class="flex flex-col md:flex-row gap-4 items-start">
+                                    <img src="https://plus.unsplash.com/premium_photo-1661879435429-a396d927c686?q=80&w=1112&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Empty meeting room with chairs tucked under the table" class="w-full md:w-48 border-2 border-dark shrink-0 aspect-video object-cover bg-slate-200" onerror="this.onerror=null; this.src='https://placehold.co/400x225/cbd5e1/0f172a?text=Photo+Unavailable';">
+                                    <div class="flex-grow w-full">
+                                        <strong class="text-slate-800">Q1. Look at the photo. Which statement contains a trap?</strong><br>
+                                        <span class="text-sm">(A) "People are attending a meeting." (B) "Chairs are tucked under the desk."</span>
+                                        <textarea class="text-input h-12 text-sm font-medium mt-1" placeholder="Answer Q1..."></textarea>
+                                    </div>
+                                </div>
+                                <!-- Q2 Photo (Woman adjusting eyewear) -->
+                                <div class="flex flex-col md:flex-row gap-4 items-start pt-4 border-t-2 border-dashed border-slate-300">
+                                    <img src="https://images.unsplash.com/photo-1513673054901-2b5f51551112?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Woman adjusting her eyewear" class="w-full md:w-48 border-2 border-dark shrink-0 aspect-video object-cover bg-slate-200" onerror="this.onerror=null; this.src='https://placehold.co/400x225/cbd5e1/0f172a?text=Photo+Unavailable';">
+                                    <div class="flex-grow w-full">
+                                        <strong class="text-slate-800">Q2. Look at the photo. Which statement is correct?</strong><br>
+                                        <span class="text-sm">(A) "She is cleaning a window." (B) "She is adjusting her eyewear."</span>
+                                        <textarea class="text-input h-12 text-sm font-medium mt-1" placeholder="Answer Q2..."></textarea>
+                                    </div>
+                                </div>
+                                <!-- Q3 Photo (Man stacking cartons) -->
+                                <div class="flex flex-col md:flex-row gap-4 items-start pt-4 border-t-2 border-dashed border-slate-300">
+                                    <img src="https://plus.unsplash.com/premium_photo-1661696604066-826218035df7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Man stacking cartons in a warehouse" class="w-full md:w-48 border-2 border-dark shrink-0 aspect-video object-cover bg-slate-200" onerror="this.onerror=null; this.src='https://placehold.co/400x225/cbd5e1/0f172a?text=Photo+Unavailable';">
+                                    <div class="flex-grow w-full">
+                                        <strong class="text-slate-800">Q3. Look at the photo. Which statement is correct?</strong><br>
+                                        <span class="text-sm">(A) "He is opening a box." (B) "He is piling up some cartons."</span>
+                                        <textarea class="text-input h-12 text-sm font-medium mt-1" placeholder="Answer Q3..."></textarea>
+                                    </div>
+                                </div>
+                                <!-- Q4 Photo (Parked vehicles) -->
+                                <div class="flex flex-col md:flex-row gap-4 items-start pt-4 border-t-2 border-dashed border-slate-300">
+                                    <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=400&q=80" alt="Vehicles parked side by side" class="w-full md:w-48 border-2 border-dark shrink-0 aspect-video object-cover bg-slate-200" onerror="this.onerror=null; this.src='https://placehold.co/400x225/cbd5e1/0f172a?text=Q4:+Parked+cars';">
+                                    <div class="flex-grow w-full">
+                                        <strong class="text-slate-800">Q4. Look at the photo. Which statement is correct?</strong><br>
+                                        <span class="text-sm">(A) "Vehicles are parked side-by-side." (B) "Traffic is heavily congested."</span>
+                                        <textarea class="text-input h-12 text-sm font-medium mt-1" placeholder="Answer Q4..."></textarea>
+                                    </div>
+                                </div>
+                                <!-- Q5 Photo (Potted plant on ledge) -->
+                                <div class="flex flex-col md:flex-row gap-4 items-start pt-4 border-t-2 border-dashed border-slate-300">
+                                    <img src="https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=400&q=80" alt="A potted plant resting on a window ledge" class="w-full md:w-48 border-2 border-dark shrink-0 aspect-video object-cover bg-slate-200" onerror="this.onerror=null; this.src='https://placehold.co/400x225/cbd5e1/0f172a?text=Q5:+Potted+plant';">
+                                    <div class="flex-grow w-full">
+                                        <strong class="text-slate-800">Q5. Look at the photo. Which statement is correct?</strong><br>
+                                        <span class="text-sm">(A) "A plant is resting on the ledge." (B) "Someone is watering a plant."</span>
+                                        <textarea class="text-input h-12 text-sm font-medium mt-1" placeholder="Answer Q5..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="ans-t10" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="check-circle" class="w-5 h-5 inline mr-1 text-[#22c55e]"></i>Answer Key:</strong>
+                                <ul class="space-y-2 font-medium text-base text-pretty mb-2 list-none">
+                                    <li><strong>Q1: (B)</strong> The room is empty; "people" is a ghost noun trap.</li>
+                                    <li><strong>Q2: (B)</strong> "Wearing" describes a state. "Putting on" is the wrong action trap because the glasses are already on her face.</li>
+                                    <li><strong>Q3: (B)</strong> The man is holding/carrying the box. "Opening" is the wrong action trap.</li>
+                                    <li><strong>Q4: (A)</strong> The street is quiet, so traffic is not congested.</li>
+                                    <li><strong>Q5: (A)</strong> No one is in the photo, so "someone is watering" is a ghost action trap.</li>
+                                </ul>
+                                <p class="mt-4 text-xs text-brand-700 italic font-bold">Source: TOEIC Part 1 Strategy Guidelines: States vs Actions.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center mb-6">
+            <p class="text-dark text-sm md:text-base font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-6 py-4 shadow-[6px_6px_0_0_#0f172a] transition-all duration-300 translate-y-24 opacity-0 z-50 flex items-center gap-3 font-black text-sm md:text-base uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="info" class="w-6 h-6 shrink-0 text-brand-600"></i> <span id="toast-msg">Notification</span>
+    </div>
+
+    <script>
+        let voices = [];
+        let speechQueue = [];
+        let isSpeaking = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderVocab();
+            renderMCQ();
+            renderTF();
+            
+            if (typeof window !== 'undefined' && window.speechSynthesis) {
+                voices = window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => {
+                    voices = window.speechSynthesis.getVoices();
+                };
+            }
+        });
+
+        // 1. VOCABULARY DATA (10 Items)
+        const vocabOptions = {
+            a: "a. Moving something slightly to achieve the desired fit",
+            b: "b. Arranging objects in a pile",
+            c: "c. Looking closely at something",
+            d: "d. Resting against something for support",
+            e: "e. Walking in a leisurely way",
+            f: "f. A plant grown in a container",
+            g: "g. Having a view of from above",
+            h: "h. A person walking along a road",
+            i: "i. Applying force to move something forward",
+            j: "j. Covering a surface with concrete or stones"
+        };
+
+        const vocabData = [
+            { id: "v1", word: "1. Adjusting", correct: "a", options: vocabOptions },
+            { id: "v2", word: "2. Stacking", correct: "b", options: vocabOptions },
+            { id: "v3", word: "3. Examining", correct: "c", options: vocabOptions },
+            { id: "v4", word: "4. Leaning", correct: "d", options: vocabOptions },
+            { id: "v5", word: "5. Strolling", correct: "e", options: vocabOptions },
+            { id: "v6", word: "6. Potted plant", correct: "f", options: vocabOptions },
+            { id: "v7", word: "7. Overlooking", correct: "g", options: vocabOptions },
+            { id: "v8", word: "8. Pedestrian", correct: "h", options: vocabOptions },
+            { id: "v9", word: "9. Pushing", correct: "i", options: vocabOptions },
+            { id: "v10", word: "10. Paving", correct: "j", options: vocabOptions }
+        ];
+
+        // 2. MULTIPLE CHOICE DATA (5 Items based on visual descriptions)
+        const mcqData = [
+            { 
+                id: "m1", 
+                question: "1. Refer to Photo 1. Which statement best describes the picture?", 
+                correct: "a", 
+                explanation: "The photo clearly shows the woman's hands 'typing on a keyboard'.",
+                source: "TOEIC Part 1 Strategy: Analyzing primary subject actions.",
+                options: ["a. She is typing on a keyboard.", "b. She is examining a document.", "c. She is closing a window.", "d. She is drinking from a cup."] 
+            },
+            { 
+                id: "m2", 
+                question: "2. Refer to Photo 2. Which statement best describes the picture?", 
+                correct: "c", 
+                explanation: "The photo shows professionals in a meeting where 'One of the men is pointing at a plan' or document.",
+                source: "TOEIC Part 1 Strategy: Identifying specific gestures and objects.",
+                options: ["a. They are sweeping the floor.", "b. They are taking off their hats.", "c. One of the men is pointing at a plan.", "d. They are driving a truck."] 
+            },
+            { 
+                id: "m3", 
+                question: "3. Scenario: A man is pushing a cart in a supermarket.", 
+                correct: "b", 
+                explanation: "The statement directly matches the action (pushing) and object (cart).",
+                source: "TOEIC Part 1 Example Drill.",
+                options: ["a. The cart is empty.", "b. The man is pushing a cart.", "c. He is paying for groceries.", "d. He is stocking shelves."] 
+            },
+            { 
+                id: "m4", 
+                question: "4. Scenario: Chairs are stacked on tables in an empty restaurant.", 
+                correct: "c", 
+                explanation: "The passive state 'stacked on' correctly describes the object placement without implying human action.",
+                source: "TOEIC Part 1 Example Drill.",
+                options: ["a. People are eating dinner.", "b. The chairs are occupied.", "c. Chairs are stacked on the tables.", "d. A waiter is serving food."] 
+            },
+            { 
+                id: "m5", 
+                question: "5. Scenario: A boat is docked at a pier.", 
+                correct: "c", 
+                explanation: "The boat is stationary at the pier. 'Docked' perfectly describes this state.",
+                source: "TOEIC Part 1 Example Drill.",
+                options: ["a. The boat is sailing on the ocean.", "b. People are boarding the ship.", "c. The boat is docked at the pier.", "d. The pier is crowded with tourists."] 
+            }
+        ];
+
+        // 3. TRUE / FALSE DATA (5 Items)
+        const tfData = [
+            { 
+                id: "tf1", text: "1. In Photo 1, the woman is actively operating the laptop.", correct: "True",
+                explanation: "Her hands are on the keyboard and she is actively typing.",
+                source: "Photo 1 analysis."
+            },
+            { 
+                id: "tf2", text: "2. In Photo 2, the men are wearing safety gear.", correct: "False",
+                explanation: "The men are wearing standard business attire in an office setting, not safety gear.",
+                source: "Photo 2 analysis."
+            },
+            { 
+                id: "tf3", text: "3. A common distractor in Part 1 describes an action that is not currently happening.", correct: "True",
+                explanation: "Distractors often use correct nouns but incorrect verbs (e.g., 'typing' when the laptop is closed).",
+                source: "TOEIC Part 1 Strategy."
+            },
+            { 
+                id: "tf4", text: "4. 'Stacking' generally means to scatter items randomly across a surface.", correct: "False",
+                explanation: "Stacking means to arrange objects neatly in a pile.",
+                source: "Part 1 Lexical Database."
+            },
+            { 
+                id: "tf5", text: "5. If an audio option mentions a noun not visible in the picture, it is automatically incorrect.", correct: "True",
+                explanation: "Every word in the correct option must be verifiable within the frame of the photograph.",
+                source: "TOEIC Part 1 Strategy."
+            }
+        ];
+
+        // --- Render Functions ---
+        
+        let vocabAttempts = {};
+        let mcqAttempts = {};
+        let tfAttempts = {};
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            let html = '';
+            vocabData.forEach(item => {
+                vocabAttempts[item.id] = 0;
+                html += `
+                    <div class="flex flex-col md:flex-row gap-4 items-start md:items-center p-4 bg-brand-50 border-2 border-dark">
+                        <span class="font-black text-dark min-w-[150px]">${item.word}</span>
+                        <div class="flex-grow w-full md:w-auto">
+                            <select id="${item.id}" class="text-input !mt-0 !py-2 !px-3 text-sm cursor-pointer">
+                                <option value="" disabled selected>Select definition...</option>
+                                ${Object.entries(item.options).map(([key, val]) => `<option value="${key}">${val}</option>`).join('')}
+                            </select>
+                            <div id="feedback-${item.id}"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderMCQ() {
+            const container = document.getElementById('mcq-container');
+            let html = '';
+            mcqData.forEach(item => {
+                mcqAttempts[item.id] = 0;
+                html += `
+                    <div class="p-5 bg-brand-50 border-3 border-dark">
+                        <p class="font-black text-dark text-lg mb-4 text-balance">${item.question}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            ${item.options.map(opt => {
+                                const val = opt.charAt(0).toLowerCase();
+                                return `
+                                <label class="option-label group">
+                                    <input type="radio" name="${item.id}" value="${val}">
+                                    <span class="group-hover:text-brand-700 transition-colors">${opt}</span>
+                                </label>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div id="feedback-${item.id}"></div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            let html = '';
+            tfData.forEach(item => {
+                tfAttempts[item.id] = 0;
+                html += `
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 p-4 bg-brand-50 border-2 border-dark">
+                        <p class="font-bold text-dark text-base md:text-lg flex-grow text-pretty">${item.text}</p>
+                        <div class="flex gap-3 shrink-0">
+                            <label class="option-label !p-2 !px-4 hover:shadow-[3px_3px_0_0_#0f172a] hover:-translate-y-0.5">
+                                <input type="radio" name="${item.id}" value="True" class="hidden" onchange="handleTFChange('${item.id}')">
+                                True
+                            </label>
+                            <label class="option-label !p-2 !px-4 hover:shadow-[3px_3px_0_0_#0f172a] hover:-translate-y-0.5">
+                                <input type="radio" name="${item.id}" value="False" class="hidden" onchange="handleTFChange('${item.id}')">
+                                False
+                            </label>
+                        </div>
+                        <div id="feedback-${item.id}" class="w-full mt-2 lg:mt-0 lg:w-auto"></div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // --- STREAMING_CHUNK:TTS Logic with Smart Script Handling ---
+        
+        function getVoiceForRole(role) {
+            if (voices.length === 0) voices = window.speechSynthesis.getVoices();
+            
+            let targetVoice;
+            if (role === 'female') {
+                targetVoice = voices.find(v => v.name.includes('Online (Natural)') && v.name.includes('Aria') && v.lang === 'en-US') ||
+                              voices.find(v => v.name.includes('Zira') && v.lang === 'en-US') ||
+                              voices.find(v => v.name.includes('Female') && v.lang === 'en-US');
+            } else if (role === 'male') {
+                targetVoice = voices.find(v => v.name.includes('Online (Natural)') && v.name.includes('Guy') && v.lang === 'en-US') ||
+                              voices.find(v => v.name.includes('David') && v.lang === 'en-US') ||
+                              voices.find(v => v.name.includes('Male') && v.lang === 'en-US');
+            } else {
+                targetVoice = voices.find(v => v.name.includes('Online (Natural)') && v.lang === 'en-US') ||
+                              voices.find(v => v.lang === 'en-US') || 
+                              voices[0];
+            }
+
+            if (!targetVoice) targetVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+            
+            return targetVoice;
+        }
+
+        function processNextUtterance() {
+            if (speechQueue.length === 0) {
+                isSpeaking = false;
+                return;
+            }
+
+            isSpeaking = true;
+            const item = speechQueue.shift();
+            const utterance = new SpeechSynthesisUtterance(item.text);
+            
+            utterance.voice = getVoiceForRole(item.role);
+            utterance.rate = 0.95; 
+            utterance.pitch = item.role === 'female' ? 1.1 : (item.role === 'male' ? 0.9 : 1.0);
+            
+            utterance.onend = () => {
+                setTimeout(processNextUtterance, 300); 
+            };
+
+            utterance.onerror = (e) => {
+                console.error("Speech Synthesis Error:", e);
+                isSpeaking = false;
+                speechQueue = [];
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function playTTS(elementId) {
+            if (typeof window.speechSynthesis === 'undefined') {
+                showToast("Text-to-speech is not supported in this browser.");
+                return;
+            }
+            
+            stopTTS(); 
+            
+            const container = document.getElementById(elementId);
+            if (!container) return;
+
+            const parts = container.querySelectorAll('[data-speaker]');
+            
+            if (parts.length > 0) {
+                parts.forEach(part => {
+                    let clone = part.cloneNode(true);
+                    
+                    // Smart audio: Strip out bolded narrator labels
+                    let firstStrong = clone.querySelector('strong');
+                    if (firstStrong && clone.textContent.trim().startsWith(firstStrong.textContent.trim())) {
+                        firstStrong.remove();
+                    }
+                    
+                    let text = clone.textContent.trim();
+                    
+                    // Smart audio: Regex fallback to strip text-based labels 
+                    text = text.replace(/^(?:\[[A-Za-z]\]\s*)?(?:Mr\.|Ms\.|Mrs\.|Woman|Man|Narrator|Speaker(?:\s*\d+)?)\s*:\s*/i, '').trim();
+                    text = text.replace(/^["']|["']$/g, '').trim();
+                    
+                    if (text.length > 0) {
+                        speechQueue.push({
+                            role: part.getAttribute('data-speaker'),
+                            text: text
+                        });
+                    }
+                });
+            } else {
+                speechQueue.push({
+                    role: 'narrator',
+                    text: container.innerText || container.textContent
+                });
+            }
+
+            if (speechQueue.length > 0) {
+                showToast("Playing audio simulation...");
+                processNextUtterance();
+            }
+        }
+
+        function stopTTS() {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                speechQueue = [];
+                isSpeaking = false;
+            }
+        }
+
+        function toggleTranscript(elementId) {
+            const el = document.getElementById(elementId);
+            const btn = document.getElementById(`btn-transcript-${elementId}`);
+            
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                if(btn) {
+                    btn.innerHTML = `<i data-lucide="eye-off" class="w-5 h-5"></i> Hide Script`;
+                    btn.classList.add('bg-brand-200');
+                }
+            } else {
+                el.classList.add('hidden');
+                if(btn) {
+                    btn.innerHTML = `<i data-lucide="file-text" class="w-5 h-5"></i> Show Script`;
+                    btn.classList.remove('bg-brand-200');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        function toggleAnchorExplanation() {
+            const el = document.getElementById('anchor-text-explanation');
+            const btn = document.getElementById('btn-explanation-anchor-text');
+            
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                if(btn) {
+                    btn.innerHTML = `<i data-lucide="eye-off" class="w-5 h-5"></i> Hide Explanations`;
+                    btn.classList.add('bg-brand-200');
+                }
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                if(btn) {
+                    btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Show Explanations`;
+                    btn.classList.remove('bg-brand-200');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        // --- Interaction Handlers ---
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        function buildExplanationHTML(isCorrect, item, attemptNumber) {
+            if (isCorrect || attemptNumber >= 2) {
+                let statusHtml = isCorrect 
+                    ? `<span class="text-dark bg-[#4ade80] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black"><i data-lucide="check" class="w-4 h-4"></i> Correct!</span>`
+                    : `<span class="text-white bg-[#ef4444] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black"><i data-lucide="x" class="w-4 h-4"></i> Out of Attempts. Answer: ${item.correct.toUpperCase()}</span>`;
+                
+                return `
+                    <div class="mt-3 p-4 bg-[#f0fdf4] border-2 border-dark shadow-inner text-sm md:text-base animate-[fadeIn_0.3s_ease]">
+                        <div class="mb-3">${statusHtml}</div>
+                        <p class="mt-2 font-black text-dark uppercase mb-1">Explanation:</p>
+                        <p class="font-medium text-slate-800 leading-relaxed">${item.explanation}</p>
+                        <p class="mt-3 text-xs md:text-sm text-brand-700 italic font-bold border-l-3 border-brand-500 pl-2">Source: ${item.source}</p>
+                    </div>
+                `;
+            } else {
+                return `<span class="text-dark bg-[#facc15] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black mt-2 animate-[fadeIn_0.3s_ease]"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Incorrect. Try again. (Attempt ${attemptNumber}/2)</span>`;
+            }
+        }
+
+        function buildVocabFeedback(isCorrect, item, attemptNumber) {
+            if (isCorrect || attemptNumber >= 2) {
+                let statusHtml = isCorrect 
+                    ? `<span class="text-dark bg-[#4ade80] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black"><i data-lucide="check" class="w-4 h-4"></i> Correct!</span>`
+                    : `<span class="text-white bg-[#ef4444] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black"><i data-lucide="x" class="w-4 h-4"></i> Out of Attempts. Answer: ${item.correct.toUpperCase()}</span>`;
+                
+                return `
+                    <div class="mt-3 p-3 bg-[#f0fdf4] border-2 border-dark shadow-inner text-sm animate-[fadeIn_0.3s_ease]">
+                        <div>${statusHtml}</div>
+                    </div>
+                `;
+            } else {
+                return `<span class="text-dark bg-[#facc15] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black mt-2 animate-[fadeIn_0.3s_ease]"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Incorrect. Try again. (Attempt ${attemptNumber}/2)</span>`;
+            }
+        }
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select || select.disabled) return;
+                
+                if (select.value === "") {
+                    showToast("Please make selections before checking.");
+                    return;
+                }
+
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const isCorrect = select.value === item.correct;
+
+                if (!isCorrect) vocabAttempts[item.id]++;
+
+                select.classList.remove('bg-[#f87171]', 'text-white');
+
+                if (isCorrect || vocabAttempts[item.id] >= 2) {
+                    if (isCorrect) select.classList.add('bg-[#4ade80]', 'text-dark', 'font-bold');
+                    else select.classList.add('bg-[#facc15]', 'text-dark');
+                    
+                    select.value = item.correct;
+                    select.disabled = true;
+                    
+                    feedback.innerHTML = buildVocabFeedback(isCorrect, item, vocabAttempts[item.id]);
+                } else {
+                    select.classList.add('bg-[#f87171]', 'text-white');
+                    feedback.innerHTML = `<span class="text-[#ef4444] font-bold text-sm inline-flex items-center gap-1 mt-2"><i data-lucide="alert-circle" class="w-4 h-4"></i> Incorrect (Attempt ${vocabAttempts[item.id]}/2)</span>`;
+                }
+            });
+            lucide.createIcons();
+        }
+
+        function checkMCQ() {
+            let allAnswered = true;
+            mcqData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                let userVal = "";
+                let selectedRadio = null;
+                
+                radios.forEach(r => { 
+                    if(r.checked) { userVal = r.value; selectedRadio = r; }
+                });
+
+                if (userVal === "") {
+                    allAnswered = false;
+                    return; 
+                }
+                
+                if (radios[0].disabled) return;
+
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const isCorrect = userVal === item.correct;
+
+                if (!isCorrect) mcqAttempts[item.id]++;
+
+                radios.forEach(r => r.closest('.option-label').classList.remove('incorrect-lock'));
+
+                if (isCorrect || mcqAttempts[item.id] >= 2) {
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        const label = r.closest('.option-label');
+                        if (r.value === item.correct) {
+                            label.classList.add('correct-lock');
+                        } else if (r.checked && !isCorrect) {
+                            label.classList.add('incorrect-lock');
+                        }
+                    });
+                    feedback.innerHTML = buildExplanationHTML(isCorrect, item, mcqAttempts[item.id]);
+                } else {
+                    selectedRadio.closest('.option-label').classList.add('incorrect-lock');
+                    feedback.innerHTML = buildExplanationHTML(isCorrect, item, mcqAttempts[item.id]);
+                }
+            });
+            
+            if(!allAnswered) showToast("Please answer all questions before checking.");
+            lucide.createIcons();
+        }
+
+        function checkTF() {
+            let allAnswered = true;
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                let userVal = "";
+                
+                radios.forEach(r => { 
+                    if(r.checked) userVal = r.value; 
+                });
+
+                if (userVal === "") {
+                    allAnswered = false;
+                    return;
+                }
+                
+                if (radios[0].disabled) return;
+
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const isCorrect = userVal === item.correct;
+
+                if (!isCorrect) tfAttempts[item.id]++;
+
+                if (isCorrect || tfAttempts[item.id] >= 2) {
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        const label = r.closest('.option-label');
+                        label.classList.remove('tf-selected', 'hover:shadow-[3px_3px_0_0_#0f172a]', 'hover:-translate-y-0.5');
+                        
+                        if (r.value === item.correct) {
+                            label.classList.add('correct-lock');
+                        } else if (r.checked) {
+                            label.classList.add('incorrect-lock');
+                        }
+                    });
+                    feedback.innerHTML = buildExplanationHTML(isCorrect, item, tfAttempts[item.id]);
+                } else {
+                    feedback.innerHTML = buildExplanationHTML(isCorrect, item, tfAttempts[item.id]);
+                    radios.forEach(r => {
+                        if(r.checked) {
+                            const label = r.closest('.option-label');
+                            label.classList.remove('tf-selected');
+                            label.classList.add('incorrect-lock');
+                            setTimeout(() => { 
+                                if(!radios[0].disabled) {
+                                    label.classList.remove('incorrect-lock'); 
+                                    label.classList.add('tf-selected');
+                                }
+                            }, 1500);
+                        }
+                    });
+                }
+            });
+            
+            if(!allAnswered) showToast("Please answer all T/F questions.");
+            lucide.createIcons();
+        }
+
+        function toggleAnswer(elementId, btn, baseText) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Output";
+                btn.classList.add('bg-brand-200');
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = baseText;
+                btn.classList.remove('bg-brand-200');
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Are you sure you want to clear all your progress?")) {
+                
+                stopTTS();
+
+                document.querySelectorAll('[id^="anchor-text-content"], [id^="simulation-script"]').forEach(el => {
+                    el.classList.add('hidden');
+                });
+                document.querySelectorAll('[id^="btn-transcript-"]').forEach(btn => {
+                     btn.innerHTML = `<i data-lucide="file-text" class="w-5 h-5"></i> Show Script`;
+                     btn.classList.remove('bg-brand-200');
+                });
+                
+                const btnExp = document.getElementById('btn-explanation-anchor-text');
+                if (btnExp) {
+                     btnExp.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Show Explanations`;
+                     btnExp.classList.remove('bg-brand-200');
+                }
+
+                Object.keys(vocabAttempts).forEach(k => vocabAttempts[k] = 0);
+                Object.keys(mcqAttempts).forEach(k => mcqAttempts[k] = 0);
+                Object.keys(tfAttempts).forEach(k => tfAttempts[k] = 0);
+                
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                
+                document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                    r.checked = false; 
+                    r.disabled = false; 
+                });
+                document.querySelectorAll('.option-label').forEach(label => {
+                    label.classList.remove('correct-lock', 'incorrect-lock', 'tf-selected');
+                    if(label.querySelector('input[type="radio"]')?.name.startsWith('tf')) {
+                        label.classList.add('hover:shadow-[3px_3px_0_0_#0f172a]', 'hover:-translate-y-0.5');
+                    }
+                });
+                
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.classList.remove('bg-[#4ade80]', 'text-dark', 'bg-[#f87171]', 'text-white', 'bg-[#facc15]', 'font-bold'); 
+                });
+                
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+                
+                document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                    const params = btn.getAttribute('onclick').match(/'([^']+)'/g);
+                    if(params && params.length >= 2) {
+                        btn.innerText = params[1].replace(/'/g, '');
+                    }
+                    btn.classList.remove('bg-brand-200');
+                });
+                
+                showToast("All progress has been reset.");
+            }
+        }
+
+    </script>
+</body>
+</html>

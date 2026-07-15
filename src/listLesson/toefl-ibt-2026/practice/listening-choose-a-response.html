@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iBET Practice: Listen & Choose a Response</title>
+    <!-- Load Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Montserrat & Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #f8fafc;
+        }
+        h1, h2, h3, .brand-font {
+            font-family: 'Montserrat', sans-serif;
+        }
+        /* Card container for each step */
+        .step-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        /* Audio Script Box */
+        .audio-script-box {
+            background-color: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            font-style: italic;
+            color: #334155;
+            display: none; /* Hidden by default */
+        }
+        /* Options */
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            margin-bottom: 0.75rem;
+        }
+        .option-label:hover:not(.disabled) {
+            border-color: #94a3b8;
+            background-color: #f8fafc;
+        }
+        .option-label.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        /* Validation States */
+        .option-label.correct {
+            background-color: #dcfce7;
+            border-color: #22c55e;
+            color: #14532d;
+        }
+        .option-label.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            color: #7f1d1d;
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        .option-label.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        /* Feedback */
+        .feedback-container {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            display: none;
+        }
+        .feedback-fail {
+            background-color: #fef2f2;
+            border-color: #fecaca;
+            color: #991b1b;
+        }
+
+        /* Transcript Button */
+        .transcript-btn {
+            display: none; /* Hidden by default */
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #475569;
+            background-color: #e2e8f0;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .transcript-btn:hover {
+            background-color: #cbd5e1;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<div class="container mx-auto p-4 md:p-8 max-w-4xl">
+
+    <!-- Header -->
+    <header class="text-center mb-10">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2">iBET Practice</h1>
+        <h2 class="text-xl text-blue-600 font-semibold">Listening: Listen & Choose a Response</h2>
+
+        <div class="flex flex-wrap justify-center gap-3 mt-4 text-sm font-medium text-slate-600">
+            <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">Skill: Pragmatic Competence</span>
+            <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">Level: CEFR B1/B2</span>
+            <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">Items: 10</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Introduction -->
+        <section class="step-card border-t-4 border-t-blue-500">
+            <h3 class="text-xl font-bold text-slate-800 mb-3">How to Master This Task</h3>
+            <p class="mb-4 text-slate-600 leading-relaxed">
+                In the "Listen and Choose a Response" task, you will hear a short sentence (a question, statement, or greeting) and must select the most natural response.
+            </p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <strong class="text-blue-800 block mb-2">Key Strategies:</strong>
+                    <ul class="list-disc pl-5 space-y-1 text-sm text-blue-800">
+                        <li><strong>Identify the Type:</strong> Is it a Yes/No question, a Wh- question, or a statement?</li>
+                        <li><strong>Listen for Tone:</strong> Is the speaker apologizing, offering help, or complaining?</li>
+                        <li><strong>Watch for Distractors:</strong> Incorrect options often use words that <em>sound</em> similar to the prompt but don't make sense.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-100 p-4 rounded-lg">
+                    <strong class="text-slate-800 block mb-2">The Two-Attempt Rule:</strong>
+                    <ul class="list-disc pl-5 space-y-1 text-sm text-slate-700">
+                        <li>You have <strong>two chances</strong> to answer each question correctly.</li>
+                        <li><strong>1st Attempt:</strong> Feedback is hidden. Try again if wrong.</li>
+                        <li><strong>2nd Attempt:</strong> If wrong, the correct answer, detailed explanation, and <strong>transcript</strong> will appear.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: Guided Practice -->
+        <section class="step-card">
+            <h3 class="text-2xl font-bold mb-4 text-blue-700">Guided Example</h3>
+            <p class="mb-4 text-slate-600">Let's look at one example with "Think-Aloud" logic to understand how to eliminate wrong answers.</p>
+
+            <div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                <div class="bg-slate-100 p-3 border-b border-slate-200 font-semibold text-slate-700 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                        Audio
+                    </div>
+                    <div class="audio-controls-wrapper flex gap-2">
+                        <!-- Play Button for Example -->
+                        <button onclick="playAudio('https://github.com/fajarudinakbar/audio/raw/refs/heads/main/ibet/listening/choose-response/example.wav', this)" class="flex items-center gap-2 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-sm font-bold transition-colors shadow-sm">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+                            Play Audio
+                        </button>
+                    </div>
+                </div>
+                <!-- Visible transcript for Example Only -->
+                <div class="p-4 bg-slate-50 italic text-lg text-slate-800 border-b">
+                    "Would you mind keeping the noise down a bit?"
+                </div>
+            </div>
+
+            <div class="mt-4 space-y-2">
+                <div class="p-3 border rounded text-slate-500 bg-slate-50">
+                    (A) Yes, I enjoy loud music. <span class="text-red-500 text-sm ml-2 font-bold">x Incorrect (Rude/Literal misinterpretation)</span>
+                </div>
+                <div class="p-3 border rounded border-green-500 bg-green-50 text-green-900 font-medium">
+                    (B) Oh, I'm sorry, I didn't realize I was being loud. <span class="text-green-700 text-sm ml-2 font-bold">✓ Correct</span>
+                </div>
+                <div class="p-3 border rounded text-slate-500 bg-slate-50">
+                    (C) No, the noise is over there. <span class="text-red-500 text-sm ml-2 font-bold">x Incorrect (Irrelevant)</span>
+                </div>
+                <div class="p-3 border rounded text-slate-500 bg-slate-50">
+                    (D) Yes, please turn it up. <span class="text-red-500 text-sm ml-2 font-bold">x Incorrect (Opposite meaning)</span>
+                </div>
+            </div>
+
+            <div class="mt-4 bg-yellow-50 border-l-4 border-yellow-400 p-4 text-sm text-yellow-900">
+                <strong>Teacher Fajar's Logic:</strong> The phrase <em>"Would you mind..."</em> is a polite request to stop doing something. <br>
+                Option A answers "Yes" (meaning "Yes, I mind") but then contradicts it. <br>
+                Option B apologizes and complies, which is the socially appropriate response to a complaint.
+            </div>
+        </section>
+
+        <!-- Step 3: Controlled Practice (10 Items) -->
+        <section class="step-card">
+            <h3 class="text-2xl font-bold mb-6 text-blue-700">Practice Drills</h3>
+
+            <div id="quiz-container" class="space-y-10">
+                <!-- Questions will be injected here via JS -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center mt-12 py-6 border-t border-slate-200">
+        <p class="text-slate-500 text-sm font-medium">Designed by <a href="https://fajarudinakbar.online" class="text-blue-600 hover:underline">fajarudinakbar.online</a></p>
+    </footer>
+
+</div>
+
+<!-- Interactive Logic Script -->
+<script>
+    // GitHub Audio Base URL
+    const BASE_AUDIO_URL = "https://github.com/fajarudinakbar/audio/raw/refs/heads/main/ibet/listening/choose-response/";
+
+    const questions = [
+        {
+            id: 1,
+            audioFile: "1.wav",
+            transcript: "I'm afraid I won't be able to make it to the meeting tomorrow.",
+            options: [
+                "A) That's a shame, is everything okay?",
+                "B) Yes, the meeting is in Room 304.",
+                "C) I don't like meetings either.",
+                "D) You should make it today."
+            ],
+            correctIndex: 0,
+            explanation: "The speaker is cancelling or declining an attendance. Option A expresses polite concern ('That's a shame') and asks a follow-up question. Option B answers a 'where' question. Option C is too informal/blunt for a professional context."
+        },
+        {
+            id: 2,
+            audioFile: "2.wav",
+            transcript: "Could you tell me how often the campus shuttle runs?",
+            options: [
+                "A) It runs very fast.",
+                "B) Usually every twenty minutes.",
+                "C) The campus is quite large.",
+                "D) You can catch it at the gate."
+            ],
+            correctIndex: 1,
+            explanation: "The question 'How often' asks for frequency. Only Option B ('every twenty minutes') provides a frequency. Option D answers 'Where', and Option A answers 'How fast'."
+        },
+        {
+            id: 3,
+            audioFile: "3.wav",
+            transcript: "Do you have these shoes in a size 10?",
+            options: [
+                "A) Yes, I have ten pairs of shoes.",
+                "B) No, the shop closes at 10.",
+                "C) Let me check the stockroom for you.",
+                "D) These shoes are very comfortable."
+            ],
+            correctIndex: 2,
+            explanation: "This is a request for a specific product size. Option C is the standard service response ('Let me check'). Option A confuses the size number with quantity. Option B confuses the size with time."
+        },
+        {
+            id: 4,
+            audioFile: "4.wav",
+            transcript: "I've just been assigned to the marketing project.",
+            options: [
+                "A) The market is closed today.",
+                "B) Oh really? That sounds like a great opportunity.",
+                "C) I assigned it to you yesterday.",
+                "D) I prefer finance projects."
+            ],
+            correctIndex: 1,
+            explanation: "The speaker is sharing news. Option B offers a polite and enthusiastic reaction. Option A picks up on the word 'market' but is unrelated contextually."
+        },
+        {
+            id: 5,
+            audioFile: "5.wav",
+            transcript: "Would you rather study here or go to the library?",
+            options: [
+                "A) Yes, I would like to study.",
+                "B) The library is open until midnight.",
+                "C) Neither, I'm hungry.",
+                "D) I think the library might be quieter."
+            ],
+            correctIndex: 3,
+            explanation: "This is a choice question ('Would you rather X or Y?'). Option D selects one option and gives a reason. Option A answers it as a Yes/No question, which is incorrect for 'or' questions."
+        },
+        {
+            id: 6,
+            audioFile: "6.wav",
+            transcript: "Don't you think the lecture was a bit confusing?",
+            options: [
+                "A) No, I haven't seen him.",
+                "B) Yes, it was quite clear.",
+                "C) Actually, I found it very informative.",
+                "D) The lecture is in the main hall."
+            ],
+            correctIndex: 2,
+            explanation: "This is a negative opinion question. Option C disagrees politely ('Actually...') and offers a counter-opinion. Option B says 'Yes' but then claims it was clear, which is a contradiction (agreeing it was confusing, then saying it was clear)."
+        },
+        {
+            id: 7,
+            audioFile: "7.wav",
+            transcript: "Make sure you submit your application before the deadline.",
+            options: [
+                "A) I applied for the job.",
+                "B) Don't worry, I've already sent it in.",
+                "C) The deadline is next week.",
+                "D) No, I don't have the application."
+            ],
+            correctIndex: 1,
+            explanation: "The prompt is a command/advice ('Make sure...'). Option B confirms compliance ('I've already sent it in') and reassures the speaker."
+        },
+        {
+            id: 8,
+            audioFile: "8.wav",
+            transcript: "Whose notebook is this left on the table?",
+            options: [
+                "A) It looks like Sarah's.",
+                "B) Yes, I took notes.",
+                "C) It's a spiral notebook.",
+                "D) I left it on the chair."
+            ],
+            correctIndex: 0,
+            explanation: "The question 'Whose' asks for possession. Option A ('It looks like Sarah's') answers this directly. Option B answers a Yes/No question."
+        },
+        {
+            id: 9,
+            audioFile: "9.wav",
+            transcript: "I can't believe how much traffic there is today!",
+            options: [
+                "A) I know, it's terrible, isn't it?",
+                "B) I drive a red car.",
+                "C) The traffic light is green.",
+                "D) We should buy a new car."
+            ],
+            correctIndex: 0,
+            explanation: "The speaker is complaining. The natural response is to agree or sympathize. Option A ('I know, it's terrible') agrees with the sentiment. Option B and C are unrelated facts."
+        },
+        {
+            id: 10,
+            audioFile: "10.wav",
+            transcript: "Are you free to grab some lunch later?",
+            options: [
+                "A) Lunch is my favorite meal.",
+                "B) I'd love to, but I have a meeting at one.",
+                "C) It's free of charge.",
+                "D) I am very hungry now."
+            ],
+            correctIndex: 1,
+            explanation: "This is an invitation. Option B declines politely ('I'd love to, but...') and gives a reason. Option C misunderstands 'free' (available vs no cost)."
+        }
+    ];
+
+    function playAudio(audioUrl, buttonElement) {
+        // Set Playing State
+        const originalContent = buttonElement.innerHTML;
+        buttonElement.disabled = true;
+        buttonElement.innerHTML = `
+            <svg class="animate-pulse w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+            Playing...
+        `;
+        buttonElement.classList.remove('bg-blue-100', 'text-blue-700', 'bg-blue-600', 'text-white');
+        buttonElement.classList.add('bg-blue-200', 'text-blue-800');
+
+        const audio = new Audio(audioUrl);
+        
+        audio.onended = () => {
+            // Restore Button State
+            buttonElement.disabled = false;
+            buttonElement.innerHTML = originalContent;
+            // Re-apply original classes based on context (white text for big button, blue text for small)
+            if(buttonElement.parentElement.parentElement.classList.contains('bg-slate-100')) {
+                 // Header button style
+                buttonElement.classList.remove('bg-blue-200', 'text-blue-800');
+                buttonElement.classList.add('bg-blue-600', 'text-white');
+            } else {
+                // List button style
+                buttonElement.classList.remove('bg-blue-200', 'text-blue-800');
+                buttonElement.classList.add('bg-blue-100', 'text-blue-700');
+            }
+        };
+
+        audio.onerror = () => {
+             buttonElement.disabled = false;
+             buttonElement.innerHTML = originalContent;
+             alert("Error playing audio. Please check your internet connection.");
+        };
+
+        audio.play();
+    }
+
+    function toggleTranscript(index) {
+        const box = document.getElementById(`transcript-box-${index}`);
+        const btn = document.getElementById(`transcript-btn-${index}`);
+        if (box.style.display === 'block') {
+            box.style.display = 'none';
+            btn.textContent = 'Show Transcript';
+        } else {
+            box.style.display = 'block';
+            btn.textContent = 'Hide Transcript';
+        }
+    }
+
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+
+        questions.forEach((q, index) => {
+            // Create Card
+            const card = document.createElement('div');
+            card.className = 'bg-white border border-slate-200 rounded-lg p-6 shadow-sm';
+            
+            // Construct full Audio URL
+            const fullAudioUrl = BASE_AUDIO_URL + q.audioFile;
+
+            // Audio Script Box - Now with Hidden Transcript Logic
+            const scriptHTML = `
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">Item ${index + 1}</span>
+                        
+                        <div class="flex items-center gap-2">
+                            <!-- Transcript Toggle Button (Initially Hidden) -->
+                            <button id="transcript-btn-${index}" onclick="toggleTranscript(${index})" class="transcript-btn">
+                                Show Transcript
+                            </button>
+
+                            <div class="audio-controls-wrapper flex gap-2">
+                                <button onclick="playAudio('${fullAudioUrl}', this)" class="flex items-center gap-2 px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-full text-xs font-bold transition-colors">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+                                    Play
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transcript Box (Hidden by default) -->
+                    <div id="transcript-box-${index}" class="audio-script-box mt-1">
+                        <span class="text-blue-500 font-bold mr-2">Transcript:</span> "${q.transcript}"
+                    </div>
+                </div>
+            `;
+
+            // Options
+            let optionsHTML = '<div class="space-y-2">';
+            q.options.forEach((opt, optIndex) => {
+                optionsHTML += `
+                    <div class="option-label" onclick="handleOptionClick(this, ${index}, ${optIndex})" data-q="${index}" data-opt="${optIndex}">
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-300 flex items-center justify-center mr-3 text-xs font-bold text-slate-500 indicator">
+                            ${String.fromCharCode(65 + optIndex)}
+                        </div>
+                        <span>${opt.substring(3)}</span> <!-- Strip A) prefix for cleaner look -->
+                    </div>
+                `;
+            });
+            optionsHTML += '</div>';
+
+            // Feedback Area
+            const feedbackHTML = `
+                <div id="feedback-${index}" class="feedback-container">
+                    <div class="font-bold mb-1">Feedback:</div>
+                    <p class="text-sm">${q.explanation}</p>
+                </div>
+            `;
+
+            card.innerHTML = scriptHTML + optionsHTML + feedbackHTML;
+            container.appendChild(card);
+        });
+    }
+
+    // Tracking state
+    const attempts = {}; // Key: QuestionIndex, Value: Number of attempts
+
+    function handleOptionClick(element, qIndex, optIndex) {
+        // Initialize attempts if not exists
+        if (!attempts[qIndex]) attempts[qIndex] = 0;
+        
+        // If already solved or max attempts reached, do nothing
+        const card = element.closest('.bg-white');
+        const feedbackBox = document.getElementById(`feedback-${qIndex}`);
+        
+        // Check if this question is already "done" (correct answer found)
+        if (card.querySelector('.correct')) return;
+
+        // Increment attempt
+        attempts[qIndex]++;
+        const currentAttempt = attempts[qIndex];
+
+        // Reset visual state for this question
+        card.querySelectorAll('.option-label').forEach(el => {
+            el.classList.remove('selected');
+        });
+
+        const correctIndex = questions[qIndex].correctIndex;
+
+        if (optIndex === correctIndex) {
+            // Correct!
+            element.classList.add('correct');
+            element.querySelector('.indicator').classList.add('border-green-500', 'text-green-600');
+            feedbackBox.className = 'feedback-container bg-green-50 border-green-200 text-green-800 block';
+            feedbackBox.innerHTML = `<strong>Correct!</strong> <br> ${questions[qIndex].explanation}`;
+            
+            // Show Transcript Button
+            document.getElementById(`transcript-btn-${qIndex}`).style.display = 'block';
+
+        } else {
+            // Incorrect
+            element.classList.add('incorrect');
+            
+            if (currentAttempt >= 2) {
+                // Reveal answer after 2nd attempt
+                const allOptions = card.querySelectorAll('.option-label');
+                allOptions[correctIndex].classList.add('correct'); // Highlight correct
+                
+                feedbackBox.className = 'feedback-container feedback-fail block';
+                feedbackBox.innerHTML = `<strong>Answer Revealed:</strong> The correct response was option ${String.fromCharCode(65 + correctIndex)}. <br><br> <em>Explanation:</em> ${questions[qIndex].explanation}`;
+                
+                // Show Transcript Button even on failure
+                document.getElementById(`transcript-btn-${qIndex}`).style.display = 'block';
+            }
+        }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        renderQuiz();
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>TOEFL iBT Reading Skill-Building Worksheet</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            
+            /* STRICT ENFORCEMENT: No Word Breaks */
+            word-break: normal !important;
+            overflow-wrap: normal !important;
+            hyphens: none !important;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        @media (min-width: 768px) {
+            ::-webkit-scrollbar { width: 10px; height: 10px; }
+        }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+        }
+        .text-input {
+            width: 100%;
+            max-width: 100%;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+            box-sizing: border-box;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        
+        select.text-input {
+            padding-right: 2.5rem;
+            white-space: normal;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-align: center;
+            white-space: nowrap !important; 
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Option Labels (Radios) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+            font-weight: 700;
+            width: 100%;
+        }
+        @media (min-width: 640px) {
+            .option-label { gap: 1rem; }
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #0f172a;
+            flex-shrink: 0;
+            border: 2px solid #0f172a;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        
+        .highlight-chip {
+            white-space: nowrap !important;
+            display: inline-block;
+        }
+
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-5 md:p-8 text-base md:text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-4 sm:p-6 lg:p-10 border-4 border-dark shadow-neo overflow-hidden">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs sm:text-sm text-dark mb-6 md:mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">TOEFL iBT®</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4 shrink-0"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Reading Section</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4 shrink-0"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Read in Daily Life</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div class="w-full lg:w-auto">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-dark uppercase tracking-tighter mb-2 md:mb-3 leading-tight w-full">
+                    TOEFL iBT Skill-Builder
+                </h1>
+                <p class="text-sm sm:text-base md:text-lg lg:text-xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-2 border-2 border-dark text-pretty">
+                    Skill Focus: Scanning for Specific Details & Identifying Purpose (B1)
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0 w-full lg:w-auto mt-2 lg:mt-0">
+                <button onclick="resetAll()" class="neo-btn w-full flex items-center justify-center gap-2 px-5 py-2 md:py-3 text-sm md:text-base text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4 md:w-5 md:h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="space-y-6 md:space-y-8">
+
+            <!-- Step 1: Awareness -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('step1')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            1
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Step 1: Awareness & Warm-up</span>
+                    </div>
+                    <div id="icon-wrapper-step1" class="transition-transform duration-300 transform rotate-180 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step1" class="accordion-content active border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-slate-800 font-bold mb-4 text-sm sm:text-base md:text-lg leading-relaxed text-pretty">
+                            The "Read in Daily Life" task asks you to understand practical texts like emails, menus, or signs. You don't need to read every word perfectly. Instead, you need to <strong>scan</strong> (look quickly) for specific details.
+                        </p>
+                        
+                        <h4 class="font-black text-lg md:text-xl uppercase border-b-2 border-dark pb-2">Activity: Linear vs. Nonlinear Reading</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div class="bg-white border-3 border-dark shadow-neo-sm flex flex-col">
+                                <div class="bg-[#f8fafc] border-b-3 border-dark p-3 font-black uppercase text-sm md:text-base">Text A (Linear):</div>
+                                <div class="p-4 md:p-5 flex-1">
+                                    <div class="bg-slate-100 p-4 border-l-4 border-[#94a3b8] italic font-medium text-slate-700 leading-relaxed text-pretty">
+                                        "The library will be closing early today at 3:00 PM because of the national holiday, so please return books early."
+                                    </div>
+                                    <p class="text-sm font-bold text-slate-500 mt-4">How you read: Left to right, word by word.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white border-3 border-dark shadow-neo-sm flex flex-col">
+                                <div class="bg-[#fffbeb] border-b-3 border-dark p-3 font-black uppercase text-sm md:text-base">Text B (Sign):</div>
+                                <div class="p-4 md:p-5 flex-1">
+                                    <div class="bg-[#fffbeb] border-3 border-[#fcd34d] p-4 font-mono text-center space-y-2 text-sm md:text-base text-dark">
+                                        <h3 class="font-black text-lg underline mb-2">LIBRARY NOTICE</h3>
+                                        <p><strong>Date:</strong> Oct 12</p>
+                                        <p><strong>Closing Time:</strong> 3:00 PM</p>
+                                        <p><strong>Reason:</strong> National Holiday</p>
+                                        <p class="mt-4 text-[#dc2626] font-black uppercase tracking-wider">Action: Return books now!</p>
+                                    </div>
+                                    <p class="text-sm font-bold text-slate-500 mt-4">How you read: Eyes jump to bold words.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#e0f2fe] border-3 border-dark p-5 mt-6 shadow-neo-sm">
+                            <p class="font-black uppercase mb-2 text-lg">Warm-up Question:</p>
+                            <p class="font-bold mb-4">In Text B, which word tells you what you should do?</p>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <input type="text" id="s1-input" class="text-input sm:w-2/3" placeholder="Type the word here...">
+                                <button id="check-s1" class="neo-btn bg-[#38bdf8] text-dark px-6 py-3 w-full sm:w-1/3">Check</button>
+                            </div>
+                            <p id="res-s1" class="hidden mt-4 font-bold text-lg"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Guided Practice -->
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('step2')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            2
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Step 2: Guided Practice (The 'Show')</span>
+                    </div>
+                    <div id="icon-wrapper-step2" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-slate-800 font-bold mb-6 text-sm sm:text-base md:text-lg text-pretty">
+                            <strong>Strategy: Scanning for Conditions.</strong> Many daily texts have "conditions." A condition is a rule you must follow to get a result (e.g., "Until 10 AM only").
+                        </p>
+                        
+                        <!-- Menu Card Neo-Brutalist -->
+                        <div class="bg-white border-3 border-dark p-6 md:p-8 shadow-neo-sm font-mono mb-8">
+                            <h3 class="text-center text-xl md:text-2xl font-black border-b-4 border-dark pb-3 mb-6 uppercase tracking-wider">Bean & Leaf Café - Daily Specials</h3>
+                            <ul class="space-y-4 text-sm md:text-base">
+                                <li>
+                                    <div class="flex justify-between items-end border-b-2 border-dotted border-slate-400 pb-1">
+                                        <span class="font-bold">Morning Kick: Large Coffee + Muffin</span>
+                                        <span class="font-black text-lg">$5.00</span>
+                                    </div>
+                                    <div class="text-slate-500 italic mt-1 font-bold">- Until 10 AM only!</div>
+                                </li>
+                                
+                                <li class="pt-2">
+                                    <div class="flex justify-between items-end border-b-2 border-dotted border-slate-400 pb-1">
+                                        <span class="font-bold">Lunch Combo: Sandwich + Iced Tea</span>
+                                        <span class="font-black text-lg">$9.50</span>
+                                    </div>
+                                </li>
+                                
+                                <li class="mt-6 p-4 border-3 border-dark bg-[#fefce8] font-bold">
+                                    <strong>Student Deal:</strong> Show your university ID for <span class="bg-[#fcd34d] px-2 py-0.5 border-2 border-dark highlight-chip shadow-[2px_2px_0_0_#0f172a]">10% off</span> any drink.
+                                </li>
+                                <li class="text-xs md:text-sm font-bold mt-3">* Note: Oat milk substitution is an extra $0.50.</li>
+                            </ul>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Model Q1 -->
+                            <div class="bg-[#f8fafc] border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="font-black text-lg mb-3">Model Question 1: How can a customer get a discount on a drink?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-[2px_2px_0_0_#0f172a] !text-xs px-4 py-2" onclick="document.getElementById('analysis-1').classList.toggle('hidden')">Show/Hide Think-Aloud Analysis</button>
+                                <div id="analysis-1" class="hidden mt-4 p-4 bg-[#e0f2fe] border-3 border-dark text-sm md:text-base font-medium space-y-2 text-dark">
+                                    <p><strong>1. Scan</strong> for keywords related to money: "$", "off", "deal".</p>
+                                    <p><strong>2. Find</strong> "Student Deal" and "10% off".</p>
+                                    <p><strong>3. Read the condition:</strong> "Show your university ID".</p>
+                                    <p class="mt-3 text-[#15803d] font-black uppercase border-t-2 border-[#15803d] pt-2">Answer: By showing a university ID.</p>
+                                </div>
+                            </div>
+
+                            <!-- Model Q2 -->
+                            <div class="bg-[#f8fafc] border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="font-black text-lg mb-3">Model Question 2: If you order the Morning Kick at 10:30 AM, can you get the special price?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-[2px_2px_0_0_#0f172a] !text-xs px-4 py-2" onclick="document.getElementById('analysis-2').classList.toggle('hidden')">Show/Hide Think-Aloud Analysis</button>
+                                <div id="analysis-2" class="hidden mt-4 p-4 bg-[#e0f2fe] border-3 border-dark text-sm md:text-base font-medium space-y-2 text-dark">
+                                    <p><strong>1. Scan</strong> for "Morning Kick".</p>
+                                    <p><strong>2. Look for time limits.</strong> The text says "Until 10 AM only!".</p>
+                                    <p class="mt-3 text-[#15803d] font-black uppercase border-t-2 border-[#15803d] pt-2">Answer: No, the offer ends at 10 AM.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Controlled Practice (Purple Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#f3e8ff]">
+                <button onclick="toggleAccordion('step3')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#c084fc] hover:bg-[#a855f7] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            3
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Step 3: Controlled Practice (The 'Train')</span>
+                    </div>
+                    <div id="icon-wrapper-step3" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-slate-800 font-bold mb-6 text-sm sm:text-base md:text-lg text-pretty">
+                            Read the short functional texts and answer the questions mentally. Then click "Reveal Answer" to check.
+                        </p>
+
+                        <div class="space-y-6">
+                            <!-- Item 1 -->
+                            <div class="bg-white border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="bg-slate-100 border-2 border-dark p-3 font-mono text-sm md:text-base mb-4">"Hey Sam, are we still meeting at the library? I'm running 15 minutes late. Please start without me."</p>
+                                <p class="font-black text-lg mb-3">Q1: What does the sender want Sam to do?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-sm !text-xs px-4 py-2" onclick="this.nextElementSibling.classList.remove('hidden'); this.style.display='none'">Reveal Answer</button>
+                                <div class="hidden mt-3 p-3 bg-[#dcfce7] border-2 border-dark text-dark font-bold text-sm md:text-base uppercase tracking-wide">Answer: Start without him/her (don't wait).</div>
+                            </div>
+
+                            <!-- Item 2 -->
+                            <div class="bg-white border-3 border-dark p-5 shadow-neo-sm">
+                                <div class="bg-[#fee2e2] border-3 border-[#ef4444] p-3 text-center font-black text-[#b91c1c] uppercase tracking-wide text-sm md:text-base mb-4">
+                                    Winter Clearance: Buy one coat, get 2nd 50% off. Final sale, no returns.
+                                </div>
+                                <p class="font-black text-lg mb-3">Q2: Can you return a coat bought during this sale?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-sm !text-xs px-4 py-2" onclick="this.nextElementSibling.classList.remove('hidden'); this.style.display='none'">Reveal Answer</button>
+                                <div class="hidden mt-3 p-3 bg-[#dcfce7] border-2 border-dark text-dark font-bold text-sm md:text-base uppercase tracking-wide">Answer: No (It is a final sale).</div>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div class="bg-white border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="bg-slate-100 border-2 border-dark p-3 font-mono text-sm md:text-base mb-4"><strong>Subject:</strong> Invoice #4092 - Payment Overdue - Please Remit Immediately</p>
+                                <p class="font-black text-lg mb-3">Q3: What is the main purpose of this email?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-sm !text-xs px-4 py-2" onclick="this.nextElementSibling.classList.remove('hidden'); this.style.display='none'">Reveal Answer</button>
+                                <div class="hidden mt-3 p-3 bg-[#dcfce7] border-2 border-dark text-dark font-bold text-sm md:text-base uppercase tracking-wide">Answer: To ask for payment (because it is overdue).</div>
+                            </div>
+
+                            <!-- Item 4 -->
+                            <div class="bg-white border-3 border-dark p-5 shadow-neo-sm">
+                                <div class="bg-[#f3e8ff] border-2 border-[#c084fc] p-3 italic font-medium text-sm md:text-base mb-4">
+                                    Retirement Party for Mr. Henderson. Friday, 6 PM. RSVP to Sarah by Wednesday. No gifts, please.
+                                </div>
+                                <p class="font-black text-lg mb-3">Q4: What is the deadline to reply to the invitation?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-sm !text-xs px-4 py-2" onclick="this.nextElementSibling.classList.remove('hidden'); this.style.display='none'">Reveal Answer</button>
+                                <div class="hidden mt-3 p-3 bg-[#dcfce7] border-2 border-dark text-dark font-bold text-sm md:text-base uppercase tracking-wide">Answer: Wednesday.</div>
+                            </div>
+
+                            <!-- Item 5 -->
+                            <div class="bg-white border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="bg-slate-100 border-2 border-dark p-3 font-medium text-sm md:text-base mb-4">"Bake at 350°F for 20 minutes. Let cool completely before adding frosting, or the frosting will melt."</p>
+                                <p class="font-black text-lg mb-3">Q5: What happens if you add frosting while the cake is hot?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-sm !text-xs px-4 py-2" onclick="this.nextElementSibling.classList.remove('hidden'); this.style.display='none'">Reveal Answer</button>
+                                <div class="hidden mt-3 p-3 bg-[#dcfce7] border-2 border-dark text-dark font-bold text-sm md:text-base uppercase tracking-wide">Answer: The frosting will melt.</div>
+                            </div>
+
+                            <!-- Item 6 -->
+                            <div class="bg-white border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="bg-slate-100 border-2 border-dark p-3 font-medium text-sm md:text-base mb-4">Wanted: Part-time Tutor. Math skills required. Send resume to hr@learningcenter.com. No phone calls.</p>
+                                <p class="font-black text-lg mb-3">Q6: How should you contact the company?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-sm !text-xs px-4 py-2" onclick="this.nextElementSibling.classList.remove('hidden'); this.style.display='none'">Reveal Answer</button>
+                                <div class="hidden mt-3 p-3 bg-[#dcfce7] border-2 border-dark text-dark font-bold text-sm md:text-base uppercase tracking-wide">Answer: Send a resume / By email (No phone calls).</div>
+                            </div>
+
+                            <!-- Item 7 -->
+                            <div class="bg-white border-3 border-dark p-5 shadow-neo-sm">
+                                <div class="bg-dark text-[#4ade80] border-3 border-dark p-4 font-mono font-bold text-sm md:text-base mb-4 leading-relaxed">
+                                    Route 42: Delayed (Traffic). ETA: 8:15 AM.<br>Route 10: On Time. ETA: 8:05 AM.
+                                </div>
+                                <p class="font-black text-lg mb-3">Q7: Why is Route 42 late?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-sm !text-xs px-4 py-2" onclick="this.nextElementSibling.classList.remove('hidden'); this.style.display='none'">Reveal Answer</button>
+                                <div class="hidden mt-3 p-3 bg-[#dcfce7] border-2 border-dark text-dark font-bold text-sm md:text-base uppercase tracking-wide">Answer: Because of traffic.</div>
+                            </div>
+
+                            <!-- Item 8 -->
+                            <div class="bg-white border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="bg-[#e0f2fe] border-2 border-[#38bdf8] p-3 font-medium text-sm md:text-base mb-4"><strong>Support Bot:</strong> To reset your password, click the link sent to your recovery email. The link expires in 10 minutes.</p>
+                                <p class="font-black text-lg mb-3">Q8: How long is the link valid?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-sm !text-xs px-4 py-2" onclick="this.nextElementSibling.classList.remove('hidden'); this.style.display='none'">Reveal Answer</button>
+                                <div class="hidden mt-3 p-3 bg-[#dcfce7] border-2 border-dark text-dark font-bold text-sm md:text-base uppercase tracking-wide">Answer: 10 minutes.</div>
+                            </div>
+
+                            <!-- Item 9 -->
+                            <div class="bg-white border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="bg-slate-100 border-2 border-dark p-3 font-medium text-sm md:text-base mb-4">"Quiet Study Rooms are first-come, first-served. Group rooms must be booked online 24 hours in advance."</p>
+                                <p class="font-black text-lg mb-3">Q9: Do you need a reservation for a Quiet Study Room?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-sm !text-xs px-4 py-2" onclick="this.nextElementSibling.classList.remove('hidden'); this.style.display='none'">Reveal Answer</button>
+                                <div class="hidden mt-3 p-3 bg-[#dcfce7] border-2 border-dark text-dark font-bold text-sm md:text-base uppercase tracking-wide">Answer: No (They are first-come, first-served).</div>
+                            </div>
+
+                            <!-- Item 10 -->
+                            <div class="bg-white border-3 border-dark p-5 shadow-neo-sm">
+                                <div class="bg-[#ffedd5] border-3 border-[#fb923c] p-4 text-sm md:text-base mb-4">
+                                    <strong class="uppercase text-red-600 block mb-2">VIOLATION:</strong> Parked in 'Permit Only' zone.<br><strong>Fine:</strong> $50.<br><strong class="bg-yellow-200 px-1 mt-2 inline-block highlight-chip">Note:</strong> Pay within 48 hours to reduce fine to $35.
+                                </div>
+                                <p class="font-black text-lg mb-3">Q10: How much do you pay if you pay immediately?</p>
+                                <button class="neo-btn bg-white text-dark !border-2 !shadow-sm !text-xs px-4 py-2" onclick="this.nextElementSibling.classList.remove('hidden'); this.style.display='none'">Reveal Answer</button>
+                                <div class="hidden mt-3 p-3 bg-[#dcfce7] border-2 border-dark text-dark font-bold text-sm md:text-base uppercase tracking-wide">Answer: $35.</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Real Test Simulation (Blue Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#dbeafe]">
+                <button onclick="toggleAccordion('step4-real')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            4
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Step 4: Real Test Simulation (The 'Test')</span>
+                    </div>
+                    <div id="icon-wrapper-step4-real" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step4-real" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10 space-y-6">
+                        <p class="text-sm sm:text-base md:text-lg text-slate-800 font-bold mb-6">
+                            Read the email below. Then, answer the three multiple-choice questions.
+                        </p>
+
+                        <div class="bg-white border-3 border-dark shadow-neo-sm mb-8 flex flex-col">
+                            <div class="bg-[#f8fafc] p-4 sm:p-5 border-b-3 border-dark text-sm md:text-base font-medium space-y-2">
+                                <p><strong class="uppercase text-slate-500 mr-2 tracking-wider">To:</strong> All Residents</p>
+                                <p><strong class="uppercase text-slate-500 mr-2 tracking-wider">From:</strong> University Housing Office</p>
+                                <p><strong class="uppercase text-slate-500 mr-2 tracking-wider">Subject:</strong> Upcoming Maintenance Schedule</p>
+                            </div>
+                            <div class="p-5 md:p-6 text-base md:text-lg leading-relaxed space-y-4 font-medium text-slate-800">
+                                <p>Dear Residents,</p>
+                                <p>We will be conducting routine inspections of the fire alarm systems in Dormitory B next Tuesday, November 5, between 9:00 AM and 4:00 PM.</p>
+                                <p>Maintenance staff will need access to every room during this time. You do not need to be present in your room while the inspection takes place. However, please ensure that all personal items are cleared away from the smoke detectors on the ceiling.</p>
+                                <p>If you have a cat or dog (for registered emotional support animals), please secure them in a crate or take them with you to avoid them getting scared by the noise.</p>
+                                <p>Thank you for your cooperation.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-8">
+                            <!-- Q1 -->
+                            <div class="bg-slate-50 border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="font-black text-lg mb-4">1. What is the main purpose of this email?</p>
+                                <div class="space-y-3">
+                                    <label class="option-label"><input type="radio" name="rt-q1" value="a"> <span>[A] To invite students to a housing event</span></label>
+                                    <label class="option-label"><input type="radio" name="rt-q1" value="b"> <span>[B] To ask students to fix their smoke detectors</span></label>
+                                    <label class="option-label"><input type="radio" name="rt-q1" value="c"> <span>[C] To inform residents about a scheduled inspection</span></label>
+                                    <label class="option-label"><input type="radio" name="rt-q1" value="d"> <span>[D] To warn students about a fire in the building</span></label>
+                                </div>
+                            </div>
+                            
+                            <!-- Q2 -->
+                            <div class="bg-slate-50 border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="font-black text-lg mb-4">2. What are residents asked to do before the inspection?</p>
+                                <div class="space-y-3">
+                                    <label class="option-label"><input type="radio" name="rt-q2" value="a"> <span>[A] Wait in their rooms until staff arrive</span></label>
+                                    <label class="option-label"><input type="radio" name="rt-q2" value="b"> <span>[B] Move personal items away from the smoke detectors</span></label>
+                                    <label class="option-label"><input type="radio" name="rt-q2" value="c"> <span>[C] Send an email confirming they will be home</span></label>
+                                    <label class="option-label"><input type="radio" name="rt-q2" value="d"> <span>[D] Test the fire alarms themselves</span></label>
+                                </div>
+                            </div>
+                            
+                            <!-- Q3 -->
+                            <div class="bg-slate-50 border-3 border-dark p-5 shadow-neo-sm">
+                                <p class="font-black text-lg mb-4">3. Based on the text, which of the following is true about pets?</p>
+                                <div class="space-y-3">
+                                    <label class="option-label"><input type="radio" name="rt-q3" value="a"> <span>[A] They are not allowed in Dormitory B.</span></label>
+                                    <label class="option-label"><input type="radio" name="rt-q3" value="b"> <span>[B] They must be removed from the room permanently.</span></label>
+                                    <label class="option-label"><input type="radio" name="rt-q3" value="c"> <span>[C] They should be kept safe or removed because of the noise.</span></label>
+                                    <label class="option-label"><input type="radio" name="rt-q3" value="d"> <span>[D] Maintenance staff will feed them during the inspection.</span></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="check-real" class="neo-btn bg-[#60a5fa] text-dark px-8 py-3 text-sm md:text-base mt-8 w-full md:w-auto">Check Test Answers</button>
+                        <div id="res-real" class="hidden mt-6 p-6 bg-white border-4 border-dark shadow-neo-sm text-base space-y-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Reflection (Rose Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#ffe4e6]">
+                <button onclick="toggleAccordion('step5-ref')" class="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 lg:p-8 bg-[#fb7185] hover:bg-[#f43f5e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 pr-2">
+                        <div class="bg-white border-3 border-dark text-dark w-7 h-7 md:w-10 md:h-10 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-sm md:text-lg">
+                            5
+                        </div>
+                        <span class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-black text-dark uppercase tracking-tight leading-snug">Step 5: Reflection & Self-Assessment</span>
+                    </div>
+                    <div id="icon-wrapper-step5-ref" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-4 h-4 md:w-5 md:h-5 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-step5-ref" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-4 sm:p-6 md:p-8 lg:p-10">
+                        <ul class="space-y-4 text-slate-800 font-bold text-base md:text-lg">
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="check-square" class="w-6 h-6 text-[#fb7185] shrink-0 mt-0.5"></i>
+                                <span><strong class="bg-[#ffe4e6] px-1 border-2 border-dark uppercase tracking-wider text-sm mr-2 whitespace-nowrap">Scanning Speed:</strong> Were you able to find the specific details (like dates or prices) quickly without reading every word?</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="check-square" class="w-6 h-6 text-[#fb7185] shrink-0 mt-0.5"></i>
+                                <span><strong class="bg-[#ffe4e6] px-1 border-2 border-dark uppercase tracking-wider text-sm mr-2 whitespace-nowrap">Vocabulary:</strong> Did you understand functional words like "inspection," "secure," "remit," or "valid"?</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="check-square" class="w-6 h-6 text-[#fb7185] shrink-0 mt-0.5"></i>
+                                <span><strong class="bg-[#ffe4e6] px-1 border-2 border-dark uppercase tracking-wider text-sm mr-2 whitespace-nowrap">Inference:</strong> In Question 3 of the simulation, the text didn't explicitly say "The alarms will be loud," but it mentioned pets getting scared by the noise. Did you catch that connection?</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center mb-6">
+            <p class="text-dark text-sm md:text-base font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm text-balance">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            // Accordion Logic
+            window.toggleAccordion = function(id) {
+                const content = document.getElementById(`content-${id}`);
+                const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+                if (content.classList.contains('active')) {
+                    content.classList.remove('active');
+                    iconWrapper.style.transform = 'rotate(0deg)';
+                } else {
+                    content.classList.add('active');
+                    iconWrapper.style.transform = 'rotate(180deg)';
+                }
+            };
+            
+            // --- Step 1 Checker ---
+            document.getElementById('check-s1').addEventListener('click', () => {
+                const input = document.getElementById('s1-input').value.trim().toLowerCase();
+                const res = document.getElementById('res-s1');
+                res.classList.remove('hidden');
+                
+                if (input.includes('return')) {
+                    res.innerHTML = '<i data-lucide="check-circle" class="inline w-6 h-6 mr-2 text-[#15803d]"></i> <span class="text-[#15803d]">Correct! "Return" is the key action word.</span>';
+                    res.className = "mt-4 p-4 bg-[#dcfce7] border-3 border-dark shadow-neo-sm font-black text-lg flex items-center";
+                } else {
+                    res.innerHTML = '<i data-lucide="x-circle" class="inline w-6 h-6 mr-2 text-[#b91c1c]"></i> <span class="text-[#b91c1c]">Not quite. Look for the bold action word at the bottom.</span>';
+                    res.className = "mt-4 p-4 bg-[#fee2e2] border-3 border-dark shadow-neo-sm font-black text-lg flex items-center";
+                }
+                lucide.createIcons();
+            });
+
+            // --- Step 4 Checker ---
+            document.getElementById('check-real').addEventListener('click', () => {
+                const q1 = document.querySelector('input[name="rt-q1"]:checked');
+                const q2 = document.querySelector('input[name="rt-q2"]:checked');
+                const q3 = document.querySelector('input[name="rt-q3"]:checked');
+
+                let correct = 0;
+                // Answers: C, B, C
+                if (q1 && q1.value === 'c') correct++;
+                if (q2 && q2.value === 'b') correct++;
+                if (q3 && q3.value === 'c') correct++;
+
+                const resDiv = document.getElementById('res-real');
+                resDiv.classList.remove('hidden');
+                
+                let content = `<h4 class="font-black text-xl text-dark uppercase border-b-2 border-dark pb-2 mb-4 inline-block">Score: ${correct}/3</h4><ul class="space-y-4 text-base md:text-lg font-bold text-slate-800">`;
+                
+                content += `<li><strong class="bg-[#e0f2fe] px-2 border-2 border-dark whitespace-nowrap">Q1: [C]</strong> Inform about inspection. <span class="text-slate-500 text-sm block mt-1">(Subject line: "Upcoming Maintenance Schedule").</span></li>`;
+                content += `<li><strong class="bg-[#e0f2fe] px-2 border-2 border-dark whitespace-nowrap">Q2: [B]</strong> Move personal items. <span class="text-slate-500 text-sm block mt-1">(Text: "ensure that all personal items are cleared away").</span></li>`;
+                content += `<li><strong class="bg-[#e0f2fe] px-2 border-2 border-dark whitespace-nowrap">Q3: [C]</strong> Keep safe from noise. <span class="text-slate-500 text-sm block mt-1">(Text: "secure them... to avoid them getting scared by the noise").</span></li>`;
+                content += `</ul>`;
+                
+                resDiv.innerHTML = content;
+                
+                // Styling correct/incorrect selections
+                if (q1) {
+                    q1.parentElement.classList.remove('!bg-[#4ade80]', '!bg-[#f87171]', '!text-white');
+                    q1.parentElement.classList.add(q1.value === 'c' ? '!bg-[#4ade80]' : '!bg-[#f87171]');
+                    if(q1.value !== 'c') q1.parentElement.classList.add('!text-white');
+                }
+                if (q2) {
+                    q2.parentElement.classList.remove('!bg-[#4ade80]', '!bg-[#f87171]', '!text-white');
+                    q2.parentElement.classList.add(q2.value === 'b' ? '!bg-[#4ade80]' : '!bg-[#f87171]');
+                    if(q2.value !== 'b') q2.parentElement.classList.add('!text-white');
+                }
+                if (q3) {
+                    q3.parentElement.classList.remove('!bg-[#4ade80]', '!bg-[#f87171]', '!text-white');
+                    q3.parentElement.classList.add(q3.value === 'c' ? '!bg-[#4ade80]' : '!bg-[#f87171]');
+                    if(q3.value !== 'c') q3.parentElement.classList.add('!text-white');
+                }
+            });
+
+            // Reset Function
+            window.resetAll = function() {
+                if(confirm("Are you sure you want to clear all your progress?")) {
+                    document.querySelectorAll('input[type="text"]').forEach(input => {
+                        input.value = "";
+                    });
+                    
+                    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                        radio.checked = false;
+                        radio.parentElement.classList.remove('!bg-[#4ade80]', '!bg-[#f87171]', '!text-white');
+                    });
+                    
+                    document.getElementById('res-s1').classList.add('hidden');
+                    document.getElementById('res-real').classList.add('hidden');
+                    
+                    document.querySelectorAll('[id^="analysis-"]').forEach(el => el.classList.add('hidden'));
+                    
+                    // Specific to step 3 reveals
+                    document.querySelectorAll('.hidden.mt-3.p-3.bg-\\[\\#dcfce7\\]').forEach(el => el.classList.add('hidden'));
+                    document.querySelectorAll('button[onclick*="Reveal Answer"]').forEach(btn => btn.style.display = 'inline-flex');
+                }
+            };
+            
+            // Auto open first tab
+            toggleAccordion('step1');
+        });
+    </script>
+</body>
+</html>

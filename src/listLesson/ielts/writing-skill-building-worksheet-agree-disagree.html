@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Writing Task 2 - Agree or Disagree?</title>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs text-slate-400 mb-6 flex gap-2 font-medium uppercase tracking-wider">
+            <span>IELTS Academic</span> <span>&gt;</span> 
+            <span>Writing Task 2</span> <span>&gt;</span> 
+            <span>Band 7.0 - 9.0</span> <span>&gt;</span> 
+            <span class="text-indigo-600 font-bold">Opinion Essays</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-slate-800 tracking-tight mb-2">
+                    Agree or Disagree?
+                </h1>
+                <p class="text-slate-500 font-medium">Topic: Remote Work, Employment Trends, Work-Life Balance</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-red-500 transition-colors font-medium hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-4 border-indigo-500 p-4 mb-8 rounded-r-lg">
+            <p class="text-slate-700">
+                <i class="fas fa-info-circle mr-2 text-indigo-500"></i> 
+                <strong>Instructions:</strong> Master the "Opinion Essay" format (250+ words). Focus on generating strong arguments, using cohesion, and maintaining a clear position.
+            </p>
+        </div>
+
+        <!-- Part 1: Preparation (Cyan Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-cyan-100 shadow-sm">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 bg-cyan-50 hover:bg-cyan-100 border-l-4 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-cyan-200 text-cyan-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-lg font-bold text-cyan-900">Step 1-3: Ideas & Vocabulary</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part1" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 1: Warm-up with Visual Prompt -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-cyan-800"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Step 1</span> Contextual Warm-Up</h3>
+                            <button onclick="toggleAnswer('ans-t1', this)" class="text-xs font-bold text-cyan-600 border border-cyan-200 bg-white px-3 py-1 rounded hover:bg-cyan-50">Show Discussion Points</button>
+                        </div>
+                        
+                        <div class="flex flex-col md:flex-row gap-6 mb-4">
+                            <!-- Prompt Chart -->
+                            <div class="w-full md:w-1/2 bg-slate-50 p-4 rounded border border-slate-200 h-60">
+                                <canvas id="warmupChart"></canvas>
+                            </div>
+                            <div class="w-full md:w-1/2">
+                                <p class="text-sm text-slate-600 mb-2"><strong>Prompt:</strong> Look at the chart showing employee preferences. Why do you think "Hybrid Work" (splitting time between home and office) is the most popular?</p>
+                                <textarea class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 outline-none h-32" placeholder="List 2 reasons for Hybrid popularity..."></textarea>
+                            </div>
+                        </div>
+
+                        <div id="ans-t1" class="answer-box hidden mt-3 p-4 bg-cyan-50 rounded-lg border border-cyan-100 text-sm text-slate-700">
+                            <strong>Potential Reasons:</strong>
+                            <ul class="list-disc pl-5 mt-1 space-y-1">
+                                <li>It offers the <em>autonomy</em> of remote work while preventing social <em>isolation</em>.</li>
+                                <li>Employees save money on commuting but can still collaborate in-person when necessary.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 (Interactive Vocab) -->
+                    <div>
+                        <h3 class="font-bold text-cyan-800 mb-3"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Step 2 & 3</span> Topic Vocabulary</h3>
+                        <p class="text-sm text-slate-500 mb-3">Match these high-level employment terms to their definitions.</p>
+                        <div id="vocab-container" class="space-y-3">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="checkVocab()" class="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check Vocabulary
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div>
+                         <div class="flex justify-between items-center mb-3">
+                             <h3 class="font-bold text-cyan-800"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Step 3.5</span> Essay Strategy</h3>
+                             <button onclick="toggleAnswer('ans-t3', this)" class="text-xs font-bold text-cyan-600 border border-cyan-200 bg-white px-3 py-1 rounded hover:bg-cyan-50">Show Structure</button>
+                          </div>
+                          <p class="text-sm text-slate-600 mb-2">In an "Agree or Disagree" essay, is it better to present both sides equally (50/50) or to have a clear position? Why?</p>
+                          <textarea placeholder="Write your thoughts..." class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 outline-none h-20"></textarea>
+                          <div id="ans-t3" class="answer-box hidden mt-3 p-4 bg-cyan-50 rounded-lg border border-cyan-100 text-sm text-slate-700">
+                            <strong>Strategy:</strong>
+                            <p class="mt-1">It is usually better to have a <strong>clear position</strong>. While you can mention the opposing view (concession), your opinion should be consistent from the Introduction to the Conclusion. A "50/50" essay often lacks a strong thesis and can lower your Task Response score.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Reading Passage (Blue Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-blue-100 shadow-sm">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-200 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-book-reader"></i></div>
+                    <span class="text-lg font-bold text-blue-900">Step 4-5: Model Essay Analysis</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-6 bg-white prose prose-slate max-w-none text-justify leading-relaxed text-sm md:text-base border-t border-blue-50">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Sample Task: Remote Work</h3>
+                    
+                    <div class="bg-slate-100 p-4 rounded mb-4 border-l-4 border-slate-400">
+                        <strong>Task:</strong> <em>Many employees are now working from home. Some people believe that this trend has more benefits than drawbacks. To what extent do you agree or disagree?</em>
+                    </div>
+
+                    <h4 class="font-bold text-blue-700">Model Answer</h4>
+                    
+                    <p class="mb-3">
+                        <strong>(Introduction)</strong> The shift towards telecommuting has revolutionized the modern workplace, with a significant proportion of the workforce now operating remotely. While some critics argue that this hinders professional collaboration, I strongly agree that the advantages of working from home, specifically regarding work-life balance and productivity, far outweigh the disadvantages.
+                    </p>
+                    
+                    <p class="mb-3">
+                        <strong>(Body Paragraph 1: Benefit - Well-being)</strong> The primary benefit of remote work is the enhancement of employee well-being. Without the daily commute, which is often a source of significant stress and wasted time, individuals can reclaim hours of their day for personal pursuits, exercise, or family. This improved work-life balance inevitably leads to higher job satisfaction. For instance, recent studies indicate that remote workers report lower anxiety levels compared to their office-bound counterparts.
+                    </p>
+                    
+                    <p class="mb-3">
+                        <strong>(Body Paragraph 2: Benefit - Productivity)</strong> Furthermore, working from home often fosters superior productivity. The traditional office environment is frequently plagued by distractions, such as impromptu meetings and noise, which can fragment an employee's focus. In contrast, a home office allows for deep, uninterrupted work. While critics suggest that supervision is difficult remotely, output-based assessments have proven that employees often work harder when given autonomy.
+                    </p>
+                    
+                    <p class="mb-3">
+                         <strong>(Conclusion)</strong> In conclusion, although the lack of face-to-face interaction can be seen as a drawback, I firmly believe that the benefits of telecommuting are superior. The elimination of commuting stress and the creation of a focused work environment ultimately benefit both the individual's mental health and the company's output.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Understanding (Emerald Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-emerald-100 shadow-sm">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 bg-emerald-50 hover:bg-emerald-100 border-l-4 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-emerald-200 text-emerald-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-lg font-bold text-emerald-900">Step 6-7: Cohesion & Coherence</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 4 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-emerald-800"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Step 5</span> Structural Analysis</h3>
+                            <button onclick="toggleAnswer('ans-t4', this)" class="text-xs font-bold text-emerald-600 border border-emerald-200 bg-white px-3 py-1 rounded hover:bg-emerald-50">Show Answer</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Identify the <strong>Thesis Statement</strong> in the Introduction of the Model Answer. Paste it below.</p>
+                        <textarea class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none h-20"></textarea>
+                        <div id="ans-t4" class="answer-box hidden mt-3 p-4 bg-emerald-50 rounded-lg border border-emerald-100 text-sm text-slate-700">
+                            <strong>Thesis Statement:</strong>
+                            <p class="italic">"I strongly agree that the advantages of working from home, specifically regarding work-life balance and productivity, far outweigh the disadvantages."</p>
+                        </div>
+                    </div>
+
+                    <!-- Task 5 (Interactive MCQ) -->
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Step 6</span> Micro-Practice: Linking Words</h3>
+                        <p class="text-sm text-slate-500 mb-3">Choose the best connector to improve flow.</p>
+                        <div id="mcq-container" class="space-y-6">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="checkMCQ()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check Connections
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 6 (Interactive T/F) -->
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Step 7</span> Macro-Practice: Task 2 Rules</h3>
+                        <p class="text-sm text-slate-500 mb-3">Identify True/False statements about essay writing.</p>
+                        <div id="tf-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="checkTF()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check Rules
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Discussion (Orange Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-orange-100 shadow-sm">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 bg-orange-50 hover:bg-orange-100 border-l-4 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-orange-200 text-orange-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-lg font-bold text-orange-900">Step 8: Pre-Task Planning</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 8: Brainstorming -->
+                    <div>
+                         <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-orange-800"><span class="bg-orange-100 px-2 py-0.5 rounded text-sm mr-2">Step 8</span> Brainstorming Arguments</h3>
+                            <button onclick="toggleAnswer('ans-t8', this)" class="text-xs font-bold text-orange-600 border border-orange-200 bg-white px-3 py-1 rounded hover:bg-orange-50">Show Hint</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2"><strong>New Topic:</strong> "University education is necessary for a successful career. To what extent do you agree or disagree?"</p>
+                        <p class="text-xs text-slate-500 mb-2">List 2 arguments FOR university and 2 arguments AGAINST (Experience/Skills).</p>
+                        <textarea class="w-full p-3 border border-orange-200 rounded text-sm focus:ring-2 focus:ring-orange-400 outline-none h-24" placeholder="For: Specialized knowledge... Against: High cost..."></textarea>
+                        <div id="ans-t8" class="answer-box hidden mt-2 text-sm text-slate-700 bg-orange-50 p-3 rounded border border-orange-100">
+                            <strong>Ideas:</strong>
+                            <ul class="list-disc pl-4">
+                                <li><strong>Agree (University):</strong> Provides foundational theory; requirement for doctors/lawyers; networking opportunities.</li>
+                                <li><strong>Disagree (Experience):</strong> Practical skills are often more valued in tech/creative arts; prevents student debt; earlier entry into workforce.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Advanced (Violet Theme) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-violet-100 shadow-sm">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 bg-violet-50 hover:bg-violet-100 border-l-4 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-violet-200 text-violet-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-lg font-bold text-violet-900">Step 9-10: Real Test Simulation</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 12: Simulation -->
+                    <div>
+                         <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-violet-800"><span class="bg-violet-100 px-2 py-0.5 rounded text-sm mr-2">Step 9</span> The Simulation Task</h3>
+                        </div>
+                        <div class="bg-slate-50 p-6 border border-slate-200 rounded mb-3">
+                            <p class="font-bold text-slate-800">WRITING TASK 2</p>
+                            <p class="text-sm text-slate-600 mt-1 mb-4">You should spend about 40 minutes on this task.</p>
+                            <p class="text-sm text-slate-700 mt-2 italic font-serif text-lg leading-relaxed border-l-4 border-violet-400 pl-4 py-2 bg-white">
+                                "Some people believe that artificial intelligence (AI) will eventually replace teachers in the classroom. <br>To what extent do you agree or disagree with this opinion?"
+                            </p>
+                            <p class="text-sm text-slate-600 mt-4">Give reasons for your answer and include any relevant examples from your own knowledge or experience.<br>Write at least 250 words.</p>
+                        </div>
+                        <textarea class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-violet-400 outline-none h-64 font-serif text-base" placeholder="Start your essay here..."></textarea>
+                    </div>
+
+                      <!-- Task 15: Checklist -->
+                      <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-violet-800"><span class="bg-violet-100 px-2 py-0.5 rounded text-sm mr-2">Step 10</span> Final Checklist</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Review your essay before submitting:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700">
+                            <label class="flex items-center gap-2"><input type="checkbox"> Is my opinion clear in the Introduction?</label>
+                            <label class="flex items-center gap-2"><input type="checkbox"> Did I use paragraphs (Intro, Body 1, Body 2, Conc)?</label>
+                            <label class="flex items-center gap-2"><input type="checkbox"> Does each Body Paragraph have a clear central topic?</label>
+                            <label class="flex items-center gap-2"><input type="checkbox"> Did I check for spelling/grammar errors?</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-sm font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data Configuration Section ---
+        
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { 
+                id: "v1", word: "1. Autonomy", correct: "b", 
+                options: { a: "Working together with others.", b: "The freedom to make your own decisions.", c: "Feeling lonely.", d: "A strict schedule." } 
+            },
+            { 
+                id: "v2", word: "2. Isolation", correct: "c", 
+                options: { a: "Being very productive.", b: "Traveling to work.", c: "The state of being separated from others.", d: "Job satisfaction." } 
+            },
+            { 
+                id: "v3", word: "3. To hinder", correct: "a", 
+                options: { a: "To make it difficult for something to happen.", b: "To help or assist.", c: "To agree strongly.", d: "To start a project." } 
+            },
+            { 
+                id: "v4", word: "4. Commute", correct: "d", 
+                options: { a: "Talking online.", b: "A type of computer.", c: "A salary bonus.", d: "The journey from home to work and back." } 
+            }
+        ];
+
+        // 2. MCQ DATA (Linking Words)
+        const mcqData = [
+            { id: "m1", question: "1. Remote work saves money. ______, it allows for flexible hours.", correct: "a", options: ["a. Furthermore", "b. However", "c. Therefore", "d. For instance"] },
+            { id: "m2", question: "2. Working from home is comfortable. ______, some employees feel lonely.", correct: "b", options: ["a. In addition", "b. However", "c. Consequently", "d. Moreover"] },
+            { id: "m3", question: "3. Offices can be noisy. ______, it is often hard to concentrate there.", correct: "c", options: ["a. On the other hand", "b. Similarly", "c. Consequently", "d. For example"] }
+        ];
+
+        // 3. TF DATA
+        const tfData = [
+            { id: "tf1", text: "1. You must write at least 250 words for Task 2.", correct: "True" },
+            { id: "tf2", text: "2. It is acceptable to use informal slang (e.g., 'gonna', 'wanna') in your essay.", correct: "False" },
+            { id: "tf3", text: "3. The conclusion should introduce completely new arguments.", correct: "False" },
+            { id: "tf4", text: "4. You should spend about 40 minutes on Task 2.", correct: "True" }
+        ];
+
+        // --- Charts Initialization ---
+        function initCharts() {
+            // Warm-up Chart: Work Preferences
+            const ctx1 = document.getElementById('warmupChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Fully Remote', 'Hybrid (Mixed)', 'Fully In-Office'],
+                    datasets: [{
+                        label: 'Employee Preference (%)',
+                        data: [25, 60, 15],
+                        backgroundColor: [
+                            'rgba(34, 211, 238, 0.7)', // Cyan
+                            'rgba(99, 102, 241, 0.7)', // Indigo
+                            'rgba(244, 63, 94, 0.7)'   // Rose
+                        ],
+                        borderColor: [
+                            'rgb(34, 211, 238)',
+                            'rgb(99, 102, 241)',
+                            'rgb(244, 63, 94)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Survey: How Employees Want to Work (2024)' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            if(vocabData.length === 0) return;
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="">Select meaning...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col md:flex-row md:items-center gap-3 p-3 bg-white rounded-lg border border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <div class="md:w-1/3 font-bold text-cyan-900">${item.word}</div>
+                    <div class="md:w-2/3 flex items-center gap-2">
+                        <select id="${item.id}" class="flex-1 p-2 text-sm border border-slate-200 rounded bg-cyan-50 focus:ring-1 focus:ring-cyan-500 outline-none cursor-pointer">${optionsHtml}</select>
+                        <span id="feedback-${item.id}" class="w-6 flex justify-center"></span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderMCQ() {
+            const container = document.getElementById('mcq-container');
+            container.innerHTML = mcqData.map(item => `
+                <div class="space-y-2">
+                    <p class="font-medium text-emerald-900 text-sm">${item.question}</p>
+                    <div class="space-y-1">
+                        ${item.options.map((opt, idx) => {
+                            const val = ['a','b','c','d'][idx];
+                            return `<label class="flex items-center gap-2 p-2 rounded hover:bg-emerald-50 cursor-pointer text-sm">
+                                <input type="radio" name="${item.id}" value="${val}" class="accent-emerald-600"> <span>${opt}</span>
+                            </label>`;
+                        }).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-sm font-bold h-5"></div>
+                </div>`).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-emerald-50 last:border-0" id="row-${item.id}">
+                    <span class="text-sm text-slate-700 mb-2 sm:mb-0 w-full sm:w-2/3">${item.text}</span>
+                    <div class="flex items-center gap-4 text-sm font-medium">
+                        <label class="flex items-center gap-1 cursor-pointer hover:text-emerald-600"><input type="radio" name="${item.id}" value="True" class="accent-emerald-600"> True</label>
+                        <label class="flex items-center gap-1 cursor-pointer hover:text-emerald-600"><input type="radio" name="${item.id}" value="False" class="accent-emerald-600"> False</label>
+                        <span id="feedback-${item.id}" class="ml-1 w-6"></span>
+                    </div>
+                </div>`).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    select.classList.add('border-green-500', 'bg-green-50');
+                    select.classList.remove('border-red-300');
+                    select.disabled = true;
+                } else {
+                    feedback.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    select.classList.add('border-red-300');
+                }
+            });
+        }
+
+        function checkMCQ() {
+            mcqData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-green-600">Correct!</span>';
+                    radios.forEach(r => r.disabled = true);
+                } else if (userVal !== "") {
+                    feedback.innerHTML = '<span class="text-red-500">Incorrect.</span>';
+                }
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    radios.forEach(r => r.disabled = true);
+                } else if (userVal !== "") {
+                    feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                }
+            });
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                if(elementId.includes('t3')) btn.innerText = "Show Structure";
+                else if(elementId.includes('t1')) btn.innerText = "Show Discussion Points";
+                else if(elementId.includes('t8')) btn.innerText = "Show Hint";
+                else btn.innerText = "Show Answer";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '2000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers?")) {
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                document.querySelectorAll('select').forEach(s => { s.value = ""; s.disabled = false; s.classList.remove('border-green-500', 'bg-green-50', 'border-red-300'); });
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderMCQ();
+            renderTF();
+            initCharts();
+        });
+
+    </script>
+</body>
+</html>

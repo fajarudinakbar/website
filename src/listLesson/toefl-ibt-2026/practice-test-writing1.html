@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Practice Test | Writing Section</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        .word-chip {
+            transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+        }
+        .sortable-ghost {
+            opacity: 0.1;
+        }
+        .sortable-drag {
+            cursor: grabbing !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <div id="app"></div>
+
+    <script>
+        // --- DATA STRUCTURE (Rephrased Content at B1-B2 Level) ---
+        const testData = {
+            module1: {
+                title: "Writing Section",
+                sections: [
+                    {
+                        id: "sec_build",
+                        type: "build_sentence",
+                        title: "Build a Sentence",
+                        timeLimit: 600,
+                        description: "Move the words in the boxes to create grammatical sentences.",
+                        questions: [
+                            {
+                                id: 1,
+                                prompt: "What was the best part of your vacation?",
+                                chunks: ["the", "local guides", "who", "took us around", "the", "museum", "were", "excellent"],
+                                answer: "the local guides who took us around the museum were excellent",
+                                targetLength: 8,
+                                suffix: ".",
+                                explanation: "The main subject is 'The local guides'. This is modified by the relative clause 'who took us around the museum'. Because the subject is plural (guides), the correct main verb is 'were', followed by the adjective 'excellent'."
+                            },
+                            {
+                                id: 2,
+                                prompt: "I heard David got a new job.",
+                                chunks: ["do", "you", "know", "if", "he will be", "moving to", "another city"],
+                                answer: "do you know if he will be moving to another city",
+                                targetLength: 7,
+                                suffix: "?",
+                                explanation: "This is an indirect question. The introductory phrase 'Do you know' is followed by 'if', and then the embedded question uses normal statement word order ('he will be moving'), not question word order."
+                            },
+                            {
+                                id: 3,
+                                prompt: "We're organizing a trip to the beach next month.",
+                                chunks: ["can", "you", "tell me", "whether", "the hotel rooms", "will be", "ready"],
+                                answer: "can you tell me whether the hotel rooms will be ready",
+                                targetLength: 7,
+                                suffix: "?",
+                                explanation: "Like the previous item, this uses an indirect question structure. 'Can you tell me whether' introduces the noun clause, which maintains the standard subject and verb order: 'the hotel rooms will be ready'."
+                            },
+                            {
+                                id: 4,
+                                prompt: "I am excited about the festival this Saturday.",
+                                chunks: ["what", "time", "does", "it", "open"],
+                                answer: "what time does it open",
+                                targetLength: 5,
+                                suffix: "?",
+                                explanation: "This is a standard direct question. The question phrase 'What time' requires the auxiliary verb 'does' to come before the subject 'it' and the base verb 'open'."
+                            },
+                            {
+                                id: 5,
+                                prompt: "The art gallery opens its new show next week.",
+                                chunks: ["do", "you", "know", "how", "much", "entrance", "will cost"],
+                                answer: "do you know how much entrance will cost",
+                                targetLength: 7,
+                                suffix: "?",
+                                explanation: "Another indirect question. 'how much' acts as the question word connecting the clauses. It is followed by the subject 'entrance' and the verb phrase 'will cost'."
+                            },
+                            {
+                                id: 6,
+                                prompt: "I am planning to hike in the forest tomorrow.",
+                                chunks: ["what", "is", "the trail", "condition", "like", "during", "this season"],
+                                answer: "what is the trail condition like during this season",
+                                targetLength: 7,
+                                suffix: "?",
+                                explanation: "The structure 'What is [subject] like?' is commonly used to ask for a description. Here, the subject is 'the trail condition', followed by the prepositional phrase 'during this season'."
+                            },
+                            {
+                                id: 7,
+                                prompt: "I need to pack my suitcase today.",
+                                chunks: ["do", "you", "have", "a", "packing", "checklist"],
+                                answer: "do you have a packing checklist",
+                                targetLength: 6,
+                                suffix: "?",
+                                explanation: "This is a simple yes or no question in the present tense. It starts with the auxiliary 'Do', followed by the subject 'you', the main verb 'have', and the object 'a packing checklist'."
+                            },
+                            {
+                                id: 8,
+                                prompt: "I will be taking a photography course this weekend.",
+                                chunks: ["what", "techniques", "will", "you", "learn"],
+                                answer: "what techniques will you learn",
+                                targetLength: 5,
+                                suffix: "?",
+                                explanation: "The question word 'What' modifies the noun 'techniques'. In a direct question, the auxiliary verb 'will' must invert and come before the subject 'you', followed by the base verb 'learn'."
+                            },
+                            {
+                                id: 9,
+                                prompt: "What did John ask you about the laptop you're using?",
+                                chunks: ["he", "wanted", "to know", "where", "he", "could", "purchase", "one"],
+                                answer: "he wanted to know where he could purchase one",
+                                targetLength: 8,
+                                suffix: ".",
+                                explanation: "When reporting a question, we use statement word order. After the question word 'where', the subject 'he' must precede the modal verb 'could'."
+                            },
+                            {
+                                id: 10,
+                                prompt: "How did you prepare for the presentation?",
+                                chunks: ["I used", "the software template", "that", "was recommended", "by", "the manager"],
+                                answer: "I used the software template that was recommended by the manager",
+                                targetLength: 6,
+                                suffix: ".",
+                                explanation: "The main clause is 'I used the software template'. This is modified by the relative clause 'that was recommended by the manager', which uses the passive voice to describe the template."
+                            }
+                        ]
+                    },
+                    {
+                        id: "sec_email",
+                        type: "email",
+                        title: "Write an Email",
+                        timeLimit: 420,
+                        timeLimitNotice: "Time Limit: 7 minutes",
+                        prompt: `A new local photography blog has asked its followers for photo entries, and you decided to upload two of your landscape pictures. However, you experienced an issue with the website's upload page, and you are unsure if your photos went through successfully.\n\nWrite an email to the site administrator. In your message, do the following.\n\n• Tell the administrator what you enjoy about their new blog.\n• Explain the technical issue you faced during the upload.\n• Inquire about the current status of your photo entries.\n\nWrite as much as you can and in complete sentences.`,
+                        to: "admin@cityviewsblog.com",
+                        subject: "Issue with photo upload page"
+                    },
+                    {
+                        id: "sec_discussion",
+                        type: "discussion",
+                        title: "Write for an Academic Discussion",
+                        timeLimit: 600,
+                        timeLimitNotice: "Time Limit: 10 minutes",
+                        prompt: `A professor has posted a question about a topic and students have responded with their thoughts and ideas. Make a contribution to the discussion.\n\nYour professor is teaching a class on sociology. Write a post responding to the professor's question.\n\nIn your response, you should do the following.\n• Express and support your opinion.\n• Make a contribution to the discussion in your own words.\n\nAn effective response will contain at least 100 words.`,
+                        professor: {
+                            name: "Dr. Collins",
+                            text: "Many universities today are offering a large portion of their courses entirely online. Online education provides a lot of flexibility, allowing students to learn from anywhere at any time. However, some educators argue that online classes lack the face-to-face interaction and immediate feedback found in traditional classrooms. I want to know your thoughts on this topic. Do you think taking classes online is as effective as attending classes in person? Why or why not?"
+                        },
+                        students: [
+                            {
+                                name: "Elena",
+                                text: "Yes, I believe online classes can be just as effective. They allow students to work at their own pace, which is great for people who have part-time jobs or other responsibilities. Plus, online discussion boards often give quieter students a better chance to share their ideas than in a crowded classroom."
+                            },
+                            {
+                                name: "David",
+                                text: "I disagree. I don't think online classes are as effective because it's much harder to stay focused. When you are at home, there are too many distractions. In a physical classroom, the environment forces you to pay attention to the professor and participate in live group discussions."
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            currentModule: null,
+            flatSteps: [],
+            currentStepIndex: 0,
+            answers: {},          
+            sentenceStates: {},   
+            checkedSteps: {},     
+            sectionTimes: {},     
+            currentSectionId: null,
+            showResults: false,
+            showInstructions: false,
+            timerInterval: null
+        };
+
+        // --- LOGIC FUNCTIONS ---
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initModule(moduleId) {
+            state.currentModule = moduleId;
+            state.answers = {};
+            state.sentenceStates = {};
+            state.sectionTimes = {};
+            state.checkedSteps = {};
+            state.showResults = false;
+            state.showInstructions = true;
+            state.currentSectionId = null;
+            state.currentStepIndex = 0;
+
+            const steps = [];
+            testData[moduleId].sections.forEach(section => {
+                state.sectionTimes[section.id] = section.timeLimit;
+                if (section.type === 'build_sentence') {
+                    section.questions.forEach((q, idx) => {
+                        state.sentenceStates[q.id] = {
+                            available: shuffleArray([...q.chunks]),
+                            selected: []
+                        };
+
+                        steps.push({
+                            type: 'build_sentence',
+                            data: section,
+                            question: q,
+                            questionIndex: idx + 1,
+                            totalQuestions: section.questions.length,
+                            sectionId: section.id
+                        });
+                    });
+                } else if (section.type === 'email' || section.type === 'discussion') {
+                    state.answers[section.id] = ""; 
+                    steps.push({
+                        type: section.type,
+                        data: section,
+                        sectionId: section.id
+                    });
+                }
+            });
+            state.flatSteps = steps;
+            render();
+        }
+
+        function startTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                if (state.sectionTimes[state.currentSectionId] > 0) {
+                    state.sectionTimes[state.currentSectionId]--;
+                    updateTimerDisplay();
+                } else {
+                    forceNextSection();
+                }
+            }, 1000);
+        }
+
+        function forceNextSection() {
+            const nextStep = state.flatSteps.find((s, idx) => idx > state.currentStepIndex && s.sectionId !== state.currentSectionId);
+            if (nextStep) {
+                state.currentStepIndex = state.flatSteps.indexOf(nextStep);
+                state.currentSectionId = nextStep.sectionId;
+                render();
+            } else {
+                finishTest();
+            }
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function handleNext() {
+            if (state.currentStepIndex < state.flatSteps.length - 1) {
+                state.currentStepIndex++;
+                state.currentSectionId = state.flatSteps[state.currentStepIndex].sectionId;
+                render();
+            } else {
+                finishTest();
+            }
+        }
+
+        function handleBack() {
+            if (state.currentStepIndex > 0) {
+                state.currentStepIndex--;
+                state.currentSectionId = state.flatSteps[state.currentStepIndex].sectionId;
+                render();
+            }
+        }
+
+        function handleCheck() {
+            state.checkedSteps[state.currentStepIndex] = true;
+            render();
+        }
+
+        function handleBeginTest() {
+            state.showInstructions = false;
+            state.currentSectionId = state.flatSteps[0].sectionId;
+            startTimer();
+            render();
+        }
+
+        function finishTest() {
+            stopTimer();
+            state.showResults = true;
+            render();
+        }
+
+        function initSortable(qId) {
+            const bankEl = document.getElementById(`word-bank-${qId}`);
+            const zoneEl = document.getElementById(`sentence-zone-${qId}`);
+            
+            if (bankEl && zoneEl && typeof Sortable !== 'undefined' && !state.checkedSteps[state.currentStepIndex]) {
+                new Sortable(bankEl, {
+                    group: 'shared',
+                    animation: 150,
+                    filter: '.empty-placeholder',
+                    onEnd: function() { syncSentenceState(qId); }
+                });
+                new Sortable(zoneEl, {
+                    group: 'shared',
+                    animation: 150,
+                    filter: '.empty-placeholder',
+                    onEnd: function() { syncSentenceState(qId); }
+                });
+            }
+        }
+
+        function syncSentenceState(qId) {
+            const bankEl = document.getElementById(`word-bank-${qId}`);
+            const zoneEl = document.getElementById(`sentence-zone-${qId}`);
+            
+            if (bankEl && zoneEl) {
+                const available = Array.from(bankEl.querySelectorAll('.word-chip')).map(el => el.getAttribute('data-word'));
+                const selected = Array.from(zoneEl.querySelectorAll('.word-chip')).map(el => el.getAttribute('data-word'));
+                
+                state.sentenceStates[qId].available = available;
+                state.sentenceStates[qId].selected = selected;
+                render();
+            }
+        }
+
+        function handleTextInput(sectionId, value) {
+            state.answers[sectionId] = value;
+            updateWordCount(sectionId);
+        }
+
+        function updateWordCount(sectionId) {
+            const text = state.answers[sectionId] || "";
+            const wordCount = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const el = document.getElementById(`wc-${sectionId}`);
+            if (el) el.innerText = wordCount;
+        }
+
+        function resetApp() {
+            state.currentModule = null;
+            state.flatSteps = [];
+            state.answers = {};
+            state.sentenceStates = {};
+            state.sectionTimes = {};
+            state.checkedSteps = {};
+            state.currentSectionId = null;
+            state.showResults = false;
+            state.showInstructions = false;
+            stopTimer();
+            render();
+        }
+
+        function calculateSentenceScore() {
+            let correct = 0;
+            let total = 0;
+            if (!state.currentModule) return { correct: 0, total: 0 };
+            testData[state.currentModule].sections.forEach(sec => {
+                if (sec.type === 'build_sentence') {
+                    sec.questions.forEach(q => {
+                        total++;
+                        const userArrangement = state.sentenceStates[q.id].selected.join(" ").trim().toLowerCase();
+                        if (userArrangement === q.answer.toLowerCase()) correct++;
+                    });
+                }
+            });
+            return { correct, total };
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('timer-display');
+            if (el) el.innerText = formatTime(state.sectionTimes[state.currentSectionId] || 0);
+        }
+
+        function getPromptPreview(sectionId) {
+            const userText = state.answers[sectionId] || "[No response provided]";
+            if (sectionId === 'sec_email') {
+                return `Act as an expert TOEFL iBT scorer. Please evaluate my "Write an Email" response based on the following official 5-point rubric criteria:\n\n- 5: Fully successful. Effective elaboration, syntactic variety, precise word choice, appropriate social conventions, almost no errors.\n- 4: Generally successful. Adequate elaboration, appropriate word choice, mostly appropriate social conventions, few errors.\n- 3: Partially successful. Partial elaboration, moderate syntax/vocabulary, some noticeable errors.\n- 2: Mostly unsuccessful. Limited/irrelevant elaboration, limited range, accumulation of errors.\n- 1: Unsuccessful. Very little elaboration, telegraphic language, serious/frequent errors.\n\nMy response:\n"${userText}"\n\nPlease provide a score (0-5), a breakdown of my strengths and weaknesses, and a revised version of my email that sounds natural and professional.`;
+            } else if (sectionId === 'sec_discussion') {
+                return `Act as an expert TOEFL iBT scorer. Please evaluate my "Write for an Academic Discussion" response based on the following official 5-point rubric criteria:\n\n- 5: Fully successful. Relevant/well-elaborated contribution, effective syntactic variety, precise word choice, almost no errors.\n- 4: Generally successful. Relevant/adequately elaborated, variety of structures, few errors.\n- 3: Partially successful. Mostly relevant, partial elaboration, some noticeable errors.\n- 2: Mostly unsuccessful. Poorly elaborated/partially relevant, limited range, accumulation of errors.\n- 1: Unsuccessful. Ineffective attempt, severely limited range, serious/frequent errors.\n\nMy response:\n"${userText}"\n\nPlease provide a score (0-5), a breakdown of my strengths and weaknesses, and a revised version of my response that fits an academic context.`;
+            }
+            return "";
+        }
+
+        function copyPrompt(sectionId, btnId) {
+            const promptText = getPromptPreview(sectionId);
+            const textArea = document.createElement("textarea");
+            textArea.value = promptText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                const btn = document.getElementById(btnId);
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 mr-2"></i> Copied!';
+                if (window.lucide) window.lucide.createIcons();
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    if (window.lucide) window.lucide.createIcons();
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderWelcome() {
+            return `
+            <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+                <div class="bg-white max-w-4xl w-full shadow-lg rounded-xl overflow-hidden">
+                    <div class="bg-sky-600 py-12 px-6 text-white text-center">
+                        <i data-lucide="pen-line" class="w-12 h-12 mx-auto mb-4 stroke-[2]"></i>
+                        <h1 class="text-4xl font-bold font-sans tracking-tight mb-2">TOEFL iBT® Practice Test</h1>
+                        <p class="text-xl text-sky-50 font-medium tracking-wide">Writing Section</p>
+                    </div>
+                    <div class="px-6 py-12 text-center md:px-12">
+                        <p class="text-slate-600 mb-10 text-xl max-w-3xl mx-auto leading-relaxed">
+                            This practice test simulates the digital interface of the writing section of the TOEFL iBT test. You will complete sentence building tasks and write responses to realistic prompts.
+                        </p>
+                        <div class="flex justify-center">
+                            <button onclick="initModule('module1')" class="py-6 px-10 border border-slate-200 rounded-2xl hover:border-sky-500 hover:ring-1 hover:ring-sky-500 transition-all bg-white group shadow-sm hover:shadow-md cursor-pointer w-full max-w-xl">
+                                <div class="flex items-center justify-center mb-2">
+                                    <i data-lucide="file-text" class="w-6 h-6 mr-3 text-sky-700 group-hover:text-sky-600 transition-colors"></i>
+                                    <h3 class="text-2xl font-bold text-slate-800 group-hover:text-sky-700 transition-colors">Start Writing Practice</h3>
+                                </div>
+                                <p class="text-slate-500 text-sm font-medium mt-1">10 Sentence Builds &bull; 1 Email &bull; 1 Academic Discussion</p>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-5 text-center border-t border-slate-100">
+                        <p class="text-slate-400 text-sm">Simulated interface for educational purposes.</p>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderBuildSentence(step) {
+            const { data, question } = step;
+            const sState = state.sentenceStates[question.id];
+            const isChecked = state.checkedSteps[state.currentStepIndex];
+
+            const speaker1Img = `https://randomuser.me/api/portraits/women/${20 + question.id}.jpg`;
+            const speaker2Img = `https://randomuser.me/api/portraits/men/${30 + question.id}.jpg`;
+
+            const availableChips = sState.available.map((word) => `
+                <div data-word="${word}" class="word-chip ${isChecked ? '' : 'cursor-grab'} px-5 py-2 bg-white border border-slate-400 text-slate-800 font-medium rounded shadow-sm hover:shadow">
+                    ${word}
+                </div>
+            `).join('');
+
+            const selectedChips = sState.selected.map((word) => `
+                <div data-word="${word}" class="word-chip ${isChecked ? '' : 'cursor-grab'} px-2 border-b-2 border-slate-800 text-slate-800 font-medium min-w-[60px] text-center">
+                    ${word}
+                </div>
+            `).join('');
+
+            const remainingCount = Math.max(0, question.targetLength - sState.selected.length);
+            let blanksHtml = '';
+            for(let i=0; i<remainingCount; i++) {
+                blanksHtml += `<span class="inline-block w-20 border-b-2 border-slate-800 h-2 mx-1"></span>`;
+            }
+
+            const isComplete = sState.selected.length === question.targetLength;
+
+            let feedbackArea = '';
+            if (isChecked) {
+                const userArrangement = sState.selected.join(" ").trim().toLowerCase();
+                const isCorrect = userArrangement === question.answer.toLowerCase();
+                feedbackArea = `
+                <div class="mt-8 p-6 rounded-lg bg-slate-50 border border-slate-200 shadow-inner">
+                    <p class="font-bold mb-3 flex items-center ${isCorrect ? 'text-green-700' : 'text-red-700'}">
+                        <i data-lucide="${isCorrect ? 'check-circle' : 'alert-circle'}" class="w-5 h-5 mr-2"></i>
+                        ${isCorrect ? 'Correct!' : 'Incorrect.'}
+                    </p>
+                    ${!isCorrect ? `<p class="text-sm mb-3 text-slate-800"><strong>Correct Sentence:</strong> ${question.prefix ? question.prefix + ' ' : ''}${question.answer}${question.suffix ? question.suffix : ''}</p>` : ''}
+                    <div class="text-sm text-slate-700 leading-relaxed">
+                        <strong class="text-slate-900 block mb-1">Explanation:</strong>
+                        ${question.explanation}
+                    </div>
+                </div>`;
+            }
+
+            return `
+            <div class="pt-32 px-4 md:px-12 max-w-4xl mx-auto pb-12 h-screen overflow-y-auto custom-scroll">
+                <div class="bg-white p-10 rounded-lg shadow-sm border border-slate-200">
+                    
+                    <div class="space-y-12">
+                        <div class="flex items-start">
+                            <img src="${speaker1Img}" class="w-20 h-20 rounded-full object-cover mr-6 border border-slate-200 shadow-sm">
+                            <div class="pt-6 text-xl text-slate-800 font-sans">
+                                ${question.prompt}
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <img src="${speaker2Img}" class="w-20 h-20 rounded-full object-cover mr-6 border border-slate-200 shadow-sm">
+                            <div class="flex-grow pt-6">
+                                <div id="sentence-zone-${question.id}" class="text-xl flex flex-wrap items-end gap-x-2 gap-y-4 mb-10 min-h-[40px] leading-relaxed">
+                                    ${question.prefix ? `<span class="pb-1">${question.prefix}</span>` : ''}
+                                    ${selectedChips}
+                                    ${blanksHtml}
+                                    ${question.suffix ? `<span class="pb-1 text-2xl font-bold">${question.suffix}</span>` : ''}
+                                </div>
+
+                                <div id="word-bank-${question.id}" class="border border-slate-300 p-6 flex flex-wrap justify-center gap-3 bg-slate-50 rounded min-h-[100px] shadow-inner">
+                                    ${availableChips}
+                                </div>
+
+                                <div class="mt-8">
+                                    <button 
+                                        onclick="handleCheck()" 
+                                        ${!isComplete || isChecked ? 'disabled' : ''}
+                                        class="px-10 py-2.5 font-bold transition-all rounded ${isComplete && !isChecked ? 'bg-sky-200 text-sky-900 hover:bg-sky-300 shadow-md' : 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none'}">
+                                        Check
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${feedbackArea}
+                </div>
+            </div>`;
+        }
+
+        function renderInstructions() {
+            return `
+            <div class="pt-24 px-8 max-w-5xl mx-auto h-screen overflow-y-auto custom-scroll pb-10">
+                <h1 class="text-3xl text-slate-800 mb-6 font-sans font-bold">Writing Section</h1>
+                <p class="text-slate-700 text-lg mb-8 leading-relaxed">
+                    This section evaluates your English writing proficiency across different communicative tasks.
+                </p>
+                <div class="border border-slate-300 bg-white shadow-sm rounded overflow-hidden">
+                    <div class="grid grid-cols-[30%_70%] bg-sky-200 border-b border-slate-300 text-sky-900">
+                        <div class="p-4 font-bold border-r border-slate-300">Type of Task</div>
+                        <div class="p-4 font-bold">Description</div>
+                    </div>
+                    <div class="grid grid-cols-[30%_70%] border-b border-slate-300">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-800">Build a Sentence</div>
+                        <div class="p-4 text-slate-700">Assemble word chunks into grammatical responses in a conversation.</div>
+                    </div>
+                    <div class="grid grid-cols-[30%_70%] border-b border-slate-300">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-800">Write an Email</div>
+                        <div class="p-4 text-slate-700">Draft a formal email based on a scenario.</div>
+                    </div>
+                    <div class="grid grid-cols-[30%_70%]">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-800">Academic Discussion</div>
+                        <div class="p-4 text-slate-700">Contribute to a university discussion forum.</div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderHeader() {
+            const isInstructionPhase = state.showInstructions;
+            let navButtons = '';
+            if (isInstructionPhase) {
+                navButtons = `
+                    <button onclick="handleBeginTest()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors">
+                        Begin <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            } else {
+                const backBtn = state.currentStepIndex > 0 ? `<button onclick="handleBack()" class="flex items-center px-4 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors mr-2 text-sm"><i data-lucide="chevron-left" class="mr-1 w-4 h-4"></i> Back</button>` : '';
+                const nextText = state.currentStepIndex === state.flatSteps.length - 1 ? 'Finish' : 'Next';
+                navButtons = `${backBtn} <button onclick="handleNext()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors text-sm">${nextText} <i data-lucide="chevron-right" class="ml-1 w-4 h-4"></i></button>`;
+            }
+            return `
+            <header class="bg-sky-600 h-16 flex items-center justify-between px-6 shadow-md z-50 fixed w-full top-0">
+                <span class="text-white text-lg font-bold flex items-center"><i data-lucide="pen-tool" class="w-5 h-5 mr-2"></i> Writing Section</span>
+                <div class="flex items-center space-x-2">${navButtons}</div>
+            </header>`;
+        }
+
+        function renderSubHeader() {
+            if (state.showInstructions) return '';
+            const step = state.flatSteps[state.currentStepIndex];
+            const displayTitle = step.type === 'build_sentence' ? `${step.data.title} (${step.questionIndex}/${step.totalQuestions})` : step.data.title;
+            return `
+            <div class="fixed top-16 w-full bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center text-slate-700 text-sm font-sans z-40 shadow-sm">
+                <span class="font-semibold text-lg text-sky-700">${displayTitle}</span>
+                <div class="flex items-center text-slate-500 font-mono bg-slate-100 px-3 py-1 rounded border border-slate-200">
+                    <i data-lucide="clock" class="mr-2 w-4 h-4"></i>
+                    <span id="timer-display" class="font-bold">${formatTime(state.sectionTimes[state.currentSectionId] || 0)}</span>
+                </div>
+            </div>`;
+        }
+
+        function renderEmail(step) {
+            const { data } = step;
+            const currentText = state.answers[data.id] || "";
+            const wordCount = currentText.trim().split(/\s+/).filter(w => w.length > 0).length;
+            return `
+            <div class="pt-28 h-screen flex flex-col md:flex-row overflow-hidden bg-white">
+                <div class="w-full md:w-1/2 h-full overflow-y-auto border-r border-slate-300 p-8 bg-slate-50 custom-scroll">
+                    <div class="prose max-w-none text-slate-800 leading-relaxed text-lg font-sans">${data.prompt.replace(/\n/g, '<br/>')}</div>
+                </div>
+                <div class="w-full md:w-1/2 h-full flex flex-col p-8 bg-white">
+                    <div class="flex-grow flex flex-col border border-slate-300 rounded overflow-hidden shadow-sm">
+                        <div class="bg-slate-100 border-b border-slate-200 p-4 text-sm font-sans text-slate-800">
+                            <div><span class="font-bold text-slate-500 w-16 inline-block">To:</span> ${data.to}</div>
+                            <div class="mt-2"><span class="font-bold text-slate-500 w-16 inline-block">Subject:</span> ${data.subject}</div>
+                        </div>
+                        <textarea class="flex-grow p-4 w-full resize-none focus:outline-none text-lg leading-relaxed font-sans text-slate-800" oninput="handleTextInput('${data.id}', this.value)">${currentText}</textarea>
+                        <div class="bg-slate-50 border-t border-slate-200 p-3 text-sm text-slate-500 flex justify-between">
+                            <span>Word Count: <span id="wc-${data.id}" class="font-bold text-sky-700">${wordCount}</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderDiscussion(step) {
+            const { data } = step;
+            const currentText = state.answers[data.id] || "";
+            const wordCount = currentText.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const studentPosts = data.students.map(s => `<div class="mb-6"><div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm"><strong>${s.name}</strong><p class="text-slate-700 text-sm mt-2 leading-relaxed font-sans">${s.text}</p></div></div>`).join('');
+            return `
+            <div class="pt-28 h-screen flex flex-col md:flex-row overflow-hidden bg-white">
+                <div class="w-full md:w-[55%] h-full overflow-y-auto border-r border-slate-300 p-8 bg-slate-50 custom-scroll">
+                    <div class="prose max-w-none text-slate-800 mb-8 pb-6 border-b border-slate-200 font-sans text-lg">${data.prompt.replace(/\n/g, '<br/>')}</div>
+                    <div class="bg-sky-50 p-5 rounded-lg border border-sky-200 mb-8 shadow-sm text-slate-800"><strong class="text-sky-900">${data.professor.name} (Professor)</strong><p class="mt-2 leading-relaxed font-sans">${data.professor.text}</p></div>
+                    ${studentPosts}
+                </div>
+                <div class="w-full md:w-[45%] h-full flex flex-col p-8 bg-white">
+                    <h3 class="font-bold mb-4 flex items-center text-lg text-slate-800"><i data-lucide="message-square" class="w-5 h-5 mr-2 text-sky-600"></i> Your Response</h3>
+                    <textarea class="flex-grow p-5 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-sky-500 focus:border-transparent text-lg leading-relaxed shadow-sm font-sans text-slate-800" oninput="handleTextInput('${data.id}', this.value)">${currentText}</textarea>
+                    <div class="mt-3 text-sm text-slate-500 font-medium">Word Count: <span id="wc-${data.id}" class="font-bold text-sky-600">${wordCount}</span> / min 100</div>
+                </div>
+            </div>`;
+        }
+
+        function renderResults() {
+            const { correct, total } = calculateSentenceScore();
+            
+            // Build the sentence review HTML
+            let sentenceReviewHtml = '';
+            testData[state.currentModule].sections.forEach(sec => {
+                if (sec.type === 'build_sentence') {
+                    sec.questions.forEach((q, idx) => {
+                        const sState = state.sentenceStates[q.id];
+                        const userArrangement = sState.selected.join(" ").trim().toLowerCase();
+                        const isCorrect = userArrangement === q.answer.toLowerCase();
+                        const userDisplay = sState.selected.length > 0 ? sState.selected.join(" ") : "<span class='text-slate-400 italic'>(No answer provided)</span>";
+
+                        sentenceReviewHtml += `
+                            <div class="border-b border-slate-200 pb-5 last:border-0 last:pb-0">
+                                <p class="font-semibold text-slate-800 mb-3">${idx + 1}. ${q.prompt}</p>
+                                <div class="flex items-start mb-3">
+                                    <i data-lucide="${isCorrect ? 'check-circle' : 'x-circle'}" class="w-5 h-5 mr-3 mt-0.5 ${isCorrect ? 'text-green-600' : 'text-red-600'} flex-shrink-0"></i>
+                                    <div>
+                                        <p class="text-slate-700 mb-1"><strong>Your Answer:</strong> ${userDisplay}</p>
+                                        ${!isCorrect ? `<p class="text-slate-700"><strong>Correct Answer:</strong> ${q.answer}</p>` : ''}
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded text-sm text-slate-600 mt-2 border border-slate-100">
+                                    <strong class="text-slate-800 block mb-1">Explanation:</strong> ${q.explanation}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            });
+
+            return `
+            <div class="min-h-screen bg-slate-50 pt-16 pb-12 overflow-y-auto custom-scroll">
+                
+                <div class="bg-sky-600 p-10 text-white text-center shadow-md mb-8">
+                    <i data-lucide="award" class="w-16 h-16 mx-auto mb-4 opacity-90"></i>
+                    <h2 class="text-3xl font-bold">Review Your Performance</h2>
+                    <p class="mt-2 opacity-90 text-lg">Practice Complete!</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto px-4 space-y-8">
+                    
+                    <!-- Sentence Building Results -->
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-50 p-5 border-b border-slate-200 font-bold text-lg text-slate-800 flex justify-between items-center">
+                            <span class="flex items-center"><i data-lucide="layout-grid" class="w-5 h-5 mr-2 text-sky-600"></i> Build a Sentence</span>
+                            <span class="text-sky-700 bg-sky-100 px-3 py-1 rounded text-sm">${correct} / ${total} Correct</span>
+                        </div>
+                        <div class="p-6 space-y-5">
+                            ${sentenceReviewHtml}
+                        </div>
+                    </div>
+
+                    <!-- Email AI Review Integration -->
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-50 p-5 border-b border-slate-200 font-bold text-lg text-slate-800 flex items-center">
+                            <i data-lucide="mail" class="w-5 h-5 mr-2 text-sky-600"></i> Write an Email: AI Self-Review
+                        </div>
+                        <div class="p-6">
+                            <p class="text-slate-700 mb-4 leading-relaxed">
+                                Ready to evaluate your email? Click the button below to copy a specialized prompt along with your response. Paste it into an AI chatbot (like ChatGPT, Gemini, or Claude) to receive personalized, actionable feedback based on official rubrics.
+                            </p>
+                            
+                            <div class="bg-slate-800 text-slate-300 p-4 rounded text-sm font-mono whitespace-pre-wrap max-h-64 overflow-y-auto mb-4 custom-scroll border border-slate-700 shadow-inner">
+                                ${getPromptPreview('sec_email')}
+                            </div>
+
+                            <button onclick="copyPrompt('sec_email', 'btn-copy-email')" id="btn-copy-email" class="w-full md:w-auto px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded shadow transition-colors flex items-center justify-center">
+                                <i data-lucide="copy" class="w-4 h-4 mr-2"></i> Copy Prompt & Response
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Discussion AI Review Integration -->
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-50 p-5 border-b border-slate-200 font-bold text-lg text-slate-800 flex items-center">
+                            <i data-lucide="message-square" class="w-5 h-5 mr-2 text-sky-600"></i> Academic Discussion: AI Self-Review
+                        </div>
+                        <div class="p-6">
+                            <p class="text-slate-700 mb-4 leading-relaxed">
+                                Review your academic discussion contribution. Copy the structured prompt and your response below, then paste it into your preferred AI tool to see how well you elaborated on your ideas and maintained an academic tone.
+                            </p>
+                            
+                            <div class="bg-slate-800 text-slate-300 p-4 rounded text-sm font-mono whitespace-pre-wrap max-h-64 overflow-y-auto mb-4 custom-scroll border border-slate-700 shadow-inner">
+                                ${getPromptPreview('sec_discussion')}
+                            </div>
+
+                            <button onclick="copyPrompt('sec_discussion', 'btn-copy-discussion')" id="btn-copy-discussion" class="w-full md:w-auto px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded shadow transition-colors flex items-center justify-center">
+                                <i data-lucide="copy" class="w-4 h-4 mr-2"></i> Copy Prompt & Response
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center pt-4 pb-8">
+                        <button onclick="resetApp()" class="px-8 py-3 bg-slate-800 text-white font-bold rounded shadow hover:bg-slate-700 transition-colors flex items-center">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4 mr-2"></i> Retake Practice Test
+                        </button>
+                    </div>
+
+                </div>
+            </div>`;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            if (!state.currentModule) {
+                app.innerHTML = renderWelcome();
+            } else if (state.showResults) {
+                app.innerHTML = renderResults();
+            } else {
+                let mainContent = '';
+                if (state.showInstructions) {
+                    mainContent = renderInstructions();
+                } else {
+                    const step = state.flatSteps[state.currentStepIndex];
+                    if (step.type === 'build_sentence') mainContent = renderBuildSentence(step);
+                    else if (step.type === 'email') mainContent = renderEmail(step);
+                    else if (step.type === 'discussion') mainContent = renderDiscussion(step);
+                }
+                app.innerHTML = renderHeader() + renderSubHeader() + mainContent;
+            }
+            lucide.createIcons();
+            if (!state.showInstructions && !state.showResults && state.flatSteps.length > 0) {
+                const currentStep = state.flatSteps[state.currentStepIndex];
+                if (currentStep.type === 'build_sentence') initSortable(currentStep.question.id);
+            }
+        }
+
+        render();
+    </script>
+</body>
+</html>

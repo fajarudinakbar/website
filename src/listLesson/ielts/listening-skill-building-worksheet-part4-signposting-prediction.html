@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>IELTS Skill-Building - Listening Part 4: Signposting & Prediction</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* High-Visibility Font Scaling Overrides */
+        .text-override-xs { font-size: 1rem; line-height: 1.5rem; } /* text-base */
+        .text-override-sm { font-size: 1.25rem; line-height: 1.75rem; } /* text-xl */
+        .text-override-base { font-size: 1.5rem; line-height: 2rem; } /* text-2xl */
+        .text-override-3xl { font-size: 3.75rem; line-height: 1; } /* text-6xl */
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .text-input, select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            margin-top: 0.5rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+            font-size: 1.25rem !important; /* text-xl override for inputs */
+        }
+        .text-input:focus, select:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        .text-input:disabled, select:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        /* Inline Gap Fill Input */
+        .gap-fill-input {
+            width: auto;
+            min-width: 150px;
+            display: inline-block;
+            margin: 0 0.5rem;
+            padding: 0.25rem 0.5rem;
+            text-align: center;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+            transform: none;
+        }
+
+        /* Option Labels (Radios) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+            font-weight: 700;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            accent-color: #0f172a;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        .option-label.correct {
+            background-color: #4ade80;
+            border-color: #0f172a;
+            color: #0f172a;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        .option-label.incorrect {
+            background-color: #f87171;
+            border-color: #0f172a;
+            color: #ffffff;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        
+        /* 3-State Feedback Loop Colors */
+        .state-amber { background-color: #facc15 !important; border-color: #0f172a; color: #0f172a; }
+        .state-rose { background-color: #f87171 !important; border-color: #0f172a; color: #ffffff; }
+        .state-emerald { background-color: #4ade80 !important; border-color: #0f172a; color: #0f172a; }
+
+        .no-break {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-6 md:p-8 text-override-xs">
+
+    <div class="max-w-6xl mx-auto bg-white p-5 sm:p-8 lg:p-10 border-4 border-dark shadow-neo">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-override-xs text-dark mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-[#facc15] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] no-break">Level: B2</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] no-break">Skill: Listening</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] no-break">Focus: Part 4</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-[#4ade80] text-dark px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] no-break">Signposting & Prediction</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div>
+                <h1 class="text-override-3xl font-black text-dark uppercase tracking-tight mb-3 md:mb-4 text-balance">
+                    IELTS Skill-Building Worksheet
+                </h1>
+                <p class="text-override-base text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-1 border-2 border-dark text-pretty">
+                    Topic: Urbanization & Biodiversity
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-2 px-5 py-3 text-override-xs text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#fefce8] border-3 border-dark p-5 md:p-6 mb-8 md:mb-12 shadow-neo-sm flex items-start gap-4">
+            <div class="bg-[#facc15] p-2 border-2 border-dark shrink-0">
+                <i data-lucide="info" class="w-6 h-6 text-dark"></i>
+            </div>
+            <p class="text-override-sm text-dark font-bold leading-relaxed text-pretty">
+                <span class="uppercase font-black text-override-base mr-2">Instructions:</span> Complete the preparation tasks, analyze the signposting strategies, and then apply them to the real test simulation. Pay attention to feedback states.
+            </p>
+        </div>
+
+        <!-- Accordion Container -->
+        <div class="space-y-6 md:space-y-8">
+
+            <!-- Part 1: Preparation (Cyan Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-override-base">
+                            1
+                        </div>
+                        <span class="text-override-base lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Preparation</span>
+                    </div>
+                    <div id="icon-wrapper-part1" class="transition-transform duration-300 transform rotate-180 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part1" class="accordion-content active border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <!-- Task 1: Contextual Warm-up -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-override-sm uppercase flex items-center gap-2">
+                                    <span class="bg-[#38bdf8] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-override-xs">Step 1</span> Contextual Warm-up
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t1', this, 'Show Sample Ideas')" class="neo-btn bg-white text-dark px-4 py-2 text-override-xs">Show Sample Ideas</button>
+                            </div>
+                            <div class="bg-[#fefce8] p-4 border-2 border-dark mb-4 shadow-[2px_2px_0_0_#0f172a]">
+                                <p class="text-override-sm text-slate-800 font-bold mb-2">Think about your city:</p>
+                                <p class="text-override-sm italic text-slate-700">"In the last 10 years, have you noticed more buildings being constructed? How do you think this affects the birds, insects, and small animals that live in that area?"</p>
+                            </div>
+                            <p class="text-override-sm text-slate-800 font-bold mb-3 text-pretty">List three challenges a wild animal might face when a forest is replaced by a shopping mall:</p>
+                            
+                            <div class="space-y-3">
+                                <input type="text" class="text-input" placeholder="Challenge 1 (e.g. Loss of food sources)...">
+                                <input type="text" class="text-input" placeholder="Challenge 2 (e.g. Noise pollution)...">
+                                <input type="text" class="text-input" placeholder="Challenge 3 (e.g. Traffic danger)...">
+                            </div>
+                            
+                            <div id="ans-t1" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="lightbulb" class="w-5 h-5 inline mr-1 text-[#eab308] fill-current"></i>Sample Ideas:</strong>
+                                <ul class="list-disc pl-6 mt-2 space-y-2 font-medium text-override-sm">
+                                    <li>Habitat fragmentation (nowhere to nest).</li>
+                                    <li>Increased artificial light confusing nocturnal animals.</li>
+                                    <li>Higher risks of collision with vehicles or glass windows.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 2: Interactive Vocab -->
+                        <div class="bg-white border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <h3 class="font-black text-dark text-override-sm uppercase flex items-center gap-2 mb-4 border-b-2 border-dark pb-3">
+                                <span class="bg-[#38bdf8] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-override-xs">Step 2</span> Vocabulary & Lexical Input
+                            </h3>
+                            <p class="text-override-sm text-slate-800 font-bold mb-6 text-pretty">Match the Tier 2 academic words to their meanings.</p>
+                            
+                            <div id="vocab-container" class="space-y-4">
+                                <!-- Populated by JS -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkVocab()" id="check-vocab-btn" class="neo-btn w-full md:w-auto bg-[#38bdf8] text-dark px-8 py-3 text-override-sm">
+                                    Check Vocabulary
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Core Strategy & Audio (Blue Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#eff6ff]">
+                <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-override-base">
+                            <i data-lucide="headphones" class="w-6 h-6 md:w-8 md:h-8"></i>
+                        </div>
+                        <span class="text-override-base lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Core Strategy & Audio</span>
+                    </div>
+                    <div id="icon-wrapper-part2" class="transition-transform duration-300 transform rotate-180 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part2" class="accordion-content border-t-4 border-dark active" style="max-height: 5000px; opacity: 1;">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-10">
+                        
+                        <!-- Strategy Breakdown -->
+                        <div class="bg-white border-4 border-dark p-6 md:p-8 shadow-neo-sm">
+                            <h3 class="font-black text-dark text-override-sm uppercase flex items-center gap-2 mb-6 border-b-4 border-dark pb-3">
+                                <span class="bg-[#60a5fa] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-override-xs">Step 3</span> Strategy Breakdown
+                            </h3>
+                            <p class="text-override-sm font-bold mb-6">In Part 4, you hear a continuous talk without a break. To stay on track, you must focus on three key skills:</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="bg-[#e0f2fe] p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] hover:-translate-y-1 transition-transform">
+                                    <h3 class="font-black text-override-sm text-dark mb-2 uppercase">1. Identify Signposts</h3>
+                                    <p class="text-override-xs font-medium">Listen for transition words that indicate a change in topic (e.g., "Moving on to...", "An unexpected finding was...").</p>
+                                </div>
+                                <div class="bg-[#d1fae5] p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] hover:-translate-y-1 transition-transform">
+                                    <h3 class="font-black text-override-sm text-dark mb-2 uppercase">2. Predict Word Class</h3>
+                                    <p class="text-override-xs font-medium">Before audio starts, check the gap. Is it a Noun? Verb? Adjective? This narrows your options.</p>
+                                </div>
+                                <div class="bg-[#fefce8] p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] hover:-translate-y-1 transition-transform">
+                                    <h3 class="font-black text-override-sm text-dark mb-2 uppercase">3. Anticipate Synonyms</h3>
+                                    <p class="text-override-xs font-medium">The audio rarely uses the exact written word. If the paper says "reduced", hear "plummeted".</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Audio and Transcript -->
+                        <div class="bg-slate-50 border-4 border-dark p-6 md:p-10 shadow-inner">
+                            <h3 class="text-override-base font-black text-dark mb-6 border-b-4 border-dark pb-4 uppercase text-balance">The Reintroduction of Apex Predators</h3>
+                            
+                            <div class="mb-8 flex flex-col gap-4 bg-white border-3 border-dark p-6 shadow-neo-sm">
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-[#60a5fa] p-3 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">
+                                        <i data-lucide="play-circle" class="w-8 h-8 text-dark"></i>
+                                    </div>
+                                    <p class="text-override-sm font-black uppercase text-dark">Audio Track</p>
+                                </div>
+                                <audio controls class="w-full h-14">
+                                    <source src="https://github.com/fajarudinakbar/audio/raw/refs/heads/main/IELTS%20-%20The%20Reintroduction%20of%20Apex%20Predators.wav" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <button onclick="document.getElementById('transcript-s9').classList.toggle('hidden')" class="text-override-xs font-black uppercase text-brand-700 hover:text-brand-900 underline mt-2 text-left w-max">
+                                    Show/Hide Transcript
+                                </button>
+                            </div>
+
+                            <div id="transcript-s9" class="hidden bg-[#eff6ff] border-3 border-dark p-6 space-y-4 text-override-sm text-slate-800 font-medium leading-relaxed">
+                                <p><strong class="font-black text-dark">Lecturer:</strong> Good afternoon, everyone. Today, we’re going to explore an unconventional trend in urban ecology: the return of apex predators to the "suburban verge"—that thin strip of land where residential gardens meet the wilder outskirts of our cities.</p>
+                                <p>Now, when we talk about reintroducing large predators, people often think of remote national parks. However, a recent pilot project in the northern outskirts of the city has changed that perspective. The project began not with a grand release of animals, but by simply monitoring the <strong>movements</strong> of the local wolf population. By using GPS collars, researchers were able to see exactly how these animals navigated the thin line between the forest and the nearby housing estates.</p>
+                                <p>Of course, the project wasn’t without its hurdles. You might assume that local residents were excited to see such a majestic species return, but the data tells a different story. In the early stages, initial public reaction was characterized primarily by <strong>fear</strong> rather than any sense of environmental support. People were concerned about the safety of their pets and children, which meant that the research team had to spend a significant amount of time on community education.</p>
+                                <p>However, as the project progressed, the ecological benefits became impossible to ignore. For years, the local deer population had been exploding in number because they had no natural predators. This resulted in massive overgrazing, which decimated the undergrowth. Once the wolves returned, the deer became more cautious and moved away from the forest edges. This reduction in deer activity led to a rapid and visible recovery of local <strong>vegetation</strong>, including rare wildflowers that hadn't been seen in the area for decades.</p>
+                                <p>This ripple effect—or "trophic cascade"—didn't stop there. The presence of these predators actually helped to <strong>stabilize</strong> the health of the entire ecosystem. By keeping the deer moving, the wolves prevented any single area from being over-exploited, allowing the soil to recover and other smaller species to return.</p>
+                                <p>Looking ahead, city planners are now taking this research seriously. The ultimate goal isn't just to have animals wandering into backyards, but to create a dedicated green <strong>corridor</strong>. This would be a protected strip of land that connects the urban center directly to the national park, allowing wildlife to migrate safely without coming into direct conflict with humans. It’s an ambitious plan, but one that could redefine our relationship with nature.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 3: Understanding & Micro Practice (Emerald Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-override-base">
+                            3
+                        </div>
+                        <span class="text-override-base lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Understanding & Micro Practice</span>
+                    </div>
+                    <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <!-- Task 4: Signposting Awareness (MCQ) -->
+                        <div class="bg-white border-3 border-dark shadow-neo p-5 md:p-6">
+                            <h3 class="font-black text-dark text-override-sm uppercase flex items-center gap-2 mb-4 border-b-2 border-dark pb-3">
+                                <span class="bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-override-xs">Step 4</span> Awareness: Noticing Signposts
+                            </h3>
+                            <div class="bg-white border-4 border-dark p-6 shadow-[4px_4px_0_0_#0f172a] mb-6 leading-relaxed text-override-sm font-medium italic">
+                                "<strong>Now</strong>, having looked at the history of urban growth, <strong>I'd like to turn our attention to</strong> the specific impact on avian populations. One major <strong>consequence of</strong> building tall glass structures is the loss of flight paths. <strong>Because</strong> birds cannot perceive the glass, they often collide with buildings. <strong>Consequently</strong>, many cities are now trialing 'bird-safe' glass technology."
+                            </div>
+                            
+                            <p class="text-override-sm text-slate-800 font-bold mb-4">Identify the linguistic features from the quote above:</p>
+                            <div id="mcq-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkMCQ()" id="check-mcq-btn" class="neo-btn w-full md:w-auto bg-[#4ade80] text-dark px-8 py-3 text-override-sm">
+                                    Check Analysis
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Task 5: Guided Analysis -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <h3 class="font-black text-dark text-override-sm uppercase flex items-center gap-2 mb-6">
+                                <span class="bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-override-xs">Step 5</span> Guided Analysis: Avoiding Traps
+                            </h3>
+                            <div class="bg-white border-3 border-dark p-6 shadow-[4px_4px_0_0_#0f172a]">
+                                <p class="font-black text-override-sm mb-3 uppercase text-dark">Task: Complete the note.</p>
+                                <p class="mb-6 border-l-8 border-[#4ade80] pl-4 italic text-override-sm bg-[#f0fdf4] py-3 pr-3 border-y-3 border-r-3 border-dark font-medium">"The main threat to squirrels in the city is the ______ of their habitat."</p>
+                                
+                                <p class="font-black text-override-sm mb-3 uppercase text-dark">Speaker says:</p>
+                                <p class="mb-6 italic text-slate-700 text-override-sm">"While many assume cats are the primary danger to local squirrels, the real issue is the way their territory has been split up by new highways, leaving them isolated."</p>
+                                
+                                <div class="space-y-4 bg-white p-5 border-3 border-dark shadow-inner">
+                                    <p class="text-override-sm font-medium"><strong class="font-black text-dark uppercase bg-[#f87171] text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] mr-2">The Trap:</strong> <span class="text-red-600 font-bold">Cats</span> (Speaker mentions them but dismisses them: "While many assume...").</p>
+                                    <p class="text-override-sm font-medium"><strong class="font-black text-dark uppercase bg-[#facc15] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] mr-2">The Clue:</strong> "Territory has been split up."</p>
+                                    <p class="text-override-sm font-medium"><strong class="font-black text-dark uppercase bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] mr-2">The Answer:</strong> <span class="text-green-700 font-bold">Fragmentation</span> (Noun form of "splitting").</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task 6: Controlled Practice (Micro) -->
+                        <div class="bg-white border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 border-b-2 border-dark pb-3">
+                                <h3 class="font-black text-dark text-override-sm uppercase flex items-center gap-2">
+                                    <span class="bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-override-xs">Step 6</span> Predicting Word Form & Synonyms
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t6', this, 'Reveal Suggestions')" class="neo-btn bg-white text-dark px-4 py-2 text-override-xs">Reveal Suggestions</button>
+                            </div>
+                            <p class="text-override-sm text-slate-800 font-bold mb-4 text-pretty">Predict the part of speech and provide a synonym for the word in brackets.</p>
+                            
+                            <div class="space-y-5">
+                                <div class="p-4 bg-slate-50 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">
+                                    <p class="text-override-sm font-bold mb-2">1. The lecture will focus on the ______ (growth) of urban areas.</p>
+                                    <span class="text-override-xs font-black uppercase text-[#4346bc] bg-brand-100 px-2 py-1 border-2 border-[#4346bc]">Target: Noun</span>
+                                    <input type="text" class="text-input" placeholder="Type a synonym (e.g. Expansion)...">
+                                </div>
+                                <div class="p-4 bg-slate-50 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">
+                                    <p class="text-override-sm font-bold mb-2">2. Data suggests noise pollution affects the ______ (way they communicate) of songbirds.</p>
+                                    <span class="text-override-xs font-black uppercase text-[#4346bc] bg-brand-100 px-2 py-1 border-2 border-[#4346bc]">Target: Noun</span>
+                                    <input type="text" class="text-input" placeholder="Type a synonym...">
+                                </div>
+                                <div class="p-4 bg-slate-50 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">
+                                    <p class="text-override-sm font-bold mb-2">3. The study concluded that light pollution is ______ (harmful) to nocturnal insects.</p>
+                                    <span class="text-override-xs font-black uppercase text-orange-700 bg-orange-100 px-2 py-1 border-2 border-orange-700">Target: Adjective</span>
+                                    <input type="text" class="text-input" placeholder="Type a synonym...">
+                                </div>
+                            </div>
+                            
+                            <div id="ans-t6" class="answer-box hidden mt-6 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="check-square" class="w-5 h-5 inline mr-1 text-[#22c55e]"></i>Suggested Answers:</strong>
+                                <ul class="list-disc pl-6 mt-2 space-y-2 font-bold text-override-sm">
+                                    <li>1. Expansion / Development</li>
+                                    <li>2. Communication / Interaction / Song patterns</li>
+                                    <li>3. Detrimental / Damaging / Dangerous</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 4: Macro Practice & Simulation (Orange Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#ffedd5]">
+                <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-override-base">
+                            4
+                        </div>
+                        <span class="text-override-base lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Macro Practice & Simulation</span>
+                    </div>
+                    <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <!-- Task 7: Matching Signposts -->
+                        <div class="bg-white border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <h3 class="font-black text-dark text-override-sm uppercase flex items-center gap-2 mb-4 border-b-2 border-dark pb-3">
+                                <span class="bg-[#fb923c] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-override-xs">Step 7</span> Controlled Practice (Macro)
+                            </h3>
+                            <p class="text-override-sm text-slate-800 font-bold mb-6 text-pretty">Match the 'Signpost' phrase to its logical function.</p>
+                            
+                            <div id="signpost-container" class="space-y-4">
+                                <!-- Populated by JS -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkSignposts()" id="check-signpost-btn" class="neo-btn w-full md:w-auto bg-[#fb923c] text-dark px-8 py-3 text-override-sm">
+                                    Check Signposts
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Task 9: Real Test Simulation (Enhanced Feedback Loop) -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-10 relative overflow-hidden">
+                            <!-- Decorative banner -->
+                            <div class="absolute top-0 left-0 w-full h-3 bg-[#0f172a]"></div>
+                            
+                            <h3 class="font-black text-dark text-override-base uppercase flex items-center gap-2 mb-6 border-b-4 border-dark pb-4 mt-2">
+                                <span class="bg-[#fb923c] text-dark px-3 py-1 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Step 8</span> Real Test Simulation
+                            </h3>
+                            
+                            <div class="bg-[#fefce8] border-3 border-dark p-5 shadow-[4px_4px_0_0_#0f172a] mb-8">
+                                <p class="text-center font-black uppercase text-red-600 text-override-sm tracking-widest"><i data-lucide="alert-triangle" class="w-6 h-6 inline mr-2 text-red-600"></i>Write ONE WORD ONLY for each answer</p>
+                            </div>
+                            
+                            <div class="bg-white border-4 border-dark p-6 md:p-8 shadow-inner space-y-8">
+                                
+                                <div class="border-b-3 border-dashed border-dark pb-6">
+                                    <h4 class="font-black text-override-sm text-dark uppercase mb-4 bg-brand-200 inline-block px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Initial Findings</h4>
+                                    <p class="text-override-sm font-bold leading-loose">
+                                        The project began by monitoring the <strong>1.</strong> 
+                                        <input type="text" id="gf1" data-ans="movements" data-hint="Think about what GPS collars track (it starts with 'm')." data-attempts="0" class="text-input gap-fill-input border-3 border-dark shadow-[2px_2px_0_0_#0f172a]"> 
+                                        of wolves in the northern outskirts.
+                                    </p>
+                                    <p class="text-override-sm font-bold leading-loose mt-4">
+                                        Initial public reaction was characterized by <strong>2.</strong> 
+                                        <input type="text" id="gf2" data-ans="fear" data-hint="What was the initial negative public emotion?" data-attempts="0" class="text-input gap-fill-input border-3 border-dark shadow-[2px_2px_0_0_#0f172a]"> 
+                                        rather than support.
+                                    </p>
+                                </div>
+                                
+                                <div class="border-b-3 border-dashed border-dark pb-6">
+                                    <h4 class="font-black text-override-sm text-dark uppercase mb-4 bg-brand-200 inline-block px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Ecological Benefits</h4>
+                                    <p class="text-override-sm font-bold leading-loose">
+                                        A reduction in the number of deer led to a recovery of local <strong>3.</strong> 
+                                        <input type="text" id="gf3" data-ans="vegetation" data-hint="Another word for plant life (starts with 'v')." data-attempts="0" class="text-input gap-fill-input border-3 border-dark shadow-[2px_2px_0_0_#0f172a]">.
+                                    </p>
+                                    <p class="text-override-sm font-bold leading-loose mt-4">
+                                        The presence of predators helped to <strong>4.</strong> 
+                                        <input type="text" id="gf4" data-ans="stabilize" data-hint="A verb meaning to make secure and balanced." data-attempts="0" class="text-input gap-fill-input border-3 border-dark shadow-[2px_2px_0_0_#0f172a]"> 
+                                        the health of the ecosystem.
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-black text-override-sm text-dark uppercase mb-4 bg-brand-200 inline-block px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Future Goals</h4>
+                                    <p class="text-override-sm font-bold leading-loose">
+                                        Planners hope to create a <strong>5.</strong> 
+                                        <input type="text" id="gf5" data-ans="corridor" data-hint="A connecting pathway for animals." data-attempts="0" class="text-input gap-fill-input border-3 border-dark shadow-[2px_2px_0_0_#0f172a]"> 
+                                        that connects the city to the national park.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Gap Fill Feedback Panel -->
+                            <div id="gap-fill-feedback" class="hidden mt-6 p-5 border-4 border-dark text-override-sm font-black uppercase text-center shadow-neo-sm"></div>
+
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkGapFill()" id="check-gf-btn" class="neo-btn w-full bg-[#fb923c] text-dark px-8 py-4 text-override-base">
+                                    Submit Test Answers
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 5: Reflection (Fuchsia Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fae8ff]">
+                <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-override-base">
+                            5
+                        </div>
+                        <span class="text-override-base lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Reflection & Planning</span>
+                    </div>
+                    <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <!-- Task 8: Pre-Task Planning -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <h3 class="font-black text-dark text-override-sm uppercase flex items-center gap-2 mb-4 border-b-2 border-dark pb-3">
+                                <span class="bg-[#e879f9] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-override-xs">Step 9</span> Pre-Task Planning (Next Lesson)
+                            </h3>
+                            <div class="bg-[#fefce8] border-l-8 border-[#eab308] border-y-3 border-r-3 border-dark p-4 mb-6 shadow-[2px_2px_0_0_#0f172a]">
+                                <p class="font-black uppercase text-override-sm text-dark">Scenario:</p>
+                                <p class="text-override-sm font-bold mt-1">You are about to hear a talk about "Urban Gardening and Pollinators."</p>
+                            </div>
+                            
+                            <div class="space-y-4 mb-4">
+                                <label class="block font-black text-dark uppercase text-override-xs">Brainstorm: 3 types of pollinators</label>
+                                <input type="text" class="text-input bg-white" placeholder="e.g. Bees, Butterflies...">
+                                
+                                <label class="block font-black text-dark uppercase text-override-xs mt-4">Synonyms for 'Helpful'</label>
+                                <input type="text" class="text-input bg-white" placeholder="e.g. Beneficial, Advantageous...">
+                            </div>
+                        </div>
+
+                        <!-- Task 10: Reflection Checklist -->
+                        <div class="bg-white border-3 border-dark shadow-neo p-5 md:p-8">
+                            <h3 class="font-black text-dark text-override-sm uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#e879f9] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-override-xs">Step 10</span> Self-Reflection
+                            </h3>
+                            
+                            <div class="space-y-4 mb-8">
+                                <label class="option-label">
+                                    <input type="checkbox">
+                                    <span class="text-override-sm font-bold">I successfully predicted the word form (noun/verb) before listening.</span>
+                                </label>
+                                <label class="option-label">
+                                    <input type="checkbox">
+                                    <span class="text-override-sm font-bold">I identified at least 2 signposting words in the transcript.</span>
+                                </label>
+                            </div>
+                            
+                            <div class="border-t-4 border-dashed border-dark pt-6">
+                                <label class="block font-black text-dark uppercase text-override-sm mb-3"><i data-lucide="target" class="w-6 h-6 inline mr-2 text-[#e879f9]"></i>Action Plan</label>
+                                <textarea class="text-input bg-[#fefce8] h-24" placeholder="e.g. I will listen to one 10-minute TED Talk this week and list the signposts."></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center mb-6">
+            <p class="text-dark text-override-sm font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">Fajarudin Akbar</a>.
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-6 py-4 shadow-[6px_6px_0_0_#0f172a] transition-all duration-300 translate-y-24 opacity-0 z-50 flex items-center gap-3 font-black text-override-sm uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="info" class="w-8 h-8 shrink-0 text-brand-600"></i> <span id="toast-msg">Notification</span>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- Data Configuration Section ---
+        
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { id: "v1", word: "1. Encroachment (n)", correct: "a", options: { a: "Intrusion on a person's territory or rights (or nature).", b: "The variety of plant and animal life.", c: "Able to withstand difficult conditions.", d: "To make something less severe." } },
+            { id: "v2", word: "2. Biodiversity (n)", correct: "b", options: { a: "Intrusion on a person's territory.", b: "The variety of plant and animal life in a particular habitat.", c: "The process of breaking into parts.", d: "Able to withstand difficult conditions." } },
+            { id: "v3", word: "3. Fragmentation (n)", correct: "c", options: { a: "To make something less severe.", b: "Intrusion on a person's territory.", c: "The process of breaking into small or separate parts.", d: "Able to withstand conditions." } },
+            { id: "v4", word: "4. Mitigate (v)", correct: "a", options: { a: "To make something less severe, serious, or painful.", b: "The process of breaking into small parts.", c: "The variety of plant and animal life.", d: "Intrusion on a territory." } },
+            { id: "v5", word: "5. Resilient (adj)", correct: "d", options: { a: "To make something less severe.", b: "The variety of plant and animal life.", c: "The process of breaking into parts.", d: "Able to withstand or recover quickly from difficult conditions." } }
+        ];
+
+        // 2. SIGNPOST DATA (Reusing Vocab matching logic)
+        const signpostData = [
+            { id: "sp1", word: "1. \"I'll start by outlining...\"", correct: "b", options: { a: "Surprising result", b: "Intro first point", c: "Correction", d: "Sub-topic change", e: "Conclusion" } },
+            { id: "sp2", word: "2. \"Contrary to popular belief...\"", correct: "c", options: { a: "Surprising result", b: "Intro first point", c: "Correction", d: "Sub-topic change", e: "Conclusion" } },
+            { id: "sp3", word: "3. \"This brings me to my next point...\"", correct: "d", options: { a: "Surprising result", b: "Intro first point", c: "Correction", d: "Sub-topic change", e: "Conclusion" } },
+            { id: "sp4", word: "4. \"What was particularly interesting...\"", correct: "a", options: { a: "Surprising result", b: "Intro first point", c: "Correction", d: "Sub-topic change", e: "Conclusion" } },
+            { id: "sp5", word: "5. \"To wrap up today's session...\"", correct: "e", options: { a: "Surprising result", b: "Intro first point", c: "Correction", d: "Sub-topic change", e: "Conclusion" } }
+        ];
+
+        // 3. MULTIPLE CHOICE DATA (Step 4)
+        const mcqData = [
+            { id: "m1", question: "1. Which phrase indicates a move to a new point (Signpost)?", correct: "b", options: ["history of urban growth", "I'd like to turn our attention to...", "avian populations", "consequence of"] },
+            { id: "m2", question: "2. Which word indicates a Cause?", correct: "c", options: ["Now", "often", "Because", "Consequently"] },
+            { id: "m3", question: "3. Which word indicates an Effect/Result?", correct: "d", options: ["major", "technology", "Now", "Consequently"] }
+        ];
+
+
+        // --- Init Function ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderVocab();
+            renderSignposts();
+            renderMCQ();
+        });
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => generateSelectHTML(item)).join('');
+        }
+
+        function renderSignposts() {
+            const container = document.getElementById('signpost-container');
+            container.innerHTML = signpostData.map(item => generateSelectHTML(item)).join('');
+        }
+
+        function generateSelectHTML(item) {
+            let optionsHtml = '<option value="">Select logical match...</option>';
+            for (const [key, value] of Object.entries(item.options)) {
+                optionsHtml += `<option value="${key}">${value}</option>`;
+            }
+            return `
+                <div class="flex flex-col md:flex-row md:items-center gap-3 p-4 bg-slate-50 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] hover:-translate-y-1 transition-transform w-full min-w-0">
+                    <div class="md:w-1/2 font-black text-dark text-override-sm">${item.word}</div>
+                    <div class="md:w-1/2 flex items-center gap-3">
+                        <select id="${item.id}" class="text-input py-3 mt-0 text-override-xs cursor-pointer truncate flex-1 bg-white">
+                            ${optionsHtml}
+                        </select>
+                        <span id="feedback-${item.id}" class="w-8 flex justify-center shrink-0"></span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMCQ() {
+            const container = document.getElementById('mcq-container');
+            container.innerHTML = mcqData.map(item => `
+                <div class="bg-slate-50 p-6 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] hover:-translate-y-1 transition-transform mb-6">
+                    <p class="font-black text-dark text-override-sm mb-4 text-pretty">${item.question}</p>
+                    <div class="space-y-3">
+                        ${item.options.map((opt, idx) => {
+                            const val = ['a','b','c','d'][idx];
+                            return `
+                            <label class="option-label flex items-start gap-3 p-3 border-3 border-dark shadow-[2px_2px_0_0_#0f172a] bg-white cursor-pointer text-override-xs font-bold transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#0f172a] group">
+                                <input type="radio" name="${item.id}" value="${val}" class="mt-1 w-6 h-6 accent-dark shrink-0">
+                                <span class="leading-relaxed text-pretty group-hover:text-brand-700">${opt}</span>
+                            </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-override-sm font-black mt-4 h-6"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        function checkSelects(dataArray, btnId) {
+            let correctCount = 0;
+            let allAnswered = true;
+
+            dataArray.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                
+                if(select.value === "") allAnswered = false;
+
+                // Reset styles explicitly bypassing the generic overrides if needed
+                select.classList.remove('state-emerald', 'state-rose', 'bg-[#fefce8]');
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i data-lucide="check-circle" class="w-8 h-8 text-[#22c55e]"></i>';
+                    select.classList.add('state-emerald');
+                    select.disabled = true;
+                    correctCount++;
+                } else if (select.value !== "") {
+                    feedback.innerHTML = '<i data-lucide="x-circle" class="w-8 h-8 text-[#ef4444]"></i>';
+                    select.classList.add('state-rose');
+                } else {
+                    feedback.innerHTML = '<i data-lucide="alert-triangle" class="w-8 h-8 text-[#eab308]"></i>';
+                    select.classList.add('bg-[#fefce8]');
+                }
+            });
+            lucide.createIcons();
+            
+            if(!allAnswered) {
+                showToast("Please make a selection for all items.");
+                return;
+            }
+
+            if (correctCount === dataArray.length && dataArray.length > 0) {
+                showToast("Perfect! All items matched correctly.");
+                document.getElementById(btnId).disabled = true;
+            } else {
+                showToast(`You got ${correctCount} out of ${dataArray.length} correct.`);
+            }
+        }
+
+        function checkVocab() { checkSelects(vocabData, 'check-vocab-btn'); }
+        function checkSignposts() { checkSelects(signpostData, 'check-signpost-btn'); }
+
+        function checkMCQ() {
+            let correctCount = 0;
+            let allAnswered = true;
+
+            mcqData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                let userVal = "";
+                
+                radios.forEach(r => {
+                    const label = r.closest('.option-label');
+                    label.classList.remove('state-emerald', 'state-rose', 'shadow-[2px_2px_0_0_#0f172a]', 'line-through');
+                    if(r.checked) userVal = r.value;
+                });
+
+                if(userVal === "") allAnswered = false;
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = `<span class="text-dark bg-[#4ade80] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-override-xs"><i data-lucide="check" class="w-5 h-5"></i> Correct!</span>`;
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        if(r.checked) r.closest('.option-label').classList.add('state-emerald', 'shadow-[2px_2px_0_0_#0f172a]');
+                    });
+                    correctCount++;
+                } else if (userVal !== "") {
+                    feedback.innerHTML = `<span class="text-white bg-[#ef4444] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-override-xs"><i data-lucide="x" class="w-5 h-5"></i> Incorrect.</span>`;
+                    radios.forEach(r => {
+                        if(r.checked) r.closest('.option-label').classList.add('state-rose', 'line-through', 'shadow-[2px_2px_0_0_#0f172a]');
+                    });
+                }
+            });
+            lucide.createIcons();
+            
+            if(!allAnswered) {
+                showToast("Please answer all questions.");
+                return;
+            }
+
+            if (correctCount === mcqData.length && mcqData.length > 0) {
+                showToast("Excellent! All analysis correct.");
+                document.getElementById('check-mcq-btn').disabled = true;
+            }
+        }
+
+        // --- The Enhanced Three-State Feedback Loop (Gap Fill) ---
+        function checkGapFill() {
+            const inputs = document.querySelectorAll('.gap-fill-input');
+            const feedbackPanel = document.getElementById('gap-fill-feedback');
+            let correctCount = 0;
+            let allAnswered = true;
+
+            inputs.forEach(input => {
+                const userVal = input.value.trim().toLowerCase();
+                const correctAns = input.getAttribute('data-ans').toLowerCase();
+                const hint = input.getAttribute('data-hint');
+                let attempts = parseInt(input.getAttribute('data-attempts'));
+
+                if(userVal === "") {
+                    allAnswered = false;
+                    return;
+                }
+
+                // Reset specific states
+                input.classList.remove('state-amber', 'state-rose', 'state-emerald');
+
+                if (userVal === correctAns) {
+                    input.classList.add('state-emerald');
+                    input.disabled = true;
+                    correctCount++;
+                } else {
+                    attempts++;
+                    input.setAttribute('data-attempts', attempts);
+                    
+                    if (attempts === 1) {
+                        // State Amber: Try again with hint
+                        input.classList.add('state-amber');
+                        input.value = ""; // clear for retry
+                        input.placeholder = "Try again!";
+                    } else {
+                        // State Rose: Lock and reveal
+                        input.classList.add('state-rose');
+                        input.value = correctAns;
+                        input.disabled = true;
+                    }
+                }
+            });
+
+            if(!allAnswered) {
+                showToast("Please fill in all the gaps.");
+                feedbackPanel.classList.add('hidden');
+                return;
+            }
+
+            feedbackPanel.classList.remove('hidden', 'bg-[#f0fdf4]', 'bg-[#fffbeb]', 'bg-[#fef2f2]');
+            
+            if (correctCount === inputs.length) {
+                feedbackPanel.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 text-green-700"></i> Outstanding! All gaps filled correctly.';
+                feedbackPanel.className = 'mt-6 p-5 border-4 border-dark text-override-sm font-black uppercase text-center shadow-neo-sm bg-[#4ade80] text-dark block';
+                document.getElementById('check-gf-btn').disabled = true;
+            } else {
+                const totalAttemptsExhausted = Array.from(inputs).every(inp => inp.disabled);
+                if (totalAttemptsExhausted) {
+                     feedbackPanel.innerHTML = '<i data-lucide="alert-circle" class="w-6 h-6 inline mr-2 text-white"></i> Attempts exhausted. Correct answers revealed.';
+                     feedbackPanel.className = 'mt-6 p-5 border-4 border-dark text-override-sm font-black uppercase text-center shadow-neo-sm bg-[#f87171] text-white block';
+                } else {
+                     feedbackPanel.innerHTML = '<i data-lucide="alert-triangle" class="w-6 h-6 inline mr-2 text-dark"></i> Review the highlighted yellow fields and try again.';
+                     feedbackPanel.className = 'mt-6 p-5 border-4 border-dark text-override-sm font-black uppercase text-center shadow-neo-sm bg-[#facc15] text-dark block';
+                }
+            }
+            lucide.createIcons();
+        }
+
+
+        function toggleAnswer(elementId, btn, baseText) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Output";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = baseText;
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            // Direct reset without confirm/alert to adhere strictly to persona constraints
+            
+            // Textareas and inputs
+            document.querySelectorAll('textarea').forEach(t => t.value = "");
+            document.querySelectorAll('input[type="text"]').forEach(i => {
+                i.value = "";
+                i.disabled = false;
+                i.placeholder = i.getAttribute('placeholder') || "";
+                if(i.hasAttribute('data-attempts')) i.setAttribute('data-attempts', '0');
+                i.classList.remove('state-amber', 'state-rose', 'state-emerald');
+            });
+            
+            // Checkboxes & Radios
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+            document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                r.checked = false; 
+                r.disabled = false; 
+            });
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.classList.remove('state-emerald', 'state-rose', 'shadow-[2px_2px_0_0_#0f172a]', 'line-through');
+            });
+            
+            // Selects
+            document.querySelectorAll('select').forEach(s => { 
+                s.value = ""; 
+                s.disabled = false; 
+                s.classList.remove('state-emerald', 'state-rose', 'bg-[#fefce8]'); 
+            });
+            
+            // Feedbacks
+            document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+            document.getElementById('gap-fill-feedback').classList.add('hidden');
+            
+            // Answer Boxes
+            document.querySelectorAll('.answer-box').forEach(el => { 
+                el.classList.add('hidden'); 
+                el.classList.remove('visible'); 
+            });
+            
+            // Reset Buttons Text & State
+            document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                const params = btn.getAttribute('onclick').match(/'([^']+)'/g);
+                if(params && params.length >= 3) {
+                    btn.innerText = params[2].replace(/'/g, ''); // get the baseText parameter
+                }
+            });
+            
+            document.querySelectorAll('.neo-btn').forEach(btn => btn.disabled = false);
+            
+            showToast("All progress has been reset successfully.");
+        }
+
+    </script>
+</body>
+</html>

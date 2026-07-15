@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL ITP Structure - Practice Test B</title>
+    <style>
+        :root {
+            --primary: #0ea5e9; /* Light Blue for Structure */
+            --primary-dark: #0284c7;
+            --secondary: #64748b;
+            --bg-light: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --success: #22c55e;
+            --error: #ef4444;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header & Progress */
+        header {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            border-top: 6px solid var(--primary);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .progress-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .progress-step {
+            position: relative;
+            z-index: 2;
+            background: #e2e8f0;
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.4);
+        }
+
+        .progress-step.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Pages & Animations */
+        .module-page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .module-page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Homepage Styles */
+        .home-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .home-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .instruction-list {
+            text-align: left;
+            margin: 20px auto;
+            max-width: 500px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .instruction-list li {
+            margin-bottom: 10px;
+            list-style-position: inside;
+        }
+
+        /* Module Containers */
+        .module-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .module-header {
+            background: #f0f9ff;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .module-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .module-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .module-content {
+            padding: 24px;
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: border-color 0.3s;
+        }
+
+        .question-card.unanswered-error {
+            border: 2px solid var(--error);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .q-number {
+            font-weight: 700;
+            color: var(--secondary);
+            background: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            font-family: 'Georgia', serif;
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .option-input {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* Feedback Area */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.correct {
+            background-color: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #166534;
+        }
+
+        .feedback.incorrect {
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .explanation-text {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+
+        /* Controls */
+        .controls-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            color: var(--text-main);
+        }
+
+        .btn-next {
+            background: var(--text-main);
+            display: none;
+        }
+        
+        .btn-next:hover {
+            background: #000;
+        }
+
+        /* Score Summary Page */
+        .summary-card {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .final-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .correct-answer-highlight {
+            border-color: var(--success) !important;
+            background-color: #dcfce7 !important;
+        }
+        
+        .wrong-answer-highlight {
+            border-color: var(--error) !important;
+            background-color: #fee2e2 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>TOEFL ITP Structure</h1>
+        <div class="subtitle">Practice Test B</div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-track"></div>
+            <div id="step-1" class="progress-step">1</div>
+            <div id="step-2" class="progress-step">2</div>
+            <div id="step-3" class="progress-step">3</div>
+            <div id="step-4" class="progress-step">🏁</div>
+        </div>
+    </header>
+
+    <form id="quizForm">
+        <div id="quiz-content">
+            <!-- Pages injected here by JS -->
+        </div>
+    </form>
+</div>
+
+<script>
+    // --- QUIZ DATA ---
+    const quizData = [
+        { 
+            id: 1, 
+            question: "_______ the end of the Cretaceous period is not known, but it is widely believed that a meteorite struck the Earth.", 
+            options: { A: "Caused", B: "That caused", C: "What caused", D: "It caused" }, 
+            answer: "C", 
+            explanation: "Noun clause acting as the subject. 'What caused' creates the subject clause 'What caused the end...'" 
+        },
+        { 
+            id: 2, 
+            question: "The North Platte River _______ from Wyoming into Nebraska.", 
+            options: { A: "it flows", B: "flows", C: "flowing", D: "with flowing water" }, 
+            answer: "B", 
+            explanation: "The sentence needs a main verb. 'Flows' is the correct verb form." 
+        },
+        { 
+            id: 3, 
+            question: "Biloxi, Mississippi, received its name from a Native American word _______ 'first people'.", 
+            options: { A: "meaning", B: "meant", C: "means", D: "it means" }, 
+            answer: "A", 
+            explanation: "Reduced adjective clause. 'Which means' reduces to 'meaning'." 
+        },
+        { 
+            id: 4, 
+            question: "A pride of lions _______ up to forty lions, including one to three males, several females, and cubs.", 
+            options: { A: "can contain", B: "it contains", C: "contain", D: "containing" }, 
+            answer: "A", 
+            explanation: "The subject 'pride' is singular (collective noun), but 'can contain' is a valid verb phrase. 'Contain' (C) would require plural agreement if we thought of lions, but 'pride' is the head. 'Can contain' avoids agreement issues and fits context." 
+        },
+        { 
+            id: 5, 
+            question: "_______ tea plant are small and white.", 
+            options: { A: "The", B: "On the", C: "Having flowers the", D: "The flowers of the" }, 
+            answer: "D", 
+            explanation: "We need a subject for the verb 'are'. 'The flowers of the tea plant' provides the plural subject 'flowers' matching 'are'." 
+        },
+        { 
+            id: 6, 
+            question: "The tetracyclines, _______ antibiotics, are used to treat infections.", 
+            options: { A: "are a family of", B: "being a family", C: "a family of", D: "their family is" }, 
+            answer: "C", 
+            explanation: "Appositive phrase. 'A family of antibiotics' renames 'The tetracyclines'." 
+        },
+        { 
+            id: 7, 
+            question: "Any possible academic assistance from taking stimulants _______ marginal at best.", 
+            options: { A: "it is", B: "there is", C: "is", D: "as" }, 
+            answer: "C", 
+            explanation: "Subject is 'assistance' (singular). Verb required is 'is'." 
+        },
+        { 
+            id: 8, 
+            question: "Henry Adams, born in Boston, _______ famous as a historian and novelist.", 
+            options: { A: "became", B: "and became", C: "he was", D: "and he became" }, 
+            answer: "A", 
+            explanation: "Simple past tense verb needed for the subject 'Henry Adams'." 
+        },
+        { 
+            id: 9, 
+            question: "The major cause _______ the pull of the Moon on the Earth.", 
+            options: { A: "the ocean tides are", B: "of ocean tides is", C: "of the tides in the ocean", D: "the oceans' tides" }, 
+            answer: "B", 
+            explanation: "Completes the subject phrase 'The major cause of ocean tides' and provides the verb 'is'." 
+        },
+        { 
+            id: 10, 
+            question: "Still a novelty in the late nineteenth century, _______ limited to the rich.", 
+            options: { A: "was photography", B: "photography was", C: "it was photography", D: "photography" }, 
+            answer: "B", 
+            explanation: "Main clause subject and verb. 'Photography was...' follows the introductory phrase." 
+        },
+        { 
+            id: 11, 
+            question: "A computerized map of the freeways using information gathered by sensors embedded in the pavement _______ on a local cable channel during rush hours.", 
+            options: { A: "airs", B: "airing", C: "air", D: "to air" }, 
+            answer: "A", 
+            explanation: "Subject is 'map' (singular). Verb is 'airs'." 
+        },
+        { 
+            id: 12, 
+            question: "_______ in the United States, St. Louis has developed a distinctive culture.", 
+            options: { A: "One of the oldest cities", B: "It is one of the oldest cities", C: "Is one of the oldest cities", D: "Unlike one of the oldest cities" }, 
+            answer: "A", 
+            explanation: "Appositive/Modifier phrase at the beginning. 'One of the oldest cities in the US' modifies 'St. Louis'." 
+        },
+        { 
+            id: 13, 
+            question: "_______ mechanical impact, heavy rain can damage the soil structure.", 
+            options: { A: "Because", B: "Because of", C: "It is because", D: "Because of its" }, 
+            answer: "D", 
+            explanation: "'Because of' + noun phrase. 'Its' refers back to 'heavy rain'." 
+        },
+        { 
+            id: 14, 
+            question: "Generally, the electrometer is a simple device _______ to measure electric potential difference.", 
+            options: { A: "used", B: "is used", C: "that used", D: "which it is used" }, 
+            answer: "A", 
+            explanation: "Reduced relative clause. 'Which is used' -> 'used'." 
+        },
+        { 
+            id: 15, 
+            question: "_______ the history of the tough, long-distance sled dogs of Alaska.", 
+            options: { A: "Little is known about", B: "Little known about", C: "About little is known", D: "Little known" }, 
+            answer: "A", 
+            explanation: "Inverted sentence structure or simply standard Subject-Verb-Object pattern. 'Little' is the subject, 'is known' is the verb." 
+        }
+    ];
+
+    const quizContent = document.getElementById('quiz-content');
+    const totalScore = { 1: 0, 2: 0, 3: 0 }; 
+
+    // Modules - Split into 3 pages of 5 questions each
+    const modules = [
+        { id: 1, range: [0, 5], title: "Part A: Structure", subtitle: "Questions 1-5" },
+        { id: 2, range: [5, 10], title: "Part A: Structure (Continued)", subtitle: "Questions 6-10" },
+        { id: 3, range: [10, 15], title: "Part A: Structure (Continued)", subtitle: "Questions 11-15" }
+    ];
+
+    function renderApp() {
+        // 1. Render Homepage
+        const homeDiv = document.createElement('div');
+        homeDiv.id = 'page-home';
+        homeDiv.className = 'module-page active';
+        homeDiv.innerHTML = `
+            <div class="home-card">
+                <span class="home-icon">✍️</span>
+                <h2>Welcome to Structure Practice</h2>
+                <p>This test simulates Part A (Structure) of the TOEFL ITP.</p>
+                
+                <ul class="instruction-list">
+                    <li>This part contains <strong>15 Questions</strong>.</li>
+                    <li>Each sentence is incomplete.</li>
+                    <li>Select the word or phrase that best completes the sentence.</li>
+                    <li>You must answer all questions in a section before proceeding.</li>
+                </ul>
+
+                <button type="button" class="btn" onclick="startTest()">Start Part A &rarr;</button>
+            </div>
+        `;
+        quizContent.appendChild(homeDiv);
+
+        // 2. Render Modules
+        modules.forEach((mod) => {
+            const pageDiv = document.createElement('div');
+            pageDiv.id = `page-${mod.id}`;
+            pageDiv.className = `module-page`;
+            
+            pageDiv.innerHTML = `
+                <div class="module-container">
+                    <div class="module-header">
+                        <div class="module-title">${mod.title}</div>
+                        <div class="module-subtitle">${mod.subtitle}</div>
+                    </div>
+                    <div class="module-content" id="questions-area-${mod.id}">
+                        <!-- Questions go here -->
+                    </div>
+                </div>
+                <div class="controls-area">
+                    ${mod.id > 1 ? `<button type="button" class="btn btn-secondary" onclick="goToPreviousPage(${mod.id})">&larr; Previous Page</button>` : '<span></span>'}
+                    
+                    <div>
+                        <button type="button" id="submit-btn-${mod.id}" class="btn" onclick="submitModule(${mod.id}, ${mod.range[0]}, ${mod.range[1]})">
+                            Submit Answers
+                        </button>
+                        <button type="button" id="next-btn-${mod.id}" class="btn btn-next" onclick="goToNextPage(${mod.id})">
+                            Proceed &rarr;
+                        </button>
+                    </div>
+                </div>
+            `;
+            quizContent.appendChild(pageDiv);
+
+            // Render Questions
+            const qContainer = pageDiv.querySelector(`#questions-area-${mod.id}`);
+            const slice = quizData.slice(mod.range[0], mod.range[1]);
+
+            slice.forEach((q) => {
+                const card = document.createElement('div');
+                card.id = `card-${q.id}`;
+                card.className = 'question-card';
+                
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="q-number">Question ${q.id}</span>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options-grid">
+                        ${Object.entries(q.options).map(([key, value]) => `
+                            <label class="option-label" id="label-${q.id}-${key}">
+                                <input type="radio" name="q${q.id}" value="${key}" class="option-input" onclick="clearError(${q.id})">
+                                <span><strong>(${key})</strong> ${value}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- Hidden Feedback Area -->
+                    <div id="feedback-${q.id}" class="feedback"></div>
+                `;
+                qContainer.appendChild(card);
+            });
+        });
+
+        // 3. Render Summary Page (Hidden)
+        const summaryDiv = document.createElement('div');
+        summaryDiv.id = `page-summary`;
+        summaryDiv.className = `module-page`;
+        summaryDiv.innerHTML = `
+            <div class="module-container summary-card">
+                <h2>Structure Part A Completed!</h2>
+                <p>You have finished the Structure section.</p>
+                <div class="final-score" id="total-score-display">--/15</div>
+                
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="goToPreviousPage(4)">Review Answers</button>
+                    <button type="button" class="btn" onclick="location.reload()">Start Over</button>
+                </div>
+            </div>
+        `;
+        quizContent.appendChild(summaryDiv);
+    }
+
+    function startTest() {
+        document.getElementById('page-home').classList.remove('active');
+        document.getElementById('page-1').classList.add('active');
+        document.getElementById('step-1').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function clearError(id) {
+        const card = document.getElementById(`card-${id}`);
+        if(card) card.classList.remove('unanswered-error');
+    }
+
+    function submitModule(modId, start, end) {
+        const moduleQuestions = quizData.slice(start, end);
+        let unansweredCount = 0;
+        let firstUnansweredId = null;
+
+        // 1. Validation
+        moduleQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            if (!selected) {
+                unansweredCount++;
+                const card = document.getElementById(`card-${q.id}`);
+                card.classList.add('unanswered-error');
+                if (!firstUnansweredId) firstUnansweredId = q.id;
+            }
+        });
+
+        if (unansweredCount > 0) {
+            alert(`Please answer all questions in this section before submitting.`);
+            if (firstUnansweredId) {
+                document.getElementById(`card-${firstUnansweredId}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        // 2. Grading & Feedback
+        let modScore = 0;
+        moduleQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${q.id}`);
+            
+            // Reset styles
+            Object.keys(q.options).forEach(key => {
+                document.getElementById(`label-${q.id}-${key}`).classList.remove('correct-answer-highlight', 'wrong-answer-highlight');
+            });
+
+            // Logic
+            if (selected.value === q.answer) {
+                modScore++;
+                feedbackEl.className = "feedback correct";
+                feedbackEl.innerHTML = `<strong>Correct!</strong> <div class="explanation-text">${q.explanation}</div>`;
+                document.getElementById(`label-${q.id}-${q.answer}`).classList.add('correct-answer-highlight');
+            } else {
+                feedbackEl.className = "feedback incorrect";
+                feedbackEl.innerHTML = `<strong>Incorrect.</strong> The correct answer is <strong>(${q.answer})</strong>. <div class="explanation-text">${q.explanation}</div>`;
+                document.getElementById(`label-${q.id}-${selected.value}`).classList.add('wrong-answer-highlight');
+                document.getElementById(`label-${q.id}-${q.answer}`).classList.add('correct-answer-highlight');
+            }
+            feedbackEl.style.display = 'block';
+            
+            // Lock inputs
+            const inputs = document.querySelectorAll(`input[name="q${q.id}"]`);
+            inputs.forEach(i => i.disabled = true);
+        });
+
+        // 3. Save Score & UI Transition
+        totalScore[modId] = modScore;
+        
+        // Hide Submit, Show Next
+        document.getElementById(`submit-btn-${modId}`).style.display = 'none';
+        
+        const nextBtn = document.getElementById(`next-btn-${modId}`);
+        if(modId === 3) {
+            nextBtn.innerHTML = "Finish & View Score";
+        }
+        nextBtn.style.display = 'inline-flex';
+
+        // Update Step Indicator to Completed
+        document.getElementById(`step-${modId}`).classList.remove('active');
+        document.getElementById(`step-${modId}`).classList.add('completed');
+        
+        // Scroll top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToNextPage(currentModId) {
+        document.getElementById(`page-${currentModId}`).classList.remove('active');
+        
+        if (currentModId < 3) {
+            const nextId = currentModId + 1;
+            document.getElementById(`page-${nextId}`).classList.add('active');
+            document.getElementById(`step-${nextId}`).classList.add('active');
+        } else {
+            document.getElementById(`page-summary`).classList.add('active');
+            document.getElementById(`step-4`).classList.add('completed');
+            
+            const total = totalScore[1] + totalScore[2] + totalScore[3];
+            document.getElementById('total-score-display').innerText = `${total} / 15`;
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToPreviousPage(currentModId) {
+        // 1. Hide Current
+        if (currentModId === 4) { // Summary page
+            document.getElementById(`page-summary`).classList.remove('active');
+            document.getElementById(`step-4`).classList.remove('completed');
+        } else {
+            document.getElementById(`page-${currentModId}`).classList.remove('active');
+            document.getElementById(`step-${currentModId}`).classList.remove('active');
+        }
+
+        // 2. Show Previous
+        const prevId = currentModId - 1;
+        document.getElementById(`page-${prevId}`).classList.add('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    renderApp();
+</script>
+
+</body>
+</html>

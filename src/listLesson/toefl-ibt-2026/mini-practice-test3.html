@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TOEFL iBT® Mini Practice Test</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Marked.js for Markdown parsing in feedback -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- SortableJS for drag and drop interactions -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <!-- jsPDF for Report Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overscroll-behavior-y: none; /* Prevents pull-to-refresh on mobile */
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .recording-pulse {
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
+        /* --- Drag and Drop Mechanics --- */
+        .word-chip {
+            transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            touch-action: manipulation;
+        }
+        
+        /* Word Bank Styling */
+        .word-bank .word-chip {
+            background-color: #ffffff;
+            border: 1px solid #374151;
+            color: #111827;
+            padding: 0.5rem 1.25rem;
+            margin: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            font-size: 1rem;
+            cursor: grab;
+        }
+        .word-bank .word-chip:hover {
+            background-color: #f9fafb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Slot Line Styling */
+        .slot-zone {
+            transition: all 0.2s ease-in-out;
+        }
+        .slot-zone .word-chip {
+            width: 100%;
+            min-width: max-content;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 0.1rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            color: #111827;
+            font-size: 1.125rem;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            transform: none !important;
+            white-space: nowrap;
+            cursor: grab;
+        }
+
+        /* Ghost styling varies based on which zone it's in */
+        .word-bank .sortable-ghost {
+            opacity: 0.3 !important;
+            background-color: #f3f4f6 !important;
+            border: 1px dashed #9ca3af !important;
+            color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        /* Highlights the underscore line when hovering over it */
+        .slot-zone.sortable-ghost-parent {
+            border-bottom-color: #007777 !important;
+            border-bottom-width: 2px !important;
+        }
+        
+        .slot-zone .sortable-ghost {
+            opacity: 0 !important; /* Hide the chip ghost, let the slot highlight do the work */
+        }
+
+        .sortable-drag {
+            cursor: grabbing !important;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+            background-color: white !important;
+            border: 1px solid #374151 !important;
+            padding: 0.5rem 1.25rem !important;
+            color: #111827 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 overflow-hidden">
+
+    <div id="app" class="h-[100dvh] w-full flex flex-col overflow-hidden"></div>
+
+    <script>
+        // --- NATIVE BROWSER VOICE SETUP (EDGE NATURAL VOICES) ---
+        let femaleVoice = null;
+        let maleVoice = null;
+
+        function assignVoices() {
+            const voices = window.speechSynthesis.getVoices();
+            if (voices.length === 0) return;
+
+            const enUSVoices = voices.filter(v => v.lang === 'en-US' || v.lang === 'en_US' || v.lang.startsWith('en'));
+            
+            femaleVoice = enUSVoices.find(v => v.name.includes('Natural') && (v.name.includes('Aria') || v.name.includes('Jenny') || v.name.includes('Michelle'))) ||
+                          enUSVoices.find(v => v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha') || v.name.includes('Google US English')) ||
+                          enUSVoices[0];
+
+            maleVoice = enUSVoices.find(v => v.name.includes('Natural') && (v.name.includes('Guy') || v.name.includes('Christopher') || v.name.includes('Eric') || v.name.includes('Roger'))) ||
+                        enUSVoices.find(v => v.name.includes('Male') || v.name.includes('David') || v.name.includes('Alex')) ||
+                        enUSVoices.find(v => v.name !== femaleVoice.name) || 
+                        enUSVoices[1] || enUSVoices[0];
+        }
+        
+        window.speechSynthesis.onvoiceschanged = assignVoices;
+
+        // --- UNIFIED DATA STRUCTURE (SET 2) ---
+        const testData = {
+            reading: {
+                title: "Reading Section",
+                timeLimit: 1200, 
+                sections: [
+                    {
+                        id: "r_cloze",
+                        type: "cloze",
+                        title: "Fill in the missing letters in the paragraph.",
+                        text: "Elephants are social animals that live in groups called herds. They %1% using %2%, gestures, %3% touch. These %4% are %5% for %6% strong %7% bonds and %8% help %9% other %10% times of need. They can remember the locations of water sources and food, which helps them survive in their natural environment. These highly intelligent creatures play an important role in their ecosystems, shaping the landscape, creating access to moisture, and spreading seeds.",
+                        blanks: [
+                            { id: 1, prefix: "commu", suffix: "", answer: "communicate" },
+                            { id: 2, prefix: "sou", suffix: "", answer: "sounds" },
+                            { id: 3, prefix: "a", suffix: "", answer: "and" },
+                            { id: 4, prefix: "ani", suffix: "", answer: "animals" },
+                            { id: 5, prefix: "kn", suffix: "", answer: "known" },
+                            { id: 6, prefix: "th", suffix: "", answer: "their" },
+                            { id: 7, prefix: "fam", suffix: "", answer: "family" },
+                            { id: 8, prefix: "of", suffix: "", answer: "often" },
+                            { id: 9, prefix: "ea", suffix: "", answer: "each" },
+                            { id: 10, prefix: "i", suffix: "", answer: "in" }
+                        ]
+                    },
+                    {
+                        id: "r_email1",
+                        type: "reading",
+                        title: "Read an Email",
+                        passageTitle: "You're in!",
+                        passageContent: `To: jhsigh36@dmail.com\nFrom: emmaj.onlinecourses@dmail.com\nDate: 08/17/2025\nSubject: You're in!\n\nDear Mr. Singh,\n\nYour registration for the online coding course, which begins on October 5th at 9:00 AM, is complete. Login details will be sent a day before the course begins. If you would like to cancel your registration, let us know by October 3rd.\n\nBest regards,\n\nEmma Johnson`,
+                        questions: [
+                            { id: 11, text: "What is the main purpose of the email?", options: ["To cancel registration for a course", "To confirm registration for a course", "To provide information about a course", "To request payment for a course"], correctAnswer: 1 },
+                            { id: 12, text: "When will Mr. Singh receive login details?", options: ["October 2nd", "October 3rd", "October 4th", "October 5th"], correctAnswer: 2 }
+                        ]
+                    },
+                    {
+                        id: "r_email2",
+                        type: "reading",
+                        title: "Read an Email",
+                        passageTitle: "Upcoming Heating System Maintenance",
+                        passageContent: `To: gardnerjardinero@dmail.com\nFrom: thompson.building.co@dmail.com\nSubject: Upcoming Heating System Maintenance - Tuesday, May 27\n\nDear Ms. Gardner,\n\nI hope you're doing well. I'm writing to inform you of a scheduled maintenance procedure on the office heating system, set to take place on Tuesday, May 27, from 8:00 A.M. to 5:00 P.M. This essential work is part of our seasonal inspection and efficiency upgrade initiative to ensure optimal performance during the colder months.\n\nPlease note that the heating system will be offline throughout the day, and indoor temperatures will drop noticeably. We recommend dressing in warm layers and advising your team to do the same. If any team members are particularly sensitive to cooler environments, remote work arrangements may be considered.\n\nAdditionally, as external technicians will be on site, please ensure all confidential materials are secured appropriately.\n\nShould you have any questions, contact the maintenance team at 555-7264.\n\nWarm regards, Robert Thompson`,
+                        questions: [
+                            { id: 13, text: "What is indicated about the office heating system?", options: ["It failed an inspection.", "It will not be functioning during maintenance.", "It is not working properly.", "It performs optimally."], correctAnswer: 1 },
+                            { id: 14, text: "What can be inferred about the weather on May 27?", options: ["It will be cooler than the temperature at which the office is normally kept.", "It will be unusual for the season.", "It will require office workers to stay home rather than go to the office.", "It will change throughout the day."], correctAnswer: 0 },
+                            { id: 15, text: "Who will be performing maintenance?", options: ["Ms. Gardner", "Ms. Gardner's team members", "Professionals from another company", "Robert Thompson"], correctAnswer: 2 }
+                        ]
+                    },
+                    {
+                        id: "r_academic",
+                        type: "reading",
+                        title: "Read an Academic Passage",
+                        passageTitle: "The Human Microbiome",
+                        passageContent: `The human microbiome consists of trillions of microorganisms living in and on our bodies. These include bacteria, viruses, fungi, and other microbes. They play a pivotal role in functions such as digestion, immunity, and mood regulation. For instance, gut bacteria help break down food and produce essential vitamins.\n\nRecent studies show that the microbiome can be influenced by diet, lifestyle, and medication. Antibiotics, while effective against harmful bacteria, can disrupt the balance of beneficial microbes. This disruption can lead to health issues like digestive problems and weakened immunity. Researchers are exploring the connection between the microbiome and mental health. Certain gut bacteria produce neurotransmitters affecting brain function. An imbalance in these bacteria may be linked to conditions like depression and anxiety.\n\nMaintaining a healthy microbiome involves eating a varied diet rich in fiber, reducing stress, and avoiding unnecessary antibiotics. Bacteria that aid digestion, known as probiotics and prebiotics, are also beneficial. As understanding of the microbiome grows, it may lead to breakthroughs in treating diseases and improving health.`,
+                        questions: [
+                            { id: 16, text: "The word \"pivotal\" in the passage is closest in meaning to", options: ["very important", "possible", "combined", "unwelcome"], correctAnswer: 0 },
+                            { id: 17, text: "What is one way antibiotics can affect humans?", options: ["They enhance the production of neurotransmitters.", "They can weaken immunity by harming beneficial microbes.", "They can help relieve digestive problems.", "They make it easier to produce essential vitamins."], correctAnswer: 1 },
+                            { id: 18, text: "What connection are researchers exploring regarding the microbiome?", options: ["The link between gut bacteria and immunity", "The role of fungi in mood regulation", "The role of viruses in digestion", "The link between gut bacteria and mental health"], correctAnswer: 3 },
+                            { id: 19, text: "All of the following help to maintain a healthy microbiome EXCEPT", options: ["eating a varied diet rich in fiber", "lowering stress levels", "avoiding sources of bacteria", "reducing the use of antibiotics"], correctAnswer: 2 },
+                            { id: 20, text: "What is the relationship between paragraphs 2 and 3?", options: ["Paragraph 3 challenges the ideas proposed in paragraph 2.", "Paragraph 3 provides examples of the disruptions mentioned in paragraph 2.", "Paragraph 3 specifies how to achieve a healthy microbiome based on the factors mentioned in paragraph 2.", "Paragraph 3 elaborates on the benefits of antibiotics mentioned in paragraph 2."], correctAnswer: 2 }
+                        ]
+                    }
+                ]
+            },
+            listening: {
+                title: "Listening Section",
+                sections: [
+                    {
+                        id: "l_short",
+                        type: "listening",
+                        title: "Listen and Choose a Response",
+                        audioTitle: "Short Dialogues",
+                        questions: [
+                            { id: 21, transcript: "Woman: Who is responsible for the project timeline?", text: "Choose the best response.", options: ["I do.", "I'm not sure.", "A few unexpected delays.", "It stays on track."], correctAnswer: 1, timeLimit: 20 },
+                            { id: 22, transcript: "Woman: Why did the team meeting get canceled?", text: "Choose the best response.", options: ["Two days ago.", "Meeting attendees.", "Actually, it was rescheduled.", "How about another time?"], correctAnswer: 2, timeLimit: 20 },
+                            { id: 23, transcript: "Man: Can you assist me with my science report?", text: "Choose the best response.", options: ["Let me know what you think.", "You're very kind.", "What exactly do you need help with?", "It doesn't matter."], correctAnswer: 2, timeLimit: 20 },
+                            { id: 24, transcript: "Man: I'm not sure about the current plan.", text: "Choose the best response.", options: ["That's unfortunate.", "Sure, I can.", "I think you have it.", "No, it's planned."], correctAnswer: 0, timeLimit: 20 },
+                            { id: 25, transcript: "Man: If you need help, ask Ms. Johnson.", text: "Choose the best response.", options: ["Either is fine by me.", "Happy to help.", "That's what I'll do.", "I'm available."], correctAnswer: 2, timeLimit: 20 },
+                            { id: 26, transcript: "Woman: What time does the event start?", text: "Choose the best response.", options: ["In the party room.", "At 1 p.m.", "It's crowded.", "Event coordinators."], correctAnswer: 1, timeLimit: 20 },
+                            { id: 27, transcript: "Man: Who is hosting the party tonight?", text: "Choose the best response.", options: ["The marketing team is.", "It's tonight.", "I can't help it.", "It's good for two days."], correctAnswer: 0, timeLimit: 20 },
+                            { id: 28, transcript: "Man: Let's go hiking this weekend.", text: "Choose the best response.", options: ["Maybe it is.", "Why not this weekend instead?", "Have you checked the weather?", "Are you busy?"], correctAnswer: 2, timeLimit: 20 }
+                        ]
+                    },
+                    {
+                        id: "l_conv1",
+                        type: "listening",
+                        title: "Listen to a Conversation",
+                        audioTitle: "Conversation: Library Books",
+                        transcript: "Man: Have you returned the books we borrowed from the library?\nWoman: Why? I thought we could keep them for six weeks.\nMan: Actually, it's now four weeks. They changed the policy. I guess I forgot to tell you!\nWoman: That means they're due tomorrow!\nMan: Exactly!\nWoman: In that case, I'll take care of it right now!",
+                        questions: [
+                            { id: 29, text: "What was the woman not aware of?", options: ["The library's new location", "The library's borrowing policy", "The library's holiday schedule", "The library's hours of operation"], correctAnswer: 1, timeLimit: 20 },
+                            { id: 30, text: "What will the woman probably do next?", options: ["Return books to the library", "Make a phone call to the library", "Pay a fine for returning books late", "Borrow a new book from the library"], correctAnswer: 0, timeLimit: 20 }
+                        ]
+                    },
+                    {
+                        id: "l_announce",
+                        type: "listening",
+                        title: "Listen to an Announcement",
+                        audioTitle: "Announcement: Charity Auction",
+                        transcript: "Announcer: Good evening everyone. Just a friendly reminder that the university's annual charity auction will take place tomorrow at 7 P.M. in the Main Hall. All proceeds will go to local charities. We hope to see you there and appreciate your support!",
+                        questions: [
+                            { id: 31, text: "What is the main topic of the announcement?", options: ["A new university event", "A lecture on local charities", "A change in venue", "An upcoming fundraiser"], correctAnswer: 3, timeLimit: 20 },
+                            { id: 32, text: "What does the speaker hope the listeners will do?", options: ["Attend an event", "Prepare for a lecture", "Donate online", "Volunteer at an event"], correctAnswer: 0, timeLimit: 20 }
+                        ]
+                    },
+                    {
+                        id: "l_talk",
+                        type: "listening",
+                        title: "Listen to a Talk",
+                        audioTitle: "Talk: Biomimicry",
+                        transcript: "Professor: Biomimicry is the human practice of learning from and imitating things found in nature in order to create new inventions. This way, scientists and engineers can create innovative solutions that are both efficient and sustainable.\nOne well known example of biomimicry is the development of a widely used fastening system. The inventor was inspired by the way burrs, uh thorns, from plants stuck to his dog's fur. By replicating the tiny hooks found on the burrs he removed from the dog fur, he created the new fastening system. Another example is the design of energy efficient buildings based on the ventilation system of structures created by termites. Termites are ground dwelling insects that use different materials to create hills, or mounds, in which the termites live. Termite mounds have a complex network of vents. The vents maintain a stable internal temperature, which can be emulated in human architecture.\nBiomimicry can also be applied to renewable energy. For instance, researchers are developing wind turbine blades modeled after the flippers of humpback whales. The unique shape of the flippers reduces drag and increases efficiency, leading to more effective wind energy capture.",
+                        questions: [
+                            { id: 33, text: "What is the talk mainly about?", options: ["Ways in which humans use natural materials in clothing and architecture", "Hiding strategies of different animals", "New methods of using renewable energy", "Examples of how humans imitate nature for practical purposes"], correctAnswer: 3, timeLimit: 30 },
+                            { id: 34, text: "Why does the speaker mention a dog?", options: ["To illustrate how an inventor copied animal behavior", "To compare its efficiency in movement with that of humpback whales", "To explain how a structure found in plants inspired an invention", "To show the close bond between scientists and animals"], correctAnswer: 2, timeLimit: 30 },
+                            { id: 35, text: "What point does the speaker make about termite mounds?", options: ["The temperature inside of them does not change much.", "Termites sometimes build them near human made structures.", "Building them takes a lot of energy.", "They are created mostly from plant material."], correctAnswer: 0, timeLimit: 30 },
+                            { id: 36, text: "What does the speaker imply about wind turbine blades that are being developed?", options: ["The noise they create can be harmful to whales.", "They can be easily installed on buildings.", "They can be efficiently constructed from renewable materials.", "They are very similar to some whales' flippers in shape."], correctAnswer: 3, timeLimit: 30 }
+                        ]
+                    }
+                ]
+            },
+            writing: {
+                title: "Writing Section",
+                timeLimit: 600, 
+                sections: [
+                    {
+                        id: "w_build",
+                        type: "build_sentence",
+                        title: "Build a Sentence",
+                        description: "Move the words in the boxes to create grammatical sentences.",
+                        questions: [
+                            { id: 39, prompt: "I need to buy a new laptop.", chunks: ["has", "the best", "which", "store", "deals"], answer: "Which store has the best deals", targetLength: 5, punctuation: "?" },
+                            { id: 40, prompt: "I'm thinking about starting a blog.", chunks: ["decided", "you", "a topic", "have", "on", "yet"], answer: "Have you decided on a topic yet", targetLength: 6, punctuation: "?" },
+                            { id: 41, prompt: "I'm going to study at the library this afternoon.", chunks: ["to", "do", "borrow", "any books", "you", "need"], answer: "Do you need to borrow any books", targetLength: 6, punctuation: "?" },
+                            { id: 42, prompt: "I'm thinking about getting a pet.", chunks: ["are", "you", "considering", "kind", "of", "what", "animal"], answer: "What kind of animal are you considering", targetLength: 7, punctuation: "?" },
+                            { id: 43, prompt: "I'm excited to see the new science fiction movie tonight.", chunks: ["it", "showing", "is", "where"], answer: "Where is it showing", targetLength: 4, punctuation: "?" },
+                            { id: 44, prompt: "I have an interview for a new job next week.", chunks: ["ready", "resume", "have", "you", "do", "your"], answer: "Do you have your resume ready", targetLength: 6, punctuation: "?" },
+                            { id: 45, prompt: "I need to submit my assignment by tomorrow.", chunks: ["writing", "finished", "you", "it", "have"], answer: "Have you finished writing it", targetLength: 5, punctuation: "?" },
+                            { id: 46, prompt: "I'm planning a trip to Europe this summer.", chunks: ["book your", "did", "flight", "you", "yet"], answer: "Did you book your flight yet", targetLength: 5, punctuation: "?" },
+                            { id: 47, prompt: "I just started learning French.", chunks: ["you", "taking", "are", "where", "classes"], answer: "Where are you taking classes", targetLength: 5, punctuation: "?" },
+                            { id: 48, prompt: "Why are you asking about the project deadline?", chunks: ["I'm", "checking", "to see", "if", "has been", "extended", "it"], answer: "I'm checking to see if it has been extended", targetLength: 7, punctuation: "." }
+                        ]
+                    }
+                ]
+            },
+            speaking: {
+                title: "Speaking Section",
+                sections: [
+                    {
+                        id: "s_repeat",
+                        type: "listen_and_repeat",
+                        title: "Listen and Repeat",
+                        scenario: "You are learning how to guide new students through the campus gym. Listen to the speaker and repeat what she says. Repeat only once.",
+                        questions: [
+                            { id: "s1", prompt: "Welcome to our campus gym.", timeLimit: 8 },
+                            { id: "s2", prompt: "Cardio machines are near the entrance.", timeLimit: 8 },
+                            { id: "s3", prompt: "Free weights are in the back.", timeLimit: 8 },
+                            { id: "s4", prompt: "All of our locker rooms are equipped with showers and towels.", timeLimit: 10 },
+                            { id: "s5", prompt: "Our fitness instructors hold exercise classes over here.", timeLimit: 10 },
+                            { id: "s6", prompt: "You can check the schedule for available classes and timings.", timeLimit: 12 },
+                            { id: "s7", prompt: "If you have any questions, please seek assistance from the attendants at the help desk.", timeLimit: 12 }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- GLOBAL STATE ---
+        const state = {
+            hasStarted: false,
+            userName: "",
+            isAdmin: false,
+            pdfGenerated: false,
+            flatSteps: [],
+            currentStepIndex: 0,
+            answers: {},          
+            showResults: false,
+            
+            // Timers
+            sectionTimes: { reading: 1200, writing: 600 },
+            currentSectionTimer: null,
+            timerInterval: null,
+            questionTimeLeft: null, 
+            
+            // Writing State
+            sentenceStates: {},
+            
+            // Audio/Recording States
+            isPlayingAudio: false,
+            passageAudioPlayed: {},
+            passageAudioFinished: {},
+
+            isRecording: false,
+            recognition: null,
+            recordingTimeLeft: 0,
+            recordingInterval: null,
+            hasRecorded: {}, 
+            aiFeedback: {},
+            isGeneratingFeedback: {}
+        };
+
+        // --- BROWSER STT (SPEECH-TO-TEXT) INITIALIZATION ---
+        function initSpeechRecognition() {
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (window.SpeechRecognition) {
+                state.recognition = new window.SpeechRecognition();
+                state.recognition.continuous = true;
+                state.recognition.interimResults = true;
+                
+                state.recognition.onresult = (event) => {
+                    let finalTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        }
+                    }
+                    const step = state.flatSteps[state.currentStepIndex];
+                    if (step && step.type === 'listen_and_repeat' && finalTranscript) {
+                        const qId = step.question.id;
+                        state.answers[qId] = (state.answers[qId] || '') + ' ' + finalTranscript;
+                        render(); 
+                    }
+                };
+            } else {
+                console.warn("Speech Recognition API not supported. Fallback text input will be provided.");
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startTestWithUser() {
+            const nameInput = document.getElementById('user-name').value.trim();
+            if (nameInput) {
+                if (nameInput === '300198') {
+                    state.userName = 'Admin';
+                    state.isAdmin = true;
+                } else {
+                    state.userName = nameInput;
+                    state.isAdmin = false;
+                }
+                initTest();
+            }
+        }
+
+        function initTest() {
+            initSpeechRecognition();
+            state.hasStarted = true;
+            state.showResults = false;
+            state.pdfGenerated = false;
+            state.currentStepIndex = 0;
+            state.answers = {};
+            state.flatSteps = [];
+            state.sentenceStates = {};
+            state.passageAudioPlayed = {};
+            state.passageAudioFinished = {};
+            state.hasRecorded = {};
+
+            const sectionOrder = ['reading', 'listening', 'writing', 'speaking'];
+
+            sectionOrder.forEach(sectionKey => {
+                const sectionData = testData[sectionKey];
+                
+                state.flatSteps.push({
+                    type: 'section_intro',
+                    globalSection: sectionKey,
+                    title: sectionData.title
+                });
+
+                sectionData.sections.forEach(subSec => {
+                    if (subSec.type === 'cloze') {
+                        state.flatSteps.push({ type: 'cloze', globalSection: sectionKey, data: subSec, sectionId: subSec.id });
+                    } else if (subSec.type === 'reading') {
+                        subSec.questions.forEach((q, idx) => {
+                            state.flatSteps.push({ type: 'reading', globalSection: sectionKey, data: subSec, question: q, questionIndex: idx + 1, totalQuestions: subSec.questions.length, sectionId: subSec.id });
+                        });
+                    } else if (subSec.type === 'listening') {
+                        subSec.questions.forEach((q, idx) => {
+                            state.flatSteps.push({ type: 'listening', globalSection: sectionKey, data: subSec, question: q, questionIndex: idx + 1, totalQuestions: subSec.questions.length, passageId: (subSec.id.includes("short")) ? `short_${q.id}` : subSec.id });
+                        });
+                    } else if (subSec.type === 'build_sentence') {
+                        subSec.questions.forEach((q, idx) => {
+                            // Initialize discrete slots for the sentence lines
+                            state.sentenceStates[q.id] = { 
+                                available: shuffleArray([...q.chunks]), 
+                                slots: new Array(q.targetLength).fill(null) 
+                            };
+                            state.flatSteps.push({ type: 'build_sentence', globalSection: sectionKey, data: subSec, question: q, questionIndex: idx + 1, totalQuestions: subSec.questions.length, sectionId: subSec.id });
+                        });
+                    } else if (subSec.type === 'listen_and_repeat') {
+                        if (subSec.scenario) {
+                            state.flatSteps.push({ type: 'scenario', globalSection: sectionKey, data: subSec, scenarioText: subSec.scenario });
+                        }
+                        subSec.questions.forEach((q, idx) => {
+                            state.answers[q.id] = ""; 
+                            state.flatSteps.push({ type: 'listen_and_repeat', globalSection: sectionKey, data: subSec, question: q, questionIndex: idx + 1, totalQuestions: subSec.questions.length });
+                        });
+                    }
+                });
+            });
+            
+            assignVoices();
+            startSectionTimer();
+            render();
+        }
+
+        // --- GLOBAL CONTROLS ---
+
+        function stopAllAudioAndRecording() {
+            state.isPlayingAudio = false;
+            window.speechSynthesis.cancel();
+            
+            if (state.recordingInterval) {
+                clearInterval(state.recordingInterval);
+                state.recordingInterval = null;
+            }
+            if (state.recognition && state.isRecording) {
+                state.recognition.stop();
+            }
+            state.isRecording = false;
+        }
+
+        function stopRecordingEarly() {
+            const step = state.flatSteps[state.currentStepIndex];
+            if (step && step.question) {
+                state.hasRecorded[step.question.id] = true;
+            }
+            stopAllAudioAndRecording();
+            render();
+        }
+
+        function handleNext() {
+            stopAllAudioAndRecording();
+            if (state.currentStepIndex < state.flatSteps.length - 1) {
+                state.currentStepIndex++;
+                startSectionTimer();
+                render();
+            } else {
+                finishTest();
+            }
+        }
+
+        function handleBack() {
+            stopAllAudioAndRecording();
+            if (state.currentStepIndex > 0) {
+                const step = state.flatSteps[state.currentStepIndex];
+                if (step.type === 'listening') {
+                    state.passageAudioFinished[step.passageId] = true; 
+                }
+                state.currentStepIndex--;
+                startSectionTimer();
+                render();
+            }
+        }
+
+        function forceNextSection() {
+            const currentSection = state.flatSteps[state.currentStepIndex].globalSection;
+            const nextStep = state.flatSteps.find((s, idx) => idx > state.currentStepIndex && s.globalSection !== currentSection);
+            
+            stopAllAudioAndRecording();
+            if (nextStep) {
+                state.currentStepIndex = state.flatSteps.indexOf(nextStep);
+                startSectionTimer();
+                render();
+            } else {
+                finishTest();
+            }
+        }
+
+        function finishTest() {
+            stopAllAudioAndRecording();
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.showResults = true;
+            render();
+            setTimeout(generatePDFReport, 500);
+        }
+
+        // --- TIMER LOGIC ---
+
+        function startSectionTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            const step = state.flatSteps[state.currentStepIndex];
+            if (!step) return;
+
+            const currentSection = step.globalSection;
+            
+            if (currentSection === 'listening' && step.type === 'listening') {
+                if (state.passageAudioFinished[step.passageId]) {
+                    state.questionTimeLeft = step.question.timeLimit || 20;
+                    state.timerInterval = setInterval(() => {
+                        if (state.questionTimeLeft > 0) {
+                            state.questionTimeLeft--;
+                            updateTimerDisplay();
+                        } else {
+                            handleNext();
+                        }
+                    }, 1000);
+                } else {
+                    state.questionTimeLeft = null; 
+                }
+                updateTimerDisplay();
+            } else if (state.sectionTimes[currentSection] !== undefined) {
+                state.currentSectionTimer = currentSection;
+                state.timerInterval = setInterval(() => {
+                    if (state.sectionTimes[currentSection] > 0) {
+                        state.sectionTimes[currentSection]--;
+                        updateTimerDisplay();
+                    } else {
+                        forceNextSection();
+                    }
+                }, 1000);
+            } else {
+                state.currentSectionTimer = null;
+                state.questionTimeLeft = null;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('timer-display');
+            if (!el) return;
+            
+            const step = state.flatSteps[state.currentStepIndex];
+
+            if (step && step.globalSection === 'listening' && step.type === 'listening') {
+                if (state.questionTimeLeft !== null && state.questionTimeLeft !== undefined) {
+                    const secs = state.questionTimeLeft;
+                    el.innerText = `0:${secs < 10 ? '0' : ''}${secs}`;
+                } else {
+                    el.innerText = '--:--';
+                }
+            } else if (state.currentSectionTimer && state.sectionTimes[state.currentSectionTimer] !== undefined) {
+                const seconds = state.sectionTimes[state.currentSectionTimer];
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                el.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            } else {
+                 el.innerText = '';
+            }
+        }
+
+        // --- INPUT HANDLERS ---
+
+        function handleClozeInput(id, value, missingLength) {
+            state.answers[id] = value;
+            const bgEl = document.getElementById(`bg-dashes-${id}`);
+            if (bgEl) {
+                const remaining = Math.max(0, missingLength - value.length);
+                const safeValue = value.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+                bgEl.innerHTML = `<span class="opacity-0">${safeValue}</span><span>${'_'.repeat(remaining)}</span>`;
+            }
+        }
+
+        function handleRadioInput(qId, value) {
+            state.answers[qId] = value;
+        }
+
+        // --- WRITING: DRAG & DROP LOGIC (SLOT BASED) ---
+
+        function initSortable(qId) {
+            const bankEl = document.getElementById(`word-bank-${qId}`);
+            
+            const sharedOpts = {
+                group: 'shared', 
+                animation: 150, 
+                delay: 100, // Mobile touch compatibility
+                delayOnTouchOnly: true,
+                ghostClass: 'sortable-ghost',
+                dragClass: 'sortable-drag'
+            };
+
+            if (bankEl) {
+                new Sortable(bankEl, {
+                    ...sharedOpts,
+                    onEnd: () => syncSentenceState(qId)
+                });
+            }
+
+            const step = state.flatSteps[state.currentStepIndex];
+            const targetCount = step.question.targetLength;
+
+            // Initialize each individual underscore line as its own drop target
+            for (let i = 0; i < targetCount; i++) {
+                const slotEl = document.getElementById(`slot-${qId}-${i}`);
+                if (slotEl) {
+                    new Sortable(slotEl, {
+                        ...sharedOpts,
+                        onAdd: function(evt) {
+                            // If user drops a word onto a line that already has a word, kick the old word back to the bank
+                            if (evt.to.children.length > 1) {
+                                const oldItem = Array.from(evt.to.children).find(c => c !== evt.item);
+                                if (oldItem) {
+                                    bankEl.appendChild(oldItem);
+                                }
+                            }
+                            syncSentenceState(qId);
+                        },
+                        onRemove: () => syncSentenceState(qId),
+                        onEnd: () => syncSentenceState(qId)
+                    });
+                    
+                    // Add hover listeners to the slot itself to trigger the ghost styling class
+                    slotEl.addEventListener('dragenter', () => slotEl.classList.add('sortable-ghost-parent'));
+                    slotEl.addEventListener('dragleave', () => slotEl.classList.remove('sortable-ghost-parent'));
+                    slotEl.addEventListener('drop', () => slotEl.classList.remove('sortable-ghost-parent'));
+                }
+            }
+        }
+
+        function syncSentenceState(qId) {
+            const bankEl = document.getElementById(`word-bank-${qId}`);
+            const step = state.flatSteps[state.currentStepIndex];
+            const targetCount = step.question.targetLength;
+            
+            // Sync Word Bank
+            const available = Array.from(bankEl.querySelectorAll('.word-chip')).map(el => el.getAttribute('data-word'));
+            
+            // Sync individual slots
+            const slots = [];
+            let filledCount = 0;
+            for (let i = 0; i < targetCount; i++) {
+                const slotEl = document.getElementById(`slot-${qId}-${i}`);
+                if (slotEl) {
+                    slotEl.classList.remove('sortable-ghost-parent'); // Ensure cleanup
+                    const chips = slotEl.querySelectorAll('.word-chip');
+                    if (chips.length > 0) {
+                        slots.push(chips[chips.length - 1].getAttribute('data-word'));
+                        filledCount++;
+                    } else {
+                        slots.push(null);
+                    }
+                } else {
+                    slots.push(null);
+                }
+            }
+            
+            state.sentenceStates[qId] = { available, slots, filledCount };
+            
+            // Wait slightly for Sortable to finish DOM manipulations before re-rendering the UI
+            setTimeout(() => render(), 20);
+        }
+
+        // --- LISTENING: NATIVE CONVERSATIONAL TTS LOGIC ---
+
+        async function playListeningAudio() {
+            const step = state.flatSteps[state.currentStepIndex];
+            const passageId = step.passageId;
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+
+            if (playCount >= 2) return;
+            
+            state.passageAudioPlayed[passageId] = playCount + 1;
+            state.isPlayingAudio = true;
+            updateAudioUI(); 
+
+            if (!femaleVoice || !maleVoice) assignVoices();
+
+            const transcriptText = step.question.transcript || step.data.transcript;
+            const lines = transcriptText.split('\n').filter(l => l.trim().length > 0);
+
+            for (let line of lines) {
+                if (!state.isPlayingAudio) break;
+                
+                let spokenText = line;
+                let currentGender = 'male'; 
+
+                const match = line.match(/^([A-Za-z\s]+):\s*(.*)/);
+                if (match) {
+                    const speaker = match[1].toLowerCase().trim();
+                    spokenText = match[2]; 
+                    if (speaker === 'woman') currentGender = 'female'; 
+                }
+
+                await new Promise((resolve) => {
+                    const utterance = new SpeechSynthesisUtterance(spokenText.trim());
+                    if (currentGender === 'female' && femaleVoice) utterance.voice = femaleVoice;
+                    else if (maleVoice) utterance.voice = maleVoice;
+                    
+                    utterance.rate = 1.0; 
+                    utterance.onend = resolve;
+                    utterance.onerror = resolve; 
+                    window.speechSynthesis.speak(utterance);
+                });
+                
+                if (state.isPlayingAudio && lines.length > 1) {
+                    await new Promise(r => setTimeout(r, 250));
+                }
+            }
+
+            state.isPlayingAudio = false;
+            state.passageAudioFinished[passageId] = true;
+            updateAudioUI(); 
+            startSectionTimer(); 
+        }
+
+        function updateAudioUI() {
+            const step = state.flatSteps[state.currentStepIndex];
+            if (step?.type !== 'listening') return;
+
+            const passageId = step.passageId;
+            const isFinished = state.passageAudioFinished[passageId];
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+            
+            const btnContainer = document.getElementById('audio-btn-container');
+            const iconContainer = document.getElementById('audio-icon-container');
+            const overlay = document.getElementById('question-overlay');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (btnContainer) {
+                if (state.isPlayingAudio) {
+                    btnContainer.innerHTML = `<button disabled class="flex items-center px-6 md:px-10 py-3 md:py-4 bg-teal-50 text-teal-600 font-bold rounded-full border border-teal-200 cursor-not-allowed w-full md:w-auto justify-center"><i data-lucide="volume-2" class="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 animate-pulse"></i> Playing...</button>`;
+                } else if (playCount >= 2) {
+                    btnContainer.innerHTML = `<button disabled class="flex items-center px-6 md:px-10 py-3 md:py-4 bg-gray-100 text-gray-400 font-bold rounded-full shadow-inner border border-gray-200 cursor-not-allowed w-full md:w-auto justify-center"><i data-lucide="check-circle" class="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3"></i> Completed</button>`;
+                } else {
+                    let playText = playCount === 1 ? 'Play Audio (1 play left)' : 'Play Audio Segment';
+                    btnContainer.innerHTML = `<button onclick="playListeningAudio()" class="flex items-center px-6 md:px-10 py-3 md:py-4 bg-white text-[#007777] font-bold rounded-full shadow-lg border border-[#007777] w-full md:w-auto justify-center"><i data-lucide="play-circle" class="w-6 h-6 md:w-8 md:h-8 mr-2 md:mr-3"></i> ${playText}</button>`;
+                }
+                lucide.createIcons();
+            }
+
+            if (iconContainer) {
+                if (state.isPlayingAudio) {
+                    iconContainer.classList.add('scale-105', 'animate-pulse');
+                    iconContainer.innerHTML = `<i data-lucide="volume-2" class="w-16 h-16 md:w-24 md:h-24 text-white opacity-90"></i>`;
+                } else {
+                    iconContainer.classList.remove('scale-105', 'animate-pulse');
+                    iconContainer.innerHTML = `<i data-lucide="headphones" class="w-16 h-16 md:w-24 md:h-24 text-white opacity-90"></i>`;
+                }
+                lucide.createIcons();
+            }
+
+            if (overlay && isFinished) {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => { overlay.classList.add('hidden'); }, 500);
+            }
+            
+            if (nextBtn && isFinished) {
+                nextBtn.disabled = false;
+                nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // --- SPEAKING: NATIVE TTS AND RECORDING ---
+
+        async function playPromptAudio() {
+            if (state.isRecording) return; 
+            const step = state.flatSteps[state.currentStepIndex];
+            stopAllAudioAndRecording();
+            
+            try {
+                let textToSpeak = step.type === 'scenario' ? step.scenarioText : step.question.prompt;
+                
+                if (!femaleVoice || !maleVoice) assignVoices();
+                const voiceToUse = maleVoice; 
+
+                state.isPlayingAudio = true;
+                render();
+
+                await new Promise((resolve) => {
+                    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                    if (voiceToUse) utterance.voice = voiceToUse;
+                    utterance.rate = 1.0;
+                    utterance.onend = resolve;
+                    utterance.onerror = resolve;
+                    window.speechSynthesis.speak(utterance);
+                });
+
+                state.isPlayingAudio = false;
+                render();
+            } catch (error) {
+                console.error("TTS Error:", error);
+                state.isPlayingAudio = false;
+                render();
+            }
+        }
+
+        function startRecording() {
+            stopAllAudioAndRecording();
+            if (!state.recognition) {
+                alert("Speech recognition is not supported in your browser.");
+                return;
+            }
+
+            const step = state.flatSteps[state.currentStepIndex];
+            state.recordingTimeLeft = step.question.timeLimit;
+            state.isRecording = true;
+            state.answers[step.question.id] = ""; 
+            
+            try { state.recognition.start(); } catch (e) {}
+
+            render();
+            state.recordingInterval = setInterval(() => {
+                if (state.recordingTimeLeft > 0) {
+                    state.recordingTimeLeft--;
+                    render();
+                } else {
+                    state.hasRecorded[step.question.id] = true;
+                    stopAllAudioAndRecording();
+                    render();
+                }
+            }, 1000);
+        }
+
+        // --- PDF GENERATION LOGIC ---
+        function calculateSpeakingScore(qId) {
+            const userText = state.answers[qId] || "";
+            const step = state.flatSteps.find(s => s.question && s.question.id === qId);
+            if (!step) return 0;
+            const targetPrompt = step.question.prompt;
+
+            const targetWords = targetPrompt.toLowerCase().replace(/[^a-z0-9 ]/g, '').split(' ').filter(w=>w);
+            const userWords = userText.toLowerCase().replace(/[^a-z0-9 ]/g, '').split(' ').filter(w=>w);
+            
+            let matches = 0;
+            targetWords.forEach(w => {
+                if (userWords.includes(w)) matches++;
+            });
+            
+            const accuracy = targetWords.length ? matches / targetWords.length : 0;
+            if (accuracy > 0.8) return 5;
+            if (accuracy > 0.5) return 4;
+            if (accuracy > 0.2) return 2;
+            if (userText.trim() !== "") return 1;
+            return 0;
+        }
+
+        function getScore(sectionType) {
+            let correct = 0; let total = 0;
+            if(sectionType === 'reading' || sectionType === 'listening') {
+                testData[sectionType].sections.forEach(sec => {
+                    if (sec.type === 'cloze') {
+                        sec.blanks.forEach(b => {
+                            total++;
+                            const u = state.answers[b.id] ? state.answers[b.id].trim() : "";
+                            const fw = (b.prefix||"") + u + (b.suffix||"");
+                            if (fw.toLowerCase() === b.answer.toLowerCase()) correct++;
+                        });
+                    } else if (sec.type === 'reading' || sec.type === 'listening') {
+                        sec.questions.forEach(q => {
+                            total++;
+                            if (state.answers[q.id] === q.correctAnswer) correct++;
+                        });
+                    }
+                });
+            } else if (sectionType === 'writing') {
+                testData.writing.sections[0].questions.forEach(q => {
+                    total++;
+                    const sState = state.sentenceStates[q.id];
+                    if (sState) {
+                        // Compare the exact sequence of filled slots
+                        // Using case insensitive comparison for writing chunks assembly
+                        const userSentence = sState.slots.map(w => w || "").join(" ").replace(/\s+/g, " ").trim().toLowerCase();
+                        if (userSentence === q.answer.toLowerCase()) correct++;
+                    }
+                });
+            } else if (sectionType === 'speaking') {
+                testData.speaking.sections[0].questions.forEach(q => {
+                    total += 5; 
+                    correct += calculateSpeakingScore(q.id);
+                });
+            }
+            return { correct, total };
+        }
+
+        function generatePDFReport() {
+            if (state.pdfGenerated) return;
+            state.pdfGenerated = true;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ format: 'a4' });
+
+            const rScore = getScore('reading');
+            const lScore = getScore('listening');
+            const wScore = getScore('writing');
+            const sScore = getScore('speaking');
+
+            const totalCorrect = rScore.correct + lScore.correct + wScore.correct + sScore.correct;
+            const totalPoints = rScore.total + lScore.total + wScore.total + sScore.total;
+            const totalPercentage = totalPoints === 0 ? 0 : Math.round((totalCorrect / totalPoints) * 100);
+
+            const rPct = rScore.total === 0 ? 0 : Math.round((rScore.correct / rScore.total) * 100);
+            const lPct = lScore.total === 0 ? 0 : Math.round((lScore.correct / lScore.total) * 100);
+            const wPct = wScore.total === 0 ? 0 : Math.round((wScore.correct / wScore.total) * 100);
+            const sPct = sScore.total === 0 ? 0 : Math.round((sScore.correct / sScore.total) * 100);
+
+            let feedback = "";
+            if (totalPercentage >= 80) {
+                feedback = "Excellent work! Your performance indicates a strong readiness for the TOEFL iBT test. To maximize your official score, continue practicing under timed conditions and refine advanced vocabulary usage.";
+            } else if (totalPercentage >= 60) {
+                feedback = "Good effort! You have a solid foundation. To achieve a higher score, focus on strengthening your weaker sections and familiarize yourself further with complex academic texts and spoken lectures.";
+            } else {
+                feedback = "Thank you for completing the practice test. We recommend taking structured courses to strengthen your foundational academic English skills and test strategies before registering for the real exam.";
+            }
+
+            const primaryCol = [0, 119, 119];
+            const textCol = [51, 65, 85];
+            const lightBg = [240, 249, 255];
+            const grayLine = [226, 232, 240];
+
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+
+            // --- PAGE 1 ---
+            
+            // 1. HEADER BANNER
+            doc.setFillColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+            doc.rect(0, 0, pageWidth, 45, 'F');
+
+            // Trademark Disclaimer at the Top
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "italic");
+            doc.setTextColor(204, 251, 241); // Light teal to contrast with the dark background
+            doc.text("TOEFL iBT is a registered trademark of Educational Testing Service (ETS).", 20, 12);
+            doc.text("This practice material is for educational purposes and is not endorsed or approved by ETS.", 20, 17);
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(24);
+            doc.text("SCORE REPORT", pageWidth - 20, 36, { align: "right" });
+
+            doc.setFontSize(16);
+            doc.text("TOEFL iBT® Mini Practice Test", 20, 36);
+
+            // 2. CANDIDATE INFO BOX
+            doc.setDrawColor(203, 213, 225);
+            doc.setFillColor(248, 250, 252);
+            doc.setLineWidth(0.5);
+            doc.roundedRect(20, 55, pageWidth - 40, 40, 4, 4, 'FD');
+
+            doc.setTextColor(100, 116, 139);
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.text("TEST TAKER", 28, 68);
+            doc.text("TEST DATE", pageWidth / 2 + 10, 68);
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.setTextColor(15, 23, 42);
+            doc.text(state.userName, 28, 80);
+            doc.text(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), pageWidth / 2 + 10, 80);
+
+            // 3. OVERALL SCORE SECTION
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+            doc.text("OVERALL PERFORMANCE", 20, 115);
+            doc.setDrawColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+            doc.setLineWidth(0.5);
+            doc.line(20, 119, pageWidth - 20, 119);
+
+            // Score Badge Box
+            doc.setFillColor(236, 253, 245);
+            doc.roundedRect(20, 128, 60, 60, 5, 5, 'F');
+
+            // Badge Circle
+            doc.setDrawColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+            doc.setLineWidth(4);
+            doc.circle(50, 155, 18, 'S');
+
+            doc.setFontSize(22);
+            doc.setTextColor(15, 23, 42);
+            doc.text(`${totalPercentage}%`, 50, 157, { align: "center", baseline: "middle" });
+
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(100, 116, 139);
+            doc.text("Total Score", 50, 180, { align: "center" });
+
+            // Overall Description
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(11);
+            doc.setTextColor(71, 85, 105);
+            doc.text("This report provides your unofficial scores from the TOEFL", 95, 140);
+            doc.text("iBT® Mini Practice Test. Use these metrics to identify", 95, 146);
+            doc.text("areas for improvement before taking the official exam.", 95, 152);
+
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(15, 23, 42);
+            doc.text(`Total Points: ${totalCorrect} out of ${totalPoints}`, 95, 170);
+
+            // 4. SECTIONAL SCORES
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+            doc.text("SECTIONAL SCORES", 20, 210);
+            doc.setDrawColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+            doc.setLineWidth(0.5);
+            doc.line(20, 214, pageWidth - 20, 214);
+
+            function drawSection(title, correct, total, pct, y) {
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(11);
+                doc.setTextColor(15, 23, 42);
+                doc.text(title, 20, y);
+
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(10);
+                doc.setTextColor(71, 85, 105);
+                doc.text(`${correct} / ${total} pts`, 45, y);
+
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(15, 23, 42);
+                doc.text(`${pct}%`, pageWidth - 20, y, { align: 'right' });
+
+                // Background bar
+                doc.setFillColor(226, 232, 240);
+                doc.roundedRect(80, y - 4, pageWidth - 110, 6, 3, 3, 'F');
+
+                // Fill bar
+                const fillWidth = ((pageWidth - 110) * pct) / 100;
+                doc.setFillColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+                if(fillWidth > 0) {
+                    doc.roundedRect(80, y - 4, fillWidth, 6, 3, 3, 'F');
+                }
+            }
+
+            drawSection("Reading", rScore.correct, rScore.total, rPct, 230);
+            drawSection("Listening", lScore.correct, lScore.total, lPct, 245);
+            drawSection("Writing", wScore.correct, wScore.total, wPct, 260);
+            drawSection("Speaking", sScore.correct, sScore.total, sPct, 275);
+
+
+            // --- PAGE 2 ---
+            doc.addPage();
+
+            // Header on Page 2
+            doc.setFillColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+            doc.rect(0, 0, pageWidth, 20, 'F');
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+            doc.text("PERFORMANCE FEEDBACK", 20, 40);
+            doc.setDrawColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+            doc.line(20, 44, pageWidth - 20, 44);
+
+            // Feedback Box
+            doc.setFillColor(248, 250, 252);
+            doc.setDrawColor(203, 213, 225);
+            doc.roundedRect(20, 52, pageWidth - 40, 45, 4, 4, 'FD');
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(11);
+            doc.setTextColor(15, 23, 42);
+            const splitFeedback = doc.splitTextToSize(feedback, pageWidth - 50);
+            doc.text(splitFeedback, 25, 62);
+
+            // Recommendations Box
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(primaryCol[0], primaryCol[1], primaryCol[2]);
+            doc.text("NEXT STEPS & RECOMMENDATIONS", 20, 115);
+            doc.line(20, 119, pageWidth - 20, 119);
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(11);
+            doc.setTextColor(71, 85, 105);
+            doc.text("1. Review your weak areas by revisiting the practice test format.", 20, 130);
+            doc.text("2. Engage with authentic English materials, such as news and academic lectures.", 20, 138);
+            doc.text("3. Practice speaking out loud to improve your oral fluency and delivery.", 20, 146);
+            doc.text("4. Consider taking specialized prep courses for personalized feedback.", 20, 154);
+
+            // Footer Function for both pages
+            function drawFooter() {
+                // Simplified Contact Footer
+                doc.setFontSize(8);
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(148, 163, 184); // Slate 400 color matching standard copyright text
+                doc.text("Designed by fajarudinakbar.online - Contact 0822 2124 2564", pageWidth / 2, pageHeight - 12, { align: "center" });
+            }
+
+            doc.setPage(1);
+            drawFooter();
+            doc.setPage(2);
+            drawFooter();
+
+            doc.save(`TOEFL_Mini_Test_Report_${state.userName.replace(/\s+/g, '_')}.pdf`);
+            render(); 
+        }
+
+        // --- RENDERERS ---
+
+        function renderWelcome() {
+            return `
+            <div class="absolute inset-0 overflow-y-auto custom-scroll p-4 md:p-8 flex items-center justify-center bg-[#f0f0f0]">
+                <div class="bg-white max-w-3xl w-full shadow-lg rounded-xl overflow-hidden border-t-8 border-[#007777] my-auto">
+                    <div class="bg-[#007777] p-6 md:p-8 text-white text-center">
+                        <h1 class="text-2xl md:text-3xl font-bold font-sans">TOEFL iBT® Mini Practice Test</h1>
+                        <p class="opacity-90 mt-2 text-base md:text-lg">Measure Your Readiness</p>
+                    </div>
+                    
+                    <div class="p-6 md:p-10 text-center">
+                        <p class="text-gray-600 mb-8 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+                            Welcome! This mini practice test is designed to measure your readiness before taking the actual TOEFL iBT® test. It covers Reading, Listening, Writing, and Speaking in sequence to give you an authentic testing experience. <br><br><strong class="text-gray-800">Please note:</strong> This is not a full test. There is 1 module for the Reading and Listening sections, and there is only 1 task for the Writing and Speaking sections.
+                        </p>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-8 text-left rounded-r-lg max-w-2xl mx-auto">
+                            <div class="flex items-center mb-2">
+                                <i data-lucide="info" class="w-5 h-5 text-blue-600 mr-2"></i>
+                                <span class="font-bold text-blue-800 text-sm md:text-base">Browser Recommendation</span>
+                            </div>
+                            <p class="text-xs md:text-sm text-blue-700 leading-relaxed">
+                                For the most natural, human-like audio experience, we <strong>highly recommend using Microsoft Edge</strong>. Edge provides high-quality "Natural" American voices built-in that sound significantly better than standard browser voices.
+                            </p>
+                        </div>
+                        
+                        <div class="mb-6 max-w-sm mx-auto text-left">
+                            <label for="user-name" class="block text-sm font-bold text-gray-700 mb-2">Please enter your name:</label>
+                            <input type="text" id="user-name" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#007777] focus:outline-none transition-colors" placeholder="Your Name" oninput="document.getElementById('start-btn').disabled = !this.value.trim();" onkeypress="if(event.key === 'Enter' && this.value.trim()) startTestWithUser();">
+                        </div>
+
+                        <div class="flex justify-center">
+                            <button id="start-btn" disabled onclick="startTestWithUser()" class="hover:border-[#007777] group relative p-5 md:p-6 border-2 border-gray-200 rounded-xl transition-all text-left max-w-md w-full bg-white shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-2 flex items-center justify-center">
+                                    <i data-lucide="play-circle" class="w-5 h-5 mr-2 text-[#007777]"></i> Start Practice Test
+                                </h3>
+                                <p class="text-xs md:text-sm text-gray-500 text-center">Reading -> Listening -> Writing -> Speaking</p>
+                            </button>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-gray-100 text-xs text-gray-400 text-center leading-relaxed">
+                            <p>TOEFL iBT is a registered trademark of Educational Testing Service (ETS).</p>
+                            <p>This practice material is for educational purposes and is not endorsed or approved by ETS.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderSectionIntro(step) {
+            let sectionTitle = '';
+            let desc = '';
+            let tableRows = '';
+            let additionalNotes = '';
+            
+            if (step.globalSection === 'reading') { 
+                sectionTitle = 'Reading Section';
+                desc = `In an actual test, you will answer up to 50 questions to demonstrate how well you understand academic and non-academic texts in English. There are three types of tasks. <strong class="text-gray-900 block mt-3">Please note that this is not a full test. There is only 1 module for this section.</strong>`;
+                tableRows = `
+                    <tr class="bg-white">
+                        <td class="border border-gray-800 p-4 font-bold">Complete the Words</td>
+                        <td class="border border-gray-800 p-4">Fill in the missing letters in a paragraph.</td>
+                    </tr>
+                    <tr class="bg-white">
+                        <td class="border border-gray-800 p-4 font-bold">Read in Daily Life</td>
+                        <td class="border border-gray-800 p-4">Answer questions about everyday reading material.</td>
+                    </tr>
+                    <tr class="bg-white">
+                        <td class="border border-gray-800 p-4 font-bold">Read an Academic Passage</td>
+                        <td class="border border-gray-800 p-4">Answer questions about academic passages.</td>
+                    </tr>
+                `;
+                additionalNotes = `
+                    <p class="mb-4">In an actual test, the clock will show you how much time you have to complete Module 1. You can use Next and Back to move to the next question or return to previous questions within the same module.</p>
+                    <p class="font-bold text-red-600">In an actual test, you WILL NOT be able to return to Module 1 once you have begun Module 2.</p>
+                `;
+            } else if (step.globalSection === 'listening') { 
+                sectionTitle = 'Listening Section';
+                desc = `In an actual test, you will answer up to 47 questions to demonstrate how well you understand spoken English. There are three types of tasks. <strong class="text-gray-900 block mt-3">Please note that this is not a full test. There is only 1 module for this section.</strong>`;
+                tableRows = `
+                    <tr class="bg-white">
+                        <td class="border border-gray-800 p-4 font-bold">Listen and Choose a Response</td>
+                        <td class="border border-gray-800 p-4">Select the best response to the question or statement.</td>
+                    </tr>
+                    <tr class="bg-white">
+                        <td class="border border-gray-800 p-4 font-bold">Conversations</td>
+                        <td class="border border-gray-800 p-4">Answer questions about short conversations.</td>
+                    </tr>
+                    <tr class="bg-white">
+                        <td class="border border-gray-800 p-4 font-bold">Announcements and Talks</td>
+                        <td class="border border-gray-800 p-4">Answer questions about announcements and academic talks.</td>
+                    </tr>
+                `;
+                additionalNotes = `
+                    <p class="mb-4">In an actual test, the clock will show you how much time you have to complete each question. You can use Next to move to the next question.</p>
+                    <p class="font-bold text-red-600">You WILL NOT be able to return to previous questions.</p>
+                `;
+            } else if (step.globalSection === 'writing') { 
+                sectionTitle = 'Writing Section';
+                desc = `In this practice test writing section, you will complete tasks to demonstrate how well you can write in English. <strong class="text-gray-900 block mt-3">Please note that this is not a full test. There is only 1 task for this section.</strong>`;
+                tableRows = `
+                    <tr class="bg-white">
+                        <td class="border border-gray-800 p-4 font-bold">Build a Sentence</td>
+                        <td class="border border-gray-800 p-4">Move the words in the boxes to create grammatical sentences.</td>
+                    </tr>
+                `;
+                additionalNotes = `
+                    <p class="mb-4">In an actual test, a clock will show you how much time you have to complete this task.</p>
+                `;
+            } else if (step.globalSection === 'speaking') { 
+                sectionTitle = 'Speaking Section';
+                desc = `In this practice test speaking section, you will complete tasks to demonstrate how well you can speak English. <strong class="text-gray-900 block mt-3">Please note that this is not a full test. There is only 1 task for this section.</strong>`;
+                tableRows = `
+                    <tr class="bg-white">
+                        <td class="border border-gray-800 p-4 font-bold">Listen and Repeat</td>
+                        <td class="border border-gray-800 p-4">Listen carefully as someone speaks to you, and then repeat what you have heard.</td>
+                    </tr>
+                `;
+                additionalNotes = `
+                    <p class="mb-4">In an actual test, a clock will indicate how much time you have to speak. No time for preparation will be provided.</p>
+                `;
+            }
+
+            return `
+            <div class="absolute inset-0 overflow-y-auto bg-white p-8 md:p-12 lg:p-16 custom-scroll">
+                <div class="w-full max-w-4xl mx-auto text-left font-sans">
+                    <h1 class="text-3xl md:text-4xl text-[#334155] mb-8 font-light">${sectionTitle}</h1>
+                    <p class="text-gray-800 text-base md:text-lg mb-8 leading-relaxed">
+                        ${desc}
+                    </p>
+                    <table class="w-full border-collapse border border-gray-800 text-gray-900 text-sm md:text-base shadow-sm mb-8">
+                        <thead>
+                            <tr class="bg-[#02cbb5]">
+                                <th class="border border-gray-800 p-4 text-left font-bold w-1/3">Type of Task</th>
+                                <th class="border border-gray-800 p-4 text-left font-bold w-2/3">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                    ${additionalNotes ? '<div class="text-gray-800 text-base md:text-lg leading-relaxed mb-8">' + additionalNotes + '</div>' : ''}
+                    <button onclick="handleNext()" class="px-8 py-3 bg-[#007777] text-white font-bold rounded shadow hover:bg-[#005555] transition-colors inline-flex items-center text-base">
+                        Continue <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderCloze(step) {
+            const parts = step.data.text.split(/%\d+%/);
+            let content = '';
+            parts.forEach((part, idx) => {
+                content += part;
+                const blank = step.data.blanks[idx];
+                if (blank) {
+                    const val = state.answers[blank.id] || '';
+                    const prefixLen = blank.prefix ? blank.prefix.length : 0;
+                    const suffixLen = blank.suffix ? blank.suffix.length : 0;
+                    const missingLength = blank.answer.length - prefixLen - suffixLen;
+                    const safeVal = val.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+                    const remainingDashes = Math.max(0, missingLength - val.length);
+                    
+                    const inputWidthDesktop = (missingLength * 1.25) + 0.5;
+                    const inputWidthMobile = (missingLength * 0.9) + 0.5;
+                    
+                    content += `
+                    <span class="inline-flex items-baseline mx-0.5 whitespace-nowrap">
+                        ${blank.prefix ? `<span class="text-[#005a9c] font-semibold tracking-wide">${blank.prefix}</span>` : ''}
+                        <span class="relative inline-block h-6 md:h-8 border-b-[3px] border-gray-300 focus-within:border-[#007777] transition-colors mx-0.5 align-baseline" style="width: clamp(${inputWidthMobile}rem, 2vw, ${inputWidthDesktop}rem);">
+                            <span id="bg-dashes-${blank.id}" class="absolute inset-0 px-0.5 md:px-1 text-left font-mono text-base md:text-xl tracking-[0.15em] md:tracking-[0.25em] pointer-events-none leading-6 md:leading-8 text-gray-500 font-bold overflow-hidden">
+                                <span class="opacity-0">${safeVal}</span><span>${'_'.repeat(remainingDashes)}</span>
+                            </span>
+                            <input type="text" value="${safeVal}" maxlength="${missingLength}" oninput="handleClozeInput(${blank.id}, this.value, ${missingLength})" class="absolute inset-0 w-full h-full px-0.5 md:px-1 text-left bg-transparent text-[#005a9c] font-mono text-base md:text-xl tracking-[0.15em] md:tracking-[0.25em] font-bold focus:outline-none leading-6 md:leading-8" autocomplete="off" spellcheck="false" />
+                        </span>
+                        ${blank.suffix ? `<span class="text-[#005a9c] font-semibold tracking-wide">${blank.suffix}</span>` : ''}
+                    </span>`;
+                }
+            });
+
+            return `
+            <div class="absolute inset-0 overflow-y-auto custom-scroll p-4 md:p-8 bg-white md:bg-transparent">
+                <div class="w-full max-w-5xl mx-auto bg-white md:rounded-2xl md:shadow-sm md:border border-gray-200 p-6 md:p-12 min-h-full md:min-h-0">
+                    <h2 class="text-center text-xl md:text-2xl font-sans font-bold text-black mb-8 md:mb-12">${step.data.title}</h2>
+                    <div class="bg-gray-50 md:bg-white p-6 md:p-8 leading-loose text-base md:text-lg text-gray-800 font-sans text-justify rounded-xl md:rounded-none md:shadow-sm md:border border-gray-200">
+                        ${content}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderReading(step) {
+            const paragraphs = step.data.passageContent.split('\n').map(line => `<p class="mb-4">${line}</p>`).join('');
+            const options = step.question.options.map((opt, idx) => {
+                const isChecked = state.answers[step.question.id] === idx ? 'checked' : '';
+                return `
+                <label class="flex items-start cursor-pointer group">
+                    <div class="relative flex items-center justify-center flex-shrink-0 mt-1">
+                        <input type="radio" name="q-${step.question.id}" ${isChecked} onchange="handleRadioInput(${step.question.id}, ${idx})" class="peer appearance-none w-5 h-5 border-2 border-gray-600 rounded-full checked:border-[#007777] checked:border-4 transition-all" />
+                    </div>
+                    <span class="ml-3 text-gray-800 font-sans text-base md:text-lg group-hover:text-black">${opt}</span>
+                </label>`;
+            }).join('');
+
+            return `
+            <div class="absolute inset-0 flex flex-col md:flex-row bg-white">
+                <div class="w-full h-2/5 md:h-full md:w-1/2 overflow-y-auto border-b md:border-b-0 md:border-r border-gray-300 p-5 md:p-8 custom-scroll bg-white">
+                    <h2 class="text-lg md:text-xl font-bold mb-4 font-sans text-black">${step.data.passageTitle}</h2>
+                    <div class="prose max-w-none text-black font-sans leading-relaxed text-base md:text-lg">${paragraphs}</div>
+                </div>
+                <div class="w-full h-3/5 md:h-full md:w-1/2 overflow-y-auto p-5 md:p-8 bg-gray-50 custom-scroll relative">
+                    <div class="max-w-xl mx-auto md:mx-0">
+                        <h3 class="text-base md:text-lg font-bold text-black mb-6 font-sans">${step.question.text}</h3>
+                        <div class="space-y-4">${options}</div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderListening(step) {
+            const isFinished = state.passageAudioFinished[step.passageId];
+            const isShort = step.data.id.includes("short");
+            const showQuestion = isShort || isFinished || state.isAdmin;
+
+            const options = step.question.options.map((opt, idx) => {
+                const isChecked = state.answers[step.question.id] === idx ? 'checked' : '';
+                return `
+                <label class="flex items-start cursor-pointer group p-3 hover:bg-gray-100 rounded-lg transition-colors border border-transparent hover:border-gray-200">
+                    <div class="relative flex items-center justify-center flex-shrink-0 mt-1">
+                        <input type="radio" name="q-${step.question.id}" ${isChecked} onchange="handleRadioInput(${step.question.id}, ${idx})" class="peer appearance-none w-5 h-5 border-2 border-gray-400 rounded-full checked:border-[#007777] checked:border-4 cursor-pointer" />
+                    </div>
+                    <span class="ml-3 md:ml-4 text-gray-800 font-sans text-base md:text-lg group-hover:text-black">${opt}</span>
+                </label>`;
+            }).join('');
+
+            return `
+            <div class="absolute inset-0 flex flex-col md:flex-row bg-white">
+                <div class="w-full h-1/3 min-h-[220px] md:h-full md:w-1/2 border-b md:border-b-0 md:border-r border-gray-300 bg-gray-50 flex flex-col items-center justify-center p-4">
+                    <div id="audio-icon-container" class="w-32 h-32 md:w-56 md:h-56 rounded-full bg-gradient-to-tr from-[#005555] to-[#00a896] shadow-xl md:shadow-2xl flex items-center justify-center mb-6 md:mb-10 transition-transform ${state.isPlayingAudio ? 'scale-105 animate-pulse' : ''}">
+                        <i data-lucide="${state.isPlayingAudio ? 'volume-2' : 'headphones'}" class="w-16 h-16 md:w-24 md:h-24 text-white opacity-90"></i>
+                    </div>
+                    <div class="w-full flex flex-col items-center px-4">
+                        <div id="audio-btn-container" class="w-full md:w-auto text-center">
+                            <button onclick="playListeningAudio()" class="flex items-center justify-center w-full md:w-auto px-6 md:px-10 py-3 md:py-4 bg-white text-[#007777] font-bold rounded-full shadow-lg border border-[#007777]"><i data-lucide="play-circle" class="w-6 h-6 md:w-8 md:h-8 mr-2 md:mr-3"></i> Play Audio Segment</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full flex-1 md:h-full md:w-1/2 overflow-y-auto p-5 md:p-8 bg-white custom-scroll relative">
+                    <div class="max-w-xl mx-auto">
+                        <div class="mb-4 text-xs md:text-sm font-bold text-[#007777] uppercase tracking-widest border-b border-gray-200 pb-2">${step.data.title}</div>
+                        <h3 class="text-lg md:text-xl font-bold text-black mb-6 md:mb-8 font-sans leading-snug">${step.question.text}</h3>
+                        <div class="space-y-2">${options}</div>
+                    </div>
+                    <div id="question-overlay" class="absolute inset-0 bg-white z-10 flex flex-col items-center justify-center text-center px-8 transition-opacity duration-500 ${showQuestion ? 'hidden opacity-0' : 'opacity-95'}">
+                        <i data-lucide="lock" class="w-12 h-12 md:w-16 md:h-16 text-gray-400 mb-4 md:mb-6"></i>
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-700 mb-2 md:mb-4">Question Hidden</h3>
+                        <p class="text-gray-500 max-w-sm text-sm md:text-lg leading-relaxed">Listen completely before answering.</p>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderBuildSentence(step) {
+            const sState = state.sentenceStates[step.question.id];
+            const targetCount = step.question.targetLength;
+
+            const availChips = sState.available.map(w => `<div data-word="${w}" class="word-chip">${w}</div>`).join('');
+            
+            let slotsHtml = '';
+            for (let i = 0; i < targetCount; i++) {
+                const word = sState.slots[i];
+                let inner = '';
+                if (word) {
+                    inner = `<div data-word="${word}" class="word-chip">${word}</div>`;
+                }
+                
+                if (i === targetCount - 1 && step.question.punctuation) {
+                    // Group the last slot and punctuation together to prevent line breaks between them
+                    slotsHtml += `
+                    <div class="flex items-end">
+                        <div id="slot-${step.question.id}-${i}" class="slot-zone transition-all duration-200 min-w-[4rem] sm:min-w-[5rem] md:min-w-[6rem] h-8 border-b border-gray-700 bg-transparent flex items-end justify-center overflow-visible mx-1 my-2">
+                            ${inner}
+                        </div>
+                        <div class="h-8 pb-1 text-xl md:text-2xl font-bold text-gray-800 ml-1 my-2 select-none flex items-end">${step.question.punctuation}</div>
+                    </div>`;
+                } else {
+                    slotsHtml += `
+                    <div id="slot-${step.question.id}-${i}" class="slot-zone transition-all duration-200 min-w-[4rem] sm:min-w-[5rem] md:min-w-[6rem] h-8 border-b border-gray-700 bg-transparent flex items-end justify-center overflow-visible mx-1 my-2">
+                        ${inner}
+                    </div>`;
+                }
+            }
+
+            return `
+            <div class="absolute inset-0 overflow-y-auto custom-scroll p-4 md:p-8 bg-white md:bg-transparent">
+                <div class="w-full max-w-4xl mx-auto bg-white md:rounded-2xl md:shadow-sm md:border border-gray-200 p-6 md:p-10 min-h-full md:min-h-0">
+                    <div class="flex items-start md:items-center mb-10">
+                        <div class="bg-[#007777] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-4 shadow-sm flex-shrink-0 mt-0.5 md:mt-0">${step.questionIndex}</div>
+                        <h2 class="text-xl md:text-2xl font-normal text-gray-800">${step.question.prompt}</h2>
+                    </div>
+                    
+                    <div class="mb-12">
+                        <div id="sentence-zone-${step.question.id}" class="flex flex-wrap items-end gap-y-4">
+                            ${slotsHtml}
+                        </div>
+                    </div>
+
+                    <div id="word-bank-${step.question.id}" class="word-bank min-h-[120px] p-6 md:p-10 bg-white border border-gray-700 flex flex-wrap items-center justify-center gap-4">
+                        ${availChips}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderSpeakingScenario(step) {
+            let audioBtn = state.isPlayingAudio
+                ? `<button disabled class="flex items-center w-full md:w-auto justify-center px-6 py-3 md:py-4 bg-blue-100 text-blue-700 font-bold rounded-full shadow-inner"><i data-lucide="volume-2" class="w-5 h-5 mr-2 animate-pulse"></i> Playing Audio...</button>`
+                : `<button onclick="playPromptAudio()" class="flex items-center w-full md:w-auto justify-center px-6 py-3 md:py-4 bg-white border-2 border-[#007777] text-[#007777] font-bold rounded-full shadow hover:bg-gray-50 transition-colors"><i data-lucide="play" class="w-5 h-5 mr-2"></i> Play Directions</button>`;
+
+            return `
+            <div class="absolute inset-0 overflow-y-auto custom-scroll p-4 md:p-8 flex items-center justify-center bg-white md:bg-transparent">
+                <div class="w-full max-w-3xl mx-auto bg-gray-50 md:bg-white md:rounded-2xl md:shadow-sm md:border border-gray-200 p-8 md:p-12 my-auto text-center rounded-xl border">
+                    <div class="w-16 h-16 bg-[#007777] rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-md"><i data-lucide="info" class="w-8 h-8"></i></div>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">${step.data.title} Directions</h2>
+                    <p class="text-gray-700 text-base md:text-lg max-w-xl mx-auto leading-relaxed">${step.scenarioText}</p>
+                    <div class="mt-8 flex justify-center w-full px-4 md:px-0">${audioBtn}</div>
+                </div>
+            </div>`;
+        }
+
+        function renderSpeakingTask(step) {
+            const hasRecorded = state.hasRecorded[step.question.id];
+
+            let audioBtn = state.isPlayingAudio 
+                ? `<button disabled class="flex items-center w-full md:w-auto justify-center px-6 py-3 md:py-4 bg-blue-100 text-blue-700 font-bold rounded-full shadow-inner"><i data-lucide="volume-2" class="w-5 h-5 mr-2 animate-pulse"></i> Playing...</button>` 
+                : `<button onclick="playPromptAudio()" class="flex items-center w-full md:w-auto justify-center px-6 py-3 md:py-4 bg-white border-2 border-[#007777] text-[#007777] font-bold rounded-full shadow hover:bg-gray-50 transition-colors"><i data-lucide="play" class="w-5 h-5 mr-2"></i> Play Prompt</button>`;
+
+            let recBtn = state.isRecording
+                ? `<button onclick="stopRecordingEarly()" class="flex items-center w-full justify-center px-8 py-4 bg-red-500 text-white font-bold rounded-full shadow-lg recording-pulse"><i data-lucide="square" class="w-6 h-6 mr-2"></i> Stop (${state.recordingTimeLeft}s)</button>`
+                : `<button onclick="startRecording()" class="flex items-center w-full justify-center px-8 py-4 bg-gray-800 text-white font-bold rounded-full shadow-lg hover:bg-gray-700" ${state.isPlayingAudio || hasRecorded ? 'disabled opacity-50' : ''}><i data-lucide="mic" class="w-6 h-6 mr-2"></i> ${hasRecorded ? 'Recorded' : `Start Recording (${step.question.timeLimit}s)`}</button>`;
+
+            let localNextBtn = (hasRecorded || state.isAdmin)
+                ? `<button onclick="handleNext()" class="mt-4 flex items-center w-full justify-center px-8 py-4 bg-[#007777] text-white font-bold rounded-full shadow-lg hover:bg-[#005555] transition-colors">Next Question <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i></button>`
+                : `<button disabled class="mt-4 flex items-center w-full justify-center px-8 py-4 bg-gray-200 text-gray-400 font-bold rounded-full shadow-inner cursor-not-allowed">Next Question <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i></button>`;
+
+            return `
+            <div class="absolute inset-0 overflow-y-auto custom-scroll p-4 md:p-8 bg-white md:bg-transparent">
+                <div class="w-full max-w-3xl mx-auto md:mt-10">
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 md:p-8 mb-6 md:mb-8 text-center shadow-sm">
+                        <div class="w-12 h-12 md:w-16 md:h-16 bg-[#007777] rounded-full flex items-center justify-center mx-auto mb-4 text-white shadow-md"><i data-lucide="ear" class="w-6 h-6 md:w-8 h-8"></i></div>
+                        <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-2">${step.data.title}</h2>
+                        <div class="mt-6 flex justify-center w-full px-2 md:px-0">${audioBtn}</div>
+                    </div>
+                    <div class="bg-white border-2 ${state.isRecording ? 'border-red-400' : 'border-gray-200'} rounded-xl p-6 md:p-8 text-center shadow-md relative">
+                        <h3 class="font-bold text-gray-700 mb-6 uppercase tracking-widest text-xs md:text-sm">Your Response</h3>
+                        <div class="flex flex-col items-center justify-center w-full px-2 md:px-0 max-w-xs mx-auto">
+                            ${recBtn}
+                            ${localNextBtn}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderResults() {
+            let html = `
+            <div class="w-full max-w-4xl mx-auto pb-12">
+                <div class="bg-white shadow-lg rounded-xl overflow-hidden mb-8">
+                    <div class="bg-[#007777] p-6 md:p-8 text-white text-center">
+                        <h2 class="text-2xl md:text-3xl font-bold mb-2">Practice Completed, ${state.userName}!</h2>
+                        <p class="text-sm md:text-base opacity-90">Your PDF report has been generated automatically.</p>
+                    </div>
+                    <div class="p-8 text-center bg-gray-50 border-b border-gray-100">
+                        <p class="text-gray-700 mb-4 max-w-lg mx-auto">If your browser blocked the automatic download, you can click the button below to retrieve your comprehensive score report.</p>
+                        <button onclick="generatePDFReport()" class="px-8 py-3 bg-[#007777] text-white font-bold rounded shadow hover:bg-[#005555] inline-flex items-center">
+                            <i data-lucide="download" class="w-5 h-5 mr-2"></i> Download PDF Report Again
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+            return html;
+        }
+
+        // --- GLOBAL LAYOUT ---
+
+        function renderHeader() {
+            const isIntro = !state.hasStarted || state.showResults || state.flatSteps[state.currentStepIndex]?.type === 'section_intro';
+            
+            const backBtn = (state.currentStepIndex > 0 && !state.showResults) 
+                ? `<button onclick="handleBack()" class="flex items-center px-3 py-2 bg-white text-[#007777] font-bold rounded shadow hover:bg-gray-100 mr-2"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>` : '';
+            
+            const step = state.flatSteps[state.currentStepIndex];
+            const isListeningBlock = step?.type === 'listening';
+            const isListenRepeatTask = step?.type === 'listen_and_repeat';
+
+            // If Admin, the next button is NEVER disabled during listening
+            const disableNext = !state.isAdmin && isListeningBlock && !state.passageAudioFinished[step.passageId];
+            
+            const nextBtn = (!state.showResults && state.hasStarted && !isIntro && !isListenRepeatTask) 
+                ? `<button id="next-btn" onclick="handleNext()" class="flex items-center px-4 py-2 bg-white text-[#007777] font-bold rounded shadow hover:bg-gray-100 disabled:opacity-50 text-sm md:text-base" ${disableNext?'disabled':''}>Next <i data-lucide="chevron-right" class="ml-1 w-4 h-4 md:w-5 md:h-5"></i></button>` 
+                : '';
+
+            return `
+            <header class="flex-shrink-0 bg-[#007777] h-16 flex items-center justify-between px-4 md:px-6 shadow-md z-50 w-full relative">
+                <span class="text-white text-base md:text-lg font-sans font-bold flex items-center"><i data-lucide="graduation-cap" class="w-5 h-5 mr-2"></i> <span class="hidden sm:inline">TOEFL iBT® Mini Test</span><span class="sm:hidden">Mini Test</span></span>
+                <div class="flex space-x-1 md:space-x-2 items-center">${backBtn}${nextBtn}</div>
+            </header>`;
+        }
+
+        function renderSubHeader() {
+            if (!state.hasStarted || state.showResults || state.flatSteps[state.currentStepIndex]?.type === 'section_intro') return '';
+            const step = state.flatSteps[state.currentStepIndex];
+            const sectionName = step.globalSection.charAt(0).toUpperCase() + step.globalSection.slice(1);
+            
+            let displayTitle = step.data?.title || sectionName;
+            let counter = step.questionIndex ? `${step.questionIndex}/${step.totalQuestions}` : '';
+
+            const showTimer = state.currentSectionTimer || (step && step.globalSection === 'listening' && step.type === 'listening');
+
+            const timerHtml = showTimer ? `
+                <div class="flex items-center text-gray-500 font-mono bg-gray-100 px-2 md:px-3 py-1 rounded border border-gray-200 text-xs md:text-sm flex-shrink-0">
+                    <i data-lucide="clock" class="mr-1 md:mr-2 w-3 h-3 md:w-4 md:h-4"></i><span id="timer-display" class="font-bold"></span>
+                </div>` : '';
+
+            return `
+            <div class="flex-shrink-0 bg-white border-b border-gray-300 px-4 md:px-6 py-2 md:py-3 flex justify-between items-center text-gray-700 text-sm font-sans z-40 shadow-sm w-full gap-2 min-h-[48px] md:min-h-[56px] relative">
+                <span class="font-semibold text-sm md:text-lg text-[#007777] flex-1 truncate">
+                    ${sectionName}: <span class="hidden sm:inline">${displayTitle}</span>
+                    ${counter ? `<span class="sm:hidden ml-1 opacity-70">(${counter})</span>` : ''}
+                    ${counter ? `<span class="hidden sm:inline ml-1 opacity-70">(${counter})</span>` : ''}
+                </span>
+                ${timerHtml}
+            </div>`;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+
+            if (!state.hasStarted) {
+                app.innerHTML = renderWelcome();
+            } else if (state.showResults) {
+                app.innerHTML = renderHeader() + `
+                <main class="flex-1 relative bg-[#f0f0f0]">
+                    <div class="absolute inset-0 overflow-y-auto custom-scroll p-4 md:p-8">
+                        ${renderResults()}
+                    </div>
+                </main>`;
+            } else {
+                let mainContent = '';
+                const step = state.flatSteps[state.currentStepIndex];
+                
+                if (step.type === 'section_intro') mainContent = renderSectionIntro(step);
+                else if (step.type === 'cloze') mainContent = renderCloze(step);
+                else if (step.type === 'reading') mainContent = renderReading(step);
+                else if (step.type === 'listening') mainContent = renderListening(step);
+                else if (step.type === 'build_sentence') mainContent = renderBuildSentence(step);
+                else if (step.type === 'scenario') mainContent = renderSpeakingScenario(step);
+                else if (step.type === 'listen_and_repeat') mainContent = renderSpeakingTask(step);
+                
+                app.innerHTML = renderHeader() + renderSubHeader() + `
+                <main class="flex-1 relative bg-white md:bg-gray-100">
+                    ${mainContent}
+                </main>`;
+
+                if (step.type === 'build_sentence') initSortable(step.question.id);
+                updateTimerDisplay();
+            }
+            lucide.createIcons();
+        }
+
+        render();
+    </script>
+</body>
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Interactive Reading - The Online Taxi Hustle</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for Graphic Novel Aesthetic -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        comic: ['Bangers', 'cursive'],
+                    },
+                    boxShadow: {
+                        'comic': '6px 6px 0px 0px #000000',
+                        'comic-sm': '3px 3px 0px 0px #000000',
+                        'comic-hover': '2px 2px 0px 0px #000000',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .comic-panel {
+            transition: all 0.2s ease-in-out;
+        }
+        .comic-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: none !important;
+        }
+        .fade-in {
+            animation: comicSlideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes comicSlideIn {
+            from { opacity: 0; transform: translateX(50px) scale(0.95) rotate(2deg); filter: blur(2px); }
+            to { opacity: 1; transform: translateX(0) scale(1) rotate(0); filter: blur(0); }
+        }
+        #app-container {
+            transition: all 0.3s ease-in;
+            transform-origin: center center;
+        }
+        .fade-out-active {
+            opacity: 0 !important;
+            transform: translateX(-50px) scale(0.95) rotate(-2deg) !important;
+            filter: blur(2px);
+        }
+    </style>
+</head>
+<body class="text-slate-900 font-sans p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col">
+
+    <div class="max-w-5xl mx-auto flex-grow w-full" id="app-container">
+        <!-- Content will be injected here by JavaScript -->
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 mb-4 text-center fade-in">
+        <p class="font-bold text-slate-600 text-lg uppercase tracking-wider">
+            Designed by <a href="https://fajarudinakbar.online" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 px-2 py-1 rounded border-2 border-transparent hover:border-indigo-600 transition-all font-black border-b-4 border-b-indigo-600">fajarudinakbar.online</a>
+        </p>
+    </footer>
+
+    <script>
+        // --- DATA STRUCTURES ---
+
+        const readingPanels = [
+            {
+                text: "Finding an online motorcycle taxi, or ojol, during rush hour or heavy rain is getting harder. Customers complain about long waits, but the real issue is hidden.",
+                icon: "fa-solid fa-cloud-showers-heavy",
+                bg: "bg-blue-100",
+                color: "text-blue-600"
+            },
+            {
+                text: "Companies promised drivers freedom and good money. However, during busy hours, drivers often lose money. The companies take big cuts, while drivers pay for extra fuel in bad traffic.",
+                icon: "fa-solid fa-wallet",
+                bg: "bg-red-100",
+                color: "text-red-600"
+            },
+            {
+                text: "Technology controls everything. Secret algorithms decide who gets an order and how much they earn. Customers only see the final price, not the struggle behind the screen.",
+                icon: "fa-solid fa-microchip",
+                bg: "bg-indigo-100",
+                color: "text-indigo-600"
+            },
+            {
+                text: "Apps offer huge discounts to attract users. Customers love cheap rides, but drivers carry the burden. They earn less while paying for their own motorcycle maintenance and data.",
+                icon: "fa-solid fa-tags",
+                bg: "bg-yellow-100",
+                color: "text-orange-600"
+            },
+            {
+                text: "Drivers are called 'partners,' but they have no real power. If they reject bad orders to save money, the system punishes them by hiding future jobs.",
+                icon: "fa-solid fa-users-slash",
+                bg: "bg-purple-100",
+                color: "text-purple-600"
+            },
+            {
+                text: "Most drivers are informal workers. They do not have health insurance or job protection. This shows a fragile economy built on unstable work.",
+                icon: "fa-solid fa-house-crack",
+                bg: "bg-rose-100",
+                color: "text-rose-600"
+            },
+            {
+                text: "Experts call this 'platform capitalism.' The system maximizes company profit at the expense of drivers. Cheap prices are never truly free. Someone always pays.",
+                icon: "fa-solid fa-eye-slash",
+                bg: "bg-slate-200",
+                color: "text-slate-700"
+            },
+            {
+                text: "Drivers want fairer rules and better protection. Without government action, both drivers and customers will continue to suffer in this digital economy.",
+                icon: "fa-solid fa-scale-balanced",
+                bg: "bg-emerald-100",
+                color: "text-emerald-700"
+            }
+        ];
+
+        const stories = {
+            driver: {
+                start: {
+                    title: "The Evening Rush Hour",
+                    panels: [
+                        { type: "narration", text: "You are Budi, an ojol driver in Jakarta. It is 5:30 PM.", icon: "fa-solid fa-motorcycle", color: "text-slate-800", bg: "bg-amber-100" },
+                        { type: "action", text: "Heavy rain has just started pouring down. Traffic is a nightmare.", icon: "fa-solid fa-cloud-showers-heavy", color: "text-blue-600", bg: "bg-blue-100" },
+                        { type: "system", text: "BEEP! HIGH DEMAND AREA.\nNew Order: 4km away.\nDrop off: 10km away in bad traffic.\nFare is high.", icon: "fa-solid fa-mobile-screen", color: "text-emerald-700", bg: "bg-emerald-100" },
+                        { type: "thought", text: "The fare looks good, but the company takes a large cut. Will I just burn fuel in the traffic jam?", icon: "fa-solid fa-wallet", color: "text-indigo-600", bg: "bg-indigo-50" }
+                    ],
+                    choices: [
+                        { text: "Accept the order. It is raining and the customer needs help. I need the money.", next: "accept_order", btnClass: "bg-white text-slate-900 hover:bg-slate-100" },
+                        { text: "Ignore the order. It is too far. I will waste fuel and lose money.", next: "ignore_order", btnClass: "bg-white text-slate-900 hover:bg-slate-100" }
+                    ]
+                },
+                accept_order: {
+                    title: "A Difficult Journey",
+                    panels: [
+                        { type: "action", text: "You ride 4 kilometers through heavy rain and severe traffic.", icon: "fa-solid fa-route", color: "text-slate-700", bg: "bg-slate-200" },
+                        { type: "narration", text: "It takes you 30 minutes just to reach the pickup point.", icon: "fa-solid fa-clock", color: "text-orange-600", bg: "bg-orange-100" },
+                        { type: "dialogue", speaker: "Customer", text: "Why did it take you so long?! I have been waiting in the rain for half an hour!", icon: "fa-solid fa-user", color: "text-red-700", bg: "bg-red-100" }
+                    ],
+                    choices: [
+                        { text: "Apologize quickly and just drive. Do not start an argument.", next: "stay_quiet", btnClass: "bg-white text-slate-900 hover:bg-slate-100" },
+                        { text: "Explain politely how the application algorithm works and that the traffic was terrible.", next: "explain_system", btnClass: "bg-white text-slate-900 hover:bg-slate-100" }
+                    ]
+                },
+                ignore_order: {
+                    title: "The Algorithm's Punishment",
+                    panels: [
+                        { type: "action", text: "You ignore the order to save your fuel.", icon: "fa-solid fa-thumbs-down", color: "text-red-600", bg: "bg-red-100" },
+                        { type: "system", text: "WARNING.\nOrder rejected.\nAlgorithm penalty activated.\nReducing visibility.", icon: "fa-solid fa-triangle-exclamation", color: "text-rose-700", bg: "bg-rose-200" },
+                        { type: "narration", text: "For the next hour, your application is completely silent. No orders come in.", icon: "fa-solid fa-signal", color: "text-slate-600", bg: "bg-slate-200" },
+                        { type: "system", text: "BEEP! New Order.\nType: Promo Ride.\nEarnings: Minimal.", icon: "fa-solid fa-bolt", color: "text-yellow-700", bg: "bg-yellow-200" }
+                    ],
+                    choices: [
+                        { text: "Accept the cheap promo order to fix your account rating.", next: "accept_promo", btnClass: "bg-white text-slate-900 hover:bg-slate-100" },
+                        { text: "Turn off the application and go home. It is not worth the risk today.", next: "go_home", btnClass: "bg-white text-slate-900 hover:bg-slate-100" }
+                    ]
+                },
+                stay_quiet: {
+                    title: "Trapped in the System",
+                    panels: [
+                        { type: "action", text: "You stay quiet, accept the anger, and deliver the customer safely.", icon: "fa-solid fa-circle-check", color: "text-emerald-700", bg: "bg-emerald-100" },
+                        { type: "system", text: "NOTIFICATION.\nNew Rating Received:\n1 Star.\nReason: Late pickup.", icon: "fa-solid fa-star", color: "text-amber-600", bg: "bg-amber-100" },
+                        { type: "system", text: "ACCOUNT SUSPENDED.\nDuration: 24 Hours.\nPlease review partnership guidelines.", icon: "fa-solid fa-ban", color: "text-red-700", bg: "bg-red-200" },
+                        { type: "narration", text: "You cannot work tomorrow. You feel the reality of being a 'partner' with no real power or protection.", icon: "fa-solid fa-user-slash", color: "text-slate-700", bg: "bg-slate-200" }
+                    ],
+                    isEnding: true,
+                    softSkill: "Conflict Avoidance vs. Self-Advocacy",
+                    analysis: "You avoided an argument, but you suffered the consequences of a system that favors the customer. How does this connect to the idea of 'platform capitalism' mentioned in the text?"
+                },
+                explain_system: {
+                    title: "Building Empathy",
+                    panels: [
+                        { type: "dialogue", speaker: "Budi", text: "I apologize, but the application gave me an order from very far away. The rain caused massive traffic jams, and we do not control the assignments.", icon: "fa-solid fa-comment-dots", color: "text-blue-700", bg: "bg-blue-100" },
+                        { type: "dialogue", speaker: "Customer", text: "Oh, I did not know that. I am sorry for yelling. Thank you for making the trip.", icon: "fa-solid fa-handshake-angle", color: "text-emerald-700", bg: "bg-emerald-100" },
+                        { type: "action", text: "The customer leaves a good tip. However, when you check your daily income...", icon: "fa-solid fa-money-bill-wave", color: "text-orange-600", bg: "bg-orange-100" },
+                        { type: "thought", text: "The company still took a huge cut. My actual profit is very small despite the hard work.", icon: "fa-solid fa-arrow-trend-down", color: "text-red-600", bg: "bg-rose-100" }
+                    ],
+                    isEnding: true,
+                    softSkill: "Effective Communication",
+                    analysis: "Your communication skills helped solve the immediate conflict with the customer. However, did it solve the main problem? Why does the reading say that individual actions are not enough to fix the system?"
+                },
+                accept_promo: {
+                    title: "The Hidden Cost",
+                    panels: [
+                        { type: "action", text: "You take the promo order and drive carefully through the flooded streets.", icon: "fa-solid fa-motorcycle", color: "text-blue-600", bg: "bg-blue-100" },
+                        { type: "thought", text: "The customer is very happy because they got a huge discount.", icon: "fa-solid fa-face-smile", color: "text-emerald-600", bg: "bg-emerald-100" },
+                        { type: "narration", text: "But when you finish the shift and calculate your costs...", icon: "fa-solid fa-calculator", color: "text-slate-700", bg: "bg-slate-200" },
+                        { type: "action", text: "You spent more money on fuel and phone data than you earned. You subsidized the cheap ride with your own sweat.", icon: "fa-solid fa-gas-pump", color: "text-red-700", bg: "bg-red-200" }
+                    ],
+                    isEnding: true,
+                    softSkill: "Decision Making Under Pressure",
+                    analysis: "The reading states, 'Cheap prices are never truly free.' Based on your experience in this story, who actually paid for the customer's cheap ride?"
+                },
+                go_home: {
+                    title: "A Fragile Economy",
+                    panels: [
+                        { type: "action", text: "You turn off the application and ride home empty handed.", icon: "fa-solid fa-power-off", color: "text-slate-600", bg: "bg-slate-300" },
+                        { type: "thought", text: "I protected my motorcycle and my time, but I made zero money today.", icon: "fa-solid fa-house", color: "text-orange-700", bg: "bg-orange-100" },
+                        { type: "narration", text: "You have bills to pay tomorrow. You realize you have no stable income or health insurance if you get sick.", icon: "fa-solid fa-file-invoice-dollar", color: "text-red-700", bg: "bg-red-100" }
+                    ],
+                    isEnding: true,
+                    softSkill: "Risk Assessment",
+                    analysis: "You made a logical choice to avoid losing money. But what does this ending tell us about the 'fragile economy' mentioned in the reading? What happens to informal workers when they cannot work?"
+                }
+            },
+            customer: {
+                start: {
+                    title: "The Rain and the Rush",
+                    panels: [
+                        { type: "narration", text: "You are Sari. You just finished work at the office. It is 5:30 PM.", icon: "fa-solid fa-briefcase", color: "text-slate-800", bg: "bg-amber-100" },
+                        { type: "action", text: "It is raining heavily. You want to go home to rest.", icon: "fa-solid fa-cloud-rain", color: "text-blue-600", bg: "bg-blue-100" },
+                        { type: "system", text: "APP ALERT: HIGH DEMAND.\nStandard Ride: Rp 100,000.\n(Normal price is Rp 30,000)", icon: "fa-solid fa-arrow-trend-up", color: "text-rose-700", bg: "bg-rose-100" },
+                        { type: "thought", text: "The price is completely crazy! But I am tired and cold.", icon: "fa-solid fa-face-frown", color: "text-orange-600", bg: "bg-orange-100" }
+                    ],
+                    choices: [
+                        { text: "Pay the high price. You want to go home quickly and safely.", next: "pay_high", btnClass: "bg-white text-slate-900 hover:bg-slate-100" },
+                        { text: "Search for a promo code. You find 'SUPERHEMAT' which drops the price to Rp 35,000.", next: "use_promo", btnClass: "bg-white text-slate-900 hover:bg-slate-100" }
+                    ]
+                },
+                pay_high: {
+                    title: "The Long Wait",
+                    panels: [
+                        { type: "action", text: "You book the expensive ride. The app says the driver is on the way.", icon: "fa-solid fa-mobile", color: "text-slate-700", bg: "bg-slate-200" },
+                        { type: "narration", text: "You wait for 40 minutes in the cold lobby because of terrible traffic.", icon: "fa-solid fa-hourglass-half", color: "text-blue-600", bg: "bg-blue-100" },
+                        { type: "action", text: "The driver finally arrives. They look exhausted and completely soaked from the rain.", icon: "fa-solid fa-droplet", color: "text-cyan-700", bg: "bg-cyan-100" }
+                    ],
+                    choices: [
+                        { text: "Complain immediately. 'I paid a premium price! Why are you so late?'", next: "complain", btnClass: "bg-white text-slate-900 hover:bg-slate-100" },
+                        { text: "Ask politely. 'Traffic must be crazy. Does the high price help you?'", next: "ask_politely", btnClass: "bg-white text-slate-900 hover:bg-slate-100" }
+                    ]
+                },
+                use_promo: {
+                    title: "The Cheap Ride",
+                    panels: [
+                        { type: "action", text: "You use the promo code. A driver accepts the order quickly.", icon: "fa-solid fa-ticket", color: "text-emerald-700", bg: "bg-emerald-100" },
+                        { type: "narration", text: "The driver takes you home safely through the flooded streets.", icon: "fa-solid fa-road", color: "text-slate-700", bg: "bg-slate-200" },
+                        { type: "thought", text: "You saved a lot of money today. But you notice the driver looks very tired.", icon: "fa-solid fa-eye", color: "text-purple-600", bg: "bg-purple-100" }
+                    ],
+                    choices: [
+                        { text: "Say thank you and go inside your house.", next: "just_leave", btnClass: "bg-white text-slate-900 hover:bg-slate-100" },
+                        { text: "Give the driver a Rp 20,000 cash tip because of the bad weather.", next: "give_tip", btnClass: "bg-white text-slate-900 hover:bg-slate-100" }
+                    ]
+                },
+                complain: {
+                    title: "The Rating System",
+                    panels: [
+                        { type: "dialogue", speaker: "Sari", text: "This service is terrible. I paid so much money and still waited almost an hour!", icon: "fa-solid fa-user", color: "text-red-700", bg: "bg-red-100" },
+                        { type: "action", text: "You give the driver a 2-star rating on the application.", icon: "fa-solid fa-star-half-stroke", color: "text-yellow-600", bg: "bg-yellow-100" },
+                        { type: "narration", text: "Later that night, you read the article from class. You learn that bad ratings can cause drivers to lose their jobs.", icon: "fa-solid fa-book-open", color: "text-indigo-700", bg: "bg-indigo-100" },
+                        { type: "thought", text: "The traffic was not the driver's fault. Did I punish the wrong person?", icon: "fa-solid fa-brain", color: "text-purple-700", bg: "bg-purple-200" }
+                    ],
+                    isEnding: true,
+                    softSkill: "Empathy vs Entitlement",
+                    analysis: "When we pay high prices, we expect perfect service. But who controls the service quality? Based on the reading, is it fair to blame the driver for systemic problems like traffic and algorithmic dispatching?"
+                },
+                ask_politely: {
+                    title: "The Truth About Surge Pricing",
+                    panels: [
+                        { type: "dialogue", speaker: "Sari", text: "The traffic is bad today. The app charged me Rp 100,000! Does that high price go to you?", icon: "fa-solid fa-comment", color: "text-blue-700", bg: "bg-blue-100" },
+                        { type: "dialogue", speaker: "Driver", text: "No, Miss. The company takes a huge percentage of that high price. My earning is almost the same as a normal day, but it took me three times longer to drive.", icon: "fa-solid fa-motorcycle", color: "text-slate-700", bg: "bg-slate-200" },
+                        { type: "thought", text: "You realize the system is incredibly unfair. Customers pay more, but drivers do not earn more.", icon: "fa-solid fa-scale-unbalanced", color: "text-red-600", bg: "bg-red-100" }
+                    ],
+                    isEnding: true,
+                    softSkill: "Critical Questioning",
+                    analysis: "The reading states that companies 'design the system to maximize their own profit.' How did your conversation with the driver prove this statement?"
+                },
+                just_leave: {
+                    title: "The Hidden Cost",
+                    panels: [
+                        { type: "action", text: "You say thank you and enter your warm, dry house.", icon: "fa-solid fa-house-chimney", color: "text-emerald-700", bg: "bg-emerald-100" },
+                        { type: "system", text: "RECEIPT\nTrip: Rp 100,000\nPromo: -Rp 65,000\nTotal Paid: Rp 35,000", icon: "fa-solid fa-receipt", color: "text-slate-800", bg: "bg-slate-200" },
+                        { type: "narration", text: "You saved money. But remembering the article, you realize the driver probably lost money on fuel and maintenance just to bring you home.", icon: "fa-solid fa-droplet-slash", color: "text-indigo-600", bg: "bg-indigo-100" }
+                    ],
+                    isEnding: true,
+                    softSkill: "Systemic Awareness",
+                    analysis: "You enjoyed a cheap ride, but someone else paid the real price. Why do platforms offer these huge discounts, and who carries the actual burden according to the text?"
+                },
+                give_tip: {
+                    title: "Charity vs Fair Pay",
+                    panels: [
+                        { type: "action", text: "You give the driver Rp 20,000 in cash outside the application.", icon: "fa-solid fa-money-bills", color: "text-emerald-700", bg: "bg-emerald-100" },
+                        { type: "dialogue", speaker: "Driver", text: "Thank you so much, Miss! This really helps cover my petrol today. The promo orders pay us very little.", icon: "fa-solid fa-face-grin-beam", color: "text-blue-700", bg: "bg-blue-100" },
+                        { type: "thought", text: "The driver is happy. But you wonder: why should a worker depend on the kindness of strangers just to buy fuel?", icon: "fa-solid fa-circle-question", color: "text-purple-700", bg: "bg-purple-200" }
+                    ],
+                    isEnding: true,
+                    softSkill: "Ethical Reflection",
+                    analysis: "Tipping helped the driver today. However, does giving a tip solve the structural problems of 'platform capitalism' discussed in the article? Why or why not?"
+                }
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        let state = {
+            stage: 'reading', // reading, selection, story, reflection
+            character: null, // 'driver' or 'customer'
+            currentNode: 'start'
+        };
+
+        // --- RENDER FUNCTIONS ---
+
+        function render() {
+            const container = document.getElementById('app-container');
+            container.innerHTML = ''; // Clear current view
+
+            // Header
+            const header = document.createElement('header');
+            header.className = 'mb-10 text-center';
+            header.innerHTML = `
+                <h1 class="font-comic text-5xl md:text-6xl text-slate-900 mb-2 tracking-wider" style="text-shadow: 2px 2px 0 #cbd5e1;">THE ONLINE TAXI HUSTLE</h1>
+                <p class="text-slate-600 font-bold text-lg uppercase tracking-widest border-b-4 border-slate-900 inline-block pb-2">A B1 Level Critical Thinking Lesson</p>
+            `;
+            container.appendChild(header);
+
+            if (state.stage === 'reading') {
+                container.appendChild(renderReading());
+            } else if (state.stage === 'selection') {
+                container.appendChild(renderSelection());
+            } else if (state.stage === 'story') {
+                container.appendChild(renderStory());
+            } else if (state.stage === 'reflection') {
+                container.appendChild(renderReflection());
+            }
+        }
+
+        function renderReading() {
+            const div = document.createElement('div');
+            div.className = 'bg-white rounded-xl p-6 sm:p-10 border-4 border-slate-900 shadow-comic';
+            
+            let panelsHTML = '<div class="flex flex-col space-y-8 mb-10 max-w-4xl mx-auto">';
+            
+            readingPanels.forEach((panel, index) => {
+                const textColor = panel.textStyle || 'text-slate-900';
+                
+                panelsHTML += `
+                    <div class="relative border-4 border-slate-900 rounded-xl shadow-comic p-6 sm:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6 ${panel.bg}">
+                        <!-- Step Number Badge -->
+                        <div class="absolute -top-5 -left-4 sm:-left-6 bg-yellow-400 border-4 border-slate-900 rounded-full w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center font-comic text-2xl sm:text-3xl text-slate-900 z-10 transform -rotate-6 shadow-comic-sm">
+                            ${index + 1}
+                        </div>
+                        
+                        <div class="flex-shrink-0 bg-white border-4 border-slate-900 rounded-full w-20 h-20 flex items-center justify-center transform -rotate-3 mt-2 shadow-comic-sm">
+                            <i class="${panel.icon} text-4xl ${panel.color}"></i>
+                        </div>
+                        
+                        <div class="flex-grow text-center sm:text-left mt-2 sm:mt-0">
+                            <p class="font-bold text-xl leading-relaxed ${textColor}">${panel.text}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            panelsHTML += '</div>';
+
+            div.innerHTML = `
+                <div class="flex items-center space-x-4 mb-10 border-b-4 border-slate-900 pb-4">
+                    <i class="fa-solid fa-book-open text-4xl text-indigo-600 transform -rotate-6"></i>
+                    <h2 class="font-comic text-4xl text-slate-900 tracking-wide">PROLOGUE: THE HIDDEN TRUTH</h2>
+                </div>
+                
+                ${panelsHTML}
+
+                <div class="bg-indigo-100 rounded-xl p-8 border-4 border-slate-900 shadow-comic-sm mt-12 relative overflow-hidden group">
+                    <div class="absolute -right-10 -top-10 opacity-20 transform group-hover:rotate-12 transition-transform duration-500">
+                        <i class="fa-solid fa-gamepad text-9xl text-indigo-900"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <h4 class="font-comic text-3xl text-slate-900 mb-2 tracking-wide">READY FOR THE SIMULATION?</h4>
+                        <p class="text-slate-800 mb-6 font-bold text-lg">
+                            You have read the facts. Now, experience the reality. You will choose a character and make decisions that change the story. Think critically about the prologue before you act.
+                        </p>
+                        <button onclick="setStage('selection')" class="comic-btn w-full sm:w-auto bg-indigo-600 text-white px-8 py-4 rounded-lg font-black text-xl hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-3 border-4 border-slate-900 shadow-comic relative overflow-hidden group-hover:bg-indigo-500">
+                            <span class="relative z-10">SELECT YOUR CHARACTER</span>
+                            <i class="fa-solid fa-arrow-right relative z-10 group-hover:translate-x-2 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function renderSelection() {
+            const div = document.createElement('div');
+            div.className = '';
+            
+            div.innerHTML = `
+                <h2 class="font-comic text-4xl text-center text-slate-900 mb-8 tracking-wide">CHOOSE YOUR PERSPECTIVE</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <!-- Driver Card -->
+                    <button onclick="startGame('driver')" class="comic-btn group text-left bg-white border-4 border-slate-900 shadow-comic rounded-xl overflow-hidden hover:bg-amber-50 hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_0px_#000000] transition-all cursor-pointer">
+                        <div class="bg-amber-300 p-6 border-b-4 border-slate-900 flex justify-center">
+                            <i class="fa-solid fa-motorcycle text-7xl text-slate-900 group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-comic text-3xl mb-2 tracking-wide">PLAY AS BUDI (DRIVER)</h3>
+                            <p class="font-bold text-slate-700 mb-6">Experience the algorithm, handle difficult customers, and try to make a living in the gig economy.</p>
+                            <div class="inline-flex items-center space-x-2 font-black text-indigo-600 bg-indigo-100 px-4 py-2 rounded-lg border-2 border-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                <span>SELECT THIS STORY</span>
+                                <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Customer Card -->
+                    <button onclick="startGame('customer')" class="comic-btn group text-left bg-white border-4 border-slate-900 shadow-comic rounded-xl overflow-hidden hover:bg-blue-50 hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_0px_#000000] transition-all cursor-pointer">
+                        <div class="bg-blue-300 p-6 border-b-4 border-slate-900 flex justify-center">
+                            <i class="fa-solid fa-briefcase text-7xl text-slate-900 group-hover:scale-110 transition-transform"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-comic text-3xl mb-2 tracking-wide">PLAY AS SARI (CUSTOMER)</h3>
+                            <p class="font-bold text-slate-700 mb-6">Navigate surge pricing, terrible traffic, and face the ethical choices of using cheap platforms.</p>
+                            <div class="inline-flex items-center space-x-2 font-black text-indigo-600 bg-indigo-100 px-4 py-2 rounded-lg border-2 border-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                <span>SELECT THIS STORY</span>
+                                <i class="fa-solid fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            `;
+            return div;
+        }
+
+        function renderStory() {
+            const node = stories[state.character][state.currentNode];
+            const div = document.createElement('div');
+            div.className = 'bg-white rounded-2xl shadow-comic p-4 sm:p-8 border-4 border-slate-900';
+
+            // Header
+            let html = `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 pb-4 border-b-4 border-slate-200 gap-4">
+                    <h2 class="font-comic text-4xl text-slate-900 tracking-widest">${node.title}</h2>
+                    <span class="text-sm font-black text-slate-900 bg-yellow-400 px-4 py-2 border-2 border-slate-900 rounded-sm uppercase transform rotate-2 inline-block max-w-fit shadow-comic-sm">
+                        ${state.character.toUpperCase()} SCENARIO
+                    </span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+            `;
+
+            // Panels
+            node.panels.forEach((panel, index) => {
+                const isFullWidth = index % 3 === 0;
+                let panelClasses = `border-4 border-slate-900 rounded-lg shadow-comic p-6 flex flex-col justify-center comic-panel ${panel.bg} ${isFullWidth ? 'sm:col-span-2' : ''}`;
+                
+                if (panel.type === "system") {
+                    html += `
+                        <div class="${panelClasses} space-y-3">
+                            <div class="flex items-center space-x-4">
+                                <i class="${panel.icon} ${panel.color} text-5xl animate-pulse"></i>
+                                <p class="font-mono text-sm sm:text-base font-bold whitespace-pre-line leading-relaxed text-slate-900">${panel.text}</p>
+                            </div>
+                        </div>
+                    `;
+                } else if (panel.type === "dialogue") {
+                    html += `
+                        <div class="${panelClasses} justify-end">
+                            <div class="flex items-end space-x-4">
+                                <i class="${panel.icon} text-6xl ${panel.color}"></i>
+                                <div class="bg-white border-4 border-slate-900 rounded-3xl rounded-bl-none p-4 relative shadow-comic-sm w-full">
+                                    <p class="font-black text-slate-900 text-lg">"${panel.text}"</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // action, narration, thought
+                    html += `
+                        <div class="${panelClasses} items-center text-center space-y-4">
+                            <i class="${panel.icon} text-7xl ${panel.color} transform hover:scale-110 transition-transform duration-300"></i>
+                            <p class="font-black text-lg md:text-xl text-slate-900">${panel.text}</p>
+                        </div>
+                    `;
+                }
+            });
+            html += `</div>`;
+
+            // Choices or Ending
+            if (!node.isEnding) {
+                html += `
+                    <div class="bg-indigo-50 p-6 rounded-xl border-4 border-slate-900 shadow-comic">
+                        <h3 class="font-comic text-3xl text-indigo-900 tracking-widest mb-6 text-center">WHAT WILL YOU DO?</h3>
+                        <div class="space-y-4">
+                `;
+                node.choices.forEach((choice, index) => {
+                    html += `
+                        <button onclick="handleChoice('${choice.next}')" class="comic-btn w-full text-left p-4 rounded-xl border-4 border-slate-900 shadow-comic hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_0px_#000000] transition-all duration-200 flex items-center space-x-4 ${choice.btnClass} group cursor-pointer">
+                            <div class="bg-black text-white w-10 h-10 rounded-full flex items-center justify-center font-black flex-shrink-0 text-xl border-2 border-white/20">
+                                ${index + 1}
+                            </div>
+                            <span class="font-bold text-lg leading-snug flex-grow">${choice.text}</span>
+                            <i class="fa-solid fa-circle-arrow-right text-3xl text-slate-300 group-hover:text-indigo-600 transform group-hover:translate-x-1 transition-all"></i>
+                        </button>
+                    `;
+                });
+                html += `</div></div>`;
+            } else {
+                html += `
+                    <div class="bg-yellow-400 rounded-xl p-6 sm:p-8 border-4 border-slate-900 shadow-comic mt-8">
+                        <h3 class="font-comic text-4xl text-slate-900 tracking-widest mb-6 border-b-4 border-slate-900 pb-2">CHAPTER END</h3>
+                        
+                        <div class="bg-white border-4 border-slate-900 rounded-lg p-5 mb-6 shadow-comic-sm">
+                            <h4 class="text-sm font-black text-slate-500 uppercase mb-2">Soft Skill Focus</h4>
+                            <p class="text-blue-700 font-black text-2xl uppercase font-comic tracking-wide">${node.softSkill}</p>
+                        </div>
+
+                        <div class="bg-white border-4 border-slate-900 rounded-lg p-5 mb-8 shadow-comic-sm">
+                            <h4 class="text-sm font-black text-slate-500 uppercase mb-3">Critical Analysis Prompt</h4>
+                            <p class="text-slate-900 font-bold text-xl leading-relaxed">
+                                ${node.analysis}
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button onclick="setStage('selection')" class="comic-btn flex-1 bg-white border-4 border-slate-900 text-slate-900 px-6 py-4 rounded-lg font-black text-lg hover:bg-slate-100 transition-colors flex items-center justify-center space-x-3 shadow-comic-sm">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>PLAY AGAIN</span>
+                            </button>
+                            <button onclick="setStage('reflection')" class="comic-btn flex-1 bg-indigo-600 border-4 border-slate-900 text-white px-6 py-4 rounded-lg font-black text-lg hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-3 shadow-comic-sm">
+                                <i class="fa-solid fa-users"></i>
+                                <span>CLASS DISCUSSION</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            div.innerHTML = html;
+            return div;
+        }
+
+        function renderReflection() {
+            const div = document.createElement('div');
+            div.className = 'bg-white rounded-2xl shadow-comic p-6 sm:p-10 border-4 border-slate-900';
+            
+            div.innerHTML = `
+                <div class="flex items-center justify-center space-x-4 mb-10 border-b-4 border-slate-900 pb-6">
+                    <i class="fa-solid fa-users-viewfinder text-5xl text-indigo-600"></i>
+                    <h2 class="font-comic text-4xl md:text-5xl text-slate-900 tracking-wide text-center">CLASS DISCUSSION</h2>
+                </div>
+
+                <div class="space-y-8 mb-10">
+                    <div class="bg-blue-50 p-6 rounded-xl border-4 border-slate-900 shadow-comic-sm relative">
+                        <div class="absolute -top-4 -left-4 bg-yellow-400 border-4 border-slate-900 rounded-full w-10 h-10 flex items-center justify-center font-black text-xl">1</div>
+                        <h3 class="font-comic text-3xl text-blue-900 mb-3 tracking-wide">READING COMPREHENSION</h3>
+                        <p class="text-slate-800 font-bold text-lg">According to the original article, why do drivers often lose money during busy hours even though the prices are higher for customers?</p>
+                    </div>
+
+                    <div class="bg-purple-50 p-6 rounded-xl border-4 border-slate-900 shadow-comic-sm relative">
+                        <div class="absolute -top-4 -left-4 bg-yellow-400 border-4 border-slate-900 rounded-full w-10 h-10 flex items-center justify-center font-black text-xl">2</div>
+                        <h3 class="font-comic text-3xl text-purple-900 mb-3 tracking-wide">SYSTEM VS. INDIVIDUAL</h3>
+                        <p class="text-slate-800 font-bold text-lg">In your simulation, you saw how customers and drivers blame each other. Based on the text and your choices, do you think individuals have the power to fix these problems by themselves? Why or why not?</p>
+                    </div>
+
+                    <div class="bg-emerald-50 p-6 rounded-xl border-4 border-slate-900 shadow-comic-sm relative">
+                        <div class="absolute -top-4 -left-4 bg-yellow-400 border-4 border-slate-900 rounded-full w-10 h-10 flex items-center justify-center font-black text-xl">3</div>
+                        <h3 class="font-comic text-3xl text-emerald-900 mb-3 tracking-wide">REAL WORLD APPLICATION</h3>
+                        <p class="text-slate-800 font-bold text-lg">The text mentions that regulators should make new policies. If you were the government, what is one rule you would create to protect informal workers while keeping the application useful for society?</p>
+                    </div>
+                </div>
+
+                <button onclick="resetApp()" class="comic-btn w-full bg-slate-900 text-white px-6 py-5 rounded-lg font-black text-xl hover:bg-slate-800 transition-all flex items-center justify-center space-x-3 border-4 border-slate-900 shadow-comic">
+                    <i class="fa-solid fa-rotate-right text-xl"></i>
+                    <span>RESTART ENTIRE LESSON</span>
+                </button>
+            `;
+            return div;
+        }
+
+        // --- ACTIONS ---
+
+        function doTransition(actionCallback) {
+            const container = document.getElementById('app-container');
+            container.classList.add('fade-out-active');
+            
+            setTimeout(() => {
+                actionCallback();
+                render();
+                window.scrollTo(0, 0);
+                
+                // Allow the browser to process the new elements before fading in
+                setTimeout(() => {
+                    container.classList.remove('fade-out-active');
+                }, 50);
+            }, 300); // 300ms matches the CSS transition time
+        }
+
+        function setStage(newStage) {
+            doTransition(() => {
+                state.stage = newStage;
+            });
+        }
+
+        function startGame(characterType) {
+            doTransition(() => {
+                state.character = characterType;
+                state.currentNode = 'start';
+                state.stage = 'story';
+            });
+        }
+
+        function handleChoice(nextNode) {
+            doTransition(() => {
+                state.currentNode = nextNode;
+            });
+        }
+
+        function resetApp() {
+            doTransition(() => {
+                state = {
+                    stage: 'reading',
+                    character: null,
+                    currentNode: 'start'
+                };
+            });
+        }
+
+        // --- INITIALIZE ---
+        window.onload = () => {
+            const container = document.getElementById('app-container');
+            container.classList.add('fade-out-active');
+            render();
+            setTimeout(() => {
+                container.classList.remove('fade-out-active');
+            }, 50);
+        };
+    </script>
+</body>
+</html>

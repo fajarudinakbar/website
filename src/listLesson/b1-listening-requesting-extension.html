@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>B1 (GSE 50) Listening - Requesting a Deadline Extension</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            overflow-wrap: normal;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 4px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 3px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+        .text-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            margin-top: 0.75rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .text-input:disabled {
+            background-color: #f1f5f9;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            white-space: nowrap;
+        }
+        .neo-btn:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .neo-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Option Labels (Radios) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.6;
+            font-weight: 800;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.35rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            accent-color: #0f172a;
+        }
+        .option-label:hover:not(.locked) {
+            background-color: #f8fafc;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .option-label.locked {
+            cursor: not-allowed;
+        }
+
+        /* 3-State Feedback Styles */
+        .state-amber {
+            background-color: #fef08a; 
+            border-color: #ca8a04;
+            color: #854d0e;
+        }
+        .state-rose {
+            background-color: #fecdd3; 
+            border-color: #e11d48;
+            color: #9f1239;
+        }
+        .state-emerald {
+            background-color: #a7f3d0; 
+            border-color: #059669;
+            color: #065f46;
+        }
+
+        /* AI Prompt Box */
+        .ai-prompt-neo {
+            background-color: #e0f2fe;
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            padding: 1.5rem;
+            position: relative;
+        }
+        .ai-prompt-neo::before {
+            content: "AI ASSISTANT";
+            position: absolute;
+            top: -16px;
+            left: 16px;
+            background: #0ea5e9;
+            color: white;
+            padding: 4px 12px;
+            font-weight: 900;
+            border: 3px solid #0f172a;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Pulsing Audio Animation */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .audio-playing-icon {
+            animation: pulse-ring 2s infinite;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 sm:p-6 md:p-10">
+
+    <div class="max-w-7xl mx-auto bg-white p-6 sm:p-10 lg:p-12 border-4 border-dark shadow-neo">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base sm:text-xl text-dark mb-10 flex gap-3 font-black uppercase tracking-wider items-center flex-wrap whitespace-nowrap">
+            <span class="bg-[#c4b5fd] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Professional English</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#c4b5fd] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Listening</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#facc15] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">B1 / GSE 50</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#818cf8] text-white px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Requesting an Extension</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-8 mb-10 md:mb-14 border-b-4 border-dark pb-10">
+            <div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-dark uppercase tracking-tight mb-5 leading-tight">
+                    Requesting a Deadline Extension
+                </h1>
+                <p class="text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-4 py-2 border-3 border-dark">
+                    Topic: Professional Communication & Softening Language
+                </p>
+            </div>
+            <div class="flex gap-4 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-3 px-6 py-4 text-xl text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-6 h-6"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#fefce8] border-4 border-dark p-6 md:p-8 mb-10 md:mb-14 shadow-neo flex items-start gap-5">
+            <div class="bg-[#facc15] p-3 border-3 border-dark shrink-0">
+                <i data-lucide="headphones" class="w-8 h-8 text-dark"></i>
+            </div>
+            <p class="text-xl md:text-2xl text-dark font-bold leading-relaxed">
+                <span class="uppercase font-black text-2xl mr-2">Instructions:</span> Complete the <strong>Preparation</strong> tasks first. Then play the audio script and complete the comprehension tasks. Interactive quizzes use a strict 2-attempt system.
+            </p>
+        </div>
+
+        <!-- Accordion Container -->
+        <div class="space-y-10 md:space-y-12">
+
+            <!-- Part 1: Preparation (Cyan Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            1
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Preparation (Tasks 1 to 2)</span>
+                    </div>
+                    <div id="icon-wrapper-part1" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part1" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 1 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 1</span> Warm Up Thinking
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t1', this, 'Show Sample Ideas')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Ideas</button>
+                            </div>
+                            <ul class="list-disc pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>How do you feel when you have to ask a supervisor for more time on a project?</li>
+                                <li>In your culture, is it better to be very direct when asking for help, or should you use "soft" language?</li>
+                                <li>What are some words or phrases you already know in English that make a request sound more polite?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your thoughts here..."></textarea>
+                            
+                            <div id="ans-t1" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="lightbulb" class="w-8 h-8 inline mr-2 text-[#eab308] fill-current"></i>Sample Ideas:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li>I usually feel nervous and anxious that my supervisor will think I am disorganized.</li>
+                                    <li>In many Asian cultures, it is better to use very soft language and apologize first to maintain harmony.</li>
+                                    <li>Phrases like "Could you please...", "Would it be possible to...", or starting with "I am sorry to bother you."</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 1.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-10">
+                                <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 1.1</span> AI Support for Warm Up
+                            </h3>
+                            <div class="ai-prompt-neo mb-8 mt-4">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"I am a medical professional learning English. Explain the concept of 'softening' in English communication at a B1 level. Why do we use phrases like 'I was wondering if' instead of just saying 'Can I'? Provide three examples of common softening phrases for a hospital setting."</p>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Draft your expected findings before comparing it to the AI's response.</p>
+                            <textarea class="text-input text-2xl mb-6" placeholder="Your draft..."></textarea>
+                            <button onclick="toggleAnswer('ans-t1-1', this, 'Show AI Sample Response')" class="neo-btn bg-[#0ea5e9] text-white px-5 py-3 text-xl">Show AI Sample Response</button>
+                            
+                            <div id="ans-t1-1" class="answer-box hidden mt-8 p-6 bg-slate-50 border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="bot" class="w-8 h-8 inline mr-2 text-[#0ea5e9]"></i>AI Response:</strong>
+                                <p class="font-bold text-xl md:text-2xl leading-relaxed italic border-l-4 border-[#0ea5e9] pl-4">"Softening means making your words less direct to sound more polite and respectful. We use 'I was wondering if' because it gives the other person a gentle way to say no without feeling pressured. Examples in a hospital include: 'Would you mind helping me with this chart?', 'Could we possibly schedule a meeting?', and 'I was hoping you might have time to review this.'"</p>
+                            </div>
+                        </div>
+
+                        <!-- Task 2 (Interactive Vocab) -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 border-b-4 border-dark pb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 2</span> Tier 2 Vocabulary Check
+                                </h3>
+                                <button onclick="checkVocab()" class="neo-btn bg-[#38bdf8] text-dark px-8 py-4 text-xl">
+                                    Submit Answers
+                                </button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-8">Select the correct definition for the CAPITALIZED word in each context.</p>
+                            
+                            <div id="vocab-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Listening Content (Blue Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#eff6ff]">
+                <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black">
+                            <i data-lucide="headphones" class="w-8 h-8 md:w-10 md:h-10"></i>
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Core Content: Audio Passage</span>
+                    </div>
+                    <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-10">
+                        
+                        <!-- Audio Player -->
+                        <div class="bg-slate-800 border-4 border-dark p-6 md:p-10 shadow-neo text-white flex flex-col xl:flex-row items-center gap-8 justify-between">
+                            <div id="audio-info" class="text-center xl:text-left flex items-center gap-6 w-full">
+                                <div id="audio-icon-wrapper" class="bg-blue-500 p-4 border-3 border-white rounded-full shrink-0">
+                                    <i data-lucide="volume-2" class="w-10 h-10 text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl md:text-3xl font-black mb-2 uppercase">Requesting an Extension</h3>
+                                    <p id="audio-status" class="text-xl text-blue-300 font-bold">Ready to play native browser audio.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 shrink-0 w-full xl:w-auto">
+                                <button id="btn-play" onclick="playAudio()" class="neo-btn bg-[#3b82f6] border-white text-white hover:bg-[#2563eb] w-full xl:w-auto px-8 py-4 text-2xl shadow-[6px_6px_0_0_#ffffff]">
+                                    <i data-lucide="play" class="w-6 h-6"></i> Play
+                                </button>
+                                <button id="btn-stop" onclick="stopAudio()" class="neo-btn bg-[#ef4444] border-white text-white hover:bg-[#dc2626] w-full xl:w-auto px-8 py-4 text-2xl shadow-[6px_6px_0_0_#ffffff] hidden">
+                                    <i data-lucide="square" class="w-6 h-6"></i> Stop
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Transcript -->
+                        <div class="bg-slate-50 border-4 border-dark p-6 md:p-10 shadow-inner">
+                            <div class="flex justify-between items-center mb-8 border-b-4 border-dark pb-6">
+                                <h3 class="text-3xl md:text-4xl font-black text-dark uppercase">Listening Transcript</h3>
+                                <button onclick="toggleAnswer('transcript-content', this, 'Show Transcript')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Hide Transcript</button>
+                            </div>
+                            
+                            <div id="transcript-content" class="space-y-8 text-2xl text-slate-800 font-medium leading-relaxed visible">
+                                <p>
+                                    <strong class="font-black text-fuchsia-700 bg-fuchsia-100 px-2 py-1 border-2 border-fuchsia-800 mr-2 uppercase text-xl">Junior Resident:</strong> "Excuse me, Dr. Hartono. I am sorry to bother you, but I was wondering if I could speak with you for a moment regarding the clinical trial report?"
+                                </p>
+                                <p>
+                                    <strong class="font-black text-blue-700 bg-blue-100 px-2 py-1 border-2 border-blue-800 mr-2 uppercase text-xl">Senior Consultant:</strong> "Of course. Is everything alright with the data?"
+                                </p>
+                                <p>
+                                    <strong class="font-black text-fuchsia-700 bg-fuchsia-100 px-2 py-1 border-2 border-fuchsia-800 mr-2 uppercase text-xl">Junior Resident:</strong> "The data is fine, but I have encountered some unforeseen <strong class="font-black underline decoration-4 decoration-brand-400 uppercase">CIRCUMSTANCES</strong> with the lab results. I was hoping you might be able to grant me a short <strong class="font-black underline decoration-4 decoration-brand-400 uppercase">EXTENSION</strong> on the submission? I do not want to <strong class="font-black underline decoration-4 decoration-brand-400 uppercase">HESITATE</strong> to ask, but I think the report would be much stronger with the final blood panels included."
+                                </p>
+                                <p>
+                                    <strong class="font-black text-blue-700 bg-blue-100 px-2 py-1 border-2 border-blue-800 mr-2 uppercase text-xl">Senior Consultant:</strong> "I see. When do you think you could have the final version ready?"
+                                </p>
+                                <p>
+                                    <strong class="font-black text-fuchsia-700 bg-fuchsia-100 px-2 py-1 border-2 border-fuchsia-800 mr-2 uppercase text-xl">Junior Resident:</strong> "Would it be possible to submit it by Friday morning instead of Wednesday? I would really <strong class="font-black underline decoration-4 decoration-brand-400 uppercase">APPRECIATE</strong> your <strong class="font-black underline decoration-4 decoration-brand-400 uppercase">FLEXIBILITY</strong> on this. I understand how busy you are, and I am grateful for any <strong class="font-black underline decoration-4 decoration-brand-400 uppercase">ASSISTANCE</strong> you can provide with the lab coordination."
+                                </p>
+                                <p>
+                                    <strong class="font-black text-blue-700 bg-blue-100 px-2 py-1 border-2 border-blue-800 mr-2 uppercase text-xl">Senior Consultant:</strong> "Since you want to include the blood panels for accuracy, I can agree to that. Please ensure it is on my desk by Friday at 9:00 AM."
+                                </p>
+                                <p>
+                                    <strong class="font-black text-fuchsia-700 bg-fuchsia-100 px-2 py-1 border-2 border-fuchsia-800 mr-2 uppercase text-xl">Junior Resident:</strong> "Thank you very much, Dr. Hartono. That is very helpful."
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 3: Understanding (Emerald Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            3
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Understanding (Tasks 3 to 5)</span>
+                    </div>
+                    <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 3 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 3</span> General Understanding
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t3', this, 'Show Sample Answers')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Answers</button>
+                            </div>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>What is the Junior Resident's main problem?</li>
+                                <li>Who is the Junior Resident talking to?</li>
+                                <li>What is the final outcome of the conversation?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your answers here..."></textarea>
+                            
+                            <div id="ans-t3" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-square" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Sample Answers:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li><strong>Problem:</strong> They encountered unforeseen circumstances with lab results and need an extension.</li>
+                                    <li><strong>Talking to:</strong> A Senior Consultant named Dr. Hartono.</li>
+                                    <li><strong>Outcome:</strong> The consultant grants the extension until Friday at 9:00 AM.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 4 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 4</span> Detail and Meaning
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t4', this, 'Show Sample Answers')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Answers</button>
+                            </div>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>What specific data does the resident want to include in the report?</li>
+                                <li>What was the original deadline for the report?</li>
+                                <li>At what specific time on Friday must the report be finished?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your answers here..."></textarea>
+                            
+                            <div id="ans-t4" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-square" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Sample Answers:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li><strong>Specific Data:</strong> The final blood panels.</li>
+                                    <li><strong>Original Deadline:</strong> Wednesday.</li>
+                                    <li><strong>Final Deadline:</strong> Friday at 9:00 AM.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 5 (Interactive T/F) -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 border-b-4 border-dark pb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 5</span> True or False Check
+                                </h3>
+                                <button onclick="checkTF()" class="neo-btn bg-[#4ade80] text-dark px-8 py-4 text-xl">
+                                    Submit Answers
+                                </button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-8">Verify the following statements based on the text.</p>
+                            <div id="tf-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 4: Analysis (Orange Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#ffedd5]">
+                <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            4
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Analysis (Tasks 6 to 7)</span>
+                    </div>
+                    <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 6: Cause/Effect -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 6</span> Cause and Effect
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t6', this, 'Show Sample')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample</button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-6">Identify the logical relationship between these statements from the script:</p>
+                            
+                            <div class="space-y-6">
+                                <div class="flex flex-col lg:flex-row lg:items-center gap-4 bg-white border-4 border-dark p-6">
+                                    <div class="lg:w-1/2">
+                                        <span class="font-black text-xl text-orange-900 block mb-2">Cause:</span>
+                                        <p class="font-bold text-xl text-dark">The lab results were delayed by unforeseen circumstances...</p>
+                                    </div>
+                                    <div class="lg:w-1/2 flex items-center gap-3">
+                                        <span class="font-black text-xl text-dark uppercase"><i data-lucide="arrow-right" class="w-6 h-6 inline"></i> Effect:</span> 
+                                        <input type="text" class="text-input mt-0 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] flex-1 text-xl py-3 px-4" placeholder="Type the effect...">
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col lg:flex-row lg:items-center gap-4 bg-white border-4 border-dark p-6">
+                                    <div class="lg:w-1/2">
+                                        <span class="font-black text-xl text-orange-900 block mb-2">Cause:</span>
+                                        <p class="font-bold text-xl text-dark">The resident used polite softening phrases like "I was wondering if"...</p>
+                                    </div>
+                                    <div class="lg:w-1/2 flex items-center gap-3">
+                                        <span class="font-black text-xl text-dark uppercase"><i data-lucide="arrow-right" class="w-6 h-6 inline"></i> Effect:</span> 
+                                        <input type="text" class="text-input mt-0 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] flex-1 text-xl py-3 px-4" placeholder="Type the effect...">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="ans-t6" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-circle" class="w-8 h-8 inline mr-2 text-[#eab308]"></i>Logical Effects:</strong>
+                                <ul class="list-disc pl-8 space-y-4 font-bold text-xl md:text-2xl">
+                                    <li><strong>Effect 1:</strong> ...the Junior Resident had to request an extension on the report deadline. <em class="text-slate-600 block text-lg mt-1">(Logic: A problem with the process forces a change in the schedule).</em></li>
+                                    <li><strong>Effect 2:</strong> ...the Senior Consultant felt respected and was more willing to agree to the request. <em class="text-slate-600 block text-lg mt-1">(Logic: Softening phrases reduce pressure on the listener and maintain harmony).</em></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 6.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 6.1</span> AI Guided Extension
+                            </h3>
+                            <div class="ai-prompt-neo mb-8">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"I have completed a cause and effect task about making polite requests. Check my logic: If a doctor is too direct with a supervisor (e.g., 'Give me more time'), what is the likely professional effect in a hierarchical medical culture? Suggest a more 'softened' version of that command using B1 English grammar."</p>
+                            </div>
+                            <textarea class="text-input text-2xl mb-4" placeholder="Your explanation..."></textarea>
+                        </div>
+
+                        <!-- Task 7 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 7</span> Speaking Personal Position
+                            </h3>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>Do you think it is professional for a doctor to admit they cannot meet a deadline?</li>
+                                <li>Would you prefer a supervisor who is very strict with time or one who shows flexibility? Why?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Jot down your speaking points..."></textarea>
+                        </div>
+
+                        <!-- Task 7.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 7.1</span> AI as Practice Partner
+                            </h3>
+                            <div class="ai-prompt-neo mb-8">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Act as a Senior Consultant. I am your intern. I need to ask you for help with a difficult patient case and I also need to leave work one hour early today for a family matter. I will start the conversation. Please respond to my requests and ask me to justify why I need the help and the time off. Use B1 level English."</p>
+                            </div>
+                            <textarea class="text-input text-2xl mb-4" placeholder="Write your side of the dialogue..."></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 5: Case Studies (Violet Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fae8ff]">
+                <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            5
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Case Studies (Tasks 8 to 9)</span>
+                    </div>
+                    <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 8 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 8</span> Discussion Contextual Skills
+                            </h3>
+                            <p class="text-2xl text-slate-800 font-bold mb-6 leading-relaxed"><strong class="text-dark bg-fuchsia-200 px-2 py-1 uppercase mr-2 border-2 border-dark">Direct vs Indirect:</strong> In medicine, "Indirectness" can save a professional relationship, but "Directness" can save a life. When is it dangerous to use "softening" language in a hospital? Discuss scenarios where clear, direct commands are better than polite requests.</p>
+                            <textarea class="text-input text-2xl" placeholder="Your discussion points..."></textarea>
+                        </div>
+
+                        <!-- Task 9: Roleplay/Dilemma -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-6 border-b-4 border-dark pb-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 9</span> Case Study Decision Making
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t9', this, 'Show Evaluation')" class="neo-btn bg-[#e879f9] text-dark px-5 py-3 text-xl">Show Evaluation</button>
+                            </div>
+                            <div class="bg-[#fdf4ff] p-6 border-4 border-dark mb-8 shadow-[6px_6px_0_0_#0f172a]">
+                                <p class="text-2xl text-dark font-black uppercase mb-4 tracking-wide"><i data-lucide="alert-triangle" class="w-8 h-8 inline mr-2 text-fuchsia-600"></i> Scenario:</p>
+                                <p class="text-2xl text-slate-800 font-bold leading-relaxed mb-6">A colleague is consistently late with their part of a shared research project. It is affecting your own work.</p>
+                                <div class="space-y-4">
+                                    <div class="p-4 bg-white border-3 border-dark font-bold text-xl flex items-start gap-4">
+                                        <div class="bg-dark text-white p-2 shrink-0 mt-1"><i data-lucide="message-circle"></i></div> Option A: Use very soft language to ask if they need help, avoiding any mention of their lateness to keep the "Kizuna" (bond).
+                                    </div>
+                                    <div class="p-4 bg-white border-3 border-dark font-bold text-xl flex items-start gap-4">
+                                        <div class="bg-dark text-white p-2 shrink-0 mt-1"><i data-lucide="layers"></i></div> Option B: Use a "Sandwich" approach: Start with a compliment, clearly state the need for the data, and end with a polite request for a specific new deadline.
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Discuss which option is more effective for a B1 professional.</p>
+                            <textarea class="text-input text-2xl" placeholder="I would choose Option... because..."></textarea>
+                            
+                            <div id="ans-t9" class="answer-box hidden mt-8 p-6 bg-slate-50 border-4 border-dark text-slate-800 shadow-[6px_6px_0_0_#0f172a]">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-circle" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Analysis:</strong>
+                                <p class="font-bold text-xl md:text-2xl leading-relaxed">Option B is more effective. The "Sandwich" approach balances professional accountability with politeness. Option A may protect the bond in the short term, but it fails to solve the work delay, which can lead to larger conflicts later. Option B uses structure to soften the direct request.</p>
+                            </div>
+                        </div>
+
+                        <!-- Task 9.1 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 9.1</span> AI Role Play Comparison
+                            </h3>
+                            <div class="ai-prompt-neo mb-8">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Let's simulate a debate. AI: You argue that in a medical team, Option A is better because harmony is the priority for long term collaboration. Student: I will argue that Option B is better because professional accountability is necessary for medical progress. Let's exchange two points each in simple English."</p>
+                            </div>
+                            <textarea class="text-input text-2xl mb-4" placeholder="Your argument..."></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 6: Reflection (Rose Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fff1f2]">
+                <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#fb7185] hover:bg-[#f43f5e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            6
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Summary and Reflection (Task 10)</span>
+                    </div>
+                    <div id="icon-wrapper-part6" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part6" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-8 md:space-y-10">
+                        <div>
+                            <h3 class="text-3xl font-black text-dark mb-6 uppercase tracking-wide">Task 10: Final Reflection</h3>
+                            <p class="text-2xl text-slate-800 mb-8 font-bold leading-relaxed">Write 5-6 sentences about a time you had to make a difficult request at work or school. Use at least three CAPITALIZED words from Task 2 (e.g., CIRCUMSTANCES, EXTENSION, APPRECIATE). Reflect on whether you used softening language and how it changed the result.</p>
+                            <textarea class="text-input h-64 text-2xl" placeholder="Draft your reflection here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t-4 border-dark text-center mb-8">
+            <p class="text-dark text-xl font-black uppercase tracking-wider bg-[#facc15] inline-block px-6 py-3 border-4 border-dark shadow-neo">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">Fajarudin Akbar</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-8 py-5 shadow-neo transition-all duration-300 translate-y-32 opacity-0 z-50 flex items-center gap-4 font-black text-xl uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="info" class="w-8 h-8 shrink-0 text-brand-600"></i> <span id="toast-msg">Notification</span>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- Init Lucide Icons ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderVocab();
+            renderTF();
+        });
+
+        // Track attempts globally
+        const attempts = {};
+
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { 
+                id: "v1", 
+                word: "CIRCUMSTANCES",
+                sentence: "I have encountered some unforeseen CIRCUMSTANCES with the lab results.", 
+                correct: "a", 
+                options: { 
+                    a: "A set of facts or conditions connected with an event or action.", 
+                    b: "A type of medical equipment used for testing blood.", 
+                    c: "The physical location of a hospital or clinic." 
+                },
+                hint: "Think about situations or conditions that happen."
+            },
+            { 
+                id: "v2", 
+                word: "EXTENSION",
+                sentence: "I was hoping you might be able to grant me a short EXTENSION on the submission.", 
+                correct: "b", 
+                options: { 
+                    a: "An increase in the amount of money paid for a job.", 
+                    b: "An extra period of time allowed to finish something.", 
+                    c: "A medical tool used to look inside the human body." 
+                },
+                hint: "Relates to needing more time for a deadline."
+            },
+            { 
+                id: "v3", 
+                word: "HESITATE",
+                sentence: "I do not want to HESITATE to ask, but I think the report would be stronger.", 
+                correct: "b", 
+                options: { 
+                    a: "To move very quickly to complete a task.", 
+                    b: "To pause before saying or doing something because you are nervous.", 
+                    c: "To shout loudly at a colleague during a meeting." 
+                },
+                hint: "Waiting or pausing because of uncertainty."
+            },
+            { 
+                id: "v4", 
+                word: "APPRECIATE",
+                sentence: "I would really APPRECIATE your help with this request.", 
+                correct: "c", 
+                options: { 
+                    a: "To feel angry or upset about a situation.", 
+                    b: "To ignore the importance of a colleague's time.", 
+                    c: "To be grateful for something or recognize its value." 
+                },
+                hint: "Being thankful or valuing something."
+            },
+            { 
+                id: "v5", 
+                word: "FLEXIBILITY",
+                sentence: "I would really value your FLEXIBILITY on this deadline.", 
+                correct: "a", 
+                options: { 
+                    a: "The ability to change or be changed easily according to the situation.", 
+                    b: "The strict rules that everyone must follow in a hospital.", 
+                    c: "The physical strength required to lift heavy medical boxes." 
+                },
+                hint: "Being able to adapt or change plans easily."
+            },
+            { 
+                id: "v6", 
+                word: "ASSISTANCE",
+                sentence: "I am grateful for any ASSISTANCE you can provide with the lab.", 
+                correct: "b", 
+                options: { 
+                    a: "The process of giving a formal presentation to students.", 
+                    b: "Help or support given to someone to complete a task.", 
+                    c: "A disagreement between two doctors about a diagnosis." 
+                },
+                hint: "Another word for giving help or support."
+            }
+        ];
+
+        // 3. TRUE / FALSE DATA
+        const tfData = [
+            { 
+                id: "tf1", 
+                text: "1. The Junior Resident is rude and demands more time.", 
+                correct: "False", 
+                explanation: "The resident uses very polite language like \"I was wondering if\" and \"I would really appreciate.\"",
+                hint: "Pay attention to phrases like 'I was hoping'."
+            },
+            { 
+                id: "tf2", 
+                text: "2. The Consultant agrees to the request because the reason is related to medical accuracy.", 
+                correct: "True", 
+                explanation: "The consultant agrees because the resident wants to include \"final blood panels\" for a \"stronger\" (more accurate) report.",
+                hint: "Why did the consultant say 'Since you want to include...'"
+            },
+            { 
+                id: "tf3", 
+                text: "3. The Resident is afraid to ask for help and waits until the last minute.", 
+                correct: "False", 
+                explanation: "The resident explicitly states \"I do not want to hesitate to ask,\" meaning they are taking initiative to speak up.",
+                hint: "Did the resident hesitate to ask?"
+            },
+            { 
+                id: "tf4", 
+                text: "4. Dr. Hartono believes the data currently in the report is incorrect.", 
+                correct: "False", 
+                explanation: "The resident explicitly states \"The data is fine,\" the issue is just the missing lab results.",
+                hint: "Check what the resident says about the data at the start."
+            }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            if(vocabData.length === 0) return;
+
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="" disabled selected>Select definition...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${key.toUpperCase()}. ${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col xl:flex-row xl:items-center gap-6 p-6 bg-white border-4 border-dark shadow-neo-sm w-full">
+                    <div class="xl:w-2/5 font-black text-dark text-2xl bg-cyan-100 px-4 py-2 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">${item.word}</div>
+                    <div class="xl:w-3/5 flex flex-col gap-3">
+                        <select id="${item.id}" class="text-input mt-0 py-4 text-xl cursor-pointer w-full" onchange="resetVocabState('${item.id}')">
+                            ${optionsHtml}
+                        </select>
+                        <div id="feedback-${item.id}" class="text-xl font-bold hidden px-4 py-2 border-3 mt-2"></div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function resetVocabState(id) {
+            const select = document.getElementById(id);
+            const feedback = document.getElementById(`feedback-${id}`);
+            select.classList.remove('state-amber', 'state-rose', 'state-emerald');
+            feedback.classList.add('hidden');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="bg-white p-6 md:p-8 border-4 border-dark shadow-neo mb-6 flex flex-col gap-6">
+                    <span class="text-2xl font-black text-dark leading-relaxed">${item.text}</span>
+                    <div class="flex flex-wrap items-center gap-6">
+                        <label class="option-label m-0 flex-1 justify-center py-4 text-2xl group">
+                            <input type="radio" name="${item.id}" value="True" class="mt-1 w-6 h-6 hidden" onchange="resetTFState('${item.id}')">
+                            <div class="w-6 h-6 border-3 border-dark rounded-sm group-[.locked]:bg-slate-200 mt-1 flex items-center justify-center shrink-0 radio-custom"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                            <span class="uppercase tracking-wide">True</span>
+                        </label>
+                        <label class="option-label m-0 flex-1 justify-center py-4 text-2xl group">
+                            <input type="radio" name="${item.id}" value="False" class="mt-1 w-6 h-6 hidden" onchange="resetTFState('${item.id}')">
+                            <div class="w-6 h-6 border-3 border-dark rounded-sm group-[.locked]:bg-slate-200 mt-1 flex items-center justify-center shrink-0 radio-custom"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                            <span class="uppercase tracking-wide">False</span>
+                        </label>
+                    </div>
+                    <div id="feedback-${item.id}" class="text-xl font-bold hidden px-5 py-4 border-3 mt-2 leading-relaxed"></div>
+                </div>
+            `).join('');
+
+            // Add custom radio behavior
+            setTimeout(() => {
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const name = e.target.name;
+                        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                            const dot = r.parentElement.querySelector('.inner-dot');
+                            if(r.checked) dot.classList.remove('hidden');
+                            else dot.classList.add('hidden');
+                        });
+                    });
+                });
+            }, 100);
+        }
+
+        function resetTFState(id) {
+            const feedback = document.getElementById(`feedback-${id}`);
+            const radios = document.getElementsByName(id);
+            radios.forEach(r => {
+                r.closest('.option-label').classList.remove('state-amber', 'state-rose', 'state-emerald');
+            });
+            feedback.classList.add('hidden');
+        }
+
+        // --- 3-State Logic Handlers ---
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3500);
+        }
+
+        function checkVocab() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+                
+                // Reset styles initially
+                select.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                feedback.classList.remove('state-amber', 'state-rose', 'state-emerald', 'hidden');
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Correct!';
+                    select.classList.add('state-emerald');
+                    feedback.classList.add('state-emerald');
+                    select.disabled = true;
+                    correctCount++;
+                    answeredCount++;
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    answeredCount++;
+                    if (attempts[key] >= 2) {
+                        select.disabled = true;
+                        select.classList.add('state-rose');
+                        feedback.classList.add('state-rose');
+                        feedback.innerHTML = `<i data-lucide="x-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Locked. The correct answer is <strong>${item.correct.toUpperCase()}</strong>.`;
+                    } else {
+                        select.classList.add('state-amber');
+                        feedback.classList.add('state-amber');
+                        feedback.innerHTML = `<i data-lucide="info" class="w-6 h-6 inline mr-2 align-middle"></i> Not quite. Hint: ${item.hint}`;
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                }
+            });
+            lucide.createIcons();
+            
+            if (answeredCount === 0) {
+                showToast("Please select at least one answer.");
+            } else if (correctCount === vocabData.length) {
+                showToast("Perfect! All vocabulary matched.");
+            } else {
+                showToast("Answers checked. Review the feedback.");
+            }
+        }
+
+        function checkTF() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                let userVal = "";
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                radios.forEach(r => {
+                    const label = r.closest('.option-label');
+                    label.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                    if(r.checked) userVal = r.value;
+                });
+
+                feedback.classList.remove('state-amber', 'state-rose', 'state-emerald', 'hidden');
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Correct! Reason: ${item.explanation}`;
+                    feedback.classList.add('state-emerald');
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        const label = r.closest('.option-label');
+                        label.classList.add('locked');
+                        if(r.checked) label.classList.add('state-emerald');
+                    });
+                    correctCount++;
+                    answeredCount++;
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    answeredCount++;
+                    if (attempts[key] >= 2) {
+                        feedback.innerHTML = `<i data-lucide="x-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Locked. The correct answer is <strong>${item.correct}</strong>.<br><span class="mt-2 block">Reason: ${item.explanation}</span>`;
+                        feedback.classList.add('state-rose');
+                        radios.forEach(r => {
+                            r.disabled = true;
+                            const label = r.closest('.option-label');
+                            label.classList.add('locked');
+                            if(r.checked) label.classList.add('state-rose');
+                        });
+                    } else {
+                        feedback.innerHTML = `<i data-lucide="info" class="w-6 h-6 inline mr-2 align-middle"></i> Incorrect. Hint: ${item.hint}`;
+                        feedback.classList.add('state-amber');
+                        radios.forEach(r => {
+                            if(r.checked) r.closest('.option-label').classList.add('state-amber');
+                        });
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                }
+            });
+            lucide.createIcons();
+            
+            if (answeredCount === 0) {
+                showToast("Please answer at least one T/F question.");
+            } else if (correctCount === tfData.length) {
+                showToast("Excellent! All T/F answers correct.");
+            } else {
+                showToast("Answers checked. Review the feedback.");
+            }
+        }
+
+        // --- UI Interactions ---
+
+        function toggleAnswer(elementId, btn, baseText) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Output";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = baseText;
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Are you sure you want to clear all your progress?")) {
+                
+                for (let key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+                
+                document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                    r.checked = false; 
+                    r.disabled = false;
+                    r.parentElement.querySelector('.inner-dot').classList.add('hidden');
+                });
+                document.querySelectorAll('.option-label').forEach(label => {
+                    label.classList.remove('state-amber', 'state-rose', 'state-emerald', 'locked');
+                });
+                
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.classList.remove('state-amber', 'state-rose', 'state-emerald'); 
+                });
+                
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                    f.classList.add('hidden');
+                });
+                
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+                
+                document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                    const params = btn.getAttribute('onclick').match(/'([^']+)'/g);
+                    if(params && params.length >= 3) {
+                        btn.innerText = params[2].replace(/'/g, '');
+                    }
+                });
+
+                stopAudio();
+                
+                showToast("All progress has been reset.");
+            }
+        }
+
+        // --- Audio TTS ---
+        let isPlaying = false;
+        
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        function playAudio() {
+            if (!('speechSynthesis' in window)) {
+                showToast("Speech synthesis not supported in this browser.");
+                return;
+            }
+            if (isPlaying) return;
+            isPlaying = true;
+
+            // UI Update
+            document.getElementById('btn-play').classList.add('hidden');
+            document.getElementById('btn-stop').classList.remove('hidden');
+            document.getElementById('audio-status').innerText = "Playing audio...";
+            document.getElementById('audio-icon-wrapper').classList.add('audio-playing-icon');
+
+            window.speechSynthesis.cancel();
+
+            const dialogueLines = [
+                { speaker: 'Junior Resident', text: "Excuse me, Dr. Hartono. I am sorry to bother you, but I was wondering if I could speak with you for a moment regarding the clinical trial report?" },
+                { speaker: 'Senior Consultant', text: "Of course. Is everything alright with the data?" },
+                { speaker: 'Junior Resident', text: "The data is fine, but I have encountered some unforeseen circumstances with the lab results. I was hoping you might be able to grant me a short extension on the submission? I do not want to hesitate to ask, but I think the report would be much stronger with the final blood panels included." },
+                { speaker: 'Senior Consultant', text: "I see. When do you think you could have the final version ready?" },
+                { speaker: 'Junior Resident', text: "Would it be possible to submit it by Friday morning instead of Wednesday? I would really appreciate your flexibility on this. I understand how busy you are, and I am grateful for any assistance you can provide with the lab coordination." },
+                { speaker: 'Senior Consultant', text: "Since you want to include the blood panels for accuracy, I can agree to that. Please ensure it is on my desk by Friday at 9:00 AM." },
+                { speaker: 'Junior Resident', text: "Thank you very much, Dr. Hartono. That is very helpful." }
+            ];
+            
+            // Prioritize Edge Natural / English voices
+            const voices = window.speechSynthesis.getVoices();
+            const engVoices = voices.filter(v => v.lang.startsWith('en'));
+            const naturalVoices = engVoices.filter(v => v.name.includes('Natural') || v.name.includes('Online'));
+            
+            let voice1 = naturalVoices[0] || engVoices[0] || voices[0];
+            let voice2 = naturalVoices.find(v => voice1 && v.name !== voice1.name) || engVoices.find(v => voice1 && v.name !== voice1.name) || voice1;
+
+            // Recursively chain utterances to fix Edge TTS cloud queuing issues
+            function speakLine(index) {
+                if (!isPlaying) return; // User stopped playback
+                if (index >= dialogueLines.length) {
+                    stopAudio();
+                    return;
+                }
+
+                const line = dialogueLines[index];
+                const utterance = new SpeechSynthesisUtterance(line.text);
+                
+                if (line.speaker === 'Senior Consultant' && voice1) utterance.voice = voice1;
+                else if (line.speaker === 'Junior Resident' && voice2) utterance.voice = voice2;
+
+                utterance.rate = 0.95; // Slightly slower for better natural clarity
+
+                utterance.onend = () => {
+                    // 300ms conversational pause before the next text chunk
+                    setTimeout(() => speakLine(index + 1), 300);
+                };
+                
+                utterance.onerror = (e) => {
+                    console.warn("Speech Synthesis Error:", e);
+                    stopAudio();
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+
+            // Start the sequence
+            speakLine(0);
+        }
+
+        function stopAudio() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            isPlaying = false;
+            
+            const btnPlay = document.getElementById('btn-play');
+            const btnStop = document.getElementById('btn-stop');
+            if(btnPlay && btnStop) {
+                btnPlay.classList.remove('hidden');
+                btnStop.classList.add('hidden');
+                document.getElementById('audio-status').innerText = "Ready to play native browser audio.";
+                document.getElementById('audio-icon-wrapper').classList.remove('audio-playing-icon');
+            }
+        }
+    </script>
+</body>
+</html>

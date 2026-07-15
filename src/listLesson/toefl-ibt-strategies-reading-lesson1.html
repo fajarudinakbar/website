@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT Strategies - Reading Lesson 1</title>
+    <!-- Load Tailwind CSS for modern, responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* A small custom style for the active tab */
+        .tab-active {
+            border-bottom-color: #2563eb; /* blue-600 */
+            color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <!-- Main Container -->
+    <div class="container mx-auto max-w-4xl p-4 sm:p-8">
+
+        <!-- Header -->
+        <header class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">TOEFL® Academy</h1>
+            <h2 class="text-xl sm:text-2xl text-gray-600">Reading Lesson 1: General Introduction</h2>
+        </header>
+
+        <!-- Introduction Section from Page 3 -->
+        <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-3">Reading Section Purpose</h3>
+            <p class="text-gray-700">
+                The TOEFL IBT Reading section assesses how well you can read and understand
+                materials used in an academic environment.
+            </p>
+            <p class="text-gray-700 mt-2">
+                The app below is based on the "Reading Lesson 1" handout. It includes an interactive quiz to check your knowledge and a breakdown of the different reading question types.
+            </p>
+        </section>
+
+        <!-- Tab Navigation -->
+        <div class="mb-6 border-b border-gray-300">
+            <nav class="flex -mb-px space-x-6" aria-label="Tabs">
+                <button id="tab-quiz" class="tab-button tab-active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
+                    Knowledge Quiz
+                </button>
+                <button id="tab-types" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Question Types
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tab Content -->
+        <div>
+            <!-- =================================== -->
+            <!-- ==   Part 1: Knowledge Quiz      == -->
+            <!-- =================================== -->
+            <div id="content-quiz">
+                <form id="quiz-form" class="space-y-6">
+                    <!-- Questions will be injected here by JS -->
+                </form>
+                <button id="check-answers-btn" class="mt-8 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-colors duration-200">
+                    Check Answers
+                </button>
+            </div>
+
+            <!-- =================================== -->
+            <!-- ==   Part 2: Question Types      == -->
+            <!-- =================================== -->
+            <div id="content-types" class="hidden">
+                <div id="question-types-container" class="space-y-6">
+                    <!-- Question Types will be injected here by JS -->
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- End Main Container -->
+
+    <script>
+        // === DATA FROM PDF ===
+
+        // Part 1: Quiz Questions and Answers
+        const quizData = [
+            {
+                question: "1. The Reading section is the only section that does not have any audio.",
+                answer: "True",
+                explanation: "True. The other three sections all include audio recordings, but the Reading section does not."
+            },
+            {
+                question: "2. The Reading section features both long and short reading passages.",
+                answer: "False",
+                explanation: "False. All of the Reading section texts are long-about 700 words. Test-takers will see two passages. Note that there are shorter reading passages in both the Speaking and the Writing Sections."
+            },
+            {
+                question: "3. Sometimes definitions for vocabulary are presented in the passage.",
+                answer: "True",
+                explanation: "True. If you see a bold, underlined word, you can click it to see a definition. These words are called glossed words. You cannot and may not look up any other words."
+            },
+            {
+                question: "4. Vocabulary questions test whether you know specific words typically used in academic passages.",
+                answer: "True",
+                explanation: "True. Vocabulary questions focus on words that commonly appear in academic texts across academic fields of study."
+            },
+            {
+                question: "5. You are allowed to take notes during the Reading section.",
+                answer: "True",
+                explanation: "True. Test-takers will be provided with a pencil and paper to take notes with. The notes are not scored. At the end of the test session, you'll be required to return all scratch paper to the test center administrator."
+            },
+            {
+                question: "6. Each Reading passage is followed by twelve questions.",
+                answer: "False",
+                explanation: "False. Each passage is followed by ten questions."
+            },
+            {
+                question: "7. There will never be any Reading passages about the 'hard sciences' such as chemistry, biology, or physics.",
+                answer: "False",
+                explanation: "False. The Reading section covers a wide variety of topics such as would be found in first-year courses at a university."
+            },
+            {
+                question: "8. If you do not finish the Reading section, you may return to it at the very end of the whole test if you have time left over.",
+                answer: "False",
+                explanation: "False. Every section must be completed independently. As of July 2023, you will have about 35 minutes for the Reading section."
+            },
+            {
+                question: "9. The Reading Section questions include both factual information and inferences (guesses based on evidence in the text).",
+                answer: "True",
+                explanation: "True. Some answers are given directly in the passage, and some you will have to figure out from surrounding information."
+            },
+            {
+                question: "10. There are several different types of Reading questions.",
+                answer: "True",
+                explanation: "True. Most of the questions are multiple choice, but you will see some other types of questions such as sentence insertion and summaries."
+            }
+        ];
+
+        // Part 2: Question Type Data
+        const questionTypeData = [
+            {
+                example: "The word <strong>ingenuity</strong> in paragraph 2 is closest in meaning to ...",
+                typeName: "1. Vocabulary",
+                description: "Words being tested are highlighted. When you see a highlighted word as you are reading, pay attention to the sentences around it, because that word will be tested in the questions. The question will ask you to choose a synonym. Sometimes (but not always) there will be clues in the sentence or the sentences before and after that will help you figure out the word."
+            },
+            {
+                example: "Which of the following best expresses the essential information in the <strong>highlighted sentence</strong>? Incorrect answer choices change the meaning in important ways or leave out essential information.",
+                typeName: "2. Sentence simplification",
+                description: "Here, a whole sentence is highlighted, instead of just one word. You will be asked to choose the best paraphrase of the most important information."
+            },
+            {
+                example: "According to paragraph 4, what has recent research on obsidian tools found at Olmec sites shown?",
+                typeName: "3. Fact",
+                description: "These questions ask about specific information directly stated in the text."
+            },
+            {
+                example: "In paragraph 4, all the following questions are answered <strong>EXCEPT</strong>:<br>Which of the following is <strong>NOT</strong> mentioned in paragraph 2 as a main factor in the development of Teotihuacán?",
+                typeName: "4. Negative fact",
+                description: "These are similar to detail and fact questions except that you are looking for something that is NOT true, instead of something that is true. These questions will have the word NOT or EXCEPT in capital letters."
+            },
+            {
+                example: "What can be <strong>inferred</strong> from paragraph 3 about Cuicuilco prior to 200 B.C.?",
+                typeName: "5. Inference",
+                description: "Here the information is not directly stated but is implied. You have to figure out what the passage is indirectly saying."
+            },
+            {
+                example: "In paragraph 6, the author discusses <em>The thriving obsidian operation</em> <strong>in order to...</strong><br><strong>Why does the author mention</strong> the survival of snakes, lizards, turtles, and crocodiles in paragraph 3?<br>What is the <strong>main purpose</strong> of paragraph 2?",
+                typeName: "6. Rhetorical purpose",
+                description: "These questions ask why certain information was included, or what the author was trying to accomplish."
+            },
+            {
+                example: "The word <strong>there</strong> in paragraph 4 refers to ...",
+                typeName: "7. Reference",
+                description: "These questions ask what a word-usually a pronoun-refers to. Sometimes the word refers to something in the same sentence, and sometimes in a previous sentence."
+            },
+            {
+                example: `Look at the four squares [■] that indicate where the following sentence could be added to the passage.<br><br><em>In fact, goods could be shipped more cheaply across the much greater distance of the Atlantic Ocean than they could from western New York to coastal cities.</em><br><br>Where would the sentence best fit? ... [■] ... [■] ... [■] ... [■]`,
+                typeName: "8. Insert Text",
+                description: "For this type of question, you will be given a sentence that was NOT in the reading and be asked where it should go. You will have a choice of four locations in the paragraph and have to choose the appropriate one."
+            },
+            {
+                example: "An introductory sentence for a brief summary of the passage is provided below. Complete the summary by selecting the <strong>THREE answer choices</strong> that express the most important ideas in the passage...",
+                typeName: "9. Summary",
+                description: "This kind of question is worth two points. You will be asked to choose 3 out of 5 sentences given that would create a summary of the passage's main ideas. On the computer test, you will drag the three sentences you choose into a chart."
+            }
+        ];
+
+
+        // === APP LOGIC ===
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const quizForm = document.getElementById('quiz-form');
+            const checkAnswersBtn = document.getElementById('check-answers-btn');
+            const questionTypesContainer = document.getElementById('question-types-container');
+
+            const tabQuiz = document.getElementById('tab-quiz');
+            const tabTypes = document.getElementById('tab-types');
+            const contentQuiz = document.getElementById('content-quiz');
+            const contentTypes = document.getElementById('content-types');
+
+            // --- 1. Initialize: Load Content ---
+
+            function loadQuiz() {
+                let quizHTML = '';
+                quizData.forEach((item, index) => {
+                    const qId = index + 1;
+                    quizHTML += `
+                        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                            <p class="text-lg font-medium text-gray-800 mb-4">${item.question}</p>
+                            
+                            <!-- True/False Options -->
+                            <div class="flex flex-col sm:flex-row sm:space-x-8">
+                                <fieldset class="mb-4 sm:mb-0">
+                                    <legend class="sr-only">Answer</legend>
+                                    <div class="flex space-x-4">
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="radio" name="q${qId}_answer" value="True" class="h-5 w-5 text-blue-600 focus:ring-blue-500">
+                                            <span class="text-gray-700">True</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="radio" name="q${qId}_answer" value="False" class="h-5 w-5 text-blue-600 focus:ring-blue-500">
+                                            <span class="text-gray-700">False</span>
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <!-- Confidence Rating -->
+                            <fieldset class="mt-4">
+                                <legend class="text-sm font-medium text-gray-600 mb-2">How confident are you? (1=Not at all, 5=Completely)</legend>
+                                <div class="flex flex-wrap gap-x-4 gap-y-2">
+                                    ${[1, 2, 3, 4, 5].map(num => `
+                                        <label class="flex items-center space-x-2 cursor-pointer">
+                                            <input type="radio" name="q${qId}_confidence" value="${num}" class="h-4 w-4 text-blue-600 focus:ring-blue-500">
+                                            <span class="text-gray-700 text-sm">${num}</span>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                            </fieldset>
+
+                            <!-- Feedback Area -->
+                            <div id="feedback-${qId}" class="mt-4 p-4 rounded-md text-sm" role="alert" aria-live="polite"></div>
+                        </div>
+                    `;
+                });
+                quizForm.innerHTML = quizHTML;
+            }
+
+            function loadQuestionTypes() {
+                let typesHTML = '';
+                questionTypeData.forEach((item, index) => {
+                    const typeId = index + 1;
+                    typesHTML += `
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                            <!-- Example Section -->
+                            <div class="p-6">
+                                <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Example:</h4>
+                                <div class="text-gray-700 text-lg space-y-2">${item.example}</div>
+                            </div>
+                            
+                            <!-- Answer/Description Section (hidden by default) -->
+                            <div id="answer-${typeId}" class="hidden p-6 bg-gray-50 border-t border-gray-200">
+                                <h4 class="text-xl font-bold text-blue-700 mb-2">${item.typeName}</h4>
+                                <p class="text-gray-700">${item.description}</p>
+                            </div>
+
+                            <!-- Toggle Button -->
+                            <button 
+                                data-target="answer-${typeId}" 
+                                class="reveal-button w-full text-left bg-gray-100 hover:bg-gray-200 px-6 py-3 font-medium text-blue-600 transition-colors duration-200"
+                            >
+                                Reveal Answer
+                            </button>
+                        </div>
+                    `;
+                });
+                questionTypesContainer.innerHTML = typesHTML;
+            }
+
+            // --- 2. Add Event Listeners ---
+
+            // Tab Switching
+            function switchTab(activeTab) {
+                if (activeTab === 'quiz') {
+                    // Show Quiz
+                    contentQuiz.classList.remove('hidden');
+                    contentTypes.classList.add('hidden');
+                    // Style Quiz Tab
+                    tabQuiz.classList.add('tab-active');
+                    tabTypes.classList.remove('tab-active', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                    tabTypes.classList.add('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                } else {
+                    // Show Types
+                    contentQuiz.classList.add('hidden');
+                    contentTypes.classList.remove('hidden');
+                    // Style Types Tab
+                    tabTypes.classList.add('tab-active');
+                    tabQuiz.classList.remove('tab-active', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                    tabQuiz.classList.add('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                }
+            }
+
+            tabQuiz.addEventListener('click', () => switchTab('quiz'));
+            tabTypes.addEventListener('click', () => switchTab('types'));
+
+            // Quiz Answer Checking
+            checkAnswersBtn.addEventListener('click', (e) => {
+                e.preventDefault(); // Stop form from submitting
+                let correctCount = 0;
+                
+                quizData.forEach((item, index) => {
+                    const qId = index + 1;
+                    const feedbackEl = document.getElementById(`feedback-${qId}`);
+                    const selectedAnswer = quizForm.querySelector(`input[name="q${qId}_answer"]:checked`);
+                    
+                    if (selectedAnswer) {
+                        if (selectedAnswer.value === item.answer) {
+                            // Correct
+                            feedbackEl.innerHTML = `<strong class="font-bold">Correct.</strong> ${item.explanation}`;
+                            feedbackEl.className = "mt-4 p-4 rounded-md text-sm bg-green-100 text-green-800 border border-green-200";
+                            correctCount++;
+                        } else {
+                            // Incorrect
+                            feedbackEl.innerHTML = `<strong class="font-bold">Incorrect.</strong> ${item.explanation}`;
+                            feedbackEl.className = "mt-4 p-4 rounded-md text-sm bg-red-100 text-red-800 border border-red-200";
+                        }
+                    } else {
+                        // Not answered
+                        feedbackEl.innerHTML = `<strong class="font-bold">Not answered.</strong> ${item.explanation}`;
+                        feedbackEl.className = "mt-4 p-4 rounded-md text-sm bg-yellow-100 text-yellow-800 border border-yellow-200";
+                    }
+                });
+
+                // Optional: Scroll to the top to show the first question's feedback
+                quizForm.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Question Type "Reveal" Button Clicks
+            // We use event delegation on the container for efficiency
+            questionTypesContainer.addEventListener('click', (e) => {
+                // Check if the clicked element is a reveal button
+                const button = e.target.closest('.reveal-button');
+                if (!button) return;
+
+                const targetId = button.getAttribute('data-target');
+                const answerEl = document.getElementById(targetId);
+
+                if (answerEl) {
+                    // Toggle the 'hidden' class
+                    const isHidden = answerEl.classList.toggle('hidden');
+                    
+                    // Update button text
+                    button.textContent = isHidden ? 'Reveal Answer' : 'Hide Answer';
+                }
+            });
+
+
+            // --- 3. Initial Load ---
+            loadQuiz();
+            loadQuestionTypes();
+            // Set initial tab state
+            switchTab('quiz');
+
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Academic Reading - The Research Dilemma</title>
+    
+    <!-- Tailwind CSS for flawless styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for Graphic Novel Aesthetic -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Vibrant Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        comic: ['Bangers', 'cursive'],
+                    },
+                    boxShadow: {
+                        'comic': '6px 6px 0px 0px #0f172a',
+                        'comic-hover': '8px 8px 0px 0px #0f172a',
+                        'comic-sm': '3px 3px 0px 0px #0f172a',
+                        'comic-pressed': '0px 0px 0px 0px #0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Halftone Comic Background */
+        body {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+            background-size: 24px 24px;
+            overflow-x: hidden;
+        }
+
+        /* Tactile Button Mechanics */
+        .comic-btn {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translate(0px, 0px);
+        }
+        .comic-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a !important;
+        }
+        .comic-btn:active {
+            transform: translate(6px, 6px);
+            box-shadow: 0px 0px 0px 0px #0f172a !important;
+        }
+
+        /* Staggered Pop-In Animation */
+        .animate-pop {
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+        }
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Page Transition */
+        #app-container {
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        .fade-out-active {
+            opacity: 0 !important;
+            transform: scale(0.98) translateY(10px) !important;
+        }
+
+        /* Progress Bar Animation */
+        .progress-fill {
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="text-slate-900 font-sans p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col">
+
+    <div class="max-w-4xl mx-auto flex-grow w-full" id="app-container">
+        <!-- Content will be injected here by JavaScript -->
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 mb-4 text-center animate-pop" style="animation-delay: 1s;">
+        <p class="font-extrabold text-slate-500 text-sm sm:text-base uppercase tracking-widest">
+            Designed by <a href="https://fajarudinakbar.online" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100 px-3 py-1 rounded-md border-2 border-transparent hover:border-indigo-600 transition-all font-black border-b-4 border-b-indigo-600">fajarudinakbar.online</a>
+        </p>
+    </footer>
+
+    <script>
+        // --- DATA STRUCTURES ---
+        const readingPanels = [
+            { text: "Welcome to university life. Academic reading is very different from reading a novel or a news article. It requires critical thinking.", icon: "fa-solid fa-graduation-cap", bg: "bg-sky-100", color: "text-sky-600" },
+            { text: "Professors expect you to find reliable information. A good source is usually peer reviewed. This means other experts checked the facts before publishing.", icon: "fa-solid fa-user-check", bg: "bg-emerald-100", color: "text-emerald-600" },
+            { text: "The internet is full of fake news, biased blogs, and AI generated text. If an article has no author and no date, it is probably not reliable.", icon: "fa-solid fa-triangle-exclamation", bg: "bg-amber-100", color: "text-amber-600" },
+            { text: "Plagiarism is a serious academic crime. It happens when you copy someone else's words or ideas without giving them proper credit.", icon: "fa-solid fa-scale-unbalanced", bg: "bg-rose-100", color: "text-rose-600" },
+            { text: "Even changing just a few words is still plagiarism. You must paraphrase completely and include a formal citation at the end of your sentence.", icon: "fa-solid fa-pen-to-square", bg: "bg-purple-100", color: "text-purple-600" },
+            { text: "Managing your time is the secret to academic success. Research takes much longer than writing. Do not leave your assignments until the last minute.", icon: "fa-solid fa-clock", bg: "bg-indigo-100", color: "text-indigo-600" },
+            { text: "When reading academic papers, do not read every single word. Read the abstract, the introduction, and the conclusion first to understand the main idea.", icon: "fa-solid fa-book-open", bg: "bg-yellow-200", color: "text-yellow-700" },
+            { text: "Academic integrity builds your professional reputation. Taking shortcuts might save time today, but it destroys your credibility for the future.", icon: "fa-solid fa-shield-halved", bg: "bg-emerald-100", color: "text-emerald-700" }
+        ];
+
+        const storyNodes = {
+            start: {
+                chapter: 1, title: "The Midnight Panic",
+                panels: [
+                    { type: "action", text: "You stare at a blank computer screen. It is 11:00 PM on a Sunday night.", icon: "fa-solid fa-desktop", color: "text-slate-600", bg: "bg-slate-100" },
+                    { type: "narration", text: "You have a major biology research paper due tomorrow morning. You need five reliable sources.", icon: "fa-solid fa-file-lines", color: "text-blue-600", bg: "bg-blue-100" },
+                    { type: "thought", text: "I waited too long to start. I need to find information fast, or I will fail this class.", icon: "fa-solid fa-brain", color: "text-purple-600", bg: "bg-purple-100" }
+                ],
+                choices: [
+                    { text: "Use Google to find quick blog summaries and Wikipedia articles.", next: "step2_source", btnClass: "bg-white text-slate-900" },
+                    { text: "Log into the difficult university library database to find real journals.", next: "step2_source", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step2_source: {
+                chapter: 2, title: "The Tempting Source",
+                panels: [
+                    { type: "action", text: "You search for information about cell mutation. You find a website that looks perfect.", icon: "fa-solid fa-magnifying-glass", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "system", text: "SOURCE WARNING.\nAuthor unknown.\nPublication date is missing.\nContains multiple advertisements.", icon: "fa-solid fa-circle-exclamation", color: "text-rose-600", bg: "bg-rose-100" },
+                    { type: "thought", text: "This article answers my exact research question. But it does not look like an academic source.", icon: "fa-solid fa-circle-question", color: "text-amber-600", bg: "bg-amber-100" }
+                ],
+                choices: [
+                    { text: "Use the website anyway because you are completely out of time.", next: "step3_ai", btnClass: "bg-white text-slate-900" },
+                    { text: "Close the website and keep searching for a peer reviewed article.", next: "step3_ai", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step3_ai: {
+                chapter: 3, title: "The Group Chat",
+                panels: [
+                    { type: "action", text: "Your phone buzzes. It is a message from your friend in the same biology class.", icon: "fa-solid fa-mobile-screen", color: "text-indigo-600", bg: "bg-indigo-100" },
+                    { type: "dialogue", speaker: "Friend", text: "Are you still writing? Just use an AI tool to generate the essay, then change a few words. It is so easy.", icon: "fa-solid fa-robot", color: "text-slate-700", bg: "bg-slate-200" },
+                    { type: "thought", text: "An AI could write this entire paper in ten seconds. It is extremely tempting right now.", icon: "fa-solid fa-cloud-bolt", color: "text-sky-600", bg: "bg-sky-100" }
+                ],
+                choices: [
+                    { text: "Ask the AI to write your paragraphs so you can finish quickly.", next: "step4_plagiarism", btnClass: "bg-white text-slate-900" },
+                    { text: "Ignore the friend and write your own rough, imperfect draft.", next: "step4_plagiarism", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step4_plagiarism: {
+                chapter: 4, title: "The Citation Trap",
+                panels: [
+                    { type: "narration", text: "You finally find a great paragraph in a real academic journal. It explains your topic perfectly.", icon: "fa-solid fa-book-open", color: "text-emerald-700", bg: "bg-emerald-100" },
+                    { type: "action", text: "You copy the text and paste it directly into your own document.", icon: "fa-solid fa-paste", color: "text-blue-700", bg: "bg-blue-100" },
+                    { type: "thought", text: "If I just change a few adjectives, the professor will never know I copied this structure.", icon: "fa-solid fa-masks-theater", color: "text-rose-700", bg: "bg-rose-100" }
+                ],
+                choices: [
+                    { text: "Just change a few words and pretend the idea is your own.", next: "step5_missing", btnClass: "bg-white text-slate-900" },
+                    { text: "Delete the pasted text and rewrite the entire idea in your own words.", next: "step5_missing", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step5_missing: {
+                chapter: 5, title: "The Missing Link",
+                panels: [
+                    { type: "action", text: "It is 3:00 AM. You are almost finished, but you realize you only have four sources. The assignment requires five.", icon: "fa-solid fa-battery-quarter", color: "text-red-600", bg: "bg-red-100" },
+                    { type: "narration", text: "You look at an old biology book on your desk. You did not read it, but it looks very professional.", icon: "fa-solid fa-book", color: "text-amber-700", bg: "bg-amber-100" },
+                    { type: "thought", text: "I could just add this book to my reference list to get the full points for the rubric.", icon: "fa-solid fa-list-check", color: "text-purple-700", bg: "bg-purple-200" }
+                ],
+                choices: [
+                    { text: "Add the fake book citation to your reference list anyway.", next: "step6_submit", btnClass: "bg-white text-slate-900" },
+                    { text: "Submit the paper with only four real sources and accept a lower grade.", next: "step6_submit", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step6_submit: {
+                chapter: 6, title: "The Submission",
+                panels: [
+                    { type: "action", text: "The sun is coming up. You finally save your document as a PDF.", icon: "fa-solid fa-sun", color: "text-yellow-500", bg: "bg-yellow-100" },
+                    { type: "system", text: "UNIVERSITY PORTAL.\nAssignment ready for submission.\nWarning: All files are checked for plagiarism.", icon: "fa-solid fa-cloud-arrow-up", color: "text-sky-600", bg: "bg-sky-100" },
+                    { type: "thought", text: "My heart is beating fast. I am not completely proud of this work, but it is done.", icon: "fa-solid fa-heart-pulse", color: "text-rose-600", bg: "bg-rose-100" }
+                ],
+                choices: [
+                    { text: "Click submit immediately and go to sleep.", next: "step7_office", btnClass: "bg-white text-slate-900" },
+                    { text: "Run your own plagiarism check online before you submit it.", next: "step7_office", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            step7_office: {
+                chapter: 7, title: "The Professor's Email",
+                panels: [
+                    { type: "narration", text: "Two days later, you receive an urgent email from your biology professor.", icon: "fa-solid fa-envelope", color: "text-slate-600", bg: "bg-slate-100" },
+                    { type: "dialogue", speaker: "Prof. Higgins", text: "Please come to my office hours immediately. We need to discuss the research paper you submitted.", icon: "fa-solid fa-user-tie", color: "text-indigo-700", bg: "bg-indigo-100" },
+                    { type: "thought", text: "Oh no. She definitely found out about the shortcuts I took during the night.", icon: "fa-solid fa-face-flushed", color: "text-purple-700", bg: "bg-purple-100" }
+                ],
+                choices: [
+                    { text: "Go to the office and deny everything. Pretend you did perfect research.", next: "ending_denial", btnClass: "bg-white text-slate-900" },
+                    { text: "Go to the office, admit you struggled with time management, and ask for help.", next: "ending_growth", btnClass: "bg-white text-slate-900" }
+                ]
+            },
+            ending_growth: {
+                chapter: "END", title: "The Growth Mindset",
+                panels: [
+                    { type: "dialogue", speaker: "You", text: "I am sorry, Professor. I started too late and panicked. I did not evaluate my sources properly.", icon: "fa-solid fa-comment-dots", color: "text-blue-600", bg: "bg-blue-100" },
+                    { type: "dialogue", speaker: "Prof. Higgins", text: "Thank you for your honesty. Academic research takes practice. Let's review proper citation methods together.", icon: "fa-solid fa-handshake-angle", color: "text-emerald-600", bg: "bg-emerald-100" },
+                    { type: "narration", text: "You receive a low grade, but you keep your academic integrity. Next time, you will start your research much earlier.", icon: "fa-solid fa-arrow-trend-up", color: "text-amber-600", bg: "bg-amber-100" }
+                ],
+                isEnding: true,
+                softSkill: "Accountability and Academic Integrity",
+                analysis: "Admitting a mistake takes courage. How does asking a professor for help build a better academic relationship than hiding your struggles?"
+            },
+            ending_denial: {
+                chapter: "END", title: "The Disciplinary Action",
+                panels: [
+                    { type: "dialogue", speaker: "You", text: "I do not know what you mean. I worked very hard on this paper and did all the reading.", icon: "fa-solid fa-masks-theater", color: "text-purple-600", bg: "bg-purple-100" },
+                    { type: "dialogue", speaker: "Prof. Higgins", text: "The university software detected copied text and fake citations. We have a zero tolerance policy for this.", icon: "fa-solid fa-gavel", color: "text-rose-600", bg: "bg-rose-100" },
+                    { type: "narration", text: "You fail the assignment and receive a formal warning on your student record. The shortcut was not worth the risk.", icon: "fa-solid fa-file-circle-xmark", color: "text-red-600", bg: "bg-red-100" }
+                ],
+                isEnding: true,
+                softSkill: "Source Evaluation and Ethics",
+                analysis: "Academic institutions prioritize honesty above perfect grades. Why is it worse to lie about your research than to simply submit an incomplete paper?"
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        let state = {
+            stage: 'reading',
+            currentNode: 'start'
+        };
+
+        // --- TEXT TO SPEECH (TTS) INTEGRATION ---
+        let availableVoices = [];
+        let currentUtterance = null;
+        let activeSpeakerBtn = null;
+
+        function loadVoices() {
+            availableVoices = window.speechSynthesis.getVoices();
+        }
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        loadVoices(); 
+
+        function toggleSpeech(btnElement, textToSpeak) {
+            if (window.speechSynthesis.speaking && activeSpeakerBtn === btnElement) {
+                window.speechSynthesis.cancel();
+                resetSpeakerButton();
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            resetSpeakerButton();
+
+            if (!textToSpeak) return;
+
+            currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+            
+            if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
+
+            let selectedVoice = availableVoices.find(v => v.name.includes('Natural') && v.lang.startsWith('en'));
+            if (!selectedVoice) selectedVoice = availableVoices.find(v => v.name.includes('Google') && v.lang.startsWith('en'));
+            if (!selectedVoice) selectedVoice = availableVoices.find(v => v.lang.startsWith('en'));
+
+            if (selectedVoice) {
+                currentUtterance.voice = selectedVoice;
+            }
+
+            currentUtterance.rate = 0.9;
+            currentUtterance.pitch = 1.0;
+
+            activeSpeakerBtn = btnElement;
+            const icon = btnElement.querySelector('i');
+            icon.classList.remove('fa-volume-high', 'text-slate-500');
+            icon.classList.add('fa-stop', 'text-rose-600');
+            btnElement.classList.add('bg-rose-100', 'border-rose-600');
+            btnElement.classList.remove('bg-white', 'border-slate-300');
+
+            currentUtterance.onend = resetSpeakerButton;
+            currentUtterance.onerror = resetSpeakerButton;
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function resetSpeakerButton() {
+            if (activeSpeakerBtn) {
+                const icon = activeSpeakerBtn.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-stop', 'text-rose-600');
+                    icon.classList.add('fa-volume-high', 'text-slate-500');
+                }
+                activeSpeakerBtn.classList.remove('bg-rose-100', 'border-rose-600');
+                activeSpeakerBtn.classList.add('bg-white', 'border-slate-300');
+                activeSpeakerBtn = null;
+            }
+        }
+
+        function stopAllAudio() {
+            window.speechSynthesis.cancel();
+            resetSpeakerButton();
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function render() {
+            const container = document.getElementById('app-container');
+            container.innerHTML = ''; 
+
+            const header = document.createElement('header');
+            header.className = 'mb-12 text-center animate-pop';
+            header.innerHTML = `
+                <h1 class="font-comic text-6xl md:text-7xl text-slate-900 mb-3 tracking-wider uppercase" style="text-shadow: 3px 3px 0 #cbd5e1;">The Research Dilemma</h1>
+                <div class="inline-block bg-slate-900 text-white font-extrabold text-sm md:text-lg uppercase tracking-widest px-6 py-2 rounded-full shadow-comic-sm transform -rotate-1">
+                    A B1 Academic English Interactive Lesson
+                </div>
+            `;
+            container.appendChild(header);
+
+            if (state.stage === 'reading') container.appendChild(renderReading());
+            else if (state.stage === 'story') container.appendChild(renderStory());
+            else if (state.stage === 'reflection') container.appendChild(renderReflection());
+        }
+
+        function renderReading() {
+            const div = document.createElement('div');
+            
+            let panelsHTML = '<div class="flex flex-col space-y-8 mb-16">';
+            readingPanels.forEach((panel, index) => {
+                const delay = index * 150; 
+                panelsHTML += `
+                    <div class="animate-pop relative bg-white border-4 border-slate-900 rounded-2xl shadow-comic p-6 sm:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#0f172a] transition-transform duration-300" style="animation-delay: ${delay}ms;">
+                        
+                        <button onclick="toggleSpeech(this, \`${panel.text.replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                            <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </button>
+
+                        <div class="absolute -top-5 -left-4 sm:-left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl text-slate-900 z-10 transform -rotate-6 shadow-comic-sm">
+                            ${index + 1}
+                        </div>
+                        <div class="flex-shrink-0 border-4 border-slate-900 rounded-full w-24 h-24 flex items-center justify-center transform -rotate-3 shadow-comic-sm ${panel.bg}">
+                            <i class="${panel.icon} text-5xl ${panel.color}"></i>
+                        </div>
+                        <div class="flex-grow text-center sm:text-left mt-2 sm:mt-0 flex items-center pr-8 sm:pr-12">
+                            <p class="font-extrabold text-xl sm:text-2xl leading-relaxed text-slate-800 text-left">${panel.text}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            panelsHTML += '</div>';
+
+            div.innerHTML = `
+                <div class="flex justify-center items-center space-x-4 mb-12 animate-pop" style="animation-delay: 0ms;">
+                    <i class="fa-solid fa-book-open-reader text-5xl text-indigo-600 transform -rotate-6"></i>
+                    <h2 class="font-comic text-5xl text-slate-900 tracking-wide uppercase">Prologue</h2>
+                </div>
+                
+                ${panelsHTML}
+
+                <div class="animate-pop bg-indigo-600 rounded-3xl p-8 sm:p-12 border-4 border-slate-900 shadow-comic mt-12 relative overflow-hidden group" style="animation-delay: ${readingPanels.length * 150}ms;">
+                    <div class="absolute -right-10 -bottom-10 opacity-20 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-700">
+                        <i class="fa-solid fa-graduation-cap text-9xl text-white"></i>
+                    </div>
+                    <div class="relative z-10 text-center sm:text-left">
+                        <h4 class="font-comic text-4xl text-white mb-4 tracking-wide uppercase">Start Your Academic Journey</h4>
+                        <p class="text-indigo-100 mb-8 font-bold text-xl sm:text-2xl max-w-2xl text-left">
+                            You have read the facts. Now, you must make the academic choices. This scenario has 7 chapters. Can you survive the midnight deadline?
+                        </p>
+                        <button onclick="startGame()" class="comic-btn inline-flex bg-amber-400 text-slate-900 px-8 py-5 rounded-xl font-black text-2xl hover:bg-amber-300 items-center justify-center space-x-4 border-4 border-slate-900 shadow-comic w-full sm:w-auto cursor-pointer">
+                            <span>ENTER CHAPTER 1</span>
+                            <i class="fa-solid fa-arrow-right transform group-hover:translate-x-2 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function renderStory() {
+            const node = storyNodes[state.currentNode];
+            const div = document.createElement('div');
+            
+            const isEnding = node.chapter === 'END';
+            const progressPercent = isEnding ? 100 : Math.round(((node.chapter - 1) / 7) * 100);
+
+            const progressBar = `
+                <div class="animate-pop w-full bg-white border-4 border-slate-900 rounded-full h-8 mb-10 shadow-comic-sm overflow-hidden relative" style="animation-delay: 0ms;">
+                    <div class="progress-fill bg-emerald-400 h-full border-r-4 border-slate-900 flex items-center justify-end px-3" style="width: ${progressPercent}%">
+                        ${progressPercent > 10 ? `<i class="fa-solid fa-pen text-slate-900"></i>` : ''}
+                    </div>
+                </div>
+            `;
+
+            let html = progressBar + `
+                <div class="animate-pop bg-white rounded-3xl shadow-comic p-6 sm:p-10 border-4 border-slate-900" style="animation-delay: 150ms;">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-10 pb-6 border-b-4 border-slate-200 gap-4">
+                        <h2 class="font-comic text-5xl text-slate-900 tracking-widest uppercase">${node.title}</h2>
+                        <span class="text-lg font-black text-slate-900 bg-amber-400 px-5 py-2 border-4 border-slate-900 rounded-xl uppercase transform rotate-2 shadow-comic-sm">
+                            ${isEnding ? 'CONCLUSION' : `CHAPTER ${node.chapter} OF 7`}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            `;
+
+            node.panels.forEach((panel, index) => {
+                const isFullWidth = index % 3 === 0;
+                const delay = 300 + (index * 150);
+                
+                let content = "";
+                if (panel.type === "dialogue") {
+                    content = `
+                        <div class="flex items-end space-x-4 w-full mt-2">
+                            <i class="${panel.icon} text-6xl ${panel.color} drop-shadow-md"></i>
+                            <div class="bg-white border-4 border-slate-900 rounded-[2rem] rounded-bl-none p-5 relative shadow-comic-sm flex-grow">
+                                <p class="font-black text-slate-900 text-xl leading-snug text-left">"${panel.text}"</p>
+                            </div>
+                        </div>
+                    `;
+                } else if (panel.type === "system") {
+                    content = `
+                        <div class="flex items-center space-x-6 mt-2">
+                            <div class="bg-white p-3 rounded-full border-4 border-slate-900 shadow-comic-sm">
+                                <i class="${panel.icon} ${panel.color} text-4xl animate-pulse"></i>
+                            </div>
+                            <p class="font-mono text-lg font-black whitespace-pre-line leading-relaxed text-slate-900 uppercase text-left">${panel.text}</p>
+                        </div>
+                    `;
+                } else {
+                    content = `
+                        <div class="flex flex-col items-center text-center space-y-5 mt-4">
+                            <div class="bg-white p-5 rounded-full border-4 border-slate-900 shadow-comic-sm transform hover:scale-110 transition-transform duration-300">
+                                <i class="${panel.icon} text-6xl ${panel.color}"></i>
+                            </div>
+                            <p class="font-extrabold text-xl sm:text-2xl text-slate-900 leading-relaxed text-center">${panel.text}</p>
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="animate-pop relative border-4 border-slate-900 rounded-2xl shadow-comic p-8 flex flex-col justify-center ${panel.bg} ${isFullWidth ? 'md:col-span-2' : ''}" style="animation-delay: ${delay}ms;">
+                        <button onclick="toggleSpeech(this, \`${panel.text.replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                            <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </button>
+                        ${content}
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            if (!isEnding) {
+                const choiceDelay = 300 + (node.panels.length * 150);
+                html += `
+                    <div class="animate-pop bg-slate-100 p-8 rounded-2xl border-4 border-slate-900 shadow-comic" style="animation-delay: ${choiceDelay}ms;">
+                        <h3 class="font-comic text-4xl text-slate-900 tracking-widest mb-8 text-center uppercase">Make Your Decision</h3>
+                        <div class="space-y-5">
+                `;
+                node.choices.forEach((choice, index) => {
+                    html += `
+                        <button onclick="handleChoice('${choice.next}')" class="comic-btn w-full text-left p-5 rounded-xl border-4 border-slate-900 shadow-comic hover:bg-amber-100 transition-colors flex items-center space-x-6 ${choice.btnClass} group cursor-pointer">
+                            <div class="bg-indigo-600 text-white w-14 h-14 rounded-full flex items-center justify-center font-comic text-3xl border-4 border-slate-900 flex-shrink-0 shadow-comic-sm">
+                                ${index + 1}
+                            </div>
+                            <span class="font-extrabold text-xl sm:text-2xl leading-snug flex-grow text-slate-900">${choice.text}</span>
+                            <i class="fa-solid fa-circle-arrow-right text-4xl text-slate-300 group-hover:text-indigo-600 transform group-hover:translate-x-2 transition-all"></i>
+                        </button>
+                    `;
+                });
+                html += `</div></div></div>`;
+            } else {
+                const endDelay = 300 + (node.panels.length * 150);
+                html += `
+                    <div class="animate-pop bg-amber-300 rounded-2xl p-8 sm:p-12 border-4 border-slate-900 shadow-comic mt-10" style="animation-delay: ${endDelay}ms;">
+                        <h3 class="font-comic text-5xl text-slate-900 tracking-widest mb-8 border-b-4 border-slate-900 pb-4 uppercase">Grade Received</h3>
+                        
+                        <div class="bg-white border-4 border-slate-900 rounded-xl p-6 mb-6 shadow-comic-sm">
+                            <h4 class="text-base font-black text-slate-500 uppercase mb-2">Soft Skill Focus</h4>
+                            <p class="text-indigo-700 font-comic text-3xl tracking-wide">${node.softSkill}</p>
+                        </div>
+
+                        <div class="bg-white border-4 border-slate-900 rounded-xl p-6 mb-10 shadow-comic-sm relative">
+                            <button onclick="toggleSpeech(this, \`${node.analysis.replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <h4 class="text-base font-black text-slate-500 uppercase mb-3">Critical Analysis Prompt</h4>
+                            <p class="text-slate-900 font-extrabold text-2xl leading-relaxed pr-12 text-left">
+                                ${node.analysis}
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-6">
+                            <button onclick="resetApp()" class="comic-btn flex-1 bg-white border-4 border-slate-900 text-slate-900 px-6 py-5 rounded-xl font-black text-xl hover:bg-slate-100 transition-colors flex items-center justify-center space-x-3 shadow-comic">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>PLAY AGAIN</span>
+                            </button>
+                            <button onclick="setStage('reflection')" class="comic-btn flex-1 bg-indigo-600 border-4 border-slate-900 text-white px-6 py-5 rounded-xl font-black text-xl hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-3 shadow-comic">
+                                <i class="fa-solid fa-users"></i>
+                                <span>CLASS DISCUSSION</span>
+                            </button>
+                        </div>
+                    </div></div>
+                `;
+            }
+
+            div.innerHTML = html;
+            return div;
+        }
+
+        function renderReflection() {
+            const div = document.createElement('div');
+            
+            const discussionPrompts = [
+                "Based on the prologue, what makes a source reliable for academic research?",
+                "During your 7 chapter adventure, what was the most difficult decision regarding academic honesty? Why is it tempting to take shortcuts?",
+                "If a friend tells you to use AI to generate an essay, how would you respond using the concept of academic integrity?"
+            ];
+
+            div.innerHTML = `
+                <div class="animate-pop bg-white rounded-3xl shadow-comic p-8 sm:p-12 border-4 border-slate-900" style="animation-delay: 0ms;">
+                    <div class="flex flex-col items-center justify-center space-y-4 mb-12 border-b-4 border-slate-900 pb-8 text-center">
+                        <i class="fa-solid fa-comments text-6xl text-indigo-600"></i>
+                        <h2 class="font-comic text-5xl md:text-6xl text-slate-900 tracking-wide uppercase">Class Discussion</h2>
+                    </div>
+
+                    <div class="space-y-10 mb-12">
+                        <div class="animate-pop bg-sky-50 p-8 rounded-2xl border-4 border-slate-900 shadow-comic relative" style="animation-delay: 200ms;">
+                            <button onclick="toggleSpeech(this, \`${discussionPrompts[0].replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <div class="absolute -top-6 -left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl shadow-comic-sm">1</div>
+                            <h3 class="font-comic text-4xl text-sky-900 mb-4 tracking-wide uppercase pr-12">Reading Comprehension</h3>
+                            <p class="text-slate-800 font-extrabold text-xl leading-relaxed text-left">${discussionPrompts[0]}</p>
+                        </div>
+
+                        <div class="animate-pop bg-purple-50 p-8 rounded-2xl border-4 border-slate-900 shadow-comic relative" style="animation-delay: 400ms;">
+                            <button onclick="toggleSpeech(this, \`${discussionPrompts[1].replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <div class="absolute -top-6 -left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl shadow-comic-sm">2</div>
+                            <h3 class="font-comic text-4xl text-purple-900 mb-4 tracking-wide uppercase pr-12">Evaluating Ethics</h3>
+                            <p class="text-slate-800 font-extrabold text-xl leading-relaxed text-left">${discussionPrompts[1]}</p>
+                        </div>
+
+                        <div class="animate-pop bg-emerald-50 p-8 rounded-2xl border-4 border-slate-900 shadow-comic relative" style="animation-delay: 600ms;">
+                            <button onclick="toggleSpeech(this, \`${discussionPrompts[2].replace(/"/g, '&quot;')}\`)" class="absolute top-4 right-4 bg-white border-2 border-slate-300 rounded-full w-10 h-10 flex items-center justify-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all z-20 group" aria-label="Read Aloud">
+                                <i class="fa-solid fa-volume-high text-slate-500 group-hover:text-indigo-600 transition-colors"></i>
+                            </button>
+                            <div class="absolute -top-6 -left-6 bg-amber-400 border-4 border-slate-900 rounded-full w-14 h-14 flex items-center justify-center font-comic text-3xl shadow-comic-sm">3</div>
+                            <h3 class="font-comic text-4xl text-emerald-900 mb-4 tracking-wide uppercase pr-12">Professional Communication</h3>
+                            <p class="text-slate-800 font-extrabold text-xl leading-relaxed text-left">${discussionPrompts[2]}</p>
+                        </div>
+                    </div>
+
+                    <div class="animate-pop" style="animation-delay: 800ms;">
+                        <button onclick="resetApp()" class="comic-btn w-full bg-slate-900 text-white px-8 py-6 rounded-2xl font-black text-2xl hover:bg-slate-800 transition-colors flex items-center justify-center space-x-4 border-4 border-slate-900 shadow-comic uppercase tracking-wider">
+                            <i class="fa-solid fa-rotate-right text-3xl"></i>
+                            <span>Restart Entire Lesson</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        // --- ACTIONS ---
+        function doTransition(actionCallback) {
+            const container = document.getElementById('app-container');
+            container.classList.add('fade-out-active');
+            stopAllAudio(); 
+            
+            setTimeout(() => {
+                actionCallback();
+                render();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                setTimeout(() => {
+                    container.classList.remove('fade-out-active');
+                }, 50);
+            }, 300); 
+        }
+
+        function setStage(newStage) {
+            doTransition(() => { state.stage = newStage; });
+        }
+
+        function startGame() {
+            doTransition(() => {
+                state.currentNode = 'start';
+                state.stage = 'story';
+            });
+        }
+
+        function handleChoice(nextNode) {
+            doTransition(() => { state.currentNode = nextNode; });
+        }
+
+        function resetApp() {
+            doTransition(() => {
+                state = { stage: 'reading', currentNode: 'start' };
+            });
+        }
+
+        // --- INITIALIZE ---
+        window.onload = () => {
+            const container = document.getElementById('app-container');
+            container.classList.add('fade-out-active');
+            render();
+            setTimeout(() => { container.classList.remove('fade-out-active'); }, 50);
+        };
+    </script>
+</body>
+</html>

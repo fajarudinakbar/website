@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Skill Building: Read and Complete | CEFR C1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Cloze Input Styling */
+        .cloze-input {
+            border-bottom: 3px solid #94a3b8;
+            padding: 2px 4px;
+            color: #0f172a;
+            font-weight: 700;
+            text-align: left;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.7);
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem; /* text-xl */
+            min-width: 40px;
+        }
+        .cloze-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            background: white;
+        }
+        .cloze-input.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .cloze-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+        .cloze-input.revealed {
+            border-color: #f59e0b; /* Amber */
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base md:text-lg text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Literacy</span> <span>&gt;</span> 
+            <span>Reading</span> <span>&gt;</span> 
+            <span>CEFR C1</span> <span>&gt;</span> 
+            <span class="text-indigo-700 font-bold">Read & Complete</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-violet-700 tracking-tight mb-3">
+                    Read and Complete
+                </h1>
+                <p class="text-xl md:text-3xl text-slate-500 font-medium">Score Range: 120–135 | Focus: Advanced Syntax & Vocabulary</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-xl text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-indigo-600 p-8 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-2xl text-slate-700 leading-relaxed">
+                <i class="fas fa-glasses mr-3 text-indigo-600"></i> 
+                <strong>Instructions:</strong> Use context and grammar to reconstruct the mutilated words. This is a C1-level "cloze" task requiring high precision. You have <strong>2 attempts</strong> per exercise before the answer is revealed.
+            </p>
+        </div>
+
+        <!-- Section 1: Concept & Recognition (Cyan Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-3xl font-bold text-cyan-900">Steps 1-2: Concept & Recognition</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-3xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Step 1: Concept -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 1: The Concept Breakdown</h3>
+                        <div class="bg-cyan-50 p-8 rounded-xl border border-cyan-100 text-xl leading-relaxed text-slate-700">
+                            <p class="mb-4"><strong>The Task:</strong> You are presented with a short passage (70–140 words). The first and last sentences are intact. Middle sentences have unfinished words (first half provided).</p>
+                            <p><strong>The Goal:</strong> Contextual Precision. Use the "glue" of the language (syntax) and the theme to rebuild words.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Recognition Drill -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 2: Recognition Drill</h3>
+                        <p class="text-2xl text-slate-600 mb-6">Identify these C1 word patterns:</p>
+                        
+                        <div class="grid gap-6">
+                            <div class="p-6 bg-white border-l-4 border-blue-400 shadow-sm rounded-r-xl">
+                                <h4 class="font-bold text-slate-800 mb-2 text-xl">Academic:</h4>
+                                <p class="text-slate-600 text-xl">"The researc<span class="font-bold text-blue-600">her</span> conduc<span class="font-bold text-blue-600">ted</span> a comprehen<span class="font-bold text-blue-600">sive</span> analy<span class="font-bold text-blue-600">sis</span> of the ge<span class="font-bold text-blue-600">netic</span> data."</p>
+                            </div>
+                            <div class="p-6 bg-white border-l-4 border-green-400 shadow-sm rounded-r-xl">
+                                <h4 class="font-bold text-slate-800 mb-2 text-xl">Narrative:</h4>
+                                <p class="text-slate-600 text-xl">"Despite the obstac<span class="font-bold text-green-600">les</span>, she remai<span class="font-bold text-green-600">ned</span> optimis<span class="font-bold text-green-600">tic</span> about the outco<span class="font-bold text-green-600">me</span> of the project."</p>
+                            </div>
+                            <div class="p-6 bg-white border-l-4 border-purple-400 shadow-sm rounded-r-xl">
+                                <h4 class="font-bold text-slate-800 mb-2 text-xl">Business:</h4>
+                                <p class="text-slate-600 text-xl">"The compa<span class="font-bold text-purple-600">ny</span> intends to implement a more rigoro<span class="font-bold text-purple-600">us</span> thresho<span class="font-bold text-purple-600">ld</span> for qual<span class="font-bold text-purple-600">ity</span> control."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Strategy & Warm-up (Blue Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-3xl font-bold text-blue-900">Steps 3-4: Strategy & Warm-up</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white border-t border-blue-50 space-y-12">
+                    
+                    <!-- Step 3: Strategy -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 3: Strategic Roadmap</h3>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-800 text-xl mb-2"><i class="fas fa-bread-slice mr-2"></i>Context Sandwich</h4>
+                                <p class="text-lg text-slate-600">Read the first & last sentences FIRST. They provide the "field of play" (e.g., Physics vs. History).</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-800 text-xl mb-2"><i class="fas fa-microscope mr-2"></i>PoS Forensics</h4>
+                                <p class="text-lg text-slate-600">Ask: "What kind of word is this?" After "the" -> Noun. Look for complex suffixes (-tion, -ity).</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-800 text-xl mb-2"><i class="fas fa-sync-alt mr-2"></i>The "Repeat"</h4>
+                                <p class="text-lg text-slate-600">Stuck on "envi..."? Look elsewhere in the text; "environment" might be in the first sentence.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Warm-up -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-blue-800">Step 4: Foundation Warm-up</h3>
+                            <button onclick="checkWarmup()" class="text-lg font-bold text-blue-700 border-2 border-blue-200 bg-white px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors shadow-sm">Check Words</button>
+                        </div>
+                        <p class="text-2xl text-slate-600 mb-6">Complete these common C1-level academic words:</p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xl">
+                            <div class="flex items-center gap-2 p-6 bg-slate-50 rounded-lg border border-slate-200">
+                                <span class="font-bold text-slate-700 w-32">Further...</span>
+                                <input type="text" id="w1" class="cloze-input w-32 bg-white" placeholder="">
+                                <span class="text-base text-slate-500">(Adverb)</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-6 bg-slate-50 rounded-lg border border-slate-200">
+                                <span class="font-bold text-slate-700 w-32">Signific...</span>
+                                <input type="text" id="w2" class="cloze-input w-32 bg-white" placeholder="">
+                                <span class="text-base text-slate-500">(Adjective)</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-6 bg-slate-50 rounded-lg border border-slate-200">
+                                <span class="font-bold text-slate-700 w-32">Neverthe...</span>
+                                <input type="text" id="w3" class="cloze-input w-32 bg-white" placeholder="">
+                                <span class="text-base text-slate-500">(Transition)</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-6 bg-slate-50 rounded-lg border border-slate-200">
+                                <span class="font-bold text-slate-700 w-32">Consid...</span>
+                                <input type="text" id="w4" class="cloze-input w-32 bg-white" placeholder="">
+                                <span class="text-base text-slate-500">(Verb)</span>
+                            </div>
+                        </div>
+                        <div id="warmup-feedback" class="mt-6 font-bold text-xl h-8"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Guided Practice (Emerald Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-3xl font-bold text-emerald-900">Step 5: Guided Practice</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-8">
+                    
+                    <div>
+                         <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-emerald-800">Scaffolded Passage</h3>
+                            <button onclick="checkGuided()" class="text-lg font-bold text-white bg-emerald-600 px-6 py-3 rounded-xl hover:bg-emerald-700 transition-colors shadow-sm">Check Answers</button>
+                        </div>
+                        
+                        <div class="bg-emerald-50/50 p-8 rounded-2xl border border-emerald-200 text-3xl leading-loose font-serif text-slate-800 shadow-inner">
+                            "The impact of urbanization on local ecosystems is a growing concern for biologists. Many 
+                            spec<input type="text" class="cloze-input w-16" data-answer="ies"> 
+                            of 
+                            bi<input type="text" class="cloze-input w-16" data-answer="rds"> 
+                            are 
+                            find<input type="text" class="cloze-input w-16" data-answer="ing"> 
+                            it 
+                            increas<input type="text" class="cloze-input w-24" data-answer="ingly"> 
+                            diffi<input type="text" class="cloze-input w-16" data-answer="cult"> 
+                            to 
+                            thri<input type="text" class="cloze-input w-16" data-answer="ve"> 
+                            in 
+                            ur<input type="text" class="cloze-input w-16" data-answer="ban"> 
+                            environments. This 
+                            phenome<input type="text" class="cloze-input w-16" data-answer="non"> 
+                            is 
+                            primar<input type="text" class="cloze-input w-16" data-answer="ily"> 
+                            caused 
+                            b<input type="text" class="cloze-input w-8" data-answer="y"> 
+                            the 
+                            destruct<input type="text" class="cloze-input w-16" data-answer="ion"> 
+                            of 
+                            natu<input type="text" class="cloze-input w-16" data-answer="ral"> 
+                            habitats."
+                            <div id="feedback-guided" class="mt-6 font-sans text-xl font-bold min-h-[2rem]"></div>
+                        </div>
+
+                        <div class="mt-8 p-6 bg-white border border-slate-200 rounded-xl">
+                            <h4 class="font-bold text-emerald-800 mb-2 text-xl">Thinking Prompts:</h4>
+                            <ul class="list-disc pl-5 space-y-2 text-slate-600 text-lg">
+                                <li><strong>Spec... of bi...:</strong> Plural noun for animals + plural noun for category (birds).</li>
+                                <li><strong>increas... diffi...:</strong> Adverb + Adjective pairing.</li>
+                                <li><strong>phenome...:</strong> Singular noun describing a situation.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Independent Challenge (Violet Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-3xl font-bold text-violet-900">Step 6-7: Simulation & Challenge</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-violet-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-10">
+                    
+                    <!-- Simulation Setup -->
+                    <div class="bg-violet-50 p-6 rounded-xl border border-violet-200">
+                        <h3 class="font-bold text-violet-900 text-2xl mb-3">Step 6: Technical Simulation Tips</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-xl text-slate-700">
+                            <li><strong>Disable Tools:</strong> Turn off spell-check/auto-correct.</li>
+                            <li><strong>Timer:</strong> 3 Minutes.</li>
+                            <li><strong>Navigation:</strong> Use [Tab] key to move between blanks.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Independent Challenge -->
+                    <div>
+                         <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-violet-800">Step 7: Independent Challenge (Exam Style)</h3>
+                            <div class="flex gap-4">
+                                <div class="text-2xl font-mono text-slate-500 font-bold" id="timer-display">03:00</div>
+                                <button onclick="startTimer()" class="text-lg font-bold text-violet-600 underline">Start Timer</button>
+                                <button onclick="checkChallenge()" class="text-lg font-bold text-white bg-violet-600 px-6 py-3 rounded-xl hover:bg-violet-700 transition-colors shadow-md">Submit</button>
+                            </div>
+                        </div>
+
+                        <div class="p-8 rounded-2xl border-2 border-slate-200 text-3xl leading-loose font-serif text-slate-800 shadow-inner bg-white">
+                            "The rapid advancement of digital technology has transformed the way we consume information. In the 
+                            pa<input type="text" class="cloze-input w-16" data-answer="st">, 
+                            people 
+                            reli<input type="text" class="cloze-input w-16" data-answer="ed"> 
+                            heavi<input type="text" class="cloze-input w-16" data-answer="ly"> 
+                            on print 
+                            journal<input type="text" class="cloze-input w-24" data-answer="ism"> 
+                            to 
+                            st<input type="text" class="cloze-input w-16" data-answer="ay"> 
+                            inform<input type="text" class="cloze-input w-16" data-answer="ed"> 
+                            about 
+                            glob<input type="text" class="cloze-input w-16" data-answer="al"> 
+                            events. 
+                            Howe<input type="text" class="cloze-input w-20" data-answer="ver">, 
+                            the 
+                            ri<input type="text" class="cloze-input w-16" data-answer="se"> 
+                            of 
+                            soci<input type="text" class="cloze-input w-16" data-answer="al"> 
+                            med<input type="text" class="cloze-input w-16" data-answer="ia"> 
+                            has 
+                            allow<input type="text" class="cloze-input w-16" data-answer="ed"> 
+                            for the 
+                            instanta<input type="text" class="cloze-input w-32" data-answer="neous"> 
+                            disseminat<input type="text" class="cloze-input w-24" data-answer="ion"> 
+                            of 
+                            ne<input type="text" class="cloze-input w-16" data-answer="ws">, 
+                            often 
+                            witho<input type="text" class="cloze-input w-16" data-answer="ut"> 
+                            the oversight of 
+                            tradition<input type="text" class="cloze-input w-16" data-answer="al"> 
+                            editori<input type="text" class="cloze-input w-16" data-answer="al"> 
+                            standards. This 
+                            shi<input type="text" class="cloze-input w-16" data-answer="ft"> 
+                            has 
+                            create<input type="text" class="cloze-input w-16" data-answer="d"> 
+                            new 
+                            challeng<input type="text" class="cloze-input w-24" data-answer="es"> 
+                            for media literacy."
+                            <div id="feedback-challenge" class="mt-6 font-sans text-xl font-bold min-h-[2rem]"></div>
+                        </div>
+
+                        <div class="mt-8 pt-8 border-t border-slate-100">
+                            <h4 class="font-bold text-violet-800 mb-4 text-2xl">Step 8: Performance Checklist</h4>
+                             <div class="space-y-3 text-xl">
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span><strong>Grammar:</strong> Checked for plurals (-s) and past tense (-ed)?</span>
+                                </label>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span><strong>Spelling:</strong> Used American spellings (e.g., 'summarize')?</span>
+                                </label>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span><strong>Logic:</strong> Did you read the whole sentence after finishing?</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Reflection (Rose Theme) -->
+        <div class="mb-12 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-3xl font-bold text-rose-900">Step 9-10: Feedback & Reflection</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-rose-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-8">
+                    
+                    <!-- AI Prompting -->
+                    <div class="bg-rose-50 p-8 rounded-xl border-l-4 border-rose-500 shadow-sm">
+                        <h3 class="text-2xl font-bold text-rose-900 mb-2"><i class="fas fa-robot mr-2"></i>Step 9: AI Prompting Lab</h3>
+                        <p class="text-xl text-slate-600 mb-3">Copy this into an LLM to check your answers:</p>
+                        <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-600">
+                            <p id="ai-prompt-text">"I am practicing for the Duolingo English Test Read and Complete task at a C1 level, and I would like you to create a short passage with missing words for me to complete. After I fill in the blanks, please check my answers for correctness of the completed words, grammatical accuracy including tense and pluralization, and contextual fit within the passage."</p>
+                            <button onclick="copyToClipboard('ai-prompt-text')" class="absolute top-2 right-2 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reflection -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-rose-800 mb-4">Step 10: Reflective Feedback Loop</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-xl text-slate-700 font-medium mb-2">1. One "Aha!" Moment:</label>
+                                <textarea placeholder="e.g., What was a word that looked impossible until you read the last sentence?" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xl text-slate-700 font-medium mb-2">2. One "Roadblock":</label>
+                                <textarea placeholder="e.g., Which suffix (like -ment, -ity, -able) do you need to study more?" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-xl font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data Configuration ---
+        const answers = {
+            warmup: { w1: "more", w2: "ant", w3: "less", w4: "er" }
+        };
+        
+        // Track attempts per section
+        let attempts = {
+            warmup: 0,
+            guided: 0,
+            challenge: 0
+        };
+
+        // --- Logic Handlers ---
+
+        function checkWarmup() {
+            let correct = 0;
+            const total = 4;
+            
+            // Check if user has maxed attempts
+            const currentAttempt = attempts['warmup'];
+            
+            for(let i=1; i<=total; i++) {
+                const el = document.getElementById(`w${i}`);
+                const val = el.value.toLowerCase().trim();
+                const ans = answers.warmup[`w${i}`];
+                
+                if(val === ans) {
+                    el.classList.add('correct');
+                    el.classList.remove('incorrect');
+                    correct++;
+                } else {
+                    el.classList.add('incorrect');
+                    el.classList.remove('correct');
+                    // Reveal on the 2nd attempt click (meaning they just failed attempt 2)
+                    if (currentAttempt >= 1) { 
+                         el.value = ans; 
+                         el.classList.add('revealed');
+                    }
+                }
+            }
+            
+            const feedback = document.getElementById('warmup-feedback');
+            
+            if(correct === total) {
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle"></i> All Correct!</span>';
+                // Lock attempts if perfect
+                attempts['warmup'] = 2; 
+            } else {
+                attempts['warmup']++;
+                if (attempts['warmup'] >= 2) {
+                    feedback.innerHTML = `<span class="text-red-600 font-bold"><i class="fas fa-info-circle"></i> Answers Revealed. Review the correct suffixes.</span>`;
+                } else {
+                    feedback.innerHTML = `<span class="text-orange-500"><i class="fas fa-exclamation-circle"></i> ${correct}/${total} correct. You have 1 attempt remaining.</span>`;
+                }
+            }
+        }
+
+        function checkGuided() {
+            checkClozeSection('content-part3', 'feedback-guided', 'guided');
+        }
+
+        function checkChallenge() {
+            checkClozeSection('content-part4', 'feedback-challenge', 'challenge');
+        }
+
+        function checkClozeSection(containerId, feedbackId, attemptKey) {
+            const container = document.getElementById(containerId);
+            const inputs = container.querySelectorAll('.cloze-input');
+            let correctCount = 0;
+            let currentAttempt = attempts[attemptKey];
+            
+            inputs.forEach(input => {
+                const answer = input.getAttribute('data-answer').toLowerCase();
+                const val = input.value.toLowerCase().trim();
+                
+                if (val === answer) {
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                    correctCount++;
+                } else {
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                    // Reveal on failure of attempt 2
+                    if (currentAttempt >= 1) {
+                        input.value = answer; 
+                        input.classList.add('revealed');
+                    }
+                }
+            });
+
+            const feedback = document.getElementById(feedbackId);
+            
+            if (correctCount === inputs.length) {
+                feedback.innerHTML = `<span class="text-green-600 font-bold"><i class="fas fa-check-circle mr-2"></i>Perfect Score! (${correctCount}/${inputs.length})</span>`;
+                attempts[attemptKey] = 2; // Lock further attempts
+            } else {
+                attempts[attemptKey]++;
+                if (attempts[attemptKey] >= 2) {
+                    feedback.innerHTML = `<span class="text-red-600 font-bold"><i class="fas fa-info-circle mr-2"></i>Answers Revealed. Review your mistakes.</span>`;
+                } else {
+                    feedback.innerHTML = `<span class="text-orange-600 font-bold"><i class="fas fa-exclamation-triangle mr-2"></i>You got ${correctCount} out of ${inputs.length} correct. 1 Attempt Remaining.</span>`;
+                }
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('Prompt copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        // Timer
+        let timerInterval;
+        let timeLeft = 180; // 3 minutes
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 180;
+            updateTimer();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time is up!");
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            document.getElementById('timer-display').innerText = `0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '4000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers and reset attempts?")) {
+                // Reset inputs
+                document.querySelectorAll('input').forEach(i => {
+                    i.value = "";
+                    i.classList.remove('correct', 'incorrect', 'revealed');
+                });
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                
+                // Reset Logic
+                attempts['warmup'] = 0;
+                attempts['guided'] = 0;
+                attempts['challenge'] = 0;
+                
+                // Reset Timer
+                clearInterval(timerInterval);
+                document.getElementById('timer-display').innerText = "03:00";
+            }
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Listening - Navigating International Hubs</title>
+    <script src="https://js.puter.com/v2/"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* AI Prompt Box Style */
+        .ai-prompt-box {
+            background-color: #f0f9ff;
+            border-left: 8px solid #0284c7;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-2xl">
+
+    <div class="max-w-7xl mx-auto bg-white p-8 md:p-14 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <div class="text-base text-slate-500 mb-8 flex gap-3 font-semibold uppercase tracking-wider">
+            <span>Business English</span> <span>&gt;</span> 
+            <span>Listening</span> <span>&gt;</span> 
+            <span>B1 Level</span> <span>&gt;</span> 
+            <span class="text-cyan-700 font-bold">Navigating International Hubs</span>
+        </div>
+
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-8 mb-12">
+            <div>
+                <h1 class="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-700 to-blue-600 tracking-tight mb-4 leading-tight">
+                    The Airport Express Announcement
+                </h1>
+                <p class="text-3xl text-slate-500 font-medium">Topic: Navigating International Hubs</p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-4 text-xl text-slate-500 hover:text-red-600 transition-colors font-bold hover:bg-red-50 rounded-xl border border-transparent hover:border-red-200">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border-l-8 border-cyan-600 p-8 mb-12 rounded-r-2xl shadow-sm">
+            <p class="text-2xl text-slate-700 leading-relaxed font-medium">
+                <i class="fas fa-headphones mr-4 text-cyan-600"></i> 
+                <strong>Instructions:</strong> Complete the <strong>Preparation</strong> tasks first. Then listen to the announcement (read the script) and answer the questions. Correct answers will appear after 2 incorrect attempts for multiple-choice tasks.
+            </p>
+        </div>
+
+        <div class="mb-8 rounded-3xl overflow-hidden border border-cyan-100 shadow-lg">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-10 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-cyan-200 text-cyan-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-4xl font-bold text-cyan-900">Preparation (Tasks 1–2)</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-4xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 5000px;">
+                <div class="p-12 bg-white space-y-16">
+                    
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-cyan-800">Task 1: Warm-Up Thinking</h3>
+                            <button onclick="toggleAnswer('ans-t1', this)" class="text-xl font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-6 py-3 rounded-xl hover:bg-cyan-50 transition-colors shadow-sm">Show Sample Ideas</button>
+                        </div>
+                        <div class="space-y-6">
+                            <ul class="list-disc pl-8 space-y-3 text-2xl text-slate-700 font-medium">
+                                <li>How do you feel when you hear an announcement in a foreign language at a busy airport or station?</li>
+                                <li>What are the most important pieces of information you look for when a platform changes?</li>
+                                <li>In a high-stakes professional situation, like attending a medical conference, do you prefer trains or taxis? Why?</li>
+                            </ul>
+                            <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none" placeholder="Write your ideas here..."></textarea>
+                            <div id="ans-t1" class="answer-box hidden mt-6 p-8 bg-cyan-50 border-2 border-cyan-200 rounded-2xl text-2xl text-slate-700">
+                                <strong>Sample Ideas:</strong>
+                                <ul class="list-disc pl-8 mt-4 space-y-3">
+                                    <li>I usually feel anxious or hyper-focused to ensure I don't miss important details.</li>
+                                    <li>I look for the new platform number, the departure time, and directions to get there.</li>
+                                    <li>I prefer trains because they bypass road traffic, making them more predictable for important meetings.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Task 1.1: AI Support for Warm-Up</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-4 uppercase tracking-wider text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-6 rounded-xl border border-sky-200 font-mono text-2xl leading-relaxed">"I am an international traveler in a Japanese train station heading to a medical center. There has just been an announcement regarding a platform change for the 'Haruka Limited Express.' Provide a concise, 3-step checklist in B1-level English explaining what a traveler should do immediately to ensure they find the correct train and their reserved seat."</p>
+                        </div>
+                        <div class="space-y-6 mt-8">
+                            <p class="text-2xl text-slate-700 font-medium">Draft your own 3-step checklist before comparing it to the AI's response.</p>
+                            <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+                             <div class="mt-6">
+                                <button onclick="toggleAnswer('sample-ai-1', this)" class="text-xl font-bold text-cyan-600 underline hover:text-cyan-800">Show AI Sample Response</button>
+                                <div id="sample-ai-1" class="answer-box hidden mt-4 p-6 bg-slate-50 rounded-2xl border border-slate-200 text-2xl text-slate-700 italic">
+                                    1. Listen carefully for the new platform number and follow the signs to get there.<br>
+                                    2. Check the digital boards at the new platform to confirm the train name and departure time.<br>
+                                    3. Look at your ticket to find your car number and stand at the correct designated boarding mark.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-cyan-800">Task 2: Vocabulary in Context</h3>
+                            <button onclick="checkVocab()" class="text-xl font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-8 py-4 rounded-xl hover:bg-cyan-50 transition-colors shadow-sm">Check Vocabulary</button>
+                        </div>
+                        <p class="text-2xl text-slate-700 mb-6">Read the sentences taken from the text. Choose the correct meaning of each CAPITALIZED word.</p>
+                        <div id="vocab-container" class="space-y-8">
+                            </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8 rounded-3xl overflow-hidden border border-blue-100 shadow-lg">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-10 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-blue-200 text-blue-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-headphones"></i></div>
+                    <span class="text-4xl font-bold text-blue-900">Listening & Script</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-4xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-12 bg-white">
+                    
+                    <div class="mb-10 p-6 bg-slate-800 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-6 text-white" id="audio-section">
+                        <div id="audio-uninitialized" class="w-full flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div>
+                                <p class="text-xl font-bold mb-1">Track 01: The Airport Express Announcement</p>
+                                <p class="text-slate-400 text-base">Audio not generated yet. Click to synthesize the AI voice track.</p>
+                            </div>
+                            <button onclick="generateAndPlayAudio()" id="generate-audio-btn" class="px-6 py-3 bg-blue-500 hover:bg-blue-400 rounded-xl font-bold transition-all shadow-lg shrink-0 flex items-center gap-3">
+                                <i class="fas fa-robot text-xl"></i> <span>Generate Audio</span>
+                            </button>
+                        </div>
+                        
+                        <div id="audio-loading" class="hidden w-full items-center justify-center gap-4 py-4">
+                            <i class="fas fa-spinner fa-spin text-3xl text-blue-400"></i>
+                            <span class="text-xl text-blue-300 font-medium">Synthesizing AI Audio... Please wait.</span>
+                        </div>
+
+                        <div id="audio-player-container" class="hidden w-full items-center gap-6">
+                            <div class="w-full">
+                                <p class="text-xl font-bold mb-3">Track 01: The Airport Express Announcement</p>
+                                <audio id="native-audio-player" class="w-full h-12 rounded-lg outline-none" controls></audio>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-blue-200 rounded-2xl overflow-hidden shadow-sm">
+                        <button onclick="toggleScript()" class="w-full flex items-center justify-between p-6 bg-blue-50 text-blue-900 text-2xl font-bold hover:bg-blue-100 transition-colors">
+                            <span>Read Announcement Script</span>
+                            <i id="script-icon" class="fas fa-chevron-down text-3xl transform transition-transform duration-300"></i>
+                        </button>
+                        <div id="script-content" class="hidden p-10 bg-white prose prose-slate max-w-none text-justify leading-loose text-2xl">
+                            <p>"Attention, passengers. This is an urgent travel update for the Haruka Limited Express service to Kyoto Medical Center and Kyoto Station. Due to unexpected track maintenance between Osaka and Shin-Osaka, there has been a platform <strong>ALTERATION</strong>. The 10:15 service, originally <strong>DEPARTING</strong> from Platform 4, will now <strong>PROCEED</strong> from Platform 7. Please use the stairs or the elevator <strong>ADJACENT</strong> to the Information Desk to reach Platform 7. We apologize for the inconvenience and the <strong>IMMEDIATE</strong> change. Please check your tickets to ensure you are boarding the <strong>DESIGNATED</strong> car for reserved seating. For passengers heading to the International Medical Conference, a shuttle bus remains available at the West Exit as a secondary option."</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8 rounded-3xl overflow-hidden border border-emerald-100 shadow-lg">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-10 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-emerald-200 text-emerald-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-4xl font-bold text-emerald-900">Comprehension (Tasks 3–5)</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-12 bg-white space-y-16">
+                    
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-emerald-800">Task 3: General Understanding (Gist)</h3>
+                            <button onclick="toggleAnswer('ans-t3', this)" class="text-xl font-bold text-emerald-700 border-2 border-emerald-200 bg-white px-6 py-3 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm">Show Sample Answers</button>
+                        </div>
+                        <div class="space-y-6">
+                            <ul class="list-decimal pl-8 space-y-3 text-2xl text-slate-700 font-medium">
+                                <li>What is the primary purpose of this announcement?</li>
+                                <li>Where is the train service heading?</li>
+                                <li>What is the reason for the platform change?</li>
+                            </ul>
+                            <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:emerald-200 focus:border-emerald-500 outline-none" placeholder="Your answers..."></textarea>
+                            <div id="ans-t3" class="answer-box hidden mt-6 p-8 bg-emerald-50 rounded-2xl border-2 border-emerald-200 text-2xl text-slate-700">
+                                <ul class="list-disc pl-8 space-y-3">
+                                    <li><strong>Purpose:</strong> To inform passengers about an urgent platform change for the 10:15 service.</li>
+                                    <li><strong>Destination:</strong> Kyoto Medical Center and Kyoto Station.</li>
+                                    <li><strong>Reason:</strong> Unexpected track maintenance between Osaka and Shin-Osaka.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-emerald-800">Task 4: Detail and Meaning</h3>
+                            <button onclick="toggleAnswer('ans-t4', this)" class="text-xl font-bold text-emerald-700 border-2 border-emerald-200 bg-white px-6 py-3 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm">Show Sample Answers</button>
+                        </div>
+                        <div class="space-y-6">
+                            <ul class="list-decimal pl-8 space-y-3 text-2xl text-slate-700 font-medium">
+                                <li>What was the original platform for the 10:15 service?</li>
+                                <li>Where exactly is the elevator located?</li>
+                                <li>What alternative transport is available at the West Exit?</li>
+                            </ul>
+                            <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:emerald-200 focus:border-emerald-500 outline-none" placeholder="Your answers..."></textarea>
+                            <div id="ans-t4" class="answer-box hidden mt-6 p-8 bg-emerald-50 rounded-2xl border-2 border-emerald-200 text-2xl text-slate-700">
+                                <ul class="list-disc pl-8 space-y-3">
+                                    <li><strong>Original Platform:</strong> Platform 4.</li>
+                                    <li><strong>Elevator Location:</strong> Adjacent (next to) the Information Desk.</li>
+                                    <li><strong>Alternative Transport:</strong> A shuttle bus for passengers heading to the International Medical Conference.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-emerald-800">Task 5: Opinion Check (True/False)</h3>
+                            <button onclick="checkTF()" class="text-xl font-bold text-emerald-700 border-2 border-emerald-200 bg-white px-8 py-4 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm">Check Answers</button>
+                        </div>
+                        <div id="tf-container" class="space-y-6 text-2xl">
+                            </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8 rounded-3xl overflow-hidden border border-orange-100 shadow-lg">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-10 bg-orange-50 hover:bg-orange-100 border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-orange-200 text-orange-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-4xl font-bold text-orange-900">Analysis (Tasks 6–7)</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-12 bg-white space-y-16">
+                    
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-orange-800">Task 6: Cause and Effect Thinking</h3>
+                            <button onclick="toggleAnswer('ans-t6', this)" class="text-xl font-bold text-orange-700 border-2 border-orange-200 bg-white px-6 py-3 rounded-xl hover:bg-orange-50 transition-colors shadow-sm">Show Sample</button>
+                        </div>
+                        <p class="text-2xl text-slate-700 mb-6 font-medium">Identify the logical relationship between these statements from the script:</p>
+                        <div class="space-y-8 bg-slate-50 p-8 rounded-2xl border border-slate-200">
+                            <div class="space-y-4">
+                                <span class="block font-bold text-2xl text-orange-900">Cause: There is unexpected track maintenance between Osaka and Shin-Osaka...</span>
+                                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                                    <span class="font-bold text-2xl text-slate-600">Effect:</span> 
+                                    <input type="text" class="flex-1 p-4 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-orange-500 text-xl w-full">
+                                </div>
+                            </div>
+                            <div class="h-px bg-slate-300 w-full my-4"></div>
+                            <div class="space-y-4">
+                                <span class="block font-bold text-2xl text-orange-900">Cause: The platform has been changed to Platform 7...</span>
+                                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                                    <span class="font-bold text-2xl text-slate-600">Effect:</span> 
+                                    <input type="text" class="flex-1 p-4 border-2 border-slate-300 rounded-xl focus:outline-none focus:border-orange-500 text-xl w-full">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ans-t6" class="answer-box hidden mt-8 p-8 bg-orange-50 rounded-2xl border-2 border-orange-200 text-2xl text-slate-800">
+                            <ul class="list-none space-y-6">
+                                <li><strong>Effect 1:</strong> ...there has been a platform alteration for the 10:15 service. <em>(Logic: Track issues force a change in where the train can physically stop).</em></li>
+                                <li><strong>Effect 2:</strong> ...passengers must go to the Information Desk area to use the stairs or elevator. <em>(Logic: A change in location requires passengers to follow new directional cues).</em></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-3xl font-bold text-orange-800 mb-6">Task 6.1: AI-Guided Extension</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-4 uppercase tracking-wider text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-6 rounded-xl border border-sky-200 font-mono text-2xl leading-relaxed">"In a busy international transportation hub, explain the logical relationship between a 'platform alteration' and 'boarding a designated car.' Why is it critical for a professional traveler to re-verify their car number when the departure platform changes? Answer in simple, professional English suitable for a B1 learner."</p>
+                        </div>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none mt-6" placeholder="Your explanation..."></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-3xl font-bold text-orange-800 mb-6">Task 7: Speaking – Personal Position</h3>
+                        <div class="space-y-6">
+                            <ul class="list-decimal pl-8 space-y-3 text-2xl text-slate-700 font-medium">
+                                <li>If you were 5 minutes away from departure and heard this announcement, would you follow the instructions or ask a staff member for help?</li>
+                                <li>Do you think voice announcements are enough, or should all stations have digital signs in multiple languages?</li>
+                            </ul>
+                            <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none" placeholder="Jot down your speaking points..."></textarea>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-3xl font-bold text-orange-800 mb-6">Task 7.1: AI as Practice Partner</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-4 uppercase tracking-wider text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-6 rounded-xl border border-sky-200 font-mono text-2xl leading-relaxed">"Act as a station staff member at a major Japanese transit hub. I am a traveler heading to an International Medical Conference and I am confused because the platform for my train was just changed from Platform 4 to Platform 7. Start a conversation by asking me where I am going, then explain how to find the elevator and remind me to check my reserved seating car. Keep the language at a B1 level."</p>
+                        </div>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none mt-6" placeholder="Write your side of the dialogue..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8 rounded-3xl overflow-hidden border border-violet-100 shadow-lg">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-10 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-violet-200 text-violet-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-4xl font-bold text-violet-900">Case Studies (Tasks 8–9)</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-12 bg-white space-y-16">
+                    
+                    <div>
+                        <h3 class="text-3xl font-bold text-violet-800 mb-6">Task 8: Discussion – Contextual Skills</h3>
+                        <p class="text-2xl text-slate-700 mb-6 font-medium">When traveling to an international medical conference, what strategies can you use to ensure you arrive on time despite transit delays? How do you maintain professional composure when things go wrong?</p>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none" placeholder="Your discussion points..."></textarea>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-violet-800">Task 9: Case Study – Decision Making</h3>
+                            <button onclick="toggleAnswer('ans-t9', this)" class="text-xl font-bold text-violet-700 border-2 border-violet-200 bg-white px-6 py-3 rounded-xl hover:bg-violet-50 transition-colors shadow-sm">Show Evaluation</button>
+                        </div>
+                        <div class="bg-violet-50 p-8 rounded-2xl border-2 border-violet-100 mb-6">
+                            <p class="text-2xl text-violet-900 font-bold mb-4">Scenario:</p>
+                            <p class="text-2xl text-slate-800 mb-6 leading-relaxed">You arrive at Platform 7, but the train is delayed by another 20 minutes. Your presentation at the Kyoto Medical Center starts in 50 minutes.</p>
+                            <ul class="list-none space-y-4 text-2xl text-slate-700">
+                                <li><i class="fas fa-subway text-violet-600 mr-3"></i><strong>Option A:</strong> Wait for the train, which goes directly to the Medical Center station.</li>
+                                <li><i class="fas fa-bus text-violet-600 mr-3"></i><strong>Option B:</strong> Go to the West Exit and take the conference shuttle bus, which is leaving now but faces city traffic.</li>
+                            </ul>
+                        </div>
+                        <p class="text-2xl text-slate-700 mb-4 font-medium">Discuss the pros and cons of each with your partner, then document your choice.</p>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-40" placeholder="I would choose Option... because..."></textarea>
+                        <div id="ans-t9" class="answer-box hidden mt-6 p-8 bg-white border-2 border-violet-200 rounded-2xl text-2xl text-slate-700">
+                            <strong>Analysis:</strong> Train delays are generally predictable once a new time is set, and rail bypasses traffic (Option A). However, a shuttle bus guarantees immediate movement, but is subject to unpredictable road conditions (Option B). The professional choice depends on knowing the city's traffic reputation.
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-3xl font-bold text-violet-800 mb-6">Task 9.1: AI Role Play Comparison</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-800 mb-4 uppercase tracking-wider text-xl"><i class="fas fa-robot mr-3"></i>AI Prompt:</p>
+                            <p class="italic text-slate-800 bg-white p-6 rounded-xl border border-sky-200 font-mono text-2xl leading-relaxed">"Let's simulate a debate regarding travel logic for professionals. Scenario: A train is delayed 20 minutes before a major presentation. Point A: It is better to wait on the platform because rail transit is generally more reliable than road traffic. Point B: It is better to switch to a conference shuttle bus immediately to ensure some movement toward the destination. You take Point A, and I will take Point B. Please provide your first argument in 3 sentences."</p>
+                        </div>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none mt-6" placeholder="Your argument for Point B..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-10 rounded-3xl overflow-hidden border border-rose-100 shadow-lg">
+            <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-10 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-6">
+                    <div class="bg-rose-200 text-rose-800 w-14 h-14 rounded-full flex items-center justify-center font-bold text-3xl shadow-sm group-hover:scale-110 transition-transform">6</div>
+                    <span class="text-4xl font-bold text-rose-900">Summary & Reflection (Task 10)</span>
+                </div>
+                <i id="icon-part6" class="fas fa-chevron-down text-rose-600 text-4xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part6" class="accordion-content">
+                <div class="p-12 bg-white space-y-10">
+                    <div>
+                        <h3 class="text-3xl font-bold text-rose-800 mb-6">Task 10: Final Reflection</h3>
+                        <p class="text-2xl text-slate-700 mb-6 font-medium leading-relaxed">Write a summary (5-6 sentences) reflecting on your strategies for navigating international travel. Describe a time you experienced a travel <strong>ALTERATION</strong>. Use at least three CAPITALIZED words from Task 2 to explain how you reached your <strong>DESIGNATED</strong> destination.</p>
+                        <textarea class="w-full p-6 border-2 border-slate-300 rounded-2xl text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-64" placeholder="Your reflection paragraph..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-20 pt-10 border-t-2 border-slate-100 text-center">
+            <p class="text-slate-500 text-xl font-bold tracking-wide">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-cyan-600 hover:text-cyan-800 transition-colors underline decoration-2 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        const attempts = {};
+
+        // Task 2: Vocab Data
+        const vocabData = [
+            { 
+                id: "v1", 
+                sentence: "Due to unexpected track maintenance, there has been a platform <strong>ALTERATION</strong>.", 
+                correct: "b", 
+                options: { 
+                    a: "A problem that causes a total cancellation.", 
+                    b: "A change or modification to the original plan.", 
+                    c: "A repair done to the train wheels." 
+                } 
+            },
+            { 
+                id: "v2", 
+                sentence: "The 10:15 service, originally <strong>DEPARTING</strong> from Platform 4...", 
+                correct: "c", 
+                options: { 
+                    a: "Arriving at a destination.", 
+                    b: "Waiting for a long time.", 
+                    c: "Leaving or starting a journey from a place." 
+                } 
+            },
+            { 
+                id: "v3", 
+                sentence: "...will now <strong>PROCEED</strong> from Platform 7.", 
+                correct: "b", 
+                options: { 
+                    a: "To stop and wait.", 
+                    b: "To move forward or happen from a specific place.", 
+                    c: "To cancel a scheduled event." 
+                } 
+            },
+            { 
+                id: "v4", 
+                sentence: "Please use the stairs or the elevator <strong>ADJACENT</strong> to the Information Desk.", 
+                correct: "c", 
+                options: { 
+                    a: "Very far away from.", 
+                    b: "Directly above or below.", 
+                    c: "Next to or joined to something else." 
+                } 
+            },
+            { 
+                id: "v5", 
+                sentence: "We apologize for the inconvenience and the <strong>IMMEDIATE</strong> change.", 
+                correct: "a", 
+                options: { 
+                    a: "Happening right away without delay.", 
+                    b: "Happening much later in the day.", 
+                    c: "Planned many weeks in advance." 
+                } 
+            },
+            { 
+                id: "v6", 
+                sentence: "Please check your tickets to ensure you are boarding the <strong>DESIGNATED</strong> car.", 
+                correct: "b", 
+                options: { 
+                    a: "A car that is chosen for everyone to use freely.", 
+                    b: "A specific or assigned place or position.", 
+                    c: "A car that is currently broken or closed." 
+                } 
+            }
+        ];
+
+        // Task 5: True/False Data
+        const tfData = [
+            { 
+                id: "tf1", 
+                text: "1. The train is only going to Kyoto Station.", 
+                correct: "False", 
+                explanation: "It also stops at the Kyoto Medical Center." 
+            },
+            { 
+                id: "tf2", 
+                text: "2. The platform change was caused by planned maintenance known months ago.", 
+                correct: "False", 
+                explanation: "The script describes the maintenance as 'unexpected.'" 
+            },
+            { 
+                id: "tf3", 
+                text: "3. Passengers with reserved seats should check their ticket for a specific car number.", 
+                correct: "True", 
+                explanation: "The announcement explicitly asks passengers to check their tickets for the 'designated car.'" 
+            },
+            { 
+                id: "tf4", 
+                text: "4. The announcement provides clear directions on how to reach the new platform.", 
+                correct: "True", 
+                explanation: "It mentions using the stairs or elevator 'adjacent to the Information Desk.'" 
+            }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col gap-6 p-8 bg-cyan-50/50 rounded-2xl border-2 border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <p class="text-2xl text-slate-800 font-medium italic border-l-8 border-cyan-400 pl-6">"${item.sentence}"</p>
+                    <div class="flex flex-col gap-4 pl-4">
+                        ${Object.entries(item.options).map(([key, val]) => `
+                            <label class="flex items-center gap-4 p-5 bg-white rounded-xl border-2 border-slate-200 cursor-pointer hover:bg-cyan-50 hover:border-cyan-300 transition-all">
+                                <input type="radio" name="${item.id}" value="${key}" class="w-6 h-6 accent-cyan-600 shrink-0">
+                                <span class="text-2xl text-slate-700"><strong>${key}.</strong> ${val}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-2xl font-bold min-h-[32px] mt-2 pl-4"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col gap-4 p-8 border-b-2 border-emerald-100 last:border-0 bg-white rounded-xl mb-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+                        <span class="text-2xl text-slate-800 font-medium w-full xl:w-2/3">${item.text}</span>
+                        <div class="flex items-center gap-8 text-2xl font-bold bg-slate-50 p-4 rounded-xl shrink-0">
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-emerald-700">
+                                <input type="radio" name="${item.id}" value="True" class="w-7 h-7 accent-emerald-600"> True
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-emerald-700">
+                                <input type="radio" name="${item.id}" value="False" class="w-7 h-7 accent-emerald-600"> False
+                            </label>
+                            <span id="feedback-${item.id}" class="w-10 flex justify-center text-3xl"></span>
+                        </div>
+                    </div>
+                    <div id="explain-${item.id}" class="hidden mt-4 p-6 bg-emerald-100 text-emerald-900 text-2xl rounded-xl border-2 border-emerald-200 font-medium"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-3"></i>Correct!</span>';
+                    radios.forEach(r => r.disabled = true);
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-600"><i class="fas fa-info-circle mr-3"></i>Answer: ${item.correct}) ${item.options[item.correct]}</span>`;
+                    } else {
+                        feedback.innerHTML = '<span class="text-orange-600"><i class="fas fa-times-circle mr-3"></i>Try again</span>';
+                    }
+                }
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-600"></i>';
+                    radios.forEach(r => r.disabled = true);
+                    explainDiv.innerHTML = `<strong>Reason:</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-600 text-xl px-3 py-1 bg-red-100 rounded-lg">Ans: ${item.correct}</span>`;
+                        explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct}</strong><br><strong>Reason:</strong> ${item.explanation}`;
+                        explainDiv.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                    }
+                }
+            });
+        }
+
+        function toggleScript() {
+            const content = document.getElementById("script-content");
+            const icon = document.getElementById("script-icon");
+            if (content.classList.contains("hidden")) {
+                content.classList.remove("hidden");
+                icon.classList.add("rotate-180");
+            } else {
+                content.classList.add("hidden");
+                icon.classList.remove("rotate-180");
+            }
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = btn.innerText.includes("AI") ? "Show AI Sample Response" : "Show Sample";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                for (const key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                
+                // Clear Feedback & Explanations
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('[id^="explain-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.add('hidden');
+                });
+                
+                // Hide Answers
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+                
+                // Reset Buttons
+                document.querySelectorAll('button').forEach(btn => {
+                   if(btn.innerText.includes("Hide")) {
+                       btn.innerText = btn.innerText.includes("AI") ? "Show AI Sample Response" : "Show Sample";
+                   }
+                });
+
+                // Reset Audio Player State
+                document.getElementById('audio-uninitialized').classList.remove('hidden');
+                document.getElementById('audio-uninitialized').classList.add('flex');
+                document.getElementById('audio-loading').classList.add('hidden');
+                document.getElementById('audio-loading').classList.remove('flex');
+                document.getElementById('audio-player-container').classList.add('hidden');
+                document.getElementById('audio-player-container').classList.remove('flex');
+                const nativePlayer = document.getElementById('native-audio-player');
+                nativePlayer.pause();
+                nativePlayer.removeAttribute('src');
+            }
+        }
+
+        async function generateAndPlayAudio() {
+            const btnSection = document.getElementById('audio-uninitialized');
+            const loadingSection = document.getElementById('audio-loading');
+            const playerSection = document.getElementById('audio-player-container');
+            const nativePlayer = document.getElementById('native-audio-player');
+
+            // The exact script text to be synthesized
+            const scriptText = "Attention, passengers. This is an urgent travel update for the Haruka Limited Express service to Kyoto Medical Center and Kyoto Station. Due to unexpected track maintenance between Osaka and Shin-Osaka, there has been a platform ALTERATION. The 10:15 service, originally DEPARTING from Platform 4, will now PROCEED from Platform 7. Please use the stairs or the elevator ADJACENT to the Information Desk to reach Platform 7. We apologize for the inconvenience and the IMMEDIATE change. Please check your tickets to ensure you are boarding the DESIGNATED car for reserved seating. For passengers heading to the International Medical Conference, a shuttle bus remains available at the West Exit as a secondary option.";
+
+            // Switch to loading UI
+            btnSection.classList.add('hidden');
+            btnSection.classList.remove('flex');
+            loadingSection.classList.remove('hidden');
+            loadingSection.classList.add('flex');
+
+            try {
+                // Call Puter.js AI Text-to-Speech with natural voice configurations
+                const audioResponse = await puter.ai.txt2speech(scriptText, {
+                    provider: "openai",
+                    model: "tts-1-hd",
+                    voice: "alloy", // 'alloy' has a very neutral, clear, and professional tone
+                    instructions: "Speak clearly and formally at a moderate pace, like a professional public address announcer at a busy international train station. Pause slightly after commas and periods."
+                });
+                
+                // Puter.js returns an HTMLAudioElement. We extract the src to use in our custom styled player.
+                if (audioResponse instanceof HTMLAudioElement) {
+                    nativePlayer.src = audioResponse.src;
+                } else if (audioResponse && audioResponse.url) {
+                    nativePlayer.src = audioResponse.url;
+                } else {
+                    nativePlayer.src = audioResponse; 
+                }
+
+                // Switch to Player UI
+                loadingSection.classList.add('hidden');
+                loadingSection.classList.remove('flex');
+                
+                playerSection.classList.remove('hidden');
+                playerSection.classList.add('flex');
+                
+            } catch (error) {
+                console.error("Audio generation failed:", error);
+                
+                // Show Error state temporarily
+                const originalContent = loadingSection.innerHTML;
+                loadingSection.innerHTML = `<i class="fas fa-exclamation-triangle text-red-500 text-3xl"></i> <span class="text-xl text-red-400">Error generating audio. Please try again.</span>`;
+                
+                setTimeout(() => {
+                    loadingSection.innerHTML = originalContent;
+                    loadingSection.classList.add('hidden');
+                    loadingSection.classList.remove('flex');
+                    btnSection.classList.remove('hidden');
+                    btnSection.classList.add('flex');
+                }, 4000);
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderTF();
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A1 Listening - The New HR Assistant</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Very light slate background */
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Select Chevron Fix - varied colors handled via utility classes, keeping default dark for simplicity in selects */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.2rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs text-slate-400 mb-6 flex gap-2 font-medium uppercase tracking-wider">
+            <span>Business English</span> <span>&gt;</span> 
+            <span>Listening</span> <span>&gt;</span> 
+            <span>A1 listening</span> <span>&gt;</span> 
+            <span class="text-cyan-600 font-bold">The New HR Assistant</span>
+        </div>
+
+        <!-- Header & Reset -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
+            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 tracking-tight">
+                The New HR Assistant
+            </h1>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-red-500 transition-colors font-medium hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Intro Text -->
+        <div class="prose text-slate-600 mb-8 max-w-none leading-relaxed">
+            <p class="text-lg mb-4">
+                Listen to a conversation between an HR Manager and a new HR Administrator to practise your listening skills.
+            </p>
+            <p class="bg-blue-50 text-blue-800 px-4 py-2 rounded-lg inline-block border border-blue-100">
+                <i class="fas fa-info-circle mr-2"></i> Do the preparation task first. Then listen to the audio and do the exercises.
+            </p>
+        </div>
+
+        <!-- Accordion 1: Preparation (Theme: Cyan) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-cyan-100 shadow-sm">
+            <button onclick="toggleAccordion('prep')" class="w-full flex items-center justify-between p-5 bg-cyan-50 hover:bg-cyan-100 border-l-4 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg font-bold text-cyan-900">Preparation</span>
+                </div>
+                <i id="icon-prep" class="fas fa-chevron-down text-cyan-600 transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-prep" class="accordion-content active" style="max-height: 2000px; opacity: 1;">
+                <div class="p-6 bg-white">
+                    <p class="mb-4 text-slate-600 font-medium border-b border-slate-100 pb-2">Complete the sentences using the words in the box.</p>
+                    <div class="flex flex-wrap gap-2 mb-8 bg-slate-50 p-4 rounded-lg border border-slate-200" id="vocab-bank">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="space-y-4" id="prep-questions">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-8 flex justify-end" id="actions-prep">
+                        <button onclick="checkSection('prep')" class="flex items-center gap-2 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-700 hover:to-cyan-600 text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-all transform hover:-translate-y-0.5">
+                            Check answers
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio Player Bar -->
+        <div class="my-8 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl p-3 pr-6 flex items-center gap-4 shadow-lg text-white">
+            <button id="play-btn" class="w-12 h-12 bg-white text-slate-800 hover:bg-slate-100 rounded-full flex items-center justify-center shrink-0 transition-all shadow-inner transform hover:scale-105">
+                <i class="fas fa-play text-sm ml-1"></i>
+            </button>
+            
+            <!-- Progress Bar Container -->
+            <div class="flex-1 h-2 bg-slate-600 rounded-full overflow-hidden cursor-pointer relative" id="progress-container">
+                <div id="progress-bar" class="h-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)] transition-all duration-100 ease-linear" style="width: 0%"></div>
+            </div>
+            
+            <div id="time-display" class="text-xs font-mono text-slate-300 font-medium w-24 text-right">
+                00:00 / 00:00
+            </div>
+            <i class="fas fa-volume-high text-slate-400 text-lg"></i>
+        </div>
+
+        <audio id="audio-element" src="https://github.com/fajarudinakbar/audio/raw/refs/heads/main/A1%20Listening%20-%20The%20New%20HR%20Assistant.mp3"></audio>
+
+        <!-- Accordion 2: Transcript (Theme: Blue/Slate) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+            <button onclick="toggleAccordion('transcript')" class="w-full flex items-center justify-between p-5 bg-slate-50 hover:bg-slate-100 border-l-4 border-slate-400 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg font-bold text-slate-700">Transcript</span>
+                </div>
+                <i id="icon-transcript" class="fas fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+            </button>
+            <div id="content-transcript" class="accordion-content">
+                <div class="p-6 bg-white">
+                    <div id="transcript-container" class="space-y-4 max-h-80 overflow-y-auto pr-3 custom-scrollbar">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion 3: Task 1 (Theme: Emerald) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-emerald-100 shadow-sm">
+            <button onclick="toggleAccordion('task1')" class="w-full flex items-center justify-between p-5 bg-emerald-50 hover:bg-emerald-100 border-l-4 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg font-bold text-emerald-900">Task 1</span>
+                </div>
+                <i id="icon-task1" class="fas fa-chevron-down text-emerald-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-task1" class="accordion-content">
+                <div class="p-6 bg-white">
+                    <h3 class="font-bold text-emerald-800 mb-6 flex items-center gap-2">
+                        <i class="fas fa-check-double text-emerald-500"></i> Are the sentences true or false?
+                    </h3>
+                    <div class="space-y-3" id="task1-questions">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-8 flex justify-end" id="actions-task1">
+                        <button onclick="checkSection('task1')" class="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-all transform hover:-translate-y-0.5">
+                            Check answers
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion 4: Task 2 (Theme: Orange) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-orange-100 shadow-sm">
+            <button onclick="toggleAccordion('task2')" class="w-full flex items-center justify-between p-5 bg-orange-50 hover:bg-orange-100 border-l-4 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg font-bold text-orange-900">Task 2</span>
+                </div>
+                <i id="icon-task2" class="fas fa-chevron-down text-orange-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-task2" class="accordion-content">
+                <div class="p-6 bg-white">
+                    <h3 class="font-bold text-orange-800 mb-6 flex items-center gap-2">
+                         <i class="fas fa-user-tag text-orange-500"></i> Who said it? Choose Rina or Mark.
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4" id="task2-questions">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-8 flex justify-end" id="actions-task2">
+                        <button onclick="checkSection('task2')" class="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-all transform hover:-translate-y-0.5">
+                            Check answers
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion 5: Task 3 (Theme: Violet) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-violet-100 shadow-sm">
+            <button onclick="toggleAccordion('task3')" class="w-full flex items-center justify-between p-5 bg-violet-50 hover:bg-violet-100 border-l-4 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg font-bold text-violet-900">Task 3</span>
+                </div>
+                <i id="icon-task3" class="fas fa-chevron-down text-violet-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-task3" class="accordion-content">
+                <div class="p-6 bg-white">
+                    <h3 class="font-bold text-violet-800 mb-6 flex items-center gap-2">
+                        <i class="fas fa-random text-violet-500"></i> Match the questions and answers.
+                    </h3>
+                    <div class="space-y-4" id="task3-questions">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-8 flex justify-end" id="actions-task3">
+                        <button onclick="checkSection('task3')" class="flex items-center gap-2 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-700 hover:to-violet-600 text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-all transform hover:-translate-y-0.5">
+                            Check answers
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-sm font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-cyan-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Theme Configuration ---
+        const themes = {
+            prep: { main: 'cyan', btn: 'from-cyan-600 to-cyan-500 hover:from-cyan-700 hover:to-cyan-600' },
+            task1: { main: 'emerald', btn: 'from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600' },
+            task2: { main: 'orange', btn: 'from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600' },
+            task3: { main: 'violet', btn: 'from-violet-600 to-violet-500 hover:from-violet-700 hover:to-violet-600' }
+        };
+
+        // --- Data ---
+        const vocabWords = ["hiring", "CVs", "interview", "staff", "training"];
+        
+        const preparationSentences = [
+            { id: "p1", pre: "It is nice to join your company." },
+            { id: "p2", pre: "We need to find new people. We are", gap: true, post: "today.", correct: "hiring" },
+            { id: "p3", pre: "I read the", gap: true, post: "from the candidates.", correct: "CVs" },
+            { id: "p4", pre: "Tomorrow, I have an", gap: true, post: "with a new manager.", correct: "interview" },
+            { id: "p5", pre: "All the employees in the office are called", gap: true, post: ".", correct: "staff" },
+            { id: "p6", pre: "New workers need", gap: true, post: "to learn the job.", correct: "training" },
+        ];
+
+        const dialogue = [
+            { speaker: "Rina", role: "HR Manager", text: "Hello, I’m Rina. Are you the new HR Administrator?" },
+            { speaker: "Mark", role: "HR Admin", text: "Hi Rina. Yes, I am. My name is Mark." },
+            { speaker: "Rina", role: "HR Manager", text: "Nice to meet you, Mark. Welcome to the HR team." },
+            { speaker: "Mark", role: "HR Admin", text: "Thank you. I am happy to work here." },
+            { speaker: "Rina", role: "HR Manager", text: "What are your main tasks today?" },
+            { speaker: "Mark", role: "HR Admin", text: "Today, I check the CVs and call people for interviews." },
+            { speaker: "Rina", role: "HR Manager", text: "That is good. We are very busy. We are hiring five new people this month." },
+            { speaker: "Mark", role: "HR Admin", text: "Wow, that is a lot. What do you do in the team, Rina?" },
+            { speaker: "Rina", role: "HR Manager", text: "I organize the training for the new staff. I also write the contracts." },
+            { speaker: "Mark", role: "HR Admin", text: "I see. Do you enjoy it?" },
+            { speaker: "Rina", role: "HR Manager", text: "Yes, I love meeting new people. Where are you from, Mark?" },
+            { speaker: "Mark", role: "HR Admin", text: "I am from Toronto, Canada." },
+            { speaker: "Rina", role: "HR Manager", text: "That is a long way! How long have you worked in Indonesia?" },
+            { speaker: "Mark", role: "HR Admin", text: "I have been here for one year." },
+            { speaker: "Rina", role: "HR Manager", text: "Your Indonesian is probably very good then!" },
+            { speaker: "Mark", role: "HR Admin", text: "Not bad!" },
+        ];
+
+        const task1Questions = [
+            { id: "t1_1", text: "Mark is the new HR Manager.", correct: "False" },
+            { id: "t1_2", text: "Rina checks the CVs today.", correct: "False" },
+            { id: "t1_3", text: "The company is hiring five new people.", correct: "True" },
+            { id: "t1_4", text: "Rina organizes training for new staff.", correct: "True" },
+            { id: "t1_5", text: "Mark is from the UK.", correct: "False" },
+            { id: "t1_6", text: "Mark has been in Indonesia for one year.", correct: "True" },
+        ];
+
+        const task2Quotes = [
+            { id: "t2_1", text: "I organize the training.", correct: "Rina" },
+            { id: "t2_2", text: "I am from Toronto, Canada.", correct: "Mark" },
+            { id: "t2_3", text: "We are hiring five new people.", correct: "Rina" },
+            { id: "t2_4", text: "I check the CVs.", correct: "Mark" },
+            { id: "t2_5", text: "I write the contracts.", correct: "Rina" },
+            { id: "t2_6", text: "I have been here for one year.", correct: "Mark" },
+        ];
+
+        const task3Matching = [
+            { id: "t3_1", question: "What are your tasks today?", correct: "e", options: { a: "Toronto, Canada", b: "Five new people", c: "She organizes training", d: "One year", e: "I check CVs and call people" } },
+            { id: "t3_2", question: "What does Rina do?", correct: "c" },
+            { id: "t3_3", question: "How many people are they hiring?", correct: "b" },
+            { id: "t3_4", question: "Where is Mark from?", correct: "a" },
+            { id: "t3_5", question: "How long has Mark been here?", correct: "d" },
+        ];
+
+        // --- State ---
+        let state = {
+            answers: {},
+            sectionStatus: {
+                prep: { submitted: false, attempts: 0 },
+                task1: { submitted: false, attempts: 0 },
+                task2: { submitted: false, attempts: 0 },
+                task3: { submitted: false, attempts: 0 },
+            }
+        };
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderPrep();
+            renderTranscript();
+            renderTask1();
+            renderTask2();
+            renderTask3();
+            setupAudio();
+        });
+
+        // --- Rendering Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-bank');
+            container.innerHTML = vocabWords.map(word => 
+                `<span class="bg-white px-3 py-1 rounded-md border border-cyan-200 text-cyan-700 font-mono text-sm font-semibold shadow-sm">${word}</span>`
+            ).join('');
+        }
+
+        function renderPrep() {
+            const container = document.getElementById('prep-questions');
+            container.innerHTML = preparationSentences.map((item, index) => {
+                const idx = index + 1;
+                if (!item.gap) {
+                    return `
+                    <div class="flex flex-wrap items-center gap-2 text-base p-2 rounded hover:bg-slate-50 transition-colors">
+                        <span class="font-bold text-cyan-400 w-5">${idx}.</span>
+                        <span class="text-slate-500 italic">${item.pre}</span>
+                    </div>`;
+                }
+                return `
+                    <div class="flex flex-wrap items-center gap-2 text-base p-2 rounded hover:bg-cyan-50 transition-colors" id="row-${item.id}">
+                        <span class="font-bold text-cyan-500 w-5">${idx}.</span>
+                        <span>${item.pre}</span>
+                        <select id="${item.id}" onchange="updateAnswer('${item.id}', this.value)" 
+                            class="border border-cyan-200 rounded px-3 py-1 text-cyan-900 focus:ring-2 focus:ring-cyan-500 bg-white min-w-[120px] font-medium shadow-sm outline-none">
+                            <option value="">...</option>
+                            ${vocabWords.map(w => `<option value="${w}">${w}</option>`).join('')}
+                        </select>
+                        <span>${item.post}</span>
+                        <span id="feedback-${item.id}" class="ml-2 inline-flex items-center gap-1"></span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderTranscript() {
+            const container = document.getElementById('transcript-container');
+            container.innerHTML = dialogue.map(line => `
+                <div class="flex gap-4 p-2 hover:bg-slate-50 rounded-lg transition-colors">
+                    <span class="font-bold text-indigo-700 w-24 shrink-0 text-sm uppercase tracking-wide text-right mt-0.5">${line.speaker}</span>
+                    <span class="text-slate-700 text-sm leading-relaxed border-l-2 border-indigo-100 pl-3">${line.text}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderTask1() {
+            const container = document.getElementById('task1-questions');
+            container.innerHTML = task1Questions.map(q => `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg border border-transparent hover:bg-emerald-50 hover:border-emerald-100 transition-all" id="row-${q.id}">
+                    <span class="text-sm md:text-base text-slate-800 mb-2 sm:mb-0 font-medium">${q.text}</span>
+                    <div class="flex items-center gap-3 text-sm font-medium">
+                        <label class="flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded border border-emerald-100 hover:border-emerald-400 transition-colors">
+                            <input type="radio" name="${q.id}" value="True" onchange="updateAnswer('${q.id}', 'True')" class="accent-emerald-600"> True
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded border border-emerald-100 hover:border-emerald-400 transition-colors">
+                            <input type="radio" name="${q.id}" value="False" onchange="updateAnswer('${q.id}', 'False')" class="accent-emerald-600"> False
+                        </label>
+                        <span id="feedback-${q.id}" class="ml-1 inline-flex items-center gap-1 w-6"></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTask2() {
+            const container = document.getElementById('task2-questions');
+            container.innerHTML = task2Quotes.map(q => `
+                <div class="bg-orange-50/50 p-4 rounded-xl border border-orange-100 shadow-sm hover:shadow-md transition-all" id="row-${q.id}">
+                    <div class="bg-white p-2 rounded-lg mb-3 border border-orange-100 relative">
+                         <i class="fas fa-quote-left text-orange-200 absolute top-1 left-1 text-xl -z-10"></i>
+                         <p class="italic text-slate-600 text-sm text-center relative z-10">"${q.text}"</p>
+                    </div>
+                    <div class="flex gap-2">
+                        ${['Rina', 'Mark'].map(person => `
+                            <button id="btn-${q.id}-${person}" onclick="updateTask2Answer('${q.id}', '${person}')" 
+                                class="flex-1 py-1.5 rounded-lg text-xs font-bold border border-orange-200 bg-white text-orange-400 hover:bg-orange-50 transition-all uppercase tracking-wide">
+                                ${person}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="mt-2 text-right h-5">
+                         <span id="feedback-${q.id}" class="inline-flex items-center gap-1"></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTask3() {
+            const container = document.getElementById('task3-questions');
+            container.innerHTML = task3Matching.map(item => `
+                <div class="flex flex-col md:flex-row md:items-center gap-3 p-3 rounded-lg border border-transparent hover:bg-violet-50 hover:border-violet-100 transition-all" id="row-${item.id}">
+                    <div class="md:w-1/2 text-sm font-medium text-slate-700">${item.question}</div>
+                    <div class="md:w-1/2 flex items-center gap-2">
+                        <select id="${item.id}" onchange="updateAnswer('${item.id}', this.value)" class="flex-1 p-2 text-sm border border-violet-200 rounded-lg bg-white focus:ring-2 focus:ring-violet-500 outline-none text-slate-700 shadow-sm">
+                            <option value="">Select...</option>
+                            <option value="a">a. Toronto, Canada</option>
+                            <option value="b">b. Five new people</option>
+                            <option value="c">c. She organizes training</option>
+                            <option value="d">d. One year</option>
+                            <option value="e">e. I check CVs and call people</option>
+                        </select>
+                        <span id="feedback-${item.id}" class="ml-2 inline-flex items-center gap-1 w-6"></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function updateAnswer(id, value) {
+            state.answers[id] = value;
+        }
+
+        function updateTask2Answer(id, value) {
+            if(state.sectionStatus.task2.submitted) return;
+            state.answers[id] = value;
+            
+            // Visual update for buttons with Orange Theme
+            const activeClass = 'bg-orange-500 text-white border-orange-500 shadow-md';
+            const inactiveClass = 'bg-white text-orange-400 border-orange-200 hover:bg-orange-50';
+
+            document.getElementById(`btn-${id}-Rina`).className = `flex-1 py-1.5 rounded-lg text-xs font-bold border transition-all uppercase tracking-wide ${value === 'Rina' ? activeClass : inactiveClass}`;
+            document.getElementById(`btn-${id}-Mark`).className = `flex-1 py-1.5 rounded-lg text-xs font-bold border transition-all uppercase tracking-wide ${value === 'Mark' ? activeClass : inactiveClass}`;
+        }
+
+        function checkSection(sectionName) {
+            const status = state.sectionStatus[sectionName];
+            const theme = themes[sectionName];
+            let dataArr = [];
+            
+            if (sectionName === 'prep') dataArr = preparationSentences.filter(i => i.gap);
+            if (sectionName === 'task1') dataArr = task1Questions;
+            if (sectionName === 'task2') dataArr = task2Quotes;
+            if (sectionName === 'task3') dataArr = task3Matching;
+
+            status.submitted = true;
+            status.attempts++;
+
+            let allCorrect = true;
+
+            dataArr.forEach(item => {
+                const userAnswer = state.answers[item.id];
+                const isCorrect = userAnswer === item.correct;
+                const feedbackEl = document.getElementById(`feedback-${item.id}`);
+
+                if (!isCorrect) allCorrect = false;
+
+                // Disable inputs
+                if(sectionName !== 'task2') {
+                    const input = document.getElementById(item.id) || document.querySelector(`input[name="${item.id}"]`);
+                    if(input) {
+                        if(input.length) document.querySelectorAll(`input[name="${item.id}"]`).forEach(r => r.disabled = true);
+                        else input.disabled = true;
+                    }
+                }
+
+                if (isCorrect) {
+                    feedbackEl.innerHTML = '<i class="fas fa-circle-check text-green-500 text-lg shadow-sm bg-white rounded-full"></i>';
+                } else {
+                    let content = '<i class="fas fa-circle-xmark text-red-500 text-lg shadow-sm bg-white rounded-full"></i>';
+                    if (status.attempts >= 2) {
+                        content += `<span class="text-xs text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded border border-red-200 ml-2 animate-pulse">${item.correct}</span>`;
+                    }
+                    feedbackEl.innerHTML = content;
+                }
+            });
+
+            // Update Action Area
+            const actionDiv = document.getElementById(`actions-${sectionName}`);
+            
+            let actionContent = '';
+            if (status.attempts < 2 && !allCorrect) {
+                 actionContent += `<span class="text-sm text-slate-500 italic mr-4 font-medium"><i class="fas fa-exclamation-circle text-amber-500"></i> Not quite! Try again.</span>`;
+            } else if (allCorrect) {
+                 actionContent += `<span class="text-sm text-green-600 italic mr-4 font-bold"><i class="fas fa-star text-yellow-400"></i> Perfect score!</span>`;
+            }
+            
+            actionContent += `
+                <button onclick="retrySection('${sectionName}')" class="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 px-6 py-2 rounded-full text-sm font-bold shadow-sm transition-colors uppercase tracking-wide">
+                    <i class="fas fa-rotate-left"></i> Retry
+                </button>
+            `;
+            
+            actionDiv.innerHTML = actionContent;
+        }
+
+        function retrySection(sectionName) {
+            const status = state.sectionStatus[sectionName];
+            const theme = themes[sectionName];
+            status.submitted = false;
+
+            let dataArr = [];
+             if (sectionName === 'prep') dataArr = preparationSentences.filter(i => i.gap);
+            if (sectionName === 'task1') dataArr = task1Questions;
+            if (sectionName === 'task2') dataArr = task2Quotes;
+            if (sectionName === 'task3') dataArr = task3Matching;
+
+            dataArr.forEach(item => {
+                const feedbackEl = document.getElementById(`feedback-${item.id}`);
+                feedbackEl.innerHTML = '';
+                
+                if(sectionName === 'task2') {
+                     const val = state.answers[item.id];
+                     if(val) updateTask2Answer(item.id, val); 
+                } else if (sectionName === 'task1') {
+                     document.querySelectorAll(`input[name="${item.id}"]`).forEach(r => r.disabled = false);
+                } else {
+                    const input = document.getElementById(item.id);
+                    input.disabled = false;
+                }
+            });
+
+            // Restore Check Button with correct theme color
+            const actionDiv = document.getElementById(`actions-${sectionName}`);
+            actionDiv.innerHTML = `
+                <button onclick="checkSection('${sectionName}')" class="flex items-center gap-2 bg-gradient-to-r ${theme.btn} text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-all transform hover:-translate-y-0.5">
+                    Check answers
+                </button>
+            `;
+        }
+
+        function resetAll() {
+            state.answers = {};
+            state.sectionStatus = {
+                prep: { submitted: false, attempts: 0 },
+                task1: { submitted: false, attempts: 0 },
+                task2: { submitted: false, attempts: 0 },
+                task3: { submitted: false, attempts: 0 },
+            };
+            
+            document.querySelectorAll('select').forEach(s => s.value = "");
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            
+            renderPrep();
+            renderTask1();
+            renderTask2();
+            renderTask3();
+            
+            const audio = document.getElementById('audio-element');
+            audio.pause();
+            audio.currentTime = 0;
+            updatePlayIcons();
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '2000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // --- Audio Logic ---
+        function setupAudio() {
+            const audio = document.getElementById('audio-element');
+            const playBtn = document.getElementById('play-btn');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const timeDisplay = document.getElementById('time-display');
+
+            function togglePlay() {
+                if (audio.paused) audio.play();
+                else audio.pause();
+                updatePlayIcons();
+            }
+
+            window.updatePlayIcons = function() {
+                playBtn.innerHTML = audio.paused ? '<i class="fas fa-play text-sm ml-1"></i>' : '<i class="fas fa-pause text-sm"></i>';
+            }
+
+            function updateProgress() {
+                const percent = (audio.currentTime / audio.duration) * 100 || 0;
+                progressBar.style.width = `${percent}%`;
+                
+                const formatTime = (time) => {
+                    if(isNaN(time)) return "00:00";
+                    const min = Math.floor(time / 60);
+                    const sec = Math.floor(time % 60);
+                    return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+                };
+                timeDisplay.innerText = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+            }
+
+            function seek(e) {
+                const rect = progressContainer.getBoundingClientRect();
+                const pos = (e.clientX - rect.left) / rect.width;
+                if(audio.duration) audio.currentTime = pos * audio.duration;
+            }
+
+            playBtn.addEventListener('click', togglePlay);
+            audio.addEventListener('timeupdate', updateProgress);
+            audio.addEventListener('loadedmetadata', updateProgress);
+            progressContainer.addEventListener('click', seek);
+            
+            updatePlayIcons();
+        }
+    </script>
+</body>
+</html>

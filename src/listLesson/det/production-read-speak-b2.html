@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Mastery Module: Read, Then Speak | CEFR B2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Animation for Recording */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .recording-active {
+            animation: pulse-red 1.5s infinite;
+            background-color: #ef4444 !important; /* Red-500 */
+            border-color: #b91c1c !important;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base md:text-lg text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Production</span> <span>&gt;</span> 
+            <span>Speaking</span> <span>&gt;</span> 
+            <span>CEFR B2</span> <span>&gt;</span> 
+            <span class="text-blue-700 font-bold">Read, Then Speak</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-700 tracking-tight mb-3">
+                    Read, Then Speak Mastery
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-500 font-medium">Score Range: 100–120 | Focus: Syntactic Variety & Lexical Range</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-xl text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-blue-600 p-8 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-2xl text-slate-700 leading-relaxed">
+                <i class="fas fa-microphone-alt mr-3 text-blue-600"></i> 
+                <strong>Instructions:</strong> Master the 90-second speaking task. The test evaluates your ability to express viewpoints clearly and sustain a coherent argument. You have <strong>2 attempts</strong> per written drill before sample answers are revealed.
+            </p>
+        </div>
+
+        <!-- Section 1: Concept & Recognition (Cyan Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-3xl font-bold text-cyan-900">Steps 1-2: Deep-Dive & Analysis</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-3xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Step 1: Concept -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 1: The Deep-Dive Breakdown</h3>
+                        <div class="bg-cyan-50 p-8 rounded-xl border border-cyan-100 text-xl leading-relaxed text-slate-700 space-y-4">
+                            <p>The "Read, Then Speak" task requires you to read a prompt and speak for 30 to 90 seconds (with exactly 20 seconds to prepare). At B2, the test is looking for a "vantage point" speaker who can express viewpoints clearly.</p>
+                            <ul class="list-disc pl-6 space-y-2">
+                                <li><strong>Subscore Impact:</strong> Production and Conversation.</li>
+                                <li><strong>Linguistic Requirement:</strong> Scans for <em>Syntactic Variety</em> (simple + complex sentences) and <em>Lexical Range</em> (topic-specific vocab). Evaluates <em>Acoustic Features</em> (pacing, intonation).</li>
+                            </ul>
+                            <div class="bg-white p-6 rounded-lg border border-red-200 mt-6">
+                                <h4 class="font-bold text-red-800 mb-3"><i class="fas fa-exclamation-triangle mr-2"></i>Common Pitfalls:</h4>
+                                <ul class="list-disc pl-6 text-red-900 space-y-2">
+                                    <li><strong>The "Silent Prep" Error:</strong> Writing full sentences during the 20s prep instead of keywords.</li>
+                                    <li><strong>Prompt Neglect:</strong> Failing to address every bullet point.</li>
+                                    <li><strong>Monotonous Delivery:</strong> Speaking in a flat tone hurts pronunciation/fluency scores.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Recognition Drill -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 2: The Recognition & Analysis Drill</h3>
+                        <p class="text-xl text-slate-600 mb-6">Examine these five typical B2 prompts:</p>
+                        
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 space-y-3 font-serif text-xl italic text-slate-700">
+                            <ul class="list-disc pl-6 space-y-2">
+                                <li>Describe a time you had to learn a new skill. What was it, and how did you feel?</li>
+                                <li>Talk about a place you would like to visit in the future. Why does it interest you?</li>
+                                <li>Some people prefer to work in teams, while others prefer to work alone. Which do you prefer?</li>
+                                <li>Describe a piece of technology that has changed your life.</li>
+                                <li>Who is a person you admire, and what qualities do they possess?</li>
+                            </ul>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-xl shadow-sm border border-slate-200">
+                            <table class="text-lg">
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th class="text-orange-700">Weak Approach (B1)</th>
+                                        <th class="text-green-700">Strong B2 Approach</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-bold">Opening</td>
+                                        <td>"I am going to talk about..."</td>
+                                        <td>"One of the most significant experiences I've had was..."</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Transitions</td>
+                                        <td>"And then... and then..."</td>
+                                        <td>"Furthermore," "In addition to that," "Consequently."</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Detail Level</td>
+                                        <td>General statements with no examples.</td>
+                                        <td>Specific anecdotes that support the main point.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Grammar</td>
+                                        <td>Mostly Present Simple/Past Simple.</td>
+                                        <td>Use of Present Perfect, Conditionals, and Passive Voice.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Strategy & Warm-up (Blue Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-3xl font-bold text-blue-900">Steps 3-4: Strategy & Foundations</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white border-t border-blue-50 space-y-12">
+                    
+                    <!-- Step 3: Strategy -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 3: The Strategic Roadmap (Pro-Tips+)</h3>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-door-open mr-2"></i>"Power Opening"</h4>
+                                <p class="text-base text-slate-700">Don't repeat the prompt word-for-word. Paraphrase it to boost your "Unique Word Count".</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-layer-group mr-2"></i>The PEEL Structure</h4>
+                                <p class="text-base text-slate-700">Organize using Point, Evidence, Explanation, Link. Prevents "circling" behaviors.</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-sign mr-2"></i>Signposting</h4>
+                                <p class="text-base text-slate-700">Use "Moving on to..." or "To illustrate this...". Helps the algorithm identify transitions.</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-music mr-2"></i>Emphasize Content Words</h4>
+                                <p class="text-base text-slate-700">Slightly stress nouns, verbs, and adjectives. Keep function words light for natural rhythm.</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl lg:col-span-2">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-clock mr-2"></i>Keep Speaking (75s+)</h4>
+                                <p class="text-base text-slate-700">Volume is a proxy for fluency. Short responses fail to showcase enough complex grammar for B2/C1.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Warm-up -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 4: Foundations Skill-Building Suite</h3>
+                        
+                        <!-- Drill A -->
+                        <div class="mb-10 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill A: The Paraphrase Challenge</h4>
+                                <button onclick="checkDrill('da', 'A city that completely captivated me during my recent travels was...')" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Submit Attempt</button>
+                            </div>
+                            <p class="text-lg text-slate-600 mb-4">Rewrite these prompt starters to avoid repetition:</p>
+                            <div class="space-y-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200">
+                                    <p class="text-slate-500 text-sm font-bold uppercase mb-1">Prompt:</p>
+                                    <p class="text-lg font-serif">"Talk about a teacher you liked."</p>
+                                    <p class="text-lg text-green-700 mt-2"><strong>Example:</strong> "Reflecting on my academic journey, one educator stands out..."</p>
+                                </div>
+                                <div class="bg-blue-100/50 p-4 rounded-lg border border-blue-200">
+                                    <p class="text-blue-600 text-sm font-bold uppercase mb-1">Your Turn:</p>
+                                    <p class="text-xl font-serif mb-3">"Describe a city you visited."</p>
+                                    <textarea id="da-input" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-blue-200 outline-none" placeholder="Your paraphrased opening..."></textarea>
+                                </div>
+                                <div id="feedback-da" class="font-bold min-h-[2rem]"></div>
+                            </div>
+                        </div>
+
+                        <!-- Drill B -->
+                        <div class="mb-10 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill B: Transition Scrambling</h4>
+                                <button onclick="checkDrill('db', 'While working from home saves time on commuting, it can also lead to feelings of social isolation.')" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Submit Attempt</button>
+                            </div>
+                            <p class="text-lg text-slate-600 mb-4">Connect these two ideas using a B2-level transition (e.g., While... on the other hand, Despite...):</p>
+                            <ul class="list-disc pl-6 mb-4 text-xl font-serif text-slate-700">
+                                <li>Idea 1: Working from home saves time on commuting.</li>
+                                <li>Idea 2: It can lead to feelings of social isolation.</li>
+                            </ul>
+                            <textarea id="db-input" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-blue-200 outline-none" placeholder="Combine into one cohesive sentence..."></textarea>
+                            <div id="feedback-db" class="mt-4 font-bold min-h-[2rem]"></div>
+                        </div>
+
+                        <!-- Drill C -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill C: The "Grammar Upgrade"</h4>
+                                <button onclick="checkDrill('dc', 'Despite the rain, I decided to go to the park, and I ended up having a surprisingly good time.')" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Submit Attempt</button>
+                            </div>
+                            <p class="text-lg text-slate-600 mb-4">Change this simple sentence sequence into a B2 complex sentence:</p>
+                            <p class="text-xl font-serif bg-white p-4 rounded border border-slate-300 mb-4">
+                                "I went to the park. It was raining. I had fun."
+                            </p>
+                            <textarea id="dc-input" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-blue-200 outline-none" placeholder="Upgrade the grammar here..."></textarea>
+                            <div id="feedback-dc" class="mt-4 font-bold min-h-[2rem]"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Guided Practice (Emerald Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-3xl font-bold text-emerald-900">Step 5: Guided Practice</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-8">
+                    
+                    <div class="bg-emerald-50 p-8 rounded-xl border border-emerald-200 shadow-inner flex flex-col md:flex-row items-start gap-8">
+                        <div class="flex-1 w-full">
+                            <h4 class="font-bold text-emerald-900 text-2xl mb-4"><i class="fas fa-utensils mr-2"></i>Prompt</h4>
+                            <p class="text-2xl font-serif text-slate-800 leading-relaxed mb-6">"Describe a traditional food from your country. What is it made of, and when do people usually eat it?"</p>
+                            
+                            <div class="bg-white p-6 rounded-lg border border-emerald-100">
+                                <h5 class="font-bold text-emerald-800 text-xl mb-2">Mental Modeling Prompt:</h5>
+                                <p class="text-lg text-slate-700"><strong>Prep thoughts:</strong> I'll choose Tacos. Ingredients: tortillas, meat, salsa. Occasions: parties, every day. I need to use words like "staple," "cultural heritage," and "versatile."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <h4 class="font-bold text-emerald-800 text-2xl mb-6">Comparative Models:</h4>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="p-6 bg-slate-100 border border-slate-300 rounded-xl">
+                                <h5 class="font-bold text-slate-700 text-xl mb-3">Passing (B1/B2):</h5>
+                                <p class="text-xl text-slate-600">"I want to talk about tacos. They are from Mexico. They are made with tortillas and meat. People eat them every day. I like them because they are very delicious and spicy. They are famous all over the world."</p>
+                            </div>
+                            <div class="p-6 bg-emerald-100 border border-emerald-300 rounded-xl shadow-md">
+                                <h5 class="font-bold text-emerald-900 text-xl mb-3">Exceptional (B2/C1):</h5>
+                                <p class="text-xl text-emerald-900 font-medium leading-relaxed">"A quintessential dish from my country is the taco, which is essentially a cultural staple. It consists of a corn or wheat tortilla filled with various proteins, topped with fresh cilantro and spicy salsa. Interestingly, while it is consumed daily, it truly takes center stage during national celebrations. I believe its popularity stems from its incredible versatility."</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-6 bg-emerald-50 border-l-4 border-emerald-500 rounded-r-xl">
+                            <p class="text-xl text-slate-700"><strong>Linguistic Spotlight:</strong> The exceptional response uses Adverbs (<em>"essentially," "interestingly"</em>), Relative Clauses (<em>"which is..."</em>), and Advanced Collocations (<em>"cultural staple," "takes center stage," "popularity stems from"</em>).</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Simulation & Challenge (Violet Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-3xl font-bold text-violet-900">Step 6-8: Simulation & Challenge</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-violet-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Simulation Setup -->
+                    <div class="bg-violet-50 p-8 rounded-xl border border-violet-200">
+                        <h3 class="font-bold text-violet-900 text-3xl mb-4">Step 6: Technical Simulation Tips</h3>
+                        <ul class="list-disc pl-6 space-y-3 text-xl text-slate-700">
+                            <li><strong>Record and Transcribe:</strong> The Master Timer below includes a live speech-to-text transcriber to capture your speech exactly as you say it.</li>
+                            <li><strong>The "Uh-Count" Audit:</strong> Look at your transcript later. Every "uh" or "um" is a fluency gap. Replace them with transitions like "Let me think..." or "Actually...".</li>
+                        </ul>
+                    </div>
+
+                    <!-- Independent Challenge -->
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-violet-800">Step 7: The Independent Triple-Threat Challenge</h3>
+                        </div>
+                        <p class="text-xl text-slate-600 mb-6">Select a level prompt to practice below, then start the Master Timer for a 20s prep. Once the 90s speaking phase begins, your microphone will activate and transcribe your speech below.</p>
+
+                        <!-- Global Recording UI with Mic Transcription -->
+                        <div class="flex flex-col items-center justify-center gap-6 p-8 bg-slate-50 border-2 border-dashed border-violet-300 rounded-2xl mb-10">
+                            <p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Master Timer & Recorder</p>
+                            <div id="record-timer-display" class="text-6xl font-mono font-bold text-slate-700">00:20</div>
+                            <p id="timer-phase" class="text-xl font-medium text-violet-600">Preparation Phase</p>
+                            
+                            <div class="flex gap-4">
+                                <button id="record-btn" onclick="startFullSimulation()" class="flex items-center gap-3 px-8 py-4 bg-violet-600 hover:bg-violet-700 text-white rounded-full font-bold text-xl shadow-lg transition-all transform hover:scale-105">
+                                    <i class="fas fa-stopwatch"></i> <span id="record-text">Start Simulation (20s Prep -> 90s Speak)</span>
+                                </button>
+                                <button onclick="resetSimulation()" class="px-4 py-4 bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full font-bold shadow transition-colors">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Live Transcript Box -->
+                            <div class="w-full mt-6 text-left">
+                                <label class="block text-lg font-bold text-violet-800 mb-2"><i class="fas fa-microphone mr-2"></i>Live Transcript Output:</label>
+                                <textarea id="live-transcript" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-violet-200 outline-none h-40 bg-white" placeholder="Your speech will be transcribed here automatically once the Speaking Phase begins. (Note: Please allow microphone access if prompted by your browser)."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="space-y-10">
+                            <!-- Level 1 -->
+                            <div class="p-6 border-2 border-slate-200 rounded-xl">
+                                <h4 class="font-bold text-violet-900 text-2xl mb-4">Level 1: Standard (Personal)</h4>
+                                <p class="text-2xl font-serif text-slate-800 mb-4 bg-white p-4 rounded-lg shadow-sm">"Describe a hobby you enjoy. How did you get started, and why do you find it interesting?"</p>
+                                <button onclick="toggleAnswer('model-l1', this)" class="text-lg font-bold text-violet-600 underline">Show Strategy Hint</button>
+                                <div id="model-l1" class="answer-box hidden mt-4 p-4 bg-violet-50 border border-violet-200 rounded-lg text-xl text-violet-900">
+                                    <strong>Key Strategy:</strong> Focus on "Initial Spark" (How I started) and "Intrinsic Motivation" (Why it's interesting). Avoid just listing equipment.
+                                </div>
+                            </div>
+
+                            <!-- Level 2 -->
+                            <div class="p-6 border-2 border-slate-200 rounded-xl">
+                                <h4 class="font-bold text-violet-900 text-2xl mb-4">Level 2: Complex (Opinion-based)</h4>
+                                <p class="text-2xl font-serif text-slate-800 mb-4 bg-white p-4 rounded-lg shadow-sm">"Do you think it is better to live in a small town or a big city? Give reasons for your choice."</p>
+                                <button onclick="toggleAnswer('model-l2', this)" class="text-lg font-bold text-violet-600 underline">Show Strategy Hint</button>
+                                <div id="model-l2" class="answer-box hidden mt-4 p-4 bg-violet-50 border border-violet-200 rounded-lg text-xl text-violet-900">
+                                    <strong>Key Strategy:</strong> Use "Comparative Structures" (In contrast to, significantly more, whereas) to show higher-level syntax.
+                                </div>
+                            </div>
+
+                            <!-- Level 3 -->
+                            <div class="p-6 border-2 border-slate-200 rounded-xl shadow-sm">
+                                <h4 class="font-bold text-violet-900 text-2xl mb-4">Level 3: Academic/Abstract (Societal)</h4>
+                                <p class="text-2xl font-serif text-slate-800 mb-4 bg-white p-4 rounded-lg shadow-sm">"In many cultures, traditions are disappearing. Do you think this is a positive or negative development? Explain why."</p>
+                                <button onclick="toggleAnswer('model-l3', this)" class="text-lg font-bold text-violet-600 underline">Show Strategy Hint</button>
+                                <div id="model-l3" class="answer-box hidden mt-4 p-4 bg-violet-50 border border-violet-200 rounded-lg text-xl text-violet-900">
+                                    <strong>Key Strategy:</strong> Use "Hypothetical Language" (If we lose our traditions, we might..., it could be argued that...).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 8: Rubric -->
+                    <div class="mt-12 pt-10 border-t border-slate-200">
+                        <h3 class="text-3xl font-bold text-violet-800 mb-6">Step 8: The Comprehensive Performance Rubric</h3>
+                        <div class="overflow-x-auto rounded-xl border border-slate-300">
+                            <table class="text-lg w-full">
+                                <thead>
+                                    <tr class="bg-violet-50 text-violet-900">
+                                        <th class="p-4">Score</th>
+                                        <th class="p-4">Content</th>
+                                        <th class="p-4">Fluency</th>
+                                        <th class="p-4">Lexical Range</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-green-700">5 (B2/C1)</td>
+                                        <td class="p-4">Addresses all prompts with depth.</td>
+                                        <td class="p-4">Smooth, natural pace; rare hesitations.</td>
+                                        <td class="p-4">Precise, academic, and idiomatic.</td>
+                                    </tr>
+                                    <tr class="bg-slate-50">
+                                        <td class="p-4 font-bold text-orange-600">3 (B2)</td>
+                                        <td class="p-4">Addresses all prompts clearly.</td>
+                                        <td class="p-4">Mostly smooth; some "uhs" when thinking.</td>
+                                        <td class="p-4">Varied, avoids common repetitions.</td>
+                                    </tr>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-red-600">1 (B1)</td>
+                                        <td class="p-4">Misses 1 prompt or is very brief.</td>
+                                        <td class="p-4">Frequent long pauses; slow speech.</td>
+                                        <td class="p-4">Basic vocabulary (good, bad, happy).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Reflection (Rose Theme) -->
+        <div class="mb-12 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-3xl font-bold text-rose-900">Step 9-10: AI Lab & Review</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-rose-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- AI Prompting -->
+                    <div class="bg-rose-50 p-8 rounded-xl border-l-4 border-rose-500 shadow-sm space-y-6">
+                        <h3 class="text-3xl font-bold text-rose-900 mb-4"><i class="fas fa-robot mr-3"></i>Step 9: The AI Tutor Prompting Lab</h3>
+                        
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">1. Simulation Prompt (Generate Practice):</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-1">Act as a Duolingo English Test examiner. Generate 5 DET 'Read, Then Speak' prompts for a B2 level student. Each prompt should have 2-3 bullet points. Focus on themes like work, travel, and social trends.</p>
+                                <button onclick="copyToClipboard('ai-prompt-1')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">2. Evaluator Prompt (Grade your transcript):</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-2">Act as a Duolingo English Test examiner. I will provide a transcript of my speech for a 'Read, Then Speak' task. Grade it based on Duolingo English Test B2 criteria for Production and Conversation. Suggest three specific ways I can improve my sentence variety. Here is my transcript: [COPY AND PASTE YOUR LIVE TRANSCRIPT HERE]</p>
+                                <button onclick="copyToClipboard('ai-prompt-2')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reflection -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-rose-800 mb-6">Step 10: Metacognitive Review</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-2xl text-slate-700 font-medium mb-3">Linguistic Win:</label>
+                                <textarea placeholder="e.g., I used the word 'consequently' correctly today." class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-2xl text-slate-700 font-medium mb-3">Strategy Adjustment:</label>
+                                <textarea placeholder="e.g., I spent too much time on the first bullet point. Next time, I will watch the clock more closely." class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-xl font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-blue-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- State Management ---
+        let attempts = {
+            da: 0,
+            db: 0,
+            dc: 0
+        };
+
+        // --- Logic Handlers ---
+
+        function checkDrill(drillId, sampleAnswer) {
+            const input = document.getElementById(`${drillId}-input`);
+            const feedback = document.getElementById(`feedback-${drillId}`);
+            const val = input.value.trim();
+
+            if (val.length < 5) {
+                feedback.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-circle mr-2"></i>Please write a longer response before submitting.</span>';
+                return;
+            }
+
+            attempts[drillId]++;
+            
+            if (attempts[drillId] === 1) {
+                feedback.innerHTML = `<span class="text-blue-600"><i class="fas fa-check-circle mr-2"></i>Good start! Attempt 1 recorded. Try to refine it to be even more sophisticated before revealing the sample. (1 attempt left)</span>`;
+                input.classList.add('border-blue-400');
+            } else if (attempts[drillId] >= 2) {
+                feedback.innerHTML = `
+                    <div class="p-4 bg-green-50 border border-green-200 rounded-lg mt-2">
+                        <span class="text-green-700 font-bold block mb-2"><i class="fas fa-lightbulb mr-2"></i>Sample B2/C1 Answer:</span>
+                        <span class="text-green-900 italic font-serif">"${sampleAnswer}"</span>
+                    </div>`;
+                input.disabled = true;
+                input.classList.add('bg-slate-50', 'border-green-400');
+            }
+        }
+
+        // --- Speech Recognition Setup ---
+        let recognition;
+        let finalTranscript = '';
+
+        function initSpeechRecognition() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert("Your browser does not support Speech Recognition. Please use Chrome or Edge for live transcription.");
+                return false;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = function(event) {
+                let interimTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+                document.getElementById('live-transcript').value = finalTranscript + interimTranscript;
+            };
+
+            recognition.onerror = function(event) {
+                console.error("Speech recognition error", event.error);
+                if(event.error === 'not-allowed') {
+                    alert("Microphone access denied. Please allow microphone permissions in your browser to use the transcriber.");
+                }
+            };
+
+            recognition.onend = function() {
+                // Keep restarting it if we are still actively in the speaking phase
+                if (simRunning && simPhase === 'speak') {
+                    recognition.start();
+                }
+            };
+            
+            return true;
+        }
+
+        // --- Simulation Timer ---
+        let simInterval;
+        let simTime = 20;
+        let simPhase = 'prep'; // 'prep' or 'speak'
+        let simRunning = false;
+
+        function startFullSimulation() {
+            const btn = document.getElementById('record-btn');
+            const text = document.getElementById('record-text');
+            const display = document.getElementById('record-timer-display');
+            const phase = document.getElementById('timer-phase');
+
+            if (simRunning) return; // Prevent double clicks
+            
+            simRunning = true;
+            simPhase = 'prep';
+            simTime = 20;
+            
+            // UI setup for Prep
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            text.innerText = "Simulation Running...";
+            phase.innerText = "Preparation Phase (Read & Plan)";
+            phase.classList.remove('text-red-600');
+            phase.classList.add('text-violet-600');
+            btn.classList.remove('recording-active');
+
+            clearInterval(simInterval);
+
+            simInterval = setInterval(() => {
+                simTime--;
+                updateSimDisplay(display);
+
+                if (simTime <= 0) {
+                    if (simPhase === 'prep') {
+                        // Switch to Speaking Phase
+                        simPhase = 'speak';
+                        simTime = 90;
+                        phase.innerText = "Speaking Phase (Recording Live...)";
+                        phase.classList.remove('text-violet-600');
+                        phase.classList.add('text-red-600', 'font-bold');
+                        btn.classList.add('recording-active');
+                        
+                        // Start Microphone
+                        finalTranscript = '';
+                        document.getElementById('live-transcript').value = '';
+                        if(!recognition) initSpeechRecognition();
+                        if(recognition) {
+                            try {
+                                recognition.start();
+                            } catch(e) { console.error(e); }
+                        }
+
+                    } else if (simPhase === 'speak') {
+                        // End Simulation
+                        clearInterval(simInterval);
+                        simRunning = false;
+                        phase.innerText = "Simulation Complete";
+                        phase.classList.remove('text-red-600');
+                        phase.classList.add('text-green-600');
+                        btn.classList.remove('recording-active', 'opacity-50', 'cursor-not-allowed');
+                        btn.disabled = false;
+                        text.innerText = "Restart Simulation";
+                        
+                        // Stop Microphone
+                        if(recognition) recognition.stop();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateSimDisplay(displayElement) {
+            const mins = Math.floor(simTime / 60);
+            const secs = simTime % 60;
+            displayElement.textContent = `0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function resetSimulation() {
+            clearInterval(simInterval);
+            simRunning = false;
+            simTime = 20;
+            simPhase = 'prep';
+            
+            if(recognition) recognition.stop();
+            finalTranscript = '';
+            
+            document.getElementById('record-timer-display').textContent = "00:20";
+            
+            const phase = document.getElementById('timer-phase');
+            phase.innerText = "Preparation Phase";
+            phase.classList.remove('text-red-600', 'text-green-600', 'font-bold');
+            phase.classList.add('text-violet-600');
+
+            const btn = document.getElementById('record-btn');
+            const text = document.getElementById('record-text');
+            btn.disabled = false;
+            btn.classList.remove('recording-active', 'opacity-50', 'cursor-not-allowed');
+            text.innerText = "Start Simulation (20s Prep -> 90s Speak)";
+        }
+
+        // --- Utils ---
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Strategy Hint";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Strategy Hint";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '4000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('Prompt copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers and reset attempts?")) {
+                // Reset State
+                attempts = { da: 0, db: 0, dc: 0 };
+
+                // Reset Inputs & Textareas
+                document.querySelectorAll('textarea').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('border-green-400', 'border-blue-400', 'bg-slate-50');
+                });
+                
+                // Clear Feedback
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => {
+                    f.innerHTML = "";
+                });
+
+                // Uncheck checkboxes
+                document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+
+                // Hide Hints
+                document.querySelectorAll('.answer-box').forEach(el => {
+                    el.classList.add('hidden');
+                    el.classList.remove('visible');
+                });
+                document.querySelectorAll('button').forEach(btn => {
+                    if (btn.innerText.includes('Hide Strategy Hint')) btn.innerText = "Show Strategy Hint";
+                });
+
+                resetSimulation();
+            }
+        }
+
+    </script>
+</body>
+</html>

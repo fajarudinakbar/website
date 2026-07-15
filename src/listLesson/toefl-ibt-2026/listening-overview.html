@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Overview - Listening</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            50: '#F5F5FF',
+                            100: '#EBEBFF',
+                            200: '#DADAFF', 
+                            600: '#9A9CFF', 
+                            700: '#8A8CFF', 
+                            800: '#7678E5', 
+                            900: '#6264CC', 
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <div id="app"></div>
+
+    <script>
+        // --- AUDIO STATE & FALLBACK ---
+        let femaleVoice = null;
+        let maleVoice = null;
+        let activeAudioElement = null;
+
+        function assignVoices() {
+            const voices = window.speechSynthesis.getVoices();
+            if (voices.length === 0) return;
+            const enVoices = voices.filter(v => v.lang.startsWith('en'));
+            const femaleKeywords = ['female', 'aria', 'jenny', 'zira', 'samantha', 'victoria', 'karen', 'susan', 'ava', 'allison'];
+            const maleKeywords = ['male', 'guy', 'david', 'christopher', 'daniel', 'alex', 'george', 'matthew', 'mark', 'brian'];
+
+            femaleVoice = enVoices.find(v => (v.name.includes('Natural') || v.name.includes('Online')) && femaleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+                          enVoices.find(v => femaleKeywords.some(k => v.name.toLowerCase().includes(k))) || enVoices[0]; 
+
+            maleVoice = enVoices.find(v => (v.name.includes('Natural') || v.name.includes('Online')) && maleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+                        enVoices.find(v => maleKeywords.some(k => v.name.toLowerCase().includes(k))) || enVoices[1] || enVoices[0];
+        }
+
+        window.speechSynthesis.onvoiceschanged = assignVoices;
+
+        // --- DATA STRUCTURE ---
+        const lessonData = {
+            title: "Listening Section, Module 1",
+            sections: [
+                {
+                    id: "m1_short",
+                    type: "listening",
+                    title: "Listen and Choose a Response",
+                    audioTitle: "Short Dialogues",
+                    questions: [
+                        {
+                            id: 1,
+                            transcript: "Woman: Did you happen to catch the deadline for the grant proposal?",
+                            text: "Choose the best response.",
+                            options: ["It was extended to Friday.", "Yes, the grant is very competitive.", "I didn't catch the ball.", "She is proposing a new project."],
+                            correctAnswer: 0,
+                            explanation: "The woman is asking for a specific piece of information: the <strong>deadline</strong>. Option A addresses the timeframe."
+                        },
+                        {
+                            id: 2,
+                            transcript: "Man: I can't seem to access the university's Wi-Fi network.",
+                            text: "Choose the best response.",
+                            options: ["The library is closed today.", "Have you tried resetting your password?", "It's a very strong connection.", "Yes, I accessed the file yesterday."],
+                            correctAnswer: 1,
+                            explanation: "The most natural response to a technical problem is a <strong>troubleshooting suggestion</strong> (Option B)."
+                        },
+                        {
+                            id: 3,
+                            transcript: "Woman: Is Professor Miller in her office today?",
+                            text: "Choose the best response.",
+                            options: ["I think it's on the second floor.", "She's at a conference all week.", "Yes, she is a great professor.", "The office is quite spacious."],
+                            correctAnswer: 1,
+                            explanation: "The question asks about <strong>availability today</strong>. Option B explains why she is absent."
+                        },
+                        {
+                            id: 4,
+                            transcript: "Man: Should we review the budget report now or later?",
+                            text: "Choose the best response.",
+                            options: ["I reported the issue to management.", "The budget is higher than expected.", "Let's look at it after lunch.", "We should buy a new one."],
+                            correctAnswer: 2,
+                            explanation: "Option C ('after lunch') is a synonym for <strong>later</strong> and makes a decision."
+                        },
+                        {
+                            id: 5,
+                            transcript: "Woman: Do you know if the library has any study rooms available?",
+                            text: "Choose the best response.",
+                            options: ["They are currently studying for the exam.", "Yes, there are many books on that topic.", "You have to reserve them online.", "The library opens at eight."],
+                            correctAnswer: 2,
+                            explanation: "Option C provides the procedural information needed to secure the room."
+                        },
+                        {
+                            id: 6,
+                            transcript: "Man: I think we're going to need more chairs for the seminar.",
+                            text: "Choose the best response.",
+                            options: ["I'll call facilities right away.", "The seminar was very interesting.", "I prefer sitting in the front row.", "Yes, the speaker is very knowledgeable."],
+                            correctAnswer: 0,
+                            explanation: "Option A provides a practical <strong>solution</strong> to the implied problem of lacking chairs."
+                        },
+                        {
+                            id: 7,
+                            transcript: "Woman: Have you finished the data analysis for the marketing project?",
+                            text: "Choose the best response.",
+                            options: ["The marketing team is expanding.", "I'm just wrapping up the final charts.", "Data privacy is very important.", "We projected a twenty percent increase."],
+                            correctAnswer: 1,
+                            explanation: "Option B uses the idiom 'wrapping up' (finishing) to address the status question."
+                        },
+                        {
+                            id: 8,
+                            transcript: "Man: What time does the orientation session begin?",
+                            text: "Choose the best response.",
+                            options: ["It is designed for new employees.", "In the main auditorium.", "Promptly at nine o'clock.", "Yes, I attended it last year."],
+                            correctAnswer: 2,
+                            explanation: "Option C is the only logical response providing a specific <strong>time</strong>."
+                        }
+                    ]
+                },
+                {
+                    id: "m1_conv1",
+                    type: "listening",
+                    title: "Listen to a Conversation",
+                    audioTitle: "Conversation: Choosing a Gym",
+                    audioUrl: "https://github.com/fajarudinakbar/audio/raw/refs/heads/main/TOEFL%20iBT%20-%20Choosing%20a%20Gym.wav",
+                    transcript: `Woman: Have you decided which gym to join?\nMan: I'm torn between the NanoFitness Gym near my house and the Downtown Trainers gym near my work.\nWoman: The second one might suit you. You'll enjoy working up some sweat right after sitting at your desk in front of the computer all day, five days a week.\nMan: True. And Downtown Trainers has the better instructors and nicer equipment, too. But weekends is actually when I do most of my working out, and it’d be easier to do it near home than drive downtown.`,
+                    questions: [
+                        {
+                            id: 9,
+                            text: "What kind of job does the man most likely have?",
+                            options: ["Fitness instructor", "Driver", "Office worker", "Equipment manufacturer"],
+                            correctAnswer: 2,
+                            explanation: "The woman mentions sitting 'at your desk in front of the computer all day,' which strongly implies he is an <strong>office worker</strong>."
+                        },
+                        {
+                            id: 10,
+                            text: "What does the man indicate about weekends?",
+                            options: ["He sometimes needs to go to work on weekends.", "He sometimes repairs equipment in his house on weekends.", "He likes to exercise outdoors on weekends.", "He exercises more on weekends than on other days."],
+                            correctAnswer: 3,
+                            explanation: "The man states 'weekends is actually when I do <strong>most of my working out</strong>,' meaning he exercises more then than on other days."
+                        }
+                    ]
+                },
+                {
+                    id: "m1_announce1",
+                    type: "listening",
+                    title: "Listen to an Announcement",
+                    audioTitle: "Announcement: Science Fair",
+                    audioUrl: "https://github.com/fajarudinakbar/audio/raw/refs/heads/main/TOEFL%20iBT%20-%20Campus%20Radio%20Station.wav",
+                    transcript: `Man: Hello everyone. We are excited to invite you to the annual science fair next Friday at 3 P.M. in the university gym. There will be exhibits from various departments showcasing innovative projects in the fields of biology, physics, and chemistry. In addition, there will be lectures on scientific topics aimed at a general audience. Don’t miss it!`,
+                    questions: [
+                        {
+                            id: 13,
+                            text: "Who is the intended audience of the lectures?",
+                            options: ["Science students", "University professors", "Everyone at the science fair", "A panel of judges"],
+                            correctAnswer: 2,
+                            explanation: "The speaker mentions lectures 'aimed at a <strong>general audience</strong>,' meaning everyone at the fair."
+                        },
+                        {
+                            id: 14,
+                            text: "What does the speaker hope the listeners will do?",
+                            options: ["Attend an event", "Submit a science project", "Join the university gym", "Volunteer for an event"],
+                            correctAnswer: 0,
+                            explanation: "The main purpose is to <strong>invite listeners to attend</strong> the science fair."
+                        }
+                    ]
+                },
+                {
+                    id: "m1_talk1",
+                    type: "listening",
+                    title: "Listen to a Talk",
+                    audioTitle: "Lecture: The Gig Economy",
+                    audioUrl: "https://github.com/fajarudinakbar/audio/raw/refs/heads/main/TOEFL%20iBT%20-%20Economic%20Class.wav",
+                    transcript: `Professor: Today, we are going to talk about the concept of the gig economy. The gig economy is a labor market characterized by short-term contracts or freelance work, as opposed to permanent jobs. It has gained significant traction in recent years because of technological advancements and the rise of digital platforms like ride-sharing apps and freelance websites.\nIn a gig economy, workers typically take on multiple short-term jobs or projects, and they often do so through online platforms that connect them directly with clients. This can offer greater flexibility compared to traditional employment, as workers can choose when and where they wanna work. Companies benefit from the gig economy by reducing overhead costs associated with full-time employees, like for office space. This allows them to vary their workforce according to demand, which can be particularly useful during peak seasons or for specific projects.\nOn the other hand, gig workers may face difficulties in securing consistent work and may have to juggle multiple gigs to make a living. Next, we will discuss potential regulatory responses to protect gig workers and after that: the implications of the gig economy on traditional labor markets.`,
+                    questions: [
+                        {
+                            id: 15,
+                            text: "What is the main topic of the talk?",
+                            options: ["The advantages of traditional employment", "The benefits of using apps instead of websites", "A new type of work tied to advances in technology", "A plan to restructure contract work"],
+                            correctAnswer: 2,
+                            explanation: "The lecture focuses on the 'gig economy,' describing it as a <strong>new type of work linked to technological advances</strong>."
+                        },
+                        {
+                            id: 16,
+                            text: "Why does the speaker mention ride-sharing apps and freelance websites?",
+                            options: ["To give examples of digital platforms in the gig economy", "To explain a problem with overhead costs", "To discuss how work conditions for gig workers have improved", "To illustrate technologies used both by companies and by their customers"],
+                            correctAnswer: 0,
+                            explanation: "These are mentioned as <strong>examples</strong> of digital platforms ('like ride-sharing apps...')."
+                        },
+                        {
+                            id: 17,
+                            text: "According to the speaker, what is a challenge for gig workers?",
+                            options: ["High overhead costs", "Limited flexibility", "Lack of a stable income", "Little office space"],
+                            correctAnswer: 2,
+                            explanation: "The speaker mentions 'difficulties in securing consistent work,' which paraphrases to a <strong>lack of stable income</strong>."
+                        },
+                        {
+                            id: 18,
+                            text: "What will the speaker discuss next?",
+                            options: ["The challenges of digital platforms for gig workers", "The efforts of regulators to protect gig workers", "The types of labor markets with many gig workers", "The advantages of flexible working hours for gig workers"],
+                            correctAnswer: 1,
+                            explanation: "The professor states: 'Next, we will discuss potential <strong>regulatory responses</strong> to protect gig workers'."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // --- STATE ---
+        const state = {
+            flatSteps: [],
+            currentStepIndex: 0,
+            answers: {},
+            checkedSteps: {},
+            showResults: false,
+            showInstructions: true,
+            isPlaying: false,
+            passageAudioPlayed: {}, 
+            passageAudioFinished: {},
+            showTranscript: {} 
+        };
+
+        // --- CORE LOGIC ---
+        function initLesson() {
+            state.answers = {};
+            state.checkedSteps = {};
+            state.showResults = false;
+            state.showInstructions = false;
+            state.currentStepIndex = 0;
+            state.passageAudioPlayed = {};
+            state.passageAudioFinished = {};
+            state.showTranscript = {};
+            const steps = [];
+            lessonData.sections.forEach(section => {
+                section.questions.forEach((q, idx) => {
+                    steps.push({
+                        type: 'listening',
+                        data: section,
+                        question: q,
+                        passageId: (section.id === "m1_short") ? `short_${q.id}` : section.id 
+                    });
+                });
+            });
+            state.flatSteps = steps;
+            assignVoices();
+            render();
+        }
+
+        async function playPreparedAudio() {
+            const step = state.flatSteps[state.currentStepIndex];
+            const passageId = step.passageId;
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+            if (playCount >= 2) return;
+            
+            state.passageAudioPlayed[passageId] = playCount + 1;
+            state.isPlaying = true;
+            updateAudioUI(); 
+
+            if (step.data.audioUrl) {
+                if (activeAudioElement) activeAudioElement.pause();
+                activeAudioElement = new Audio(step.data.audioUrl);
+                activeAudioElement.play();
+                activeAudioElement.onended = () => {
+                    state.isPlaying = false;
+                    state.passageAudioFinished[passageId] = true;
+                    render();
+                };
+                activeAudioElement.onerror = () => playTTSFallback(step, passageId);
+            } else {
+                playTTSFallback(step, passageId);
+            }
+        }
+
+        async function playTTSFallback(step, passageId) {
+            if (!femaleVoice || !maleVoice) assignVoices();
+            const transcriptText = step.question.transcript || step.data.transcript;
+            const lines = transcriptText.split('\n').filter(l => l.trim().length > 0);
+
+            for (let line of lines) {
+                if (!state.isPlaying) break;
+                let spokenText = line;
+                let currentGender = 'male'; 
+                const match = line.match(/^([A-Za-z\s]+):\s*(.*)/);
+                if (match) {
+                    const speaker = match[1].toLowerCase().trim();
+                     spokenText = match[2]; 
+                    if (speaker === 'woman') currentGender = 'female';
+                }
+                const sentences = spokenText.match(/[^.!?]+[.!?]+/g) || [spokenText];
+                for (let sentence of sentences) {
+                    if (!state.isPlaying) break;
+                    await new Promise((resolve) => {
+                        const utterance = new SpeechSynthesisUtterance(sentence.trim());
+                        utterance.voice = (currentGender === 'female') ? femaleVoice : maleVoice;
+                        utterance.rate = 0.95; 
+                        utterance.onend = resolve;
+                        utterance.onerror = resolve; 
+                        window.speechSynthesis.speak(utterance);
+                    });
+                }
+                if (state.isPlaying && lines.length > 1) await new Promise(r => setTimeout(r, 400));
+            }
+            state.isPlaying = false;
+            state.passageAudioFinished[passageId] = true;
+            render();
+        }
+
+        function stopAudio() {
+            state.isPlaying = false;
+            window.speechSynthesis.cancel();
+            if (activeAudioElement) activeAudioElement.pause();
+        }
+
+        function updateAudioUI() {
+            const step = state.flatSteps[state.currentStepIndex];
+            const passageId = step?.passageId;
+            const isAudioFinished = state.passageAudioFinished[passageId];
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+            const isTranscriptVisible = state.showTranscript[passageId];
+            
+            const btnContainer = document.getElementById('audio-btn-container');
+            const overlay = document.getElementById('question-overlay');
+
+            if (btnContainer) {
+                let transcriptUI = '';
+                if (playCount >= 2) {
+                    const toggleText = isTranscriptVisible ? "Hide Transcript" : "Show Transcript";
+                    const toggleIcon = isTranscriptVisible ? "eye-off" : "eye";
+                    const transcriptText = (step.question.transcript || step.data.transcript).replace(/\n/g, '<br/><br/>');
+                    transcriptUI = `
+                    <div class="flex flex-col items-center mt-6 w-full max-w-2xl animate-fade-in">
+                        <button onclick="toggleTranscript()" class="flex items-center text-purple-700 font-bold hover:text-purple-900 transition-colors bg-purple-100/50 hover:bg-purple-100 px-5 py-2.5 rounded-full border border-purple-200 text-sm">
+                            <i data-lucide="${toggleIcon}" class="w-4 h-4 mr-2"></i> ${toggleText}
+                        </button>
+                        ${isTranscriptVisible ? `
+                        <div class="mt-6 w-full bg-white p-6 rounded-xl border border-purple-200 shadow-md text-left text-[1rem] leading-relaxed text-gray-800 max-h-[50vh] overflow-y-auto custom-scroll">
+                            <strong class="text-purple-900 block mb-3 font-sans border-b border-purple-100 pb-2"><i data-lucide="file-text" class="w-4 h-4 inline mr-1"></i> Audio Transcript:</strong>
+                            ${transcriptText}
+                        </div>
+                        ` : ''}
+                    </div>`;
+                }
+
+                if (state.isPlaying) {
+                    btnContainer.innerHTML = `<button disabled class="flex items-center px-10 py-4 bg-purple-50 text-purple-700 font-bold rounded-full shadow-md border border-purple-200 cursor-not-allowed">
+                        <i data-lucide="volume-2" class="w-6 h-6 mr-3 animate-pulse"></i> Playing Audio...
+                    </button>`;
+                } else if (playCount >= 2) {
+                    btnContainer.innerHTML = `<button disabled class="flex items-center px-10 py-4 bg-gray-100 text-gray-400 font-bold rounded-full shadow-inner border border-gray-200 cursor-not-allowed">
+                        <i data-lucide="check-circle" class="w-6 h-6 mr-3"></i> Audio Completed
+                    </button>${transcriptUI}`;
+                } else {
+                    let playText = playCount === 1 ? 'Play Audio Segment (1 play left)' : 'Play Audio Segment';
+                    btnContainer.innerHTML = `<button onclick="playPreparedAudio()" class="flex items-center px-10 py-4 bg-white text-purple-700 font-bold rounded-full shadow-lg hover:shadow-xl hover:bg-purple-50 transition-all border border-purple-700 text-lg">
+                        <i data-lucide="play-circle" class="w-8 h-8 mr-3"></i> ${playText}
+                    </button>`;
+                }
+                lucide.createIcons();
+            }
+
+            if (overlay && isAudioFinished) {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => { overlay.classList.add('hidden'); }, 500);
+            }
+        }
+
+        // --- HELPERS ---
+        function toggleTranscript() {
+            const step = state.flatSteps[state.currentStepIndex];
+            state.showTranscript[step.passageId] = !state.showTranscript[step.passageId];
+            render();
+        }
+        function handleCheckAnswer() { state.checkedSteps[state.currentStepIndex] = true; render(); }
+        function handleNext() { stopAudio(); if (state.currentStepIndex < state.flatSteps.length - 1) { state.currentStepIndex++; render(); } else { finishTest(); } }
+        function handleBack() { stopAudio(); if (state.currentStepIndex > 0) { state.currentStepIndex--; render(); } }
+        function handleBeginLesson() { assignVoices(); initLesson(); }
+        function finishTest() { stopAudio(); state.showResults = true; render(); window.scrollTo({top: 0, behavior: 'smooth'}); }
+        function handleRadioInput(qId, value) { if(state.checkedSteps[state.currentStepIndex]) return; state.answers[qId] = value; render(); }
+        function resetApp() { state.flatSteps = []; state.answers = {}; state.checkedSteps = {}; state.showResults = false; state.showInstructions = true; stopAudio(); render(); }
+
+        // --- RENDERING ---
+        function renderWelcome() {
+            return `
+            <div class="min-h-screen w-full flex flex-col md:flex-row m-0 p-0">
+                <div class="bg-purple-700 p-12 text-white flex flex-col justify-center items-center md:w-2/5 min-h-[40vh] md:min-h-screen text-center relative">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-purple-900 opacity-90"></div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-sans leading-tight z-10">TOEFL iBT<br>Listening<br>Overview</h1>
+                </div>
+                
+                <div class="p-8 md:p-16 lg:p-24 flex flex-col justify-center md:w-3/5 bg-white min-h-[60vh] md:min-h-screen overflow-y-auto">
+                    <div class="max-w-2xl mx-auto w-full">
+                        <p class="text-gray-600 mb-8 text-lg md:text-xl leading-relaxed">
+                            Welcome! This guided lesson will help you practice listening strategies. 
+                            You will receive <strong>immediate feedback and explanations</strong> after every question to help you learn as you go, along with the full audio transcript during the final review.
+                        </p>
+                        
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8 text-left rounded-r-lg shadow-sm">
+                            <div class="flex items-center mb-3">
+                                <i data-lucide="volume-2" class="w-6 h-6 text-blue-600 mr-2"></i>
+                                <span class="font-bold text-blue-800 text-lg">Browser Recommendation</span>
+                            </div>
+                            <p class="text-sm md:text-base text-blue-700 leading-relaxed">
+                                For the most natural audio experience, we <strong>highly recommend using Microsoft Edge</strong>. Edge provides high quality Neural voices integrated directly into the browser that sound significantly better than standard voices.
+                            </p>
+                        </div>
+
+                        <div class="text-left mb-12">
+                            <button onclick="handleBeginLesson()" class="inline-flex items-center px-10 py-5 bg-purple-700 text-white font-bold rounded-full shadow-lg hover:shadow-xl hover:bg-purple-800 transition-all text-xl w-full sm:w-auto justify-center">
+                                Start Lesson <i data-lucide="arrow-right" class="ml-3 w-6 h-6"></i>
+                            </button>
+                        </div>
+
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-left flex items-start shadow-sm">
+                            <i data-lucide="info" class="w-6 h-6 text-yellow-600 mr-4 flex-shrink-0 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-yellow-800 mb-2 text-lg">Important Notes</h4>
+                                <p class="text-sm text-yellow-800 leading-relaxed mb-4">
+                                    This is a guided practice lesson focused on listening strategy, <strong>not a full simulation test</strong>. 
+                                    For a full simulation to see exactly how the real test looks and operates, please visit the 
+                                    <a href="https://www.ets.org/toefl/test-takers/ibt/prepare.html" target="_blank" class="underline font-semibold hover:text-yellow-900 transition-colors">official TOEFL sample test</a>.
+                                </p>
+                                <div class="w-full h-px bg-yellow-200 my-4"></div>
+                                <p class="text-sm text-yellow-800 leading-relaxed">
+                                    <strong>Multistage Adaptive Design:</strong> In the real TOEFL iBT, the Listening section is multistage adaptive. This means your performance on the first part of the test is used to select the content for the second part. The difficulty of the tasks will adapt to match your ability level.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderListening(step) {
+            const { data, question, passageId } = step;
+            const isShort = data.id === "m1_short";
+            const isAudioFinished = state.passageAudioFinished[passageId];
+            const playCount = state.passageAudioPlayed[passageId] || 0;
+            const isChecked = state.checkedSteps[state.currentStepIndex];
+            const userAnsIdx = state.answers[question.id];
+            
+            // Pedagogical condition: Short Dialogue questions are always visible, but disabled until audio is heard at least once.
+            // Longer tasks (conv/talk) are hidden behind the overlay until audio is finished.
+            const showQuestionDirectly = isShort; 
+            const isUnlocked = isAudioFinished;
+
+            const options = question.options.map((opt, idx) => {
+                let isOptChecked = userAnsIdx === idx ? 'checked' : '';
+                let optionClass = "border-2 border-gray-300 rounded-lg p-3";
+                
+                // If unlocked and not checked yet, add hover effects
+                if (isUnlocked && !isChecked) {
+                    optionClass += " cursor-pointer hover:bg-gray-50 hover:border-purple-300";
+                } else if (!isUnlocked) {
+                    optionClass += " opacity-50 cursor-not-allowed";
+                }
+
+                if (isOptChecked) optionClass = "border-2 border-purple-600 bg-purple-50 rounded-lg p-3";
+                
+                if (isChecked) {
+                    optionClass = optionClass.replace('cursor-pointer', 'cursor-default').replace('hover:bg-gray-50', '').replace('hover:border-purple-300', '');
+                    if (idx === question.correctAnswer) optionClass = "border-2 border-green-500 bg-green-50 rounded-lg p-3 font-bold";
+                    else if (idx === userAnsIdx) optionClass = "border-2 border-red-400 bg-red-50 rounded-lg p-3";
+                }
+                
+                return `<label class="flex items-center ${optionClass} mb-3 transition-all">
+                    <input type="radio" name="q-${question.id}" ${isOptChecked} ${isChecked || !isUnlocked ? 'disabled' : ''} onchange="handleRadioInput(${question.id}, ${idx})" class="appearance-none w-5 h-5 border-2 rounded-full checked:border-purple-700 checked:border-[5px] disabled:opacity-50">
+                    <span class="ml-4 text-lg text-gray-800">${opt}</span>
+                </label>`;
+            }).join('');
+
+            let actionArea = !isChecked ? `<div class="mt-8 flex justify-end border-t pt-6"><button onclick="handleCheckAnswer()" ${userAnsIdx === undefined || !isAudioFinished ? 'disabled' : ''} class="px-6 py-3 font-bold rounded shadow ${userAnsIdx !== undefined && isAudioFinished ? 'bg-purple-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}">Check Answer</button></div>` 
+                : `<div class="mt-8 bg-purple-50 border p-6 rounded-lg shadow-inner"><div class="mb-3 font-bold text-lg ${userAnsIdx === question.correctAnswer ? 'text-green-700' : 'text-red-600'}">${userAnsIdx === question.correctAnswer ? 'Correct!' : 'Incorrect.'}</div><div class="text-gray-800 mb-6">${question.explanation}</div><div class="flex justify-end"><button onclick="handleNext()" class="px-6 py-3 bg-purple-700 text-white font-bold rounded shadow">Next <i data-lucide="arrow-right" class="ml-2 w-5 h-5 inline"></i></button></div></div>`;
+
+            return `<div class="pt-28 h-screen flex flex-col md:flex-row overflow-hidden bg-white">
+                <div class="w-full md:w-1/2 h-full border-r bg-purple-50 flex flex-col items-center justify-center p-8 relative">
+                    <div class="absolute top-8 left-8 text-xs font-bold text-purple-400 uppercase tracking-widest flex items-center"><i data-lucide="volume-2" class="mr-2"></i> Audio Environment</div>
+                    <div id="audio-btn-container" class="flex flex-col items-center w-full max-w-2xl"></div>
+                </div>
+                <div class="w-full md:w-1/2 h-full overflow-y-auto p-10 bg-white custom-scroll relative pb-32">
+                    <div class="max-w-xl mx-auto">
+                        <h3 class="text-xl font-bold text-black mb-8 leading-snug">${question.text}</h3>
+                        ${!isUnlocked && isShort ? `<p class="mb-4 text-sm text-purple-600 font-semibold italic flex items-center"><i data-lucide="info" class="w-4 h-4 mr-2"></i> Listen to the audio once to enable answer selection.</p>` : ''}
+                        <div>${options}</div>
+                        ${actionArea}
+                    </div>
+                    <div id="question-overlay" class="absolute inset-0 bg-white z-10 flex flex-col items-center justify-center text-center px-8 ${showQuestionDirectly || isAudioFinished ? 'hidden' : ''}">
+                        <i data-lucide="lock" class="w-16 h-16 text-gray-300 mb-6"></i>
+                        <h3 class="text-xl font-bold text-gray-700 mb-4">Question Hidden</h3>
+                        <p class="text-gray-500 max-w-sm">Please listen to the audio completely to unlock the question.</p>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderResults() {
+            let html = `<div class="min-h-screen bg-[#f0f0f0] pt-24 pb-12 px-4 overflow-y-auto">
+                <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden border-t-8 border-purple-700 mb-8">
+                    <div class="bg-purple-700 p-10 text-white text-center">
+                        <h2 class="text-4xl font-bold mb-3">Lesson Review</h2>
+                        <p class="text-lg opacity-90">Review transcripts and teacher explanations below.</p>
+                    </div>
+                </div>
+                <div class="max-w-4xl mx-auto space-y-8">`;
+            lessonData.sections.forEach(sec => {
+                html += `<div class="bg-white rounded-xl shadow p-8 border-l-4 border-purple-500">
+                    <h3 class="text-xl font-bold text-purple-800 mb-6 flex items-center"><i data-lucide="mic" class="mr-3"></i> ${sec.audioTitle}</h3>`;
+                sec.questions.forEach(q => {
+                    const isCorrect = state.answers[q.id] === q.correctAnswer;
+                    html += `<div class="mb-8 border-b pb-8 last:border-0 last:pb-0">
+                        <div class="flex items-center mb-4 text-sm font-bold uppercase tracking-wide ${isCorrect ? 'text-green-600' : 'text-red-500'}">
+                            <i data-lucide="${isCorrect ? 'check' : 'x'}" class="mr-2"></i> ${isCorrect ? 'Correct' : 'Incorrect'}
+                        </div>
+                        <div class="bg-gray-50 p-4 mb-4 rounded italic text-sm text-gray-700">${(q.transcript || sec.transcript).replace(/\n/g, '<br>')}</div>
+                        <p class="font-bold mb-4">${q.text}</p>
+                        <div class="bg-purple-50 p-4 rounded text-sm text-gray-800 border border-purple-100"><strong>Teacher Insight:</strong> ${q.explanation}</div>
+                    </div>`;
+                });
+                html += `</div>`;
+            });
+            return html + `<div class="flex justify-center mt-8"><button onclick="resetApp()" class="px-8 py-4 bg-purple-700 text-white rounded-full font-bold shadow-lg">Restart Practice</button></div></div>`;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            if (state.flatSteps.length === 0) app.innerHTML = renderWelcome();
+            else if (state.showResults) app.innerHTML = renderResults();
+            else {
+                app.innerHTML = `<header class="bg-purple-700 h-16 flex items-center justify-between px-6 shadow-md fixed w-full top-0 z-50"><span class="text-white text-lg font-bold">TOEFL iBT Listening Overview</span></header>
+                <div class="fixed top-16 w-full bg-white border-b px-6 py-3 flex items-center text-gray-500 text-sm z-40">
+                    ${state.currentStepIndex > 0 ? `<button onclick="handleBack()"><i data-lucide="chevron-left" class="inline"></i> Previous</button>` : ''}
+                </div>` + renderListening(state.flatSteps[state.currentStepIndex]);
+                updateAudioUI();
+            }
+            lucide.createIcons();
+        }
+        render();
+    </script>
+</body>
+</html>

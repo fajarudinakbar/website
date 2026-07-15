@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Infographic - Smart Financial Choices</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* BASE SETUP & NEO-BRUTALISM */
+        :root {
+            --bg-color: #e5e5e5;
+            --black: #000000;
+            --white: #ffffff;
+            --yellow: #FFD500;
+            --pink: #FF90E8;
+            --blue: #90C4FF;
+            --green: #00E599;
+            --purple: #B590FF;
+            --orange: #FF7B00;
+            --border-thick: 6px solid #000000;
+            --shadow-hard: 8px 8px 0px #000000;
+            --shadow-hard-hover: 12px 12px 0px #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--black);
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* INFOGRAPHIC CONTAINER */
+        .infographic-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 40px;
+            grid-template-columns: 1fr;
+        }
+
+        /* HEADER BLOCK */
+        .header-block {
+            background-color: var(--green);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-block h1 {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background-color: var(--white);
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 40px;
+            border: 4px solid var(--black);
+            box-shadow: 6px 6px 0px var(--black);
+        }
+
+        .header-block p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background-color: var(--black);
+            color: var(--white);
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+        }
+
+        /* TOOLKIT SECTIONS */
+        .toolkit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .toolkit-box {
+            background-color: var(--white);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 30px;
+            position: relative;
+        }
+
+        .toolkit-badge {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 5px 15px;
+            font-weight: 700;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            border: 2px solid var(--black);
+        }
+
+        .info-block {
+            margin-top: 15px;
+            font-size: 1rem;
+            background-color: rgba(0,0,0,0.05);
+            padding: 15px;
+            border: 2px dashed var(--black);
+        }
+
+        .phrase-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+        
+        .phrase-list li {
+            margin-bottom: 8px;
+            font-weight: 700;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .phrase-list li::before {
+            content: "»";
+            position: absolute;
+            left: 0;
+            color: var(--green);
+        }
+
+        /* GRID LAYOUTS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* INTERACTIVE CARDS */
+        .interactive-card {
+            background-color: var(--white);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 30px;
+            transition: all 0.2s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .interactive-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: var(--shadow-hard-hover);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border: 4px solid var(--black);
+            background-color: var(--white);
+            box-shadow: 4px 4px 0px var(--black);
+        }
+
+        .card-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background-color: var(--black);
+            color: var(--white);
+            padding: 5px 15px;
+            display: inline-block;
+        }
+
+        /* FLIP CONTENT */
+        .reveal-content {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 4px dashed var(--black);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .interactive-card.active .reveal-content {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .interactive-card.active {
+            background-color: var(--black);
+            color: var(--white);
+        }
+
+        .interactive-card.active .card-title {
+            background-color: var(--white);
+            color: var(--black);
+        }
+
+        .interactive-card.active .card-icon {
+            box-shadow: 4px 4px 0px var(--white);
+        }
+
+        /* SCENARIO GENERATOR */
+        .generator-block {
+            background-color: var(--yellow);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 50px;
+            text-align: center;
+        }
+
+        .generator-btn {
+            background-color: var(--pink);
+            color: var(--black);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 20px 40px;
+            border: 4px solid var(--black);
+            box-shadow: 6px 6px 0px var(--black);
+            cursor: pointer;
+            transition: all 0.1s ease;
+            margin-bottom: 30px;
+        }
+
+        .generator-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0px var(--black);
+        }
+
+        #scenario-display {
+            background-color: var(--white);
+            border: 4px solid var(--black);
+            padding: 30px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            box-shadow: inset 4px 4px 0px rgba(0,0,0,0.1);
+        }
+
+        .task-box {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 1.2rem;
+        }
+
+        /* STRATEGIC CONSENSUS MATRIX */
+        .consensus-block {
+            background-color: var(--white);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-hard);
+            padding: 40px;
+        }
+
+        .consensus-header {
+            background-color: var(--purple);
+            color: var(--white);
+            padding: 20px;
+            border: 4px solid var(--black);
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .vote-option {
+            border: 4px solid var(--black);
+            padding: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .vote-option:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .vote-option.selected {
+            background-color: var(--black);
+            color: var(--white);
+        }
+
+        .vote-option.selected .badge {
+            background-color: var(--yellow);
+            color: var(--black);
+        }
+
+        .badge {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 5px 10px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        /* UTILITIES */
+        .section-label {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background-color: var(--black);
+            color: var(--white);
+            display: inline-block;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            transform: rotate(-2deg);
+        }
+
+        .highlight-text {
+            background-color: var(--yellow);
+            padding: 2px 5px;
+            font-weight: 700;
+            color: var(--black);
+            border: 2px solid var(--black);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HELPER CLASSES */
+        .bg-pink { background-color: var(--pink); }
+        .bg-yellow { background-color: var(--yellow); }
+        .bg-blue { background-color: var(--blue); }
+        .bg-green { background-color: var(--green); }
+        .bg-purple { background-color: var(--purple); }
+        .bg-orange { background-color: var(--orange); }
+
+    </style>
+</head>
+<body>
+
+    <div class="infographic-wrapper">
+        
+        <!-- HEADER -->
+        <header class="header-block">
+            <h1>
+                <span>Smart Financial Choices</span>
+                <i class="fa-solid fa-money-bill-trend-up" style="margin: 20px 0; font-size: 1.2em; color: var(--black); text-shadow: 4px 4px 0px var(--white);"></i>
+                <span>Clear Communication</span>
+            </h1>
+            <br>
+            <p>Interactive Discussion and Strategy Tasks</p>
+        </header>
+
+        <!-- TOOLKIT SECTIONS -->
+        <section class="toolkit-grid">
+            <div class="toolkit-box bg-purple">
+                <div class="toolkit-badge">GRAMMAR TOOLKIT</div>
+                <h3 style="margin-top: 15px;">Reported Speech</h3>
+                <p>Use this to tell someone what another person said. Remember to change the tense to the past.</p>
+                <div class="info-block">
+                    <ul class="phrase-list" style="margin-top: 0;">
+                        <li>He <strong>said that</strong> the price was too high.</li>
+                        <li>She <strong>recommended that</strong> we wait for a sale.</li>
+                        <li>They <strong>claimed that</strong> it is a great bargain.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="toolkit-box bg-blue">
+                <div class="toolkit-badge">PHRASE TOOLKIT</div>
+                <h3 style="margin-top: 15px;">Talking About Budgets</h3>
+                <p>Use these professional phrases when discussing money and financial situations.</p>
+                <div class="info-block" style="background-color: var(--white);">
+                    <ul class="phrase-list" style="margin-top: 0;">
+                        <li>We are currently <strong>short of cash</strong>.</li>
+                        <li>We have a very <strong>limited budget</strong>.</li>
+                        <li>I think this is a fantastic <strong>bargain</strong>.</li>
+                        <li>Is this a good <strong>value</strong> for our money?</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ZONE 1: SHARE YOUR EXPERIENCE (Click to reveal) -->
+        <section>
+            <div class="section-label">01. Share Your Experience</div>
+            <div class="grid-2">
+                <div class="interactive-card bg-orange" onclick="this.classList.toggle('active')">
+                    <div class="card-icon" style="background-color: var(--orange);"><i class="fa-solid fa-tag"></i></div>
+                    <div class="card-title">Finding a Bargain</div>
+                    <p style="font-weight: 700; font-size: 1.2rem;">Tell a story about getting a very good deal.</p>
+                    <div class="reveal-content">
+                        <strong>Discussion Task (Use Reported Speech):</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>What did you buy? Was it a good value?</li>
+                            <li>Who recommended that you buy it?</li>
+                            <li>Tell your partner exactly what they said about the product.</li>
+                        </ul>
+                    </div>
+                    <div style="position: absolute; top: 10px; right: 10px; font-size: 0.8rem; font-weight: 700;">CLICK TO SEE TASK</div>
+                </div>
+
+                <div class="interactive-card bg-pink" onclick="this.classList.toggle('active')">
+                    <div class="card-icon" style="background-color: var(--pink);"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="card-title">Being Short of Cash</div>
+                    <p style="font-weight: 700; font-size: 1.2rem;">Tell a story about having a strict budget.</p>
+                    <div class="reveal-content">
+                        <strong>Discussion Task (Use the Phrase Toolkit):</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Describe a time you had a very limited budget.</li>
+                            <li>Did someone claim that you needed to spend more money?</li>
+                            <li>How did you fix the problem?</li>
+                        </ul>
+                    </div>
+                    <div style="position: absolute; top: 10px; right: 10px; font-size: 0.8rem; font-weight: 700;">CLICK TO SEE TASK</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ZONE 2: AUTHENTIC SCENARIO GENERATOR -->
+        <section>
+            <div class="section-label" style="transform: rotate(1deg); background-color: var(--yellow); color: var(--black);">02. Real Work Scenarios</div>
+            <div class="generator-block">
+                <button class="generator-btn" onclick="generateScenario()">
+                    <i class="fa-solid fa-comments-dollar"></i> Get Scenario
+                </button>
+                <div id="scenario-display">
+                    Click the button above to get a workplace situation to discuss.
+                </div>
+                <div class="task-box">
+                    <strong style="color: var(--yellow);">Your Goal:</strong> Talk about the situation with your partner. Choose the best financial decision. Practice reporting information back and forth using "said that" or "recommended that".
+                </div>
+            </div>
+        </section>
+
+        <!-- ZONE 3: STRATEGIC CONSENSUS -->
+        <section>
+            <div class="section-label" style="transform: rotate(-1deg); background-color: var(--purple); color: var(--white);">03. Financial Planning</div>
+            <div class="consensus-block">
+                <div class="consensus-header">
+                    <i class="fa-solid fa-chart-pie"></i> Task: Allocate The Budget
+                    <p style="font-size: 1.2rem; font-weight: 500; margin-top: 10px; color: var(--white);">Your manager said that you have a limited budget to buy new computers for the office. You must review the options and choose ONE supplier. Discuss the claims and make a decision.</p>
+                </div>
+                
+                <div class="grid-3">
+                    <div class="vote-option bg-white" onclick="selectOption(this)">
+                        <div class="badge">Supplier A</div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">The Bargain Choice</h3>
+                        <p style="margin-bottom: 15px; font-weight: 500;">
+                            These computers are very cheap. The seller <strong>claimed that</strong> they work perfectly, but another team <strong>said that</strong> they break often.
+                        </p>
+                        <div style="margin-top: auto; font-weight: 700; font-size: 0.9rem; text-decoration: underline;">Click to select this supplier</div>
+                    </div>
+                    
+                    <div class="vote-option bg-white" onclick="selectOption(this)">
+                        <div class="badge">Supplier B</div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">The Premium Choice</h3>
+                        <p style="margin-bottom: 15px; font-weight: 500;">
+                            These computers are very expensive. However, the IT Director <strong>recommended that</strong> we buy these because they will last for ten years.
+                        </p>
+                        <div style="margin-top: auto; font-weight: 700; font-size: 0.9rem; text-decoration: underline;">Click to select this supplier</div>
+                    </div>
+
+                    <div class="vote-option bg-white" onclick="selectOption(this)">
+                        <div class="badge">Supplier C</div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">The Patient Choice</h3>
+                        <p style="margin-bottom: 15px; font-weight: 500;">
+                            We stay short of cash right now. A colleague <strong>said that</strong> a major discount event happens next month and we should wait.
+                        </p>
+                        <div style="margin-top: auto; font-weight: 700; font-size: 0.9rem; text-decoration: underline;">Click to select this supplier</div>
+                    </div>
+                </div>
+
+                <div id="consensus-result" style="display: none; margin-top: 30px; background-color: var(--black); color: var(--white); padding: 20px; border: 4px solid var(--yellow);">
+                    <h4 style="color: var(--yellow); margin-bottom: 10px;">Decision Confirmed</h4>
+                    <p id="consensus-text" style="font-size: 1.2rem;"></p>
+                    <p style="margin-top: 15px; font-weight: 700;">Final Task: Report your choice to the class. Tell us what the other people claimed or recommended, and why you ignored their advice.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // B1 Level Data for Scenario Generator - Focused on Money and Reporting
+        const scenarios = [
+            "Your boss said that the team cannot buy any more office supplies this month because of a limited budget. A coworker says they need a new chair. What do you tell them?",
+            "A client claimed that your services are too expensive. They said they are short of cash right now. Do you recommend a discount or hold your price?",
+            "You want to organize a team dinner. A colleague recommended that you go to a very fancy restaurant, but you know the team budget is limited. What do you do?",
+            "A software company claimed that their new program will save you money. However, a friend said that the software is very difficult to use. What do you decide?",
+            "You found a great bargain on flights for a business trip. However, your manager recommended that you buy the expensive flexible tickets. Which do you book?"
+        ];
+
+        // Function for Scenario Generator
+        function generateScenario() {
+            const display = document.getElementById('scenario-display');
+            const randomIndex = Math.floor(Math.random() * scenarios.length);
+            
+            // Brief fade effect
+            display.style.opacity = 0;
+            setTimeout(() => {
+                display.innerHTML = `"${scenarios[randomIndex]}"`;
+                display.style.opacity = 1;
+            }, 200);
+        }
+
+        // Function for Strategic Consensus Selection
+        function selectOption(selectedElement) {
+            // Remove 'selected' class from all options
+            const options = document.querySelectorAll('.vote-option');
+            options.forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Add 'selected' class to clicked option
+            selectedElement.classList.add('selected');
+
+            // Show result box
+            const resultBox = document.getElementById('consensus-result');
+            const resultText = document.getElementById('consensus-text');
+            const selectedTitle = selectedElement.querySelector('h3').innerText;
+            
+            resultText.innerHTML = `Your team decided to choose: <strong>${selectedTitle}</strong>.`;
+            resultBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

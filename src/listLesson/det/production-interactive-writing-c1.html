@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Mastery Module: Interactive Writing | CEFR C1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input specific styling */
+        .drill-input {
+            transition: all 0.2s;
+        }
+        .drill-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .drill-input.correct {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+            color: #166534;
+        }
+        .drill-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .drill-input.revealed {
+            border-color: #f59e0b;
+            background-color: #fffbeb;
+            color: #92400e;
+            font-weight: 700;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base md:text-lg text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Production</span> <span>&gt;</span> 
+            <span>Writing</span> <span>&gt;</span> 
+            <span>CEFR C1</span> <span>&gt;</span> 
+            <span class="text-orange-700 font-bold">Interactive Writing</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-600 tracking-tight mb-3">
+                    Interactive Writing Mastery
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-500 font-medium">Score Range: 120–140 | Focus: Academic Density & Syntactic Variety</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-xl text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-orange-600 p-8 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-2xl text-slate-700 leading-relaxed">
+                <i class="fas fa-pen-nib mr-3 text-orange-600"></i> 
+                <strong>Instructions:</strong> Master the 5-minute primary prompt and 3-minute follow-up format. This module targets C1 academic density. Auto-graded drills offer <strong>2 attempts</strong> before revealing answers.
+            </p>
+        </div>
+
+        <!-- Section 1: Concept & Recognition (Cyan Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-3xl font-bold text-cyan-900">Steps 1-2: Task Specs & Diagnostics</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-3xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Step 1: Specs -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 1: Rapid-Fire Task Specs (60s Brief)</h3>
+                        <div class="bg-cyan-50 p-8 rounded-xl border border-cyan-100 text-xl leading-relaxed text-slate-700 space-y-4">
+                            <p><strong>The Impact:</strong> Primarily affects Literacy (reading/writing) and Writing (production/accuracy) subscores.</p>
+                            <h4 class="font-bold text-cyan-900 mt-6 mb-2">The C1 Targets:</h4>
+                            <ul class="list-disc pl-6 space-y-2">
+                                <li><strong>Nominalization:</strong> Turning verbs into nouns for academic density (e.g., "The implementation of..." instead of "When they implement...").</li>
+                                <li><strong>Inversion for Emphasis:</strong> Using structures like "Not only... but also" or "Seldom have we seen..."</li>
+                                <li><strong>Conjunctive Adverbs:</strong> Moving beyond 'However' to 'Nevertheless,' 'Conversely,' and 'Moreover.'</li>
+                                <li><strong>Collocational Precision:</strong> Using high-level pairings like 'mitigate risks' or 'bolster infrastructure.'</li>
+                                <li><strong>Subordinate Clause Variety:</strong> Integrating 'provided that,' 'whereas,' and 'inasmuch as.'</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Diagnostic -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 2: The Diagnostic 'Active Comparison' Set</h3>
+                        
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm text-xl mb-6">
+                            <p class="font-bold text-slate-800 mb-2">Prompt:</p>
+                            <p class="font-serif italic text-slate-700">"Some argue that universities should prioritize STEM subjects over the humanities to ensure economic growth. Discuss."</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-8 mb-8">
+                            <div class="p-6 bg-orange-50 border border-orange-200 rounded-xl">
+                                <h4 class="font-bold text-orange-800 text-xl mb-3">Model Answer A (Standard B2)</h4>
+                                <p class="text-xl text-slate-800 leading-relaxed font-serif bg-white p-4 rounded border border-orange-100">
+                                    "I think universities should keep humanities. Even though STEM is important for jobs, the humanities teach us how to think. If we only study science, we might lose our culture. Many people believe money is everything, but it is not."
+                                </p>
+                            </div>
+                            <div class="p-6 bg-emerald-50 border border-emerald-200 rounded-xl shadow-sm">
+                                <h4 class="font-bold text-emerald-800 text-xl mb-3">Model Answer B (Target C1/C2)</h4>
+                                <p class="text-xl text-emerald-900 leading-relaxed font-serif bg-white p-4 rounded border border-emerald-100">
+                                    "Rarely has the debate over educational priorities been so polarized. While the economic utility of STEM is undeniable, the marginalization of the humanities poses a significant risk to critical discourse. Inasmuch as technical skills drive industry, it is the analytical rigor of the liberal arts that fosters societal innovation."
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 border-2 border-slate-200 rounded-xl">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="font-bold text-cyan-900 text-2xl">Task: Audit Checklist</h4>
+                                <button onclick="checkAudit()" class="text-lg font-bold text-cyan-700 border-2 border-cyan-300 bg-cyan-50 px-6 py-2 rounded-lg hover:bg-cyan-100 transition-colors">Check Audit</button>
+                            </div>
+                            
+                            <div class="space-y-6 text-xl text-slate-700">
+                                <div>
+                                    <label class="block font-bold mb-2">1. Identify the Inversion used in the first sentence of Model B.</label>
+                                    <input type="text" id="aud1" class="w-full drill-input p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none" placeholder="e.g. phrase starting with rarely...">
+                                </div>
+                                <div>
+                                    <label class="block font-bold mb-2">2. Locate the Subordinating Conjunction that replaces a simple 'but' in Model B.</label>
+                                    <input type="text" id="aud2" class="w-full drill-input p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none" placeholder="Conjunction word...">
+                                </div>
+                                <div>
+                                    <label class="block font-bold mb-2">3. Which answer utilizes Nominalization to sound more objective? Type the phrase (hint: "the m...").</label>
+                                    <input type="text" id="aud3" class="w-full drill-input p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none" placeholder="Nominalized phrase...">
+                                </div>
+                            </div>
+                            <div id="fb-audit" class="mt-6 font-bold text-xl min-h-[2rem]"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Strategy & Warm-up (Blue Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-3xl font-bold text-blue-900">Steps 3-4: Strategy & Foundations</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white border-t border-blue-50 space-y-12">
+                    
+                    <!-- Step 3: Strategy Drill -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 3: The 'Strategy Fix-It' Drill</h3>
+                        <div class="bg-blue-50 p-8 rounded-xl border border-blue-200 mb-6">
+                            <p class="text-lg font-bold text-slate-500 uppercase tracking-wider mb-2">Mediocre Response:</p>
+                            <p class="text-xl text-slate-800 font-serif leading-relaxed mb-6 bg-white p-6 rounded-lg border border-red-200">
+                                "Social media is bad for kids. It makes them feel sad because they see perfect lives. Parents should stop them from using it too much."
+                            </p>
+                            
+                            <div class="mb-6">
+                                <h5 class="font-bold text-blue-800 text-xl mb-3">Task: Rewrite immediately using these Pro-Tips:</h5>
+                                <ul class="list-disc pl-5 text-xl text-slate-700 space-y-2 bg-white p-6 rounded-lg border border-blue-100">
+                                    <li><strong>Pro-Tip 1:</strong> Start with a Gerund phrase (e.g., "Exposing children to...").</li>
+                                    <li><strong>Pro-Tip 2:</strong> Replace 'bad' with 'detrimental' and 'sad' with 'discontented.'</li>
+                                    <li><strong>Pro-Tip 3:</strong> Use a 'Not only... but also' construction.</li>
+                                </ul>
+                            </div>
+
+                            <label class="block font-bold text-slate-700 text-xl mb-2">Your C1 Rewrite:</label>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-4 focus:ring-blue-200 outline-none h-32" placeholder="Write your revised paragraph here..."></textarea>
+                            
+                            <button onclick="toggleAnswer('strategy-hint', this)" class="mt-4 text-lg font-bold text-blue-700 underline">Show Model Rewrite</button>
+                            <div id="strategy-hint" class="answer-box hidden mt-4 p-6 bg-blue-100 border border-blue-300 rounded-lg text-xl text-blue-900 font-serif italic">
+                                "Exposing children to unregulated social media is highly detrimental. Not only does it render them discontented by presenting unattainable ideals of perfection, but it also necessitates strict parental intervention to mitigate prolonged usage."
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Warm-up Suite -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 4: Foundations Skill-Building Suite (High Volume)</h3>
+                        
+                        <!-- Drill A: Vocab -->
+                        <div class="mb-10 bg-slate-50 p-8 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill A: Vocabulary 'Upgrade'</h4>
+                                <button onclick="checkDrillA()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Vocab</button>
+                            </div>
+                            <p class="text-xl text-slate-600 mb-6">Replace the bold basic phrases with C1-level academic equivalents.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-x-8 gap-y-4 text-xl">
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                    <span class="text-slate-700 w-48">1. The <strong>big problem</strong></span>
+                                    <select id="va1" class="drill-input w-40 p-2 rounded border border-slate-300 bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="Sizable">sizable</option>
+                                        <option value="Formidable">formidable</option>
+                                        <option value="Huge">huge</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                    <span class="text-slate-700 w-48">6. To <strong>show the truth</strong></span>
+                                    <select id="va6" class="drill-input w-40 p-2 rounded border border-slate-300 bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="Reveal">reveal</option>
+                                        <option value="Display">display</option>
+                                        <option value="Illustrate">illustrate</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                    <span class="text-slate-700 w-48">2. It is <strong>important to</strong></span>
+                                    <select id="va2" class="drill-input w-40 p-2 rounded border border-slate-300 bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="Necessary">necessary</option>
+                                        <option value="Imperative">imperative</option>
+                                        <option value="Required">required</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                    <span class="text-slate-700 w-48">7. <strong>Very difficult</strong></span>
+                                    <select id="va7" class="drill-input w-40 p-2 rounded border border-slate-300 bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="Arduous">arduous</option>
+                                        <option value="Tough">tough</option>
+                                        <option value="Demanding">demanding</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                    <span class="text-slate-700 w-48">3. They <strong>said that</strong></span>
+                                    <select id="va3" class="drill-input w-40 p-2 rounded border border-slate-300 bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="Told">told</option>
+                                        <option value="Mentioned">mentioned</option>
+                                        <option value="Asserted">asserted</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                    <span class="text-slate-700 w-48">8. <strong>Small difference</strong></span>
+                                    <select id="va8" class="drill-input w-40 p-2 rounded border border-slate-300 bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="Detail">detail</option>
+                                        <option value="Nuance">nuance</option>
+                                        <option value="Fraction">fraction</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                    <span class="text-slate-700 w-48">4. A <strong>good result</strong></span>
+                                    <select id="va4" class="drill-input w-40 p-2 rounded border border-slate-300 bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="Favorable">favorable</option>
+                                        <option value="Okay">okay</option>
+                                        <option value="Positive">positive</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                    <span class="text-slate-700 w-48">9. To <strong>stop the issue</strong></span>
+                                    <select id="va9" class="drill-input w-40 p-2 rounded border border-slate-300 bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="Finish">finish</option>
+                                        <option value="Alleviate">alleviate</option>
+                                        <option value="Halt">halt</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                    <span class="text-slate-700 w-48">5. To <strong>change the law</strong></span>
+                                    <select id="va5" class="drill-input w-40 p-2 rounded border border-slate-300 bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="Shift">shift</option>
+                                        <option value="Amend">amend</option>
+                                        <option value="Alter">alter</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+                                    <span class="text-slate-700 w-48">10. <strong>Many reasons</strong></span>
+                                    <select id="va10" class="drill-input w-40 p-2 rounded border border-slate-300 bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                                        <option value="" disabled selected>Select...</option>
+                                        <option value="Numerous">numerous</option>
+                                        <option value="Multiple">multiple</option>
+                                        <option value="Myriad">myriad</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="fb-drilla" class="mt-6 font-bold min-h-[2rem] text-xl"></div>
+                        </div>
+
+                        <!-- Drill B: Scramble -->
+                        <div class="mb-10 bg-slate-50 p-8 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill B: 5 Sentence Scrambles (C1 Syntax)</h4>
+                                <button onclick="checkDrillB()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Scrambles</button>
+                            </div>
+                            <div class="space-y-6 text-xl">
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(circumstances / under / should / no / be / the / ignored / data)</p>
+                                    <input type="text" id="vb1" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="1...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(only / not / it / expensive / is / but / also / inefficient)</p>
+                                    <input type="text" id="vb2" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="2...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(the / the / greater / investment / more / significant / the / yield)</p>
+                                    <input type="text" id="vb3" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="3...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(should / the / government / fail / to / act / consequences / dire / will / ensue)</p>
+                                    <input type="text" id="vb4" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="4...">
+                                </div>
+                                <div>
+                                    <p class="font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-2 text-lg">(provided / that / regulations / are / met / the / project / will / proceed)</p>
+                                    <input type="text" id="vb5" class="w-full drill-input p-3 border border-slate-300 rounded" placeholder="5...">
+                                </div>
+                            </div>
+                            <div id="fb-drillb" class="mt-6 font-bold min-h-[2rem] text-xl"></div>
+                        </div>
+
+                        <!-- Drill C: Spot the Syntax Error -->
+                        <div class="bg-slate-50 p-8 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill C: 5 'Spot the Syntax Error'</h4>
+                                <button onclick="checkDrillC()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Errors</button>
+                            </div>
+                            <p class="text-xl text-slate-600 mb-4">Correct the grammatical/syntactic errors in these sentences:</p>
+                            <div class="space-y-6 text-xl">
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">1. The criteria for the experiment was highly controversial.</p>
+                                    <input type="text" id="vc1" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">2. Despite he worked hard, the results were negligible.</p>
+                                    <input type="text" id="vc2" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">3. The reason is because the infrastructure is outdated.</p>
+                                    <input type="text" id="vc3" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">4. Neither the manager nor the employees was aware of the change.</p>
+                                    <input type="text" id="vc4" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                                <div>
+                                    <p class="font-serif text-red-800 mb-2">5. The city which I live is expanding rapidly.</p>
+                                    <input type="text" id="vc5" class="w-full drill-input p-3 rounded border border-slate-300" placeholder="Corrected version...">
+                                </div>
+                            </div>
+                            <div id="fb-drillc" class="mt-6 font-bold min-h-[2rem] text-xl"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Guided Practice (Emerald Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-3xl font-bold text-emerald-900">Step 5: Guided Drafting & Iteration</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-10">
+                    
+                    <div class="bg-emerald-50 p-8 rounded-xl border border-emerald-200 shadow-inner">
+                        <h4 class="font-bold text-emerald-900 text-2xl mb-4">Prompt:</h4>
+                        <p class="text-2xl font-serif text-slate-800 leading-relaxed mb-6 bg-white p-4 rounded-lg">
+                            "Remote work has become a permanent fixture of the modern economy. Evaluate its impact on urban planning."
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="bg-white p-6 rounded-lg border border-emerald-100 shadow-sm">
+                                <h5 class="font-bold text-emerald-800 text-xl mb-4">Task 1: Follow the Skeleton</h5>
+                                <ul class="space-y-3 text-lg text-slate-700">
+                                    <li><strong>Thesis:</strong> Acknowledge shift, state primary impact.</li>
+                                    <li><strong>Support:</strong> Use <em class="text-emerald-700 font-bold">"Inasmuch as..."</em></li>
+                                    <li><strong>Counter:</strong> Use <em class="text-emerald-700 font-bold">"Conversely..."</em></li>
+                                    <li><strong>Synthesis:</strong> Recommend an action.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg border border-emerald-100 shadow-sm">
+                                <h5 class="font-bold text-emerald-800 text-xl mb-4">Task 2 (The Upgrade): Integrate these</h5>
+                                <ul class="space-y-3 text-lg text-slate-700 font-serif italic">
+                                    <li>"...the decentralization of..."</li>
+                                    <li>"...necessitates a radical shift in..."</li>
+                                    <li>"...the socio-economic fabric of..."</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <label class="block font-bold text-slate-700 text-xl mb-2">Draft your C1 Response here:</label>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-4 focus:ring-emerald-200 outline-none h-48" placeholder="Start writing..."></textarea>
+                            
+                            <button onclick="toggleAnswer('drafting-hint', this)" class="mt-4 text-lg font-bold text-emerald-700 underline">Show Model Synthesis</button>
+                            <div id="drafting-hint" class="answer-box hidden mt-4 p-6 bg-emerald-100 border border-emerald-300 rounded-lg text-xl text-emerald-900 font-serif leading-loose">
+                                "The permanency of remote work fundamentally necessitates a radical shift in urban planning paradigms. Inasmuch as the decentralization of the workforce reduces downtown congestion and transit demands, it also offers unprecedented opportunities to redesign city centers. Conversely, this exodus threatens the socio-economic fabric of local businesses that rely on office commuters. Ultimately, urban planners must pivot towards creating mixed-use, residential-focused zones rather than pure commercial districts."
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Simulation & Challenge (Violet Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-3xl font-bold text-violet-900">Step 6-8: Simulation & Challenge</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-violet-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Simulation Setup -->
+                    <div class="bg-violet-50 p-8 rounded-xl border border-violet-200">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-6">
+                            <h3 class="font-bold text-violet-900 text-3xl">Step 6: The 'Pressure Cooker' Simulation</h3>
+                            <div class="bg-white p-4 rounded-xl border-2 border-violet-300 text-center min-w-[200px]">
+                                <p class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-1">60s Timer</p>
+                                <div class="text-4xl font-mono font-bold text-violet-700" id="sim-timer-display">01:00</div>
+                                <button onclick="startSimTimer()" class="mt-2 bg-violet-600 hover:bg-violet-700 text-white font-bold py-1 px-4 rounded transition-colors w-full">Start</button>
+                            </div>
+                        </div>
+                        <p class="text-xl text-slate-700 mb-6">Set a timer for 60 seconds per prompt. Write <strong>exactly 2 sentences</strong> per prompt.</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <p class="font-bold text-slate-800 text-xl mb-2">Prompt 1: Should high school students be required to learn a second language?</p>
+                                <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-2 focus:ring-violet-400 outline-none h-24"></textarea>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800 text-xl mb-2">Prompt 2: Is space exploration a justifiable expense for developing nations?</p>
+                                <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-2 focus:ring-violet-400 outline-none h-24"></textarea>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800 text-xl mb-2">Prompt 3: Do celebrities have a moral obligation to be role models?</p>
+                                <textarea class="w-full p-4 border border-slate-300 rounded-lg text-xl focus:ring-2 focus:ring-violet-400 outline-none h-24"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 bg-white border border-violet-200 rounded-xl p-6">
+                            <h4 class="font-bold text-violet-800 text-xl mb-4">Performance Friction Checklist:</h4>
+                            <div class="space-y-2 text-lg text-slate-700">
+                                <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-violet-600"> Did you pause for >5 seconds?</label>
+                                <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-violet-600"> Did you use basic words like 'very,' 'good,' or 'bad'?</label>
+                                <label class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-violet-600"> Did you vary your sentence starters?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Independent Marathon -->
+                    <div class="pt-8 border-t border-slate-200">
+                        <h3 class="text-3xl font-bold text-violet-800 mb-6">Step 7: The Independent Mastery Marathon</h3>
+                        <p class="text-xl text-slate-600 mb-6">Write your Part 1 response, and mentally anticipate a "Why?" or counter-argument for Part 2.</p>
+                        
+                        <div class="space-y-4 text-xl">
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 1 (Standard):</span> Discuss the benefits of public transportation in metropolitan areas. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 2 (Standard):</span> Should the voting age be lowered to 16? <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 3 (Professional):</span> Evaluate the efficacy of open-plan offices vs. private cubicles. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200"><span class="font-bold text-violet-900 block mb-2">Item 4 (Workplace):</span> A colleague suggests all internal communication should be video-based. Argue for or against. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 border-l-4 border-l-violet-500"><span class="font-bold text-violet-900 block mb-2">Item 5 (High Academic):</span> Analyze the ethical implications of using CRISPR technology to edit human embryos. <textarea class="w-full mt-2 p-3 border rounded focus:ring-2 outline-none h-24"></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Step 8: Error Clinic -->
+                    <div class="pt-10 border-t border-slate-200">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-3xl font-bold text-red-800">Step 8: The Error-Correction Clinic</h3>
+                            <button onclick="checkClinic()" class="text-lg font-bold text-white bg-red-600 hover:bg-red-700 px-6 py-2 rounded-lg transition-colors">Check Clinic</button>
+                        </div>
+                        <p class="text-xl text-slate-700 mb-6">Fix the 7 Errors in this Paragraph.</p>
+                        
+                        <div class="p-6 bg-red-50 border border-red-200 rounded-xl mb-6">
+                            <p class="font-serif text-xl text-slate-800 leading-loose">
+                                "The growth of AI is <span class="bg-red-200 px-1 rounded font-bold">1. very fast</span>. It is helping doctors find diseases. <span class="bg-red-200 px-1 rounded font-bold">2. But</span>, some people are <span class="bg-red-200 px-1 rounded font-bold">3. scared</span>. They think AI will take jobs away from everyone. If the government <span class="bg-red-200 px-1 rounded font-bold">4. dont</span> regulate it, there will be <span class="bg-red-200 px-1 rounded font-bold">5. big</span> problems. The technology is <span class="bg-red-200 px-1 rounded font-bold">6. usefull</span> but dangerous. <span class="bg-red-200 px-1 rounded font-bold">7. (Transition needed here)</span> Everyone needs to learn about it."
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4 text-lg bg-white p-6 border border-slate-300 rounded-xl">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold w-6">1.</span>
+                                <select id="cl1" class="drill-input flex-1 p-2 border border-slate-300 rounded bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-red-400">
+                                    <option value="" disabled selected>Replacement for 'very fast'</option>
+                                    <option value="Exponential">Exponential</option>
+                                    <option value="Speedy">Speedy</option>
+                                    <option value="Quick">Quick</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold w-6">2.</span>
+                                <select id="cl2" class="drill-input flex-1 p-2 border border-slate-300 rounded bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-red-400">
+                                    <option value="" disabled selected>Replacement for 'But'</option>
+                                    <option value="Still">Still</option>
+                                    <option value="Conversely">Conversely</option>
+                                    <option value="Anyways">Anyways</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold w-6">3.</span>
+                                <select id="cl3" class="drill-input flex-1 p-2 border border-slate-300 rounded bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-red-400">
+                                    <option value="" disabled selected>Replacement for 'scared'</option>
+                                    <option value="Spooked">Spooked</option>
+                                    <option value="Afraid">Afraid</option>
+                                    <option value="Apprehensive">Apprehensive</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold w-6">4.</span>
+                                <select id="cl4" class="drill-input flex-1 p-2 border border-slate-300 rounded bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-red-400">
+                                    <option value="" disabled selected>Correction for 'dont'</option>
+                                    <option value="do not">do not</option>
+                                    <option value="does not">does not</option>
+                                    <option value="doesn't">doesn't</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold w-6">5.</span>
+                                <select id="cl5" class="drill-input flex-1 p-2 border border-slate-300 rounded bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-red-400">
+                                    <option value="" disabled selected>Replacement for 'big'</option>
+                                    <option value="Huge">Huge</option>
+                                    <option value="Large">Large</option>
+                                    <option value="Catastrophic">Catastrophic</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold w-6">6.</span>
+                                <select id="cl6" class="drill-input flex-1 p-2 border border-slate-300 rounded bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-red-400">
+                                    <option value="" disabled selected>Correction for 'usefull'</option>
+                                    <option value="useful">useful</option>
+                                    <option value="usefully">usefully</option>
+                                    <option value="usefull">usefull (no change)</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-3 md:col-span-2">
+                                <span class="font-bold w-auto whitespace-nowrap">7. Transition:</span>
+                                <select id="cl7" class="drill-input flex-1 p-2 border border-slate-300 rounded bg-white text-slate-700 cursor-pointer outline-none focus:ring-2 focus:ring-red-400">
+                                    <option value="" disabled selected>Select a complex transition clause...</option>
+                                    <option value="Despite these advancements">Despite these advancements</option>
+                                    <option value="So basically">So basically</option>
+                                    <option value="Which means">Which means</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="fb-clinic" class="mt-6 font-bold text-xl min-h-[2rem]"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Reflection (Rose Theme) -->
+        <div class="mb-12 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-3xl font-bold text-rose-900">Step 9-10: AI Lab & Review</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-rose-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- AI Prompting -->
+                    <div class="bg-rose-50 p-8 rounded-xl border-l-4 border-rose-500 shadow-sm space-y-6">
+                        <h3 class="text-3xl font-bold text-rose-900 mb-4"><i class="fas fa-robot mr-3"></i>Step 9: The AI Prompting Lab</h3>
+                        
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">The 'Drill Sergeant' (Generate Prompts):</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-1">I am preparing for the Duolingo English Test Interactive Writing task at a C1 level. Generate 10 complex prompts regarding urban sociology, environmental ethics, and corporate governance. For each prompt, provide a follow-up question that challenges my initial stance.</p>
+                                <button onclick="copyToClipboard('ai-prompt-1')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">The 'Score Auditor' (Grade Response):</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-2">Grade the following DET Interactive Writing response based on Grammatical Complexity, Lexical Sophistication, and Task Relevance. Assign a score from 10–160 and identify three 'Safe' words I should replace with high-level academic synonyms. [PASTE YOUR RESPONSE HERE]</p>
+                                <button onclick="copyToClipboard('ai-prompt-2')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reflection -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-rose-800 mb-6">Step 10: Metacognitive Performance Log</h3>
+                        <p class="text-xl text-slate-700 italic mb-6">"Your discipline in the drills determines your dominance in the results. Keep pushing."</p>
+                        
+                        <div class="overflow-x-auto rounded-xl border border-slate-300">
+                            <table class="w-full text-lg">
+                                <thead>
+                                    <tr class="bg-rose-50 text-rose-900">
+                                        <th class="p-4">Task Type</th>
+                                        <th class="p-4">Time Taken</th>
+                                        <th class="p-4">Errors Found</th>
+                                        <th class="p-4">Linguistic Target Used?</th>
+                                        <th class="p-4">Next Step Goal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-slate-700">Practice Task 1</td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="e.g. 5m"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="e.g. 2 spelling"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="Yes (Inversion)"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none" placeholder="Improve vocab"></td>
+                                    </tr>
+                                    <tr class="bg-slate-50">
+                                        <td class="p-4 font-bold text-slate-700">Pressure Cooker</td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                    </tr>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-slate-700">Marathon 1</td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                        <td class="p-4"><input type="text" class="w-full p-2 border rounded outline-none"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-xl font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-orange-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- State Management ---
+        let attempts = {
+            audit: 0,
+            drilla: 0,
+            drillb: 0,
+            drillc: 0,
+            clinic: 0
+        };
+
+        const ansAudit = {
+            aud1: ["rarely has", "rarely has the debate", "rarely has the debate over educational priorities been so polarized"],
+            aud2: ["while", "inasmuch as"],
+            aud3: ["marginalization of the humanities", "marginalization"]
+        };
+
+        const ansDrillA = {
+            va1: ["formidable", "pressing", "monumental"],
+            va2: ["imperative", "crucial", "essential"],
+            va3: ["asserted", "contended", "argued", "posited"],
+            va4: ["favorable", "advantageous", "optimal"],
+            va5: ["amend", "reform", "modify", "revise"],
+            va6: ["illustrate", "demonstrate", "elucidate", "substantiate"],
+            va7: ["arduous", "formidable", "grueling"],
+            va8: ["nuance", "subtlety", "distinction"],
+            va9: ["alleviate", "mitigate", "ameliorate"],
+            va10: ["myriad", "multitude", "plethora"]
+        };
+
+        const ansDrillB = {
+            vb1: "under no circumstances should the data be ignored",
+            vb2: "not only is it expensive but also inefficient",
+            vb3: "the greater the investment the more significant the yield",
+            vb4: "should the government fail to act dire consequences will ensue",
+            vb5: "provided that regulations are met the project will proceed"
+        };
+
+        const ansDrillC = {
+            vc1: ["were"],
+            vc2: ["although he worked", "despite working", "despite his hard work", "even though he worked"],
+            vc3: ["that", "is that"],
+            vc4: ["were", "were aware"],
+            vc5: ["in which", "where", "in which i live", "where i live"]
+        };
+
+        const ansClinic = {
+            cl1: ["exponential", "rapid", "unprecedented", "accelerated"],
+            cl2: ["however", "nevertheless", "conversely"],
+            cl3: ["apprehensive", "concerned", "anxious", "alarmed"],
+            cl4: ["does not", "does not regulate"],
+            cl5: ["catastrophic", "monumental", "severe", "substantial"],
+            cl6: ["useful"],
+            cl7: ["lack of complex transition", "transition needed", "requires a transition", "despite these advancements", "while this proves beneficial"] // loose match for concept
+        };
+
+        function cleanString(str) {
+            return str.toLowerCase().replace(/[.,!?'"()]/g, '').trim().replace(/\s+/g, ' ');
+        }
+
+        // --- Logic Handlers ---
+
+        function handleInputCheck(idList, ansObj, attemptKey, feedbackId, isExactObj = false, customLogic = null) {
+            let correctCount = 0;
+            const total = idList.length;
+            const currentAttempt = attempts[attemptKey];
+            const feedback = document.getElementById(feedbackId);
+
+            idList.forEach(id => {
+                const el = document.getElementById(id);
+                const val = cleanString(el.value);
+                
+                let isCorrect = false;
+                let targetAns = "";
+
+                if (customLogic) {
+                    const res = customLogic(val, id);
+                    isCorrect = res.ok;
+                    targetAns = res.target;
+                } else if (isExactObj) {
+                    targetAns = ansObj[id];
+                    isCorrect = val === cleanString(targetAns);
+                } else {
+                    const acceptable = ansObj[id];
+                    isCorrect = acceptable.some(t => val.includes(cleanString(t)));
+                    targetAns = acceptable[0]; // first one is the preferred "reveal"
+                }
+
+                if (isCorrect && val !== "") {
+                    el.classList.add('correct');
+                    el.classList.remove('incorrect');
+                    correctCount++;
+                } else {
+                    el.classList.add('incorrect');
+                    el.classList.remove('correct');
+                    if (currentAttempt >= 1) { // Reveal on 2nd fail
+                        el.value = targetAns.charAt(0).toUpperCase() + targetAns.slice(1);
+                        el.classList.add('revealed');
+                    }
+                }
+            });
+
+            if (correctCount === total) {
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Perfect!</span>';
+                idList.forEach(id => document.getElementById(id).disabled = true);
+                attempts[attemptKey] = 2; // Lock
+            } else {
+                attempts[attemptKey]++;
+                if (attempts[attemptKey] >= 2) {
+                    feedback.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answers revealed.</span>';
+                    idList.forEach(id => document.getElementById(id).disabled = true);
+                } else {
+                    feedback.innerHTML = `<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>${correctCount}/${total} correct. 1 attempt left.</span>`;
+                }
+            }
+        }
+
+        function checkAudit() {
+            handleInputCheck(['aud1', 'aud2', 'aud3'], ansAudit, 'audit', 'fb-audit');
+        }
+
+        function checkDrillA() {
+            const ids = Array.from({length: 10}, (_, i) => `va${i+1}`);
+            handleInputCheck(ids, ansDrillA, 'drilla', 'fb-drilla');
+        }
+
+        function checkDrillB() {
+            const ids = Array.from({length: 5}, (_, i) => `vb${i+1}`);
+            handleInputCheck(ids, ansDrillB, 'drillb', 'fb-drillb', true);
+        }
+
+        function checkDrillC() {
+            const ids = Array.from({length: 5}, (_, i) => `vc${i+1}`);
+            handleInputCheck(ids, ansDrillC, 'drillc', 'fb-drillc');
+        }
+
+        function checkClinic() {
+            const ids = Array.from({length: 7}, (_, i) => `cl${i+1}`);
+            handleInputCheck(ids, ansClinic, 'clinic', 'fb-clinic');
+        }
+
+        // --- Sim Timer ---
+        let simInterval;
+        let simTime = 60;
+
+        function startSimTimer() {
+            clearInterval(simInterval);
+            simTime = 60;
+            const display = document.getElementById('sim-timer-display');
+            display.classList.remove('text-red-600');
+            display.classList.add('text-violet-700');
+            
+            simInterval = setInterval(() => {
+                simTime--;
+                const mins = Math.floor(simTime / 60);
+                const secs = simTime % 60;
+                display.innerText = `0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                
+                if (simTime <= 10) {
+                    display.classList.remove('text-violet-700');
+                    display.classList.add('text-red-600');
+                }
+                
+                if(simTime <= 0) {
+                    clearInterval(simInterval);
+                    alert("Time is up! Move to the next prompt.");
+                }
+            }, 1000);
+        }
+
+        // --- Utils ---
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Model Rewrite";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert("Prompt copied to clipboard!");
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers and reset attempts?")) {
+                attempts = { audit: 0, drilla: 0, drillb: 0, drillc: 0, clinic: 0 };
+
+                document.querySelectorAll('input[type="text"], textarea, select').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('correct', 'incorrect', 'revealed');
+                });
+
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+                
+                document.querySelectorAll('[id^="fb-"]').forEach(f => f.innerHTML = "");
+
+                document.querySelectorAll('.answer-box').forEach(el => {
+                    el.classList.add('hidden');
+                    el.classList.remove('visible');
+                });
+
+                clearInterval(simInterval);
+                document.getElementById('sim-timer-display').innerText = "01:00";
+                document.getElementById('sim-timer-display').classList.remove('text-red-600');
+            }
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English for L&D Professionals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Smooth scrolling for the content area */
+        .smooth-scroll { scroll-behavior: smooth; }
+        
+        /* Custom Scrollbar for a cleaner look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+    </style>
+</head>
+<body class="bg-white text-gray-800 h-screen overflow-hidden flex">
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="mobile-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-[#F5F5F5] border-r border-gray-200 flex flex-col flex-shrink-0 w-80 h-full absolute lg:relative z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+        <!-- Sidebar Header -->
+        <div class="p-6 border-b border-gray-200 bg-white">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 bg-[#0056D2] rounded text-white flex items-center justify-center font-bold text-base">
+                    L&D
+                </div>
+                <h1 class="font-bold text-base text-gray-900 leading-tight">English for L&D Professionals</h1>
+            </div>
+            <button onclick="toggleSidebar()" class="lg:hidden absolute top-6 right-6 text-gray-400 hover:text-gray-600">
+                <i data-lucide="chevron-left" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Module List -->
+        <div id="module-list" class="flex-1 overflow-y-auto">
+            <!-- Items injected via JS -->
+        </div>
+
+        <!-- Footer -->
+        <div class="p-6 border-t border-gray-200 bg-white">
+            <p class="text-sm text-gray-500 text-center">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" rel="noopener noreferrer" class="text-[#0056D2] hover:underline font-bold">fajarudinakbar.online</a>
+            </p>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full w-full relative bg-white">
+        
+        <!-- Mobile Header Toggle -->
+        <div class="lg:hidden absolute top-4 left-4 z-10">
+            <button onclick="toggleSidebar()" class="p-3 bg-white border border-gray-200 rounded-md shadow-sm">
+                <i data-lucide="menu" class="w-6 h-6 text-gray-600"></i>
+            </button>
+        </div>
+
+        <!-- Top Navbar -->
+        <div class="h-20 border-b border-gray-200 flex items-center px-6 lg:px-16 flex-shrink-0">
+            <div class="flex items-center gap-3 text-base text-gray-600 w-full pl-12 lg:pl-0">
+                <span class="font-bold text-gray-900 flex-shrink-0" id="nav-module-id">Module 1</span>
+                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
+                <span class="truncate block font-medium text-gray-800" id="nav-topic">Topic Name</span>
+            </div>
+        </div>
+
+        <!-- Content Scroll Container -->
+        <div id="content-area" class="flex-1 overflow-y-auto p-6 lg:px-20 lg:py-12 smooth-scroll">
+            <div class="max-w-5xl mx-auto">
+                
+                <!-- Dynamic Content Injection -->
+                <div id="dynamic-content">
+                    <!-- Content will be rendered here -->
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Bottom Navigation Bar -->
+        <div class="bg-white border-t border-gray-200 p-5 px-6 lg:px-20 flex justify-between items-center sticky bottom-0 z-10">
+            <button id="btn-prev" onclick="changeSession(-1)" class="flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-base transition-colors border border-gray-300 text-gray-600 hover:bg-gray-50">
+                <i data-lucide="chevron-left" class="w-5 h-5"></i> Previous
+            </button>
+
+            <button id="btn-next" onclick="changeSession(1)" class="flex items-center gap-2 px-8 py-3 rounded-lg font-bold text-base transition-colors shadow-sm bg-[#0056D2] text-white hover:bg-blue-800">
+                Next <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Data Source
+        const sessions = [
+            {
+                id: 1,
+                topic: "Professional Identity in Cross-Cultural and Hierarchical Contexts",
+                link: "https://teacherfajar.online/b2-communication-professional-identity-cross-cultural.html",
+                description: "You express your professional views clearly when working with colleagues from different nationalities, seniority levels, and communication styles.",
+                activities: [
+                    "Analyse cross-cultural workplace cases involving senior stakeholders and mixed-nationality teams",
+                    "Practise impromptu speaking drills using short, unexpected professional prompts",
+                    "Reformulate indirect or overly polite responses into clear, respectful professional statements",
+                    "Apply thinking-in-English techniques to reduce mental translation during speaking"
+                ],
+                caseStudy: "You are asked for your opinion during a regional meeting that includes C-level stakeholders from different countries. You disagree with the proposed direction but feel hesitant to speak directly. Explain how you would state your perspective clearly while remaining culturally appropriate and professional."
+            },
+            {
+                id: 2,
+                topic: "Structured Spontaneity Through Decision-Making",
+                link: "https://teacherfajar.online/b2-communication-decision-making.html",
+                description: "You respond to L&D problems by organising your ideas aloud and delivering concise recommendations.",
+                activities: [
+                    "Solve time-limited workplace dilemmas",
+                    "Rank solutions and justify priorities",
+                    "Deliver short recommendations with reasons and expected outcomes",
+                    "Simplify complex explanations into clear action points"
+                ],
+                caseStudy: "You must choose one intervention to prioritise this quarter: leadership coaching, onboarding redesign, or manager capability training. Decide quickly and explain your reasoning and expected impact."
+            },
+            {
+                id: 3,
+                topic: "Authority and Perspective in Global L&D Contexts",
+                link: "https://teacherfajar.online/b2-communication-authority-perspective.html",
+                description: "You present and defend your professional viewpoint on international L&D cases.",
+                activities: [
+                    "Analyse cross-cultural L&D case studies",
+                    "State your position clearly and concisely",
+                    "Explain implications for different stakeholders",
+                    "Respond to alternative viewpoints through clarification and reframing"
+                ],
+                caseStudy: "A global L&D initiative designed at headquarters is rolled out across regions, but local teams report low relevance. Explain how you would evaluate the situation and communicate your perspective to global stakeholders."
+            },
+            {
+                id: 4,
+                topic: "Managing Uncertainty in Problem Solving Discussions",
+                link: "https://teacherfajar.online/c2-communication-managing-uncertainty.html",
+                description: "You work through incomplete or changing case information while continuing to speak calmly and clearly.",
+                activities: [
+                    "Interpret ambiguous or incomplete cases",
+                    "Think aloud while refining solutions",
+                    "Paraphrase the problem before responding",
+                    "Adjust decisions as new information is introduced"
+                ],
+                caseStudy: "You are asked to recommend ways to improve learning impact, but data is incomplete and timelines are unclear. Begin outlining a solution and adapt your response as new constraints emerge."
+            },
+            {
+                id: 5,
+                topic: "Integrated Problem Solving and Confidence Anchoring",
+                link: "https://teacherfajar.online/c2-communication-roi-strategy.html",
+                description: "You lead a structured discussion of a complex L&D case and summarise your recommendations.",
+                activities: [
+                    "Conduct in-depth analysis of a multi-layered L&D case",
+                    "Present final recommendations with clear rationale",
+                    "Synthesise key discussion points",
+                    "Create a personal communication checklist for future professional use"
+                ],
+                caseStudy: "Senior leaders question the ROI of L&D initiatives and ask for a clear direction moving forward. Analyse the situation, prioritise actions, and summarise your recommendations in a structured and confident way."
+            },
+            {
+                id: 6,
+                topic: "Strategic Influence in Cross-Cultural Decision-Making",
+                link: "#",
+                description: "You analyse complex cross-cultural cases and recommend actions while balancing clarity, influence, and professional boundaries.",
+                activities: [
+                    "Analyse cases involving conflicting cultural expectations and power dynamics",
+                    "Explain trade-offs between directness and diplomacy",
+                    "Frame recommendations for both global and local stakeholders",
+                    "Practise impromptu responses to stakeholder pushback"
+                ],
+                caseStudy: "A global leader expects direct feedback, while local managers prefer consensus-based communication. You are asked to advise on how feedback should be delivered without damaging relationships. Explain your recommendation."
+            },
+            {
+                id: 7,
+                topic: "Communicating with Senior and C-Level Stakeholders",
+                link: "#",
+                description: "You present professional judgments clearly and concisely to senior leaders with limited time and high expectations.",
+                activities: [
+                    "Distil complex issues into executive-level messages",
+                    "Practise high-stakes impromptu responses to challenging questions",
+                    "Reframe detailed explanations into strategic summaries",
+                    "Prioritise clarity, relevance, and decisiveness"
+                ],
+                caseStudy: "A C-level executive questions the value of a learning initiative and asks for a quick justification. Respond clearly, confidently, and without over-explaining."
+            },
+            {
+                id: 8,
+                topic: "Navigating Disagreement and Professional Tension",
+                link: "#",
+                description: "You express disagreement and alternative perspectives while maintaining credibility and professional rapport.",
+                activities: [
+                    "Analyse cases involving conflicting priorities or opinions",
+                    "Practise neutral, assertive language for disagreement",
+                    "Reframe emotionally charged input into objective issues",
+                    "Maintain composure while defending professional decisions"
+                ],
+                caseStudy: "A senior colleague dismisses your recommendation during a discussion. Explain how you would restate your position calmly and reinforce its value."
+            },
+            {
+                id: 9,
+                topic: "Thinking Aloud in Complex Problem-Solving",
+                link: "#",
+                description: "You reason through complex L&D problems in English while making your thinking clear and accessible to others.",
+                activities: [
+                    "Work through multi-variable cases step by step",
+                    "Verbalise assumptions, constraints, and decision logic",
+                    "Adjust reasoning as new information emerges",
+                    "Practise sustained speaking without over-editing"
+                ],
+                caseStudy: "You are asked to design a learning solution under tight timelines, limited data, and competing stakeholder demands. Explain your thinking as you develop a recommendation."
+            },
+            {
+                id: 10,
+                topic: "Personal Leadership Voice and Communication Ownership",
+                link: "#",
+                description: "You articulate your professional stance confidently and consistently across different workplace situations.",
+                activities: [
+                    "Reflect on communication patterns across previous sessions",
+                    "Practise extended, unscripted professional discourse",
+                    "Refine a personal communication checklist for high-stakes contexts",
+                    "Identify strategies for continued independent development"
+                ],
+                caseStudy: "You are asked to summarise your approach to L&D for a new global leadership team. Explain your perspective clearly, confidently, and in a way that reflects your professional identity."
+            }
+        ];
+
+        let activeSessionId = 1;
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSidebar();
+            renderContent();
+            lucide.createIcons();
+        });
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('mobile-backdrop');
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        function setActiveSession(id) {
+            activeSessionId = id;
+            
+            // Close sidebar on mobile when selection is made
+            if (window.innerWidth < 1024) {
+                toggleSidebar();
+            }
+
+            renderSidebar();
+            renderContent();
+            
+            // Scroll to top of content
+            document.getElementById('content-area').scrollTop = 0;
+            
+            lucide.createIcons();
+        }
+
+        function changeSession(delta) {
+            const newId = activeSessionId + delta;
+            if (newId >= 1 && newId <= sessions.length) {
+                setActiveSession(newId);
+            }
+        }
+
+        function renderSidebar() {
+            const container = document.getElementById('module-list');
+            container.innerHTML = sessions.map(session => {
+                const isActive = session.id === activeSessionId;
+                const activeClasses = isActive 
+                    ? "bg-white border-l-[6px] border-[#0056D2] shadow-sm" 
+                    : "bg-[#F5F5F5] hover:bg-gray-100 border-l-[6px] border-transparent text-gray-600";
+                
+                const iconColor = isActive ? "text-[#0056D2]" : "text-gray-400";
+                const titleColor = isActive ? "text-gray-900" : "text-gray-700";
+
+                return `
+                    <button onclick="setActiveSession(${session.id})" class="w-full text-left p-5 text-base transition-all duration-200 flex gap-4 border-b border-gray-100 ${activeClasses}">
+                        <div class="mt-1 flex-shrink-0">
+                            ${isActive 
+                                ? `<i data-lucide="play-circle" class="w-6 h-6 ${iconColor}"></i>`
+                                : `<div class="w-6 h-6 rounded-full border-2 border-gray-400 flex items-center justify-center"><span class="text-xs font-bold text-gray-500">${session.id}</span></div>`
+                            }
+                        </div>
+                        <div>
+                            <span class="block font-bold text-base ${titleColor}">
+                                Session ${session.id}
+                            </span>
+                            <span class="text-sm text-gray-500 mt-1 line-clamp-2 block leading-relaxed font-medium">
+                                ${session.topic}
+                            </span>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderContent() {
+            const session = sessions.find(s => s.id === activeSessionId);
+            
+            // Update Nav
+            document.getElementById('nav-module-id').textContent = `Module ${session.id}`;
+            document.getElementById('nav-topic').textContent = session.topic;
+
+            // Update Navigation Buttons State
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            
+            if (activeSessionId === 1) {
+                btnPrev.classList.add('opacity-50', 'cursor-not-allowed');
+                btnPrev.classList.remove('hover:bg-gray-50');
+            } else {
+                btnPrev.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnPrev.classList.add('hover:bg-gray-50');
+            }
+
+            if (activeSessionId === sessions.length) {
+                btnNext.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+                btnNext.classList.remove('bg-[#0056D2]', 'hover:bg-blue-800');
+            } else {
+                btnNext.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+                btnNext.classList.add('bg-[#0056D2]', 'hover:bg-blue-800');
+            }
+
+            // Button Logic
+            let buttonHtml = '';
+            if (session.link && session.link !== "#") {
+                buttonHtml = `
+                    <a href="${session.link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 bg-[#0056D2] text-white px-8 py-4 rounded-lg text-base font-bold hover:bg-blue-800 transition-colors shadow-sm">
+                        Launch Module <i data-lucide="external-link" class="w-5 h-5"></i>
+                    </a>
+                `;
+            } else {
+                buttonHtml = `
+                    <button disabled class="bg-gray-100 text-gray-400 px-8 py-4 rounded-lg text-base font-bold cursor-not-allowed border border-gray-200">
+                        Module Coming Soon
+                    </button>
+                `;
+            }
+
+            // Render Content Body
+            const contentDiv = document.getElementById('dynamic-content');
+            contentDiv.innerHTML = `
+                <!-- Header -->
+                <div class="mb-12">
+                    <h1 class="text-3xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                        ${session.topic}
+                    </h1>
+                    <p class="text-xl text-gray-700 leading-relaxed font-normal">
+                        ${session.description}
+                    </p>
+                </div>
+
+                <hr class="border-gray-200 mb-12" />
+
+                <!-- Activities -->
+                <section class="mb-12">
+                    <h3 class="font-bold text-2xl text-gray-900 mb-6">Session Activities</h3>
+                    <div class="space-y-0 border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        ${session.activities.map(activity => `
+                            <div class="flex gap-5 p-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors bg-white items-start">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-green-600 flex-shrink-0 mt-1"></i>
+                                <span class="text-gray-800 text-lg leading-relaxed">${activity}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+
+                <!-- Case Study -->
+                <section>
+                    <h3 class="font-bold text-2xl text-gray-900 mb-6">Sample Case</h3>
+                    
+                    <div class="border border-gray-200 rounded-xl overflow-hidden shadow-md">
+                        <div class="bg-gray-50 px-8 py-5 border-b border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="file-text" class="w-6 h-6 text-[#0056D2]"></i>
+                                <span class="font-bold text-gray-800 text-base uppercase tracking-wide">Briefing</span>
+                            </div>
+                        </div>
+                        <div class="p-8 bg-white">
+                            <p class="text-gray-800 font-serif text-2xl leading-relaxed italic mb-8 pl-4 border-l-4 border-gray-300">
+                                "${session.caseStudy}"
+                            </p>
+                            ${buttonHtml}
+                        </div>
+                    </div>
+                </section>
+            `;
+            
+            // Re-init icons for new content
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>

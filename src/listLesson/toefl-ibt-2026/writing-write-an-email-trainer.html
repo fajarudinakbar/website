@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Fajar's TOEFL iBT: Write an Email Trainer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    boxShadow: {
+                        'brutal': '4px 4px 0px 0px rgba(0,0,0,1)',
+                        'brutal-sm': '2px 2px 0px 0px rgba(0,0,0,1)',
+                        'brutal-lg': '8px 8px 0px 0px rgba(0,0,0,1)',
+                        'brutal-active': '0px 0px 0px 0px rgba(0,0,0,1)',
+                    },
+                    colors: {
+                        brutal: {
+                            yellow: '#fde047',
+                            pink: '#f9a8d4',
+                            blue: '#93c5fd',
+                            green: '#86efac',
+                            purple: '#d8b4fe',
+                            orange: '#fdba74',
+                            bg: '#f4f4f0',
+                            white: '#ffffff',
+                            black: '#000000'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+                        mono: ['"Space Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        body {
+            background-color: #f4f4f0;
+            background-image: radial-gradient(#d1d5db 2px, transparent 2px);
+            background-size: 24px 24px;
+            color: #000;
+        }
+
+        /* Neo-Brutalist Scrollbar */
+        ::-webkit-scrollbar {
+            width: 14px;
+            border-left: 3px solid black;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f4f4f0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: black;
+            border: 2px solid #f4f4f0;
+        }
+
+        /* Utility animations */
+        .brutal-pop {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen font-sans">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- DATA SECTION ---
+
+        const prompts = [
+            {
+                id: 1,
+                type: "Academic / Formal",
+                title: "University Library Issue",
+                scenario: "You borrowed a book from the university library that was due yesterday. However, you were sick and could not return it on time. You want to ask if the fine can be waived.",
+                requirements: [
+                    "Explain why you did not return the book on time.",
+                    "Apologize for the inconvenience.",
+                    "Ask if the late fee can be waived due to your illness."
+                ],
+                recipient: "library@university.edu",
+                modelAnswer: {
+                    subject: "Request regarding overdue book: [Student Name]",
+                    body: "Dear Library Staff,\n\nI am writing to respectfully request a waiver for the late fee on a book I borrowed. The book was due yesterday; however, I came down with a sudden illness and was confined to bed, making it impossible for me to visit the campus to return it on time.\n\nI sincerely apologize for any inconvenience this delay has caused. I have now returned the book via the drop box. Given the circumstances regarding my health, I was wondering if it would be possible to waive the fine?\n\nThank you for your understanding and assistance.\n\nSincerely,\n\n[Student Name]",
+                    notes: "This response scores a 5 because it uses a polite, formal register ('respectfully request', 'I was wondering if'). It clearly addresses all three points: the explanation (illness), the apology, and the specific request about the fee."
+                }
+            },
+            {
+                id: 2,
+                type: "Social / Informal",
+                title: "Weekend Trip Planning",
+                scenario: "Your friend, Alex, wants to visit your city next weekend. However, you have a big exam on Monday and cannot spend the whole weekend with them.",
+                requirements: [
+                    "Express excitement about their visit.",
+                    "Explain your exam situation.",
+                    "Suggest a specific time you can meet for dinner instead of the whole weekend."
+                ],
+                recipient: "alex.friend@email.com",
+                modelAnswer: {
+                    subject: "Re: Visiting next weekend!",
+                    body: "Hi Alex,\n\nIt is so great to hear from you! I am really excited that you are coming to visit my city next weekend. I have missed hanging out with you.\n\nHowever, I have a slight problem. I have a huge final exam on Monday morning, so I need to spend most of the weekend studying in the library. Unfortunately, this means I won't be able to show you around during the day.\n\nThat said, I definitely want to see you! Are you free for dinner on Saturday night around 7 PM? We could check out that new burger place downtown.\n\nLet me know if that works for you!\n\nBest,\n\n[Name]",
+                    notes: "This email hits the perfect informal tone ('It is so great', 'hanging out'). It uses transition words ('However', 'That said') to manage the bad news effectively and ends with a clear, specific suggestion for meeting up."
+                }
+            },
+            {
+                id: 3,
+                type: "Business / Formal",
+                title: "Job Application Inquiry",
+                scenario: "You applied for a part-time job at the campus bookstore two weeks ago but haven't heard back. You want to check the status of your application.",
+                requirements: [
+                    "State when you applied for the position.",
+                    "Reiterate your interest in the job.",
+                    "Ask when a decision is expected to be made."
+                ],
+                recipient: "manager@campusbooks.com",
+                modelAnswer: {
+                    subject: "Application Status Inquiry: Part-time Bookstore Assistant",
+                    body: "Dear Hiring Manager,\n\nI am writing to inquire about the status of my application for the part-time position at the campus bookstore. I submitted my application via the online portal two weeks ago.\n\nI remain very interested in this opportunity, as I believe my organizational skills and love for reading would be a great asset to your team.\n\nCould you please let me know when you expect to make a hiring decision? I look forward to hearing from you soon.\n\nSincerely,\n\n[Name]",
+                    notes: "This is a concise, professional email. It gets straight to the point ('I am writing to inquire'). It adds a nice touch by reiterating interest ('I remain very interested') and asks the question politely ('Could you please let me know')."
+                }
+            }
+        ];
+
+        const rubric = [
+            { score: 5, desc: "Fully Successful", details: "Effective elaboration, varied syntax, precise vocabulary, appropriate social conventions (politeness/register), almost no errors." },
+            { score: 4, desc: "Generally Successful", details: "Adequate elaboration, good syntax/vocab, mostly appropriate conventions, few errors." },
+            { score: 3, desc: "Partially Successful", details: "Partial elaboration, moderate range of language, some noticeable errors or awkward tone." },
+            { score: 2, desc: "Mostly Unsuccessful", details: "Limited elaboration, limited vocabulary/syntax, accumulation of errors making it hard to follow." },
+            { score: 1, desc: "Unsuccessful", details: "Very little elaboration, telegraphic language, serious errors." }
+        ];
+
+        const toneExercises = [
+            { phrase: "Hey, what's up?", type: "Informal" },
+            { phrase: "I am writing to inquire about...", type: "Formal" },
+            { phrase: "Thanks a bunch!", type: "Informal" },
+            { phrase: "I would appreciate your assistance.", type: "Formal" },
+            { phrase: "See ya later.", type: "Informal" },
+            { phrase: "Sincerely,", type: "Formal" }
+        ];
+
+        const reorderingExercises = [
+            { jumbled: ["writing", "am", "I", "to", "ask", "about", "the", "schedule"], correct: "I am writing to ask about the schedule" },
+            { jumbled: ["let", "me", "Please", "know", "if", "available", "you", "are"], correct: "Please let me know if you are available" },
+            { jumbled: ["forward", "I", "look", "to", "hearing", "from", "you"], correct: "I look forward to hearing from you" },
+            { jumbled: ["apologize", "I", "for", "sincerely", "any", "caused", "inconvenience"], correct: "I sincerely apologize for any inconvenience caused" }
+        ];
+
+        // --- SUB-COMPONENTS ---
+
+        // Thicker, bolder SVGs for the brutalist aesthetic
+        const Icons = {
+            Pen: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="square" strokeLinejoin="miter" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>,
+            Book: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="square" strokeLinejoin="miter" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>,
+            Check: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" /></svg>,
+            Bulb: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="square" strokeLinejoin="miter" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>,
+            Ladder: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="square" strokeLinejoin="miter" d="M4 6h16M4 12h16M4 18h16" /></svg>,
+            Star: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="square" strokeLinejoin="miter" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>,
+            Split: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="square" strokeLinejoin="miter" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+        };
+
+        // Shared Brutalist Button Class
+        const btnBrutal = "inline-flex items-center justify-center font-bold border-2 border-black shadow-brutal hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-brutal-sm active:translate-x-[4px] active:translate-y-[4px] active:shadow-brutal-active transition-all";
+
+        // Skill Builder: Tone Detective
+        const ToneDetective = ({ onComplete }) => {
+            const [index, setIndex] = useState(0);
+            const [score, setScore] = useState(0);
+            const [feedback, setFeedback] = useState(null);
+            const [attempts, setAttempts] = useState(0);
+
+            const moveToNext = () => {
+                if (index < toneExercises.length - 1) {
+                    setIndex(index + 1);
+                    setFeedback(null);
+                    setAttempts(0);
+                } else {
+                    onComplete();
+                }
+            };
+
+            const handleChoice = (choice) => {
+                if (feedback && (feedback.includes("Correct") || feedback.includes("Out of attempts"))) return;
+
+                const isCorrect = choice === toneExercises[index].type;
+                if (isCorrect) {
+                    setFeedback("Correct!");
+                    setScore(score + 1);
+                    setTimeout(moveToNext, 1200);
+                } else {
+                    const newAttempts = attempts + 1;
+                    setAttempts(newAttempts);
+                    if (newAttempts >= 2) {
+                        setFeedback(`Out of attempts! The correct answer is ${toneExercises[index].type}.`);
+                        setTimeout(moveToNext, 2500);
+                    } else {
+                        setFeedback("Oops, try again. You have 1 attempt left.");
+                    }
+                }
+            };
+
+            return (
+                <div className="bg-white border-4 border-black shadow-brutal-lg p-8 max-w-lg mx-auto brutal-pop">
+                    <h3 className="text-2xl font-bold mb-2 uppercase tracking-wide bg-brutal-blue inline-block px-2 border-2 border-black">Level 1: Tone Detective</h3>
+                    <p className="text-black font-bold mb-6 text-sm uppercase">Is this phrase Formal or Informal?</p>
+                    
+                    <div className="mb-8 p-6 bg-brutal-yellow border-4 border-black shadow-[4px_4px_0_0_#000]">
+                        <p className="text-2xl font-bold text-black font-mono">"{toneExercises[index].phrase}"</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-6">
+                        <button onClick={() => handleChoice('Formal')} className={`${btnBrutal} bg-brutal-blue text-black p-4 text-lg`}>Formal 👔</button>
+                        <button onClick={() => handleChoice('Informal')} className={`${btnBrutal} bg-brutal-pink text-black p-4 text-lg`}>Informal 👋</button>
+                    </div>
+                    
+                    {feedback && (
+                        <div className={`mt-6 p-3 border-2 border-black font-bold text-lg text-center ${feedback === "Correct!" ? "bg-brutal-green" : "bg-red-400"}`}>
+                            {feedback}
+                        </div>
+                    )}
+                    <div className="mt-6 text-sm font-bold text-black border-t-2 border-black pt-2">Question {index + 1} / {toneExercises.length}</div>
+                </div>
+            );
+        };
+
+        // Skill Builder: Sentence Reordering (Typing)
+        const SentenceReorderer = ({ onComplete }) => {
+            const [index, setIndex] = useState(0);
+            const [userInput, setUserInput] = useState("");
+            const [feedback, setFeedback] = useState(null);
+            const [showSuggestion, setShowSuggestion] = useState(false);
+            const [attempts, setAttempts] = useState(0);
+
+            const checkAnswer = () => {
+                const attempt = userInput.trim().toLowerCase().replace(/\s+/g, ' ');
+                const correct = reorderingExercises[index].correct.toLowerCase();
+
+                if (attempt === "") {
+                    setFeedback({ type: 'error', text: "Please type your sentence first." });
+                    return;
+                }
+
+                if (attempt === correct || attempt === correct + ".") {
+                    setFeedback({ type: 'success', text: "Perfect! Your sentence is grammatically correct and appropriate." });
+                    setShowSuggestion(true);
+                } else {
+                    const newAttempts = attempts + 1;
+                    setAttempts(newAttempts);
+                    if (newAttempts >= 2) {
+                        setFeedback({ type: 'warning', text: "Out of attempts. Review the correct sentence structure below." });
+                        setShowSuggestion(true);
+                    } else {
+                        setFeedback({ type: 'error', text: "Not quite right. Check the word order and spelling. You have 1 attempt left." });
+                    }
+                }
+            };
+
+            const handleNext = () => {
+                if (index < reorderingExercises.length - 1) {
+                    setIndex(index + 1);
+                    setUserInput("");
+                    setFeedback(null);
+                    setShowSuggestion(false);
+                    setAttempts(0);
+                } else {
+                    onComplete();
+                }
+            };
+
+            const currentExercise = reorderingExercises[index];
+
+            return (
+                <div className="bg-white border-4 border-black shadow-brutal-lg p-8 max-w-2xl mx-auto brutal-pop">
+                    <h3 className="text-2xl font-bold mb-2 uppercase tracking-wide bg-brutal-pink inline-block px-2 border-2 border-black text-black">Level 2: Sentence Reordering</h3>
+                    <p className="text-black font-bold mb-6 text-sm uppercase">Type the scrambled words in the correct order to form a professional sentence.</p>
+
+                    <div className="bg-gray-100 p-6 border-4 border-black mb-6 text-center shadow-[4px_4px_0_0_#000]">
+                        <div className="flex flex-wrap justify-center gap-3">
+                            {currentExercise.jumbled.map((word, i) => (
+                                <span key={i} className="px-3 py-1 bg-white border-2 border-black text-black font-bold shadow-[2px_2px_0_0_#000]">
+                                    {word}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mb-6">
+                        <input
+                            type="text"
+                            className="w-full border-4 border-black p-4 font-mono text-xl shadow-[4px_4px_0_0_#000] focus:outline-none focus:bg-brutal-yellow transition-colors placeholder-gray-400"
+                            placeholder="Type the correct sentence here..."
+                            value={userInput}
+                            onChange={(e) => setUserInput(e.target.value)}
+                            onKeyDown={(e) => { if(e.key === 'Enter') { !showSuggestion ? checkAnswer() : handleNext(); } }}
+                            spellCheck="false"
+                            autoComplete="off"
+                            disabled={showSuggestion}
+                        />
+                    </div>
+
+                    {!showSuggestion ? (
+                        <button onClick={checkAnswer} className={`${btnBrutal} bg-brutal-blue text-black w-full py-4 text-xl`}>Check Sentence</button>
+                    ) : (
+                        <button onClick={handleNext} className={`${btnBrutal} bg-brutal-green text-black w-full py-4 text-xl`}>Next Sentence</button>
+                    )}
+
+                    {feedback && (
+                        <div className={`mt-6 p-4 border-4 border-black font-bold text-center ${
+                            feedback.type === 'success' ? 'bg-brutal-green text-black' : 
+                            feedback.type === 'error' ? 'bg-red-400 text-black' :
+                            'bg-brutal-yellow text-black'
+                        }`}>
+                            {feedback.text}
+                        </div>
+                    )}
+
+                    {showSuggestion && (
+                        <div className="mt-6 p-6 bg-brutal-purple border-4 border-black brutal-pop text-left shadow-[4px_4px_0_0_#000]">
+                            <span className="text-sm font-bold text-black uppercase tracking-wider block mb-2 bg-white inline-block px-1 border border-black">Correct Structure:</span>
+                            <p className="text-black font-bold text-xl font-mono">"{currentExercise.correct}"</p>
+                        </div>
+                    )}
+
+                    <div className="mt-6 text-sm font-bold text-black border-t-2 border-black pt-2 uppercase text-center">
+                        Question {index + 1} / {reorderingExercises.length}
+                    </div>
+                </div>
+            );
+        };
+
+        // Skill Builder: Guided Drafter
+        const GuidedDrafter = ({ onComplete }) => {
+            const [step, setStep] = useState(0);
+            const [draft, setDraft] = useState({ greeting: "", purpose: "", details: "", closing: "", signoff: "" });
+            const [attempts, setAttempts] = useState(0);
+            const [feedback, setFeedback] = useState(null);
+            
+            const prompt = prompts[0]; 
+
+            const steps = [
+                {
+                    title: "Step 1: The Greeting",
+                    instruction: "This is a Formal email to a university department. Choose the best greeting.",
+                    options: ["Hi Library,", "Dear Library Staff,", "Hey there,"],
+                    correct: "Dear Library Staff,",
+                    field: "greeting"
+                },
+                {
+                    title: "Step 2: The Purpose",
+                    instruction: "Write ONE sentence explaining why you are writing. (Hint: Use 'I am writing to...')",
+                    isInput: true,
+                    placeholder: "I am writing to...",
+                    field: "purpose",
+                    tip: "Start directly. Don't say 'My name is...' unless necessary."
+                },
+                {
+                    title: "Step 3: The Details",
+                    instruction: `Explain the situation: "${prompt.requirements[0]}" and "${prompt.requirements[1]}"`,
+                    isInput: true,
+                    placeholder: "The book was due yesterday, but...",
+                    field: "details",
+                    tip: "Use connectors like 'However' or 'Unfortunately' to explain the problem."
+                },
+                {
+                    title: "Step 4: Call to Action",
+                    instruction: `Make your request: "${prompt.requirements[2]}"`,
+                    isInput: true,
+                    placeholder: "I would like to ask if...",
+                    field: "closing",
+                    tip: "Be polite! Use 'Could you please' or 'I was wondering if'."
+                },
+                {
+                    title: "Step 5: Sign off",
+                    instruction: "Choose a formal sign off.",
+                    options: ["Best,", "Sincerely,", "Love,"],
+                    correct: "Sincerely,",
+                    field: "signoff"
+                }
+            ];
+
+            const handleNext = () => {
+                if(step < steps.length) {
+                    setStep(step + 1);
+                    setAttempts(0);
+                    setFeedback(null);
+                } else {
+                    onComplete();
+                }
+            };
+
+            const updateDraft = (value) => {
+                setDraft({ ...draft, [steps[step].field]: value });
+            };
+
+            const handleOptionSelect = (opt) => {
+                if (feedback && feedback.type === 'success') return; 
+                
+                const currentStep = steps[step];
+                if (opt === currentStep.correct) {
+                    setFeedback({ type: 'success', text: "CORRECT CHOICE!" });
+                    updateDraft(opt);
+                    setTimeout(handleNext, 1200);
+                } else {
+                    const newAttempts = attempts + 1;
+                    setAttempts(newAttempts);
+                    if (newAttempts >= 2) {
+                        setFeedback({ type: 'warning', text: `OUT OF ATTEMPTS. THE BEST CHOICE IS "${currentStep.correct}".` });
+                        updateDraft(currentStep.correct);
+                        setTimeout(handleNext, 2500);
+                    } else {
+                        setFeedback({ type: 'error', text: "INCORRECT. YOU HAVE 1 ATTEMPT LEFT." });
+                    }
+                }
+            };
+
+            if (step >= steps.length) {
+                return (
+                    <div className="bg-white border-4 border-black shadow-brutal-lg p-8 max-w-2xl mx-auto brutal-pop">
+                        <h3 className="text-3xl font-black mb-6 text-black uppercase bg-brutal-green inline-block px-3 border-2 border-black">Draft Complete!</h3>
+                        <p className="font-bold text-black mb-6 uppercase">Here is your assembled email:</p>
+                        <div className="bg-gray-100 p-6 border-4 border-black shadow-[4px_4px_0_0_#000] font-mono leading-relaxed whitespace-pre-wrap text-lg">
+                            {`${draft.greeting}\n\n${draft.purpose} ${draft.details}\n\n${draft.closing}\n\n${draft.signoff}`}
+                        </div>
+                        <div className="mt-8 text-center">
+                            <button onClick={onComplete} className={`${btnBrutal} bg-brutal-yellow text-black px-8 py-4 text-xl w-full`}>Finish Workshop</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            const currentStep = steps[step];
+
+            return (
+                <div className="bg-white border-4 border-black shadow-brutal-lg p-6 md:p-8 max-w-2xl mx-auto brutal-pop">
+                    <div className="flex justify-between items-center mb-6 border-b-4 border-black pb-4">
+                        <h3 className="text-2xl font-bold text-black uppercase bg-brutal-green inline-block px-2 border-2 border-black">{currentStep.title}</h3>
+                        <span className="text-sm font-bold bg-black text-white px-3 py-1 border-2 border-black uppercase shadow-[2px_2px_0_0_#fde047]">Step {step + 1}/{steps.length}</span>
+                    </div>
+                    
+                    <p className="text-black font-bold mb-6 text-lg">{currentStep.instruction}</p>
+
+                    {currentStep.options ? (
+                        <div className="grid gap-4">
+                            {currentStep.options.map((opt, i) => (
+                                <button 
+                                    key={i} 
+                                    onClick={() => handleOptionSelect(opt)}
+                                    className={`${btnBrutal} bg-white text-black p-4 text-left justify-start text-lg`}
+                                >
+                                    {opt}
+                                </button>
+                            ))}
+                            {feedback && (
+                                <div className={`mt-4 p-4 border-4 border-black font-bold text-center uppercase ${
+                                    feedback.type === 'success' ? 'bg-brutal-green text-black' : 
+                                    feedback.type === 'error' ? 'bg-red-400 text-black' :
+                                    'bg-brutal-yellow text-black'
+                                }`}>
+                                    {feedback.text}
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="space-y-6">
+                            <textarea 
+                                className="w-full border-4 border-black shadow-[4px_4px_0_0_#000] p-4 focus:outline-none focus:bg-brutal-yellow transition-colors font-mono text-lg" 
+                                rows="4"
+                                placeholder={currentStep.placeholder}
+                                onChange={(e) => updateDraft(e.target.value)}
+                            ></textarea>
+                            {currentStep.tip && (
+                                <div className="bg-brutal-yellow p-4 border-4 border-black flex gap-3 items-start shadow-[4px_4px_0_0_#000]">
+                                    <span className="text-2xl">💡</span>
+                                    <span className="font-sans text-black"><strong>TEACHER FAJAR'S TIP:</strong><br/>{currentStep.tip}</span>
+                                </div>
+                            )}
+                            <button onClick={handleNext} className={`${btnBrutal} bg-black text-white w-full py-4 text-xl uppercase tracking-widest`}>Next Step</button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const SkillBuilderHub = () => {
+            const [mode, setMode] = useState('menu'); 
+
+            const renderMenu = () => (
+                <div className="grid md:grid-cols-3 gap-8 brutal-pop">
+                    <div onClick={() => setMode('tone')} className="bg-brutal-blue border-4 border-black shadow-brutal hover:shadow-brutal-lg hover:-translate-y-1 transition-all cursor-pointer p-6 flex flex-col group">
+                        <div className="bg-white border-2 border-black inline-block w-16 h-16 flex items-center justify-center text-3xl mb-4 shadow-[2px_2px_0_0_#000] group-hover:scale-110 transition-transform">🕵️‍♀️</div>
+                        <h3 className="font-black text-2xl mb-2 uppercase">1. Tone Detective</h3>
+                        <p className="text-black font-bold text-sm">Master Formal vs. Informal registers in a quick, brutal quiz.</p>
+                    </div>
+                    <div onClick={() => setMode('reorder')} className="bg-brutal-pink border-4 border-black shadow-brutal hover:shadow-brutal-lg hover:-translate-y-1 transition-all cursor-pointer p-6 flex flex-col group">
+                        <div className="bg-white border-2 border-black inline-block w-16 h-16 flex items-center justify-center text-3xl mb-4 shadow-[2px_2px_0_0_#000] group-hover:scale-110 transition-transform">⌨️</div>
+                        <h3 className="font-black text-2xl mb-2 uppercase">2. Sentence Reordering</h3>
+                        <p className="text-black font-bold text-sm">Type scrambled words in correct order to build muscle memory.</p>
+                    </div>
+                    <div onClick={() => setMode('guided')} className="bg-brutal-green border-4 border-black shadow-brutal hover:shadow-brutal-lg hover:-translate-y-1 transition-all cursor-pointer p-6 flex flex-col group">
+                        <div className="bg-white border-2 border-black inline-block w-16 h-16 flex items-center justify-center text-3xl mb-4 shadow-[2px_2px_0_0_#000] group-hover:scale-110 transition-transform">🪜</div>
+                        <h3 className="font-black text-2xl mb-2 uppercase">3. The Guided Drafter</h3>
+                        <p className="text-black font-bold text-sm">Write an email step-by-step with Teacher Fajar's explicit framework.</p>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="space-y-8">
+                    <div className="text-center mb-10 bg-white border-4 border-black p-8 shadow-[8px_8px_0_0_#000]">
+                        <h2 className="text-4xl font-black text-black uppercase tracking-tight">Skill Building Workshop</h2>
+                        <p className="text-black font-bold mt-2 uppercase text-sm tracking-widest bg-brutal-yellow inline-block px-2">Build your writing muscles before the test</p>
+                    </div>
+                    
+                    {mode === 'menu' && renderMenu()}
+                    {mode !== 'menu' && (
+                        <div>
+                            <button onClick={() => setMode('menu')} className="mb-6 font-bold text-black hover:text-brutal-blue flex items-center gap-2 uppercase tracking-wider bg-white border-2 border-black px-4 py-2 shadow-[2px_2px_0_0_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all w-fit">
+                                ← Back to Workshop Menu
+                            </button>
+                            {mode === 'tone' && <ToneDetective onComplete={() => setMode('menu')} />}
+                            {mode === 'reorder' && <SentenceReorderer onComplete={() => setMode('menu')} />}
+                            {mode === 'guided' && <GuidedDrafter onComplete={() => setMode('menu')} />}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // --- MAIN APP ---
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('guide'); 
+            const [selectedPrompt, setSelectedPrompt] = useState(prompts[0]);
+            const [userText, setUserText] = useState("");
+            const [wordCount, setWordCount] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(420); 
+            const [timerActive, setTimerActive] = useState(false);
+            const [showModel, setShowModel] = useState(false);
+            const [hasSubmitted, setHasSubmitted] = useState(false);
+            const [copySuccess, setCopySuccess] = useState(false);
+
+            useEffect(() => {
+                const words = userText.trim().split(/\s+/);
+                setWordCount(userText.trim() === "" ? 0 : words.length);
+            }, [userText]);
+
+            useEffect(() => {
+                let interval = null;
+                if (timerActive && timeLeft > 0) {
+                    interval = setInterval(() => {
+                        setTimeLeft(timeLeft - 1);
+                    }, 1000);
+                } else if (timeLeft === 0) {
+                    setTimerActive(false);
+                }
+                return () => clearInterval(interval);
+            }, [timerActive, timeLeft]);
+
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            };
+
+            const resetPractice = () => {
+                setUserText("");
+                setTimeLeft(420);
+                setTimerActive(false);
+                setShowModel(false);
+                setHasSubmitted(false);
+                setCopySuccess(false);
+            };
+
+            const handleCopyForAI = () => {
+                const promptContent = `You are an expert TOEFL iBT scorer. Please evaluate my email response based on the new "Write an Academic/Personal Email" task rubric (0 to 5 scale).
+
+Scenario: ${selectedPrompt.scenario}
+
+Requirements:
+${selectedPrompt.requirements.map(req => `* ${req}`).join('\n')}
+
+My Response:
+${userText}
+
+Please provide:
+1. An estimated score (0 to 5).
+2. Brief feedback on Content (did I cover all requirements?).
+3. Brief feedback on Register/Tone (was it appropriate?).
+4. Brief feedback on Vocabulary and Grammar.`;
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(promptContent).then(() => {
+                        triggerCopySuccess();
+                    }).catch(err => {
+                        fallbackCopyTextToClipboard(promptContent);
+                    });
+                } else {
+                    fallbackCopyTextToClipboard(promptContent);
+                }
+                setHasSubmitted(true);
+            };
+
+            const fallbackCopyTextToClipboard = (text) => {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed"; 
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    triggerCopySuccess();
+                } catch (err) {
+                    console.error('Fallback: Oops, unable to copy', err);
+                }
+                document.body.removeChild(textArea);
+            };
+
+            const triggerCopySuccess = () => {
+                setCopySuccess(true);
+                setTimeout(() => setCopySuccess(false), 3000);
+            };
+
+            return (
+                <div className="min-h-screen p-4 md:p-8 max-w-7xl mx-auto">
+                    {/* Header */}
+                    <header className="mb-10 flex flex-col xl:flex-row justify-between items-center bg-brutal-yellow p-6 md:p-8 border-4 border-black shadow-[8px_8px_0_0_#000]">
+                        <div className="mb-6 xl:mb-0 text-center xl:text-left">
+                            <h1 className="text-4xl md:text-5xl font-black text-black uppercase tracking-tight leading-none mb-2">TOEFL iBT: Write an Email Trainer</h1>
+                            <p className="text-black font-bold uppercase tracking-widest text-sm bg-white inline-block px-2 border-2 border-black">Designed by Teacher Fajar • Communicative Approach</p>
+                        </div>
+                        <div className="flex gap-4 flex-wrap justify-center xl:justify-end w-full xl:w-auto">
+                            <button 
+                                onClick={() => setActiveTab('guide')}
+                                className={`${btnBrutal} px-6 py-3 text-lg ${activeTab === 'guide' ? 'bg-black text-white translate-x-[2px] translate-y-[2px] shadow-brutal-active' : 'bg-white text-black'}`}
+                            >
+                                <Icons.Book /> <span className="ml-2 uppercase">Guide</span>
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('skillbuilder')}
+                                className={`${btnBrutal} px-6 py-3 text-lg ${activeTab === 'skillbuilder' ? 'bg-black text-white translate-x-[2px] translate-y-[2px] shadow-brutal-active' : 'bg-brutal-green text-black'}`}
+                            >
+                                <Icons.Ladder /> <span className="ml-2 uppercase">Skill Builder</span>
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('practice')}
+                                className={`${btnBrutal} px-6 py-3 text-lg ${activeTab === 'practice' ? 'bg-black text-white translate-x-[2px] translate-y-[2px] shadow-brutal-active' : 'bg-brutal-blue text-black'}`}
+                            >
+                                <Icons.Pen /> <span className="ml-2 uppercase">Practice</span>
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('rubric')}
+                                className={`${btnBrutal} px-6 py-3 text-lg ${activeTab === 'rubric' ? 'bg-black text-white translate-x-[2px] translate-y-[2px] shadow-brutal-active' : 'bg-brutal-pink text-black'}`}
+                            >
+                                <Icons.Check /> <span className="ml-2 uppercase">Rubric</span>
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* Content Area */}
+                    <main className="min-h-[500px]">
+                        {activeTab === 'skillbuilder' && <SkillBuilderHub />}
+
+                        {activeTab === 'guide' && (
+                            <div className="grid lg:grid-cols-3 gap-8 brutal-pop">
+                                <div className="lg:col-span-2 space-y-8">
+                                    <section className="bg-white border-4 border-black p-8 shadow-[8px_8px_0_0_#000]">
+                                        <h2 className="text-3xl font-black text-black mb-6 flex items-center gap-3 uppercase border-b-4 border-black pb-4">
+                                            <span className="bg-brutal-blue p-2 border-2 border-black"><Icons.Bulb/></span>
+                                            Understanding the Task
+                                        </h2>
+                                        <div className="text-black font-medium leading-relaxed text-lg">
+                                            <p className="mb-4">This task aligns with authentic communicative outcomes, asking you to write for a specific purpose.</p>
+                                            
+                                            <div className="bg-brutal-yellow border-4 border-black p-6 my-8 shadow-[4px_4px_0_0_#000]">
+                                                <h4 className="font-black text-2xl uppercase mb-4 tracking-wide">Task Overview</h4>
+                                                <ul className="space-y-3 font-bold text-lg">
+                                                    <li className="flex gap-2"><span className="bg-black text-white px-2">1</span> <strong>Scenario:</strong> You will read a description of a situation.</li>
+                                                    <li className="flex gap-2"><span className="bg-black text-white px-2">2</span> <strong>Goal:</strong> Write an email to achieve a specific communicative purpose.</li>
+                                                    <li className="flex gap-2"><span className="bg-black text-white px-2">3</span> <strong>Time:</strong> Approximately 7 minutes (Recommended).</li>
+                                                    <li className="flex gap-2"><span className="bg-black text-white px-2">4</span> <strong>Length:</strong> Write as much as you can (Typically 75 to 125 words).</li>
+                                                </ul>
+                                            </div>
+
+                                            <h3 className="font-black text-2xl uppercase mt-8 mb-4">The 4 Pillars of a High Score</h3>
+                                            <ol className="space-y-4 font-bold bg-gray-100 p-6 border-4 border-black list-decimal list-inside shadow-[4px_4px_0_0_#000]">
+                                                <li><strong>Content:</strong> Did you include <em>all</em> requested information?</li>
+                                                <li><strong>Register:</strong> Is your language appropriate for the recipient?</li>
+                                                <li><strong>Vocabulary:</strong> Are you using precise words?</li>
+                                                <li><strong>Conventions:</strong> Are standard email formatting and politeness markers used?</li>
+                                            </ol>
+                                        </div>
+                                    </section>
+                                    
+                                    <section className="bg-brutal-blue border-4 border-black p-8 shadow-[8px_8px_0_0_#000]">
+                                        <h2 className="text-3xl font-black text-black mb-8 uppercase">Structure of a Perfect Email</h2>
+                                        <div className="space-y-6">
+                                            {[
+                                                { title: "Salutation", desc: "Formal: Dear Professor Smith, / Informal: Hi Alex," },
+                                                { title: "The Opening", desc: "State why you are writing immediately. 'I am writing to inquire about...'" },
+                                                { title: "The Details", desc: "Address the bullet points in the prompt. Use clear connectors." },
+                                                { title: "Call to Action", desc: "'I look forward to hearing from you.' or 'Let me know what you think.'" },
+                                                { title: "Sign off", desc: "Formal: Sincerely, / Informal: Best," }
+                                            ].map((item, index) => (
+                                                <div key={index} className="flex items-start gap-4 bg-white p-4 border-4 border-black shadow-[4px_4px_0_0_#000]">
+                                                    <div className="w-12 h-12 bg-black text-white flex items-center justify-center font-black text-xl border-2 border-black flex-shrink-0">
+                                                        {index + 1}
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-black text-xl uppercase">{item.title}</h4>
+                                                        <p className="text-black font-bold">{item.desc}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </section>
+                                </div>
+
+                                <div className="space-y-8">
+                                    <div className="bg-brutal-orange p-8 border-4 border-black shadow-[8px_8px_0_0_#000]">
+                                        <h3 className="font-black text-black text-2xl mb-4 uppercase">Teacher Fajar's Pro-Tip: Tone</h3>
+                                        <p className="text-black font-bold mb-6">
+                                            The rubric specifically mentions <strong>"Social Conventions"</strong>. This often means using "Softeners" when making requests or giving bad news.
+                                        </p>
+                                        <div className="bg-white p-4 border-4 border-black mb-4 font-bold shadow-[4px_4px_0_0_#000]">
+                                            <p className="text-red-600 line-through mb-2 text-lg">I want a refund.</p>
+                                            <p className="text-green-700 text-lg uppercase">I was wondering if it would be possible to receive a refund.</p>
+                                        </div>
+                                        <div className="bg-white p-4 border-4 border-black font-bold shadow-[4px_4px_0_0_#000]">
+                                            <p className="text-red-600 line-through mb-2 text-lg">I can't come.</p>
+                                            <p className="text-green-700 text-lg uppercase">Unfortunately, I will not be able to attend.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="bg-white p-8 border-4 border-black shadow-[8px_8px_0_0_#000]">
+                                        <h3 className="font-black text-black text-2xl mb-4 uppercase bg-red-400 inline-block px-2 border-2 border-black">Common Mistakes</h3>
+                                        <ul className="text-black font-bold space-y-4 list-square pl-4 text-lg">
+                                            <li className="border-b-2 border-gray-200 pb-2">Forgetting the subject line.</li>
+                                            <li className="border-b-2 border-gray-200 pb-2">Mixing registers (e.g., "Dear Professor, what's up?").</li>
+                                            <li className="border-b-2 border-gray-200 pb-2">Missing one of the required bullet points.</li>
+                                            <li className="pb-2">Writing too little (under 50 words usually lacks detail).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'practice' && (
+                            <div className="flex flex-col lg:flex-row gap-8 brutal-pop h-[calc(100vh-250px)] min-h-[650px]">
+                                {/* Left Side: Prompt */}
+                                <div className="lg:w-1/3 bg-white border-4 border-black shadow-[8px_8px_0_0_#000] flex flex-col overflow-hidden">
+                                    <div className="p-4 bg-black border-b-4 border-black flex justify-between items-center text-white">
+                                        <h3 className="font-black uppercase tracking-widest">Scenario Setup</h3>
+                                    </div>
+                                    <div className="p-4 bg-gray-100 border-b-4 border-black">
+                                        <select 
+                                            className="w-full text-lg border-4 border-black p-3 bg-brutal-yellow font-bold uppercase focus:outline-none cursor-pointer"
+                                            onChange={(e) => {
+                                                setSelectedPrompt(prompts.find(p => p.id === parseInt(e.target.value)));
+                                                resetPractice();
+                                            }}
+                                            value={selectedPrompt.id}
+                                        >
+                                            {prompts.map(p => (
+                                                <option key={p.id} value={p.id} className="font-bold">{p.type}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="p-6 flex-grow overflow-y-auto">
+                                        <h2 className="text-2xl font-black text-black mb-4 uppercase leading-tight bg-brutal-pink inline-block px-2 border-2 border-black">{selectedPrompt.title}</h2>
+                                        <p className="text-black font-bold text-lg mb-8 leading-relaxed border-l-4 border-black pl-4">{selectedPrompt.scenario}</p>
+                                        
+                                        <div className="bg-white p-6 border-4 border-black shadow-[4px_4px_0_0_#000]">
+                                            <p className="font-black text-black mb-4 uppercase text-lg">Write an email to:<br/><span className="text-brutal-blue bg-black px-2">{selectedPrompt.recipient}</span></p>
+                                            <p className="font-bold mb-2">In your email, you must:</p>
+                                            <ul className="list-disc pl-6 space-y-3 font-bold text-lg">
+                                                {selectedPrompt.requirements.map((req, i) => (
+                                                    <li key={i}>{req}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Right Side: Writing Area */}
+                                <div className="lg:w-2/3 flex flex-col gap-6">
+                                    <div className="flex flex-col sm:flex-row justify-between items-center bg-white p-6 border-4 border-black shadow-[8px_8px_0_0_#000] gap-4">
+                                        <div className="flex items-center gap-6">
+                                            <div className={`text-4xl font-mono font-black ${timeLeft < 60 ? 'text-red-600 bg-black px-3 py-1' : 'text-black'}`}>
+                                                {formatTime(timeLeft)}
+                                            </div>
+                                            <button 
+                                                onClick={() => setTimerActive(!timerActive)}
+                                                className={`${btnBrutal} px-6 py-2 uppercase text-lg ${timerActive ? 'bg-red-400 text-black' : 'bg-brutal-green text-black'}`}
+                                            >
+                                                {timerActive ? 'Pause' : 'Start'}
+                                            </button>
+                                            <button onClick={resetPractice} className="font-bold text-black border-b-2 border-black hover:text-red-600 hover:border-red-600 transition-colors uppercase">Reset</button>
+                                        </div>
+                                        <div className="text-lg font-black text-black uppercase bg-brutal-yellow border-2 border-black px-4 py-2 shadow-[2px_2px_0_0_#000]">
+                                            Words: {wordCount}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-grow bg-white border-4 border-black shadow-[8px_8px_0_0_#000] overflow-hidden flex flex-col relative">
+                                        {/* Brutalist Email Header */}
+                                        <div className="bg-gray-200 border-b-4 border-black p-3 flex gap-3 items-center">
+                                            <div className="w-5 h-5 border-2 border-black bg-red-400"></div>
+                                            <div className="w-5 h-5 border-2 border-black bg-brutal-yellow"></div>
+                                            <div className="w-5 h-5 border-2 border-black bg-brutal-green"></div>
+                                            <span className="ml-4 font-black uppercase tracking-widest text-sm text-black">New Message</span>
+                                        </div>
+
+                                        <textarea 
+                                            className="w-full flex-grow p-6 focus:outline-none focus:bg-gray-50 resize-none font-mono text-xl text-black leading-relaxed"
+                                            placeholder="Start typing your email here..."
+                                            value={userText}
+                                            onChange={(e) => setUserText(e.target.value)}
+                                            spellCheck="false"
+                                        ></textarea>
+                                        
+                                        {/* Action Bar */}
+                                        <div className="p-4 bg-black border-t-4 border-black flex flex-wrap justify-end gap-4 items-center">
+                                            {hasSubmitted && (
+                                                <button 
+                                                    onClick={() => setShowModel(true)}
+                                                    className={`${btnBrutal} bg-brutal-pink text-black px-6 py-3 text-lg uppercase`}
+                                                >
+                                                    <span className="flex items-center gap-2"><Icons.Split /> Compare with Model</span>
+                                                </button>
+                                            )}
+                                            <button 
+                                                onClick={handleCopyForAI}
+                                                className={`${btnBrutal} px-6 py-3 text-lg uppercase transition-colors ${copySuccess ? 'bg-brutal-green text-black' : 'bg-brutal-blue text-black'}`}
+                                            >
+                                                {copySuccess ? '✓ COPIED!' : 'Copy Prompt for AI'}
+                                            </button>
+                                        </div>
+
+                                        {/* Model Answer Overlay */}
+                                        {showModel && (
+                                            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-20 p-6 overflow-hidden brutal-pop flex flex-col border-4 border-black">
+                                                <div className="flex justify-between items-center mb-6">
+                                                    <h2 className="text-3xl font-black text-black uppercase bg-brutal-yellow inline-block px-4 py-2 border-4 border-black shadow-[4px_4px_0_0_#000]">
+                                                        Compare & Analyze
+                                                    </h2>
+                                                    <button onClick={() => setShowModel(false)} className={`${btnBrutal} bg-red-400 text-black px-4 py-2 text-xl`}>✕</button>
+                                                </div>
+
+                                                <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-8 overflow-hidden pb-4">
+                                                    {/* User Side */}
+                                                    <div className="bg-white border-4 border-black shadow-[8px_8px_0_0_#000] flex flex-col h-full overflow-hidden">
+                                                        <div className="bg-black text-white p-3 border-b-4 border-black text-center font-black uppercase text-xl tracking-widest">Your Draft</div>
+                                                        <div className="p-6 overflow-y-auto flex-grow bg-gray-50">
+                                                            <div className="whitespace-pre-wrap font-mono text-black text-lg leading-relaxed">
+                                                                {userText || "(No content written)"}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Model Side */}
+                                                    <div className="bg-white border-4 border-black shadow-[8px_8px_0_0_#000] flex flex-col h-full overflow-hidden relative">
+                                                        <div className="absolute top-0 right-0 bg-brutal-yellow border-l-4 border-b-4 border-black text-black text-lg font-black px-4 py-2 z-10 shadow-[-4px_4px_0_0_#000]">SCORE 5</div>
+                                                        <div className="bg-black text-white p-3 border-b-4 border-black text-center font-black uppercase text-xl tracking-widest">Model Answer</div>
+                                                        <div className="p-6 overflow-y-auto flex-grow">
+                                                            <div className="whitespace-pre-wrap font-mono text-black text-lg leading-relaxed mb-8">
+                                                                {selectedPrompt.modelAnswer.body}
+                                                            </div>
+                                                            
+                                                            <div className="bg-brutal-purple p-6 border-4 border-black shadow-[4px_4px_0_0_#000]">
+                                                                <h3 className="font-black text-black text-xl mb-3 uppercase flex items-center gap-2">
+                                                                    <Icons.Bulb /> Why is this a 5?
+                                                                </h3>
+                                                                <p className="text-lg font-bold text-black leading-relaxed">{selectedPrompt.modelAnswer.notes}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'rubric' && (
+                            <div className="max-w-5xl mx-auto brutal-pop">
+                                <div className="bg-white border-4 border-black shadow-[12px_12px_0_0_#000] overflow-hidden">
+                                    <div className="bg-black p-8 text-white border-b-4 border-black">
+                                        <h2 className="text-4xl font-black uppercase tracking-tight mb-2">Official Scoring Rubric</h2>
+                                        <p className="font-bold text-brutal-yellow text-lg uppercase tracking-widest">Based on TOEFL iBT® Technical Manual</p>
+                                    </div>
+                                    <div className="p-8">
+                                        <div className="space-y-6">
+                                            {rubric.map((level) => (
+                                                <div key={level.score} className={`flex flex-col sm:flex-row gap-6 p-6 border-4 border-black shadow-[6px_6px_0_0_#000] ${level.score >= 4 ? 'bg-brutal-green' : level.score === 3 ? 'bg-brutal-yellow' : 'bg-red-400'}`}>
+                                                    <div className="text-5xl font-black text-black w-16 text-center sm:border-r-4 border-black sm:pr-6 flex items-center justify-center">
+                                                        {level.score}
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="font-black text-2xl text-black uppercase mb-2">{level.desc}</h3>
+                                                        <p className="text-black font-bold text-lg leading-relaxed">{level.details}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="mt-10 p-6 bg-white border-4 border-black shadow-[4px_4px_0_0_#000] text-lg font-bold text-black text-center uppercase">
+                                            Note: Automated scoring looks for lexical variety, syntactic complexity, and topic relevance.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

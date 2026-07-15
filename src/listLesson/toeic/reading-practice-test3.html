@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC Reading Practice Test 3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f3f4f6;
+            color: #333333;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            user-select: none;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e5e7eb; }
+        ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        /* Theme Colors */
+        .theme-text { color: #0369a1; }
+        .bg-theme-main { background-color: #0284c7; }
+        .bg-theme-accent { background-color: #7dd3fc; }
+
+        .grid-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .grid-btn:hover { background: #f3f4f6; }
+        .grid-btn.answered { background: #9ca3af; color: #ffffff; border-color: #6b7280; }
+        .grid-btn.active { background: #0369a1; color: #ffffff; border-color: #0369a1; font-weight: bold; }
+
+        .review-grid-btn.correct { background: #bbf7d0; color: #166534; border-color: #166534; }
+        .review-grid-btn.incorrect { background: #fecaca; color: #991b1b; border-color: #991b1b; }
+        .review-grid-btn.unanswered { background: #e5e7eb; color: #4b5563; border-color: #9ca3af; }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.75rem;
+            cursor: pointer;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+        .option-label:hover { background: #f8fafc; border-color: #e2e8f0; }
+        .option-label:hover .radio-circle { border-color: #0369a1; }
+        
+        .radio-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            background: #fff;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .option-label input[type="radio"] { display: none; }
+
+        .option-label.selected { background: #e0f2fe; border-color: #7dd3fc; }
+        .option-label.selected .radio-circle { 
+            background: #333; 
+            color: #fff;
+            border-color: #333;
+        }
+
+        .option-text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #1f2937;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+        }
+        .screen.active { display: flex; }
+
+        .cbt-card {
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-w: 1100px;
+        }
+
+        .passage-content {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #111827;
+        }
+        .passage-content p { margin-bottom: 1rem; }
+        .passage-content table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.9rem;}
+        .passage-content th, .passage-content td { border: 1px solid #9ca3af; padding: 0.5rem; text-align: left; }
+        .passage-content th { background-color: #f3f4f6; }
+        .blank-space { display: inline-block; border-bottom: 1px solid #000; width: 60px; text-align: center; margin: 0 4px; font-weight: bold; font-family: Arial, sans-serif; font-size: 0.85rem;}
+    </style>
+</head>
+<body>
+
+<header id="global-header" class="hidden flex-col w-full shrink-0 z-50 bg-white">
+    <div class="px-6 py-3 flex justify-between items-center relative">
+        <div class="flex items-center space-x-2">
+            <span class="italic text-[#0369a1] font-bold text-3xl tracking-tighter">TOEIC&reg; Practice</span>
+        </div>
+        <div class="absolute left-1/2 transform -translate-x-1/2 font-bold text-gray-800 text-lg">Reading</div>
+    </div>
+    <div class="h-1 bg-theme-accent w-full"></div>
+    <div class="h-5 bg-theme-main w-full"></div>
+</header>
+
+<div id="exam-subheader" class="hidden bg-[#e5e7eb] border-b border-[#d1d5db] p-2 w-full flex items-center justify-between z-40 shrink-0 shadow-sm px-6">
+    <div class="flex items-center space-x-4">
+        <span class="text-sm font-bold text-gray-700">Section II: Reading Test 3</span>
+    </div>
+    <div class="flex items-center space-x-4">
+        <div class="text-right flex items-center space-x-2 bg-white px-3 py-1 border border-gray-300">
+            <i class="far fa-clock text-gray-500 text-sm"></i>
+            <div id="timer" class="text-sm font-mono font-bold text-gray-800">75:00</div>
+        </div>
+        <button onclick="finishTest()" class="text-xs bg-red-50 text-red-700 border border-red-300 px-3 py-1 hover:bg-red-100 font-bold uppercase transition">End Practice</button>
+    </div>
+</div>
+
+<div class="flex flex-1 overflow-hidden w-full relative">
+    
+    <aside id="nav-sidebar" class="hidden w-64 bg-white border-r border-gray-300 flex-col shrink-0 z-30">
+        <div class="p-2 bg-gray-100 border-b border-gray-300 font-bold text-xs text-gray-600 uppercase tracking-wider text-center">
+            Item Review
+        </div>
+        <div class="p-3 overflow-y-auto flex-1">
+            <div id="question-grid" class="grid grid-cols-5 gap-1"></div>
+        </div>
+        <div class="p-2 bg-gray-50 border-t border-gray-300 flex justify-center space-x-3 text-[10px] font-bold text-gray-500 uppercase">
+            <div class="flex items-center"><div class="w-2.5 h-2.5 bg-gray-400 border border-gray-500 mr-1"></div>Answered</div>
+            <div class="flex items-center"><div class="w-2.5 h-2.5 bg-white border border-gray-300 mr-1"></div>Unanswered</div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col items-center bg-[#f3f4f6] overflow-y-auto w-full relative pt-6 pb-6 px-4 md:px-6">
+        
+        <div id="welcome-screen" class="screen active max-w-3xl cbt-card p-10 relative pb-10 mt-8">
+            <h1 class="text-2xl font-bold text-[#0369a1] mb-2">Computer-Based Test Simulation</h1>
+            <h2 class="text-lg text-gray-600 mb-6 pb-4 border-b border-gray-200">Reading Practice Test 3</h2>
+            
+            <div class="space-y-4 text-gray-700 text-sm mb-8 bg-sky-50 border border-sky-200 p-6">
+                <p class="font-bold text-[#0369a1]"><i class="fas fa-info-circle mr-2"></i> Instructions for Candidates:</p>
+                <p class="font-medium text-gray-800 mb-2">This is a full-length Reading test simulation. You will read a variety of texts and answer several different types of reading comprehension questions.</p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li>The entire Reading test will last exactly <strong>75 minutes</strong>.</li>
+                    <li>There are three parts (Part 5, Part 6, and Part 7).</li>
+                    <li>Once you click "Start Simulation", the exam timer will begin immediately.</li>
+                    <li>Do not use the browser's back or forward buttons during the simulation.</li>
+                    <li>You can navigate freely between questions 101 to 200 using the grid.</li>
+                </ul>
+            </div>
+            
+            <div class="flex justify-end">
+                <button onclick="startSimulation()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm uppercase transition">
+                    Start Simulation
+                </button>
+            </div>
+        </div>
+
+        <div id="general-directions-screen" class="screen max-w-4xl cbt-card mt-4">
+            <div class="p-8 space-y-6 text-gray-800 text-sm leading-relaxed">
+                <h2 class="text-xl font-bold text-[#0369a1] uppercase tracking-wide mb-4">Reading Test</h2>
+                <p>In the Reading test, you will read a variety of texts and answer several different types of reading comprehension questions. The entire Reading test will last 75 minutes. There are three parts, and directions are given for each part. You are encouraged to answer as many questions as possible within the time allowed.</p>
+                
+                <div class="border border-gray-300 p-6 mt-6">
+                    <h3 class="font-bold text-gray-700 mb-4 uppercase text-xs">Test Structure Overview</h3>
+                    <ul class="space-y-2 font-medium text-sm text-gray-600">
+                        <li class="flex items-center"><span class="w-20 font-bold text-gray-800">Part 5:</span> Incomplete Sentences (Questions 101 - 130)</li>
+                        <li class="flex items-center"><span class="w-20 font-bold text-gray-800">Part 6:</span> Text Completion (Questions 131 - 146)</li>
+                        <li class="flex items-center"><span class="w-20 font-bold text-gray-800">Part 7:</span> Reading Comprehension (Questions 147 - 200)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-gray-100 border-t border-gray-300 px-6 py-4 flex justify-end">
+                <button onclick="showDirectionScreen(5)" class="bg-white hover:bg-gray-50 text-[#0369a1] px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm">
+                    Continue to Part 5
+                </button>
+            </div>
+        </div>
+
+        <div id="direction-screen" class="screen max-w-4xl cbt-card mt-4">
+            <div class="p-10 min-h-[300px]">
+                <h1 id="dir-title" class="text-xl font-bold text-[#0369a1] uppercase tracking-wide mb-4">PART X</h1>
+                <div id="dir-content" class="text-base text-gray-800 leading-relaxed mb-8"></div>
+            </div>
+            <div class="bg-gray-100 border-t border-gray-300 px-6 py-4 flex justify-end">
+                <button onclick="startPartFromDirection()" class="bg-white hover:bg-gray-50 text-[#0369a1] px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm">
+                    Begin <span id="dir-btn-text">Part X</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="main-app" class="screen w-full max-w-[1100px]">
+            <div class="w-full bg-white border border-gray-300 p-3 shadow-sm mb-4 flex items-center justify-between shrink-0">
+                <div>
+                    <span id="part-badge" class="text-[#0369a1] font-bold uppercase mr-2 text-sm">PART 5</span>
+                    <span id="part-mini-dir" class="text-xs md:text-sm text-gray-600 hidden md:inline-block">Select the best answer to complete the sentence.</span>
+                </div>
+                <div class="text-sm font-bold text-gray-500 border border-gray-300 px-3 py-1 bg-gray-50">
+                    Question <span id="q-counter" class="text-[#0369a1]">101</span>
+                </div>
+            </div>
+
+            <div class="w-full flex flex-col lg:flex-row gap-4 h-full min-h-[500px]">
+                <div id="passage-container" class="hidden lg:w-1/2 bg-white border border-gray-300 shadow-sm flex-col">
+                    <div class="bg-gray-100 border-b border-gray-300 px-4 py-2 text-xs font-bold text-gray-500 uppercase">
+                        Reference Material
+                    </div>
+                    <div id="passage-content" class="p-6 overflow-y-auto passage-content max-h-[60vh] lg:max-h-[700px]"></div>
+                </div>
+
+                <div id="question-container" class="w-full bg-white border border-gray-300 shadow-sm flex flex-col relative">
+                    <div class="bg-gray-100 border-b border-gray-300 px-4 py-2 text-xs font-bold text-gray-500 uppercase flex justify-between">
+                        <span>Question</span>
+                    </div>
+                    <div class="p-6 md:p-10 flex-1 overflow-y-auto">
+                        <div id="question-text" class="text-lg font-medium text-gray-800 mb-8 leading-relaxed"></div>
+                        <div id="options-container" class="space-y-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results-screen" class="screen w-full max-w-4xl cbt-card relative mt-4">
+            <div class="bg-[#0369a1] px-6 py-4 border-b border-[#0284c7]">
+                <h1 class="text-lg font-bold text-white uppercase tracking-wide">Score Report - Reading Test 3</h1>
+            </div>
+            
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 border border-gray-300 p-6 flex flex-col items-center justify-center text-center">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Raw Score</p>
+                        <div class="text-3xl font-bold text-[#0369a1] mb-1"><span id="raw-score">0</span><span class="text-lg text-gray-400 font-medium">/100</span></div>
+                    </div>
+                    <div class="bg-gray-50 border border-gray-300 p-6 flex flex-col items-center justify-center text-center">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Estimated Scaled Score</p>
+                        <div class="text-3xl font-bold text-green-700 mb-1" id="scaled-score">5 - 15</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 mb-8 bg-sky-50 border border-sky-200 p-6 flex flex-col sm:flex-row items-center justify-between shadow-sm">
+                    <div class="mb-4 sm:mb-0">
+                        <h3 class="font-bold text-[#0369a1] text-lg">Download Score Report</h3>
+                        <p class="text-sm text-gray-600">Save a PDF copy of your estimated results.</p>
+                    </div>
+                    <div class="flex items-center space-x-3 w-full sm:w-auto">
+                        <input type="text" id="candidate-name" placeholder="Enter your name" class="border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:border-[#0369a1] flex-1 sm:w-48">
+                        <button onclick="downloadPDF()" class="bg-[#0369a1] hover:bg-[#0284c7] text-white px-5 py-2 text-sm font-bold shadow-sm transition whitespace-nowrap flex items-center">
+                            <i class="fas fa-file-pdf mr-2 text-lg"></i> Download
+                        </button>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-300 pt-6">
+                    <h2 class="text-base font-bold text-gray-800 mb-2 uppercase">Item Review</h2>
+                    <p class="text-sm text-gray-600 mb-6">Select a question number to review the passage, question, and correct answer.</p>
+                    
+                    <div class="flex items-center space-x-6 mb-6 text-xs font-bold uppercase text-gray-600">
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#bbf7d0] border border-[#166534] mr-2"></div> Correct</div>
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#fecaca] border border-[#991b1b] mr-2"></div> Incorrect</div>
+                        <div class="flex items-center"><div class="w-3 h-3 bg-[#e5e7eb] border border-[#9ca3af] mr-2"></div> Omitted</div>
+                    </div>
+
+                    <div id="review-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5"></div>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end">
+                     <button onclick="location.reload()" class="bg-white hover:bg-gray-50 text-[#0369a1] px-6 py-2 text-sm font-bold border border-gray-400 shadow-sm uppercase">
+                        Start New Session
+                     </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="w-full max-w-4xl text-center py-6 mt-auto text-xs text-gray-400">
+            Disclaimer: This simulation is an independent practice tool and is not affiliated with, approved, or endorsed by ETS. TOEIC&reg; is a registered trademark of ETS.
+        </div>
+    </main>
+
+    <footer id="global-footer" class="hidden absolute bottom-0 left-0 right-0 h-14 bg-white border-t border-gray-300 z-40 flex justify-between items-center px-6 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+        <button onclick="goToQuestion(testData.currentQ - 1)" id="prev-btn" class="text-gray-700 hover:text-[#0369a1] font-bold text-sm uppercase disabled:opacity-30 disabled:cursor-not-allowed flex items-center transition">
+            <i class="fas fa-chevron-left mr-2"></i> Back
+        </button>
+        <button onclick="goToQuestion(testData.currentQ + 1)" id="next-btn" class="bg-[#0369a1] hover:bg-[#0284c7] text-white px-6 py-2 text-sm font-bold uppercase shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center">
+            Next <i class="fas fa-chevron-right ml-2"></i>
+        </button>
+    </footer>
+</div>
+
+<div id="review-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[60] hidden flex items-center justify-center transition-opacity opacity-0 p-4">
+    <div id="review-modal-content" class="bg-white w-full max-w-4xl h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-transform duration-200 border border-gray-500 shadow-2xl">
+        <div class="p-3 border-b border-gray-300 flex justify-between items-center bg-[#0369a1] text-white shrink-0">
+            <h3 class="font-bold text-sm uppercase tracking-wide" id="modal-title">Question X Review</h3>
+            <button onclick="closeReviewModal()" class="text-gray-300 hover:text-white w-6 h-6 flex items-center justify-center transition">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-hidden flex flex-col md:flex-row bg-gray-50">
+            <div id="modal-passage-container" class="hidden md:w-1/2 border-r border-gray-300 bg-white overflow-y-auto">
+                <div class="bg-gray-100 px-3 py-1.5 border-b border-gray-300 sticky top-0">
+                    <h4 class="text-[10px] font-bold text-gray-600 uppercase tracking-wider"><i class="fas fa-file-alt mr-2"></i>Reference Material</h4>
+                </div>
+                <div class="p-6 passage-content" id="modal-passage"></div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <div class="flex space-x-4">
+                    <div class="flex-1 bg-white border border-gray-300 p-3 text-center shadow-sm">
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-1 tracking-wider">Your Selection</p>
+                        <p class="text-xl font-bold text-gray-800" id="modal-user-ans">-</p>
+                    </div>
+                    <div class="flex-1 bg-white border border-gray-300 p-3 text-center shadow-sm">
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-1 tracking-wider">Correct Key</p>
+                        <p class="text-xl font-bold text-green-700" id="modal-correct-ans">-</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-300 shadow-sm p-5">
+                    <p id="modal-q-text" class="text-base font-medium text-gray-800 mb-4 border-b border-gray-100 pb-4"></p>
+                    <div id="modal-options" class="space-y-2 text-sm"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let testData = {
+        answers: {}, 
+        currentQ: 101,
+        currentPart: 0,
+        currentGroup: null,
+        timeRemaining: 75 * 60 
+    };
+    let timerInterval = null;
+
+    const passagesData = {
+        "131-134": `
+            <div class="mb-4 text-sm font-sans bg-gray-50 p-3 border border-gray-300">
+                <p><b>To:</b> All Office Staff</p>
+                <p><b>From:</b> Building Management</p>
+                <p><b>Date:</b> March 15</p>
+                <p><b>Subject:</b> Parking Lot Repaving</p>
+            </div>
+            <p>Please be advised that the main employee parking lot will be undergoing repaving starting on Monday, March 22. We anticipate that the work will take approximately five days to <span class="blank-space">131</span>, weather permitting.</p>
+            <p>During this period, all employees are asked to park their vehicles in the overflow lot located on Oak Street. <span class="blank-space">132</span>. We have arranged for a temporary shuttle bus to transport staff from the overflow lot to the main office entrance every 15 minutes.</p>
+            <p>We apologize for any <span class="blank-space">133</span> this may cause you. Your cooperation is greatly appreciated as we work to <span class="blank-space">134</span> the safety and appearance of our facilities.</p>
+        `,
+        "135-138": `
+            <div class="mb-4 text-sm font-sans">
+                <p><b>Nova Tech Solutions</b><br>778 Innovation Drive<br>Austin, TX 78701</p>
+                <p class="mt-2">September 10</p>
+                <p class="mt-2">Dear Valued Customer,</p>
+            </div>
+            <p>We are writing to inform you of an important update to our subscription policy. Starting on November 1, Nova Tech will be <span class="blank-space">135</span> a new billing system. Your monthly subscription fee will remain the same, but your invoice will now be sent exclusively via email.</p>
+            <p>If you have not already done so, please log in to your account profile and verify that your email address is correct. <span class="blank-space">136</span>. Failure to update your email may result in missed invoices and potential service interruptions.</p>
+            <p>For those who still <span class="blank-space">137</span> paper billing, you may opt out of this change by contacting our customer support team at 1-800-555-0198. Thank you for your continued <span class="blank-space">138</span>.</p>
+        `,
+        "139-142": `
+            <div class="border-2 border-sky-800 p-6 text-center bg-white shadow-sm">
+                <h1 class="text-2xl font-black mb-2 uppercase tracking-wide">Fresh Bites Catering</h1>
+                <h2 class="text-lg italic text-gray-600 mb-4">Making Your Events Memorable</h2>
+                <p class="mb-4 text-left">Are you planning a corporate retreat or a family gathering? Fresh Bites Catering is here to take the stress out of your event planning. We offer a wide <span class="blank-space">139</span> of menu options, ranging from casual sandwich platters to elegant five-course dinners.</p>
+                <p class="mb-4 text-left">Our experienced chefs use only the freshest locally sourced ingredients to prepare every dish. <span class="blank-space">140</span>, we are happy to accommodate any special dietary restrictions, including gluten-free and vegetarian diets. <span class="blank-space">141</span>.</p>
+                <p class="text-left">Book your event with us by the end of the month and receive a complimentary dessert tray with your order. <span class="blank-space">142</span> our website today to view our full menu and request a free quote!</p>
+            </div>
+        `,
+        "143-146": `
+            <div class="mb-4 text-sm font-sans bg-gray-50 p-3 border border-gray-300">
+                <p><b>To:</b> b.miller@skylinearchitects.com</p>
+                <p><b>From:</b> j.lee@skylinearchitects.com</p>
+                <p><b>Date:</b> January 5</p>
+                <p><b>Subject:</b> Office Relocation Details</p>
+            </div>
+            <p>Hi Brian,</p>
+            <p>As you know, our department is relocating to the newly renovated suite on the 5th floor next weekend. I want to make sure everyone is prepared for the <span class="blank-space">143</span>.</p>
+            <p>By Friday afternoon, please ensure that all your personal items and current project files are packed into the provided moving boxes. <span class="blank-space">144</span>. The moving team will transport everything over the weekend so that your new workstation will be ready by Monday morning.</p>
+            <p>Also, IT will be disconnecting our computers at 4:00 P.M. on Friday. Therefore, it is <span class="blank-space">145</span> that you save all your work to the cloud server before that time to prevent any data loss.</p>
+            <p>Let me know if you need <span class="blank-space">146</span> boxes.</p>
+            <p>Best,<br>Janet</p>
+        `,
+        "147-148": `
+            <div class="max-w-md mx-auto border border-gray-300 bg-gray-50 rounded-lg p-4 font-sans text-sm shadow-sm space-y-3">
+                <div class="flex flex-col">
+                    <span class="font-bold text-blue-700">Marcus Wright [4:15 P.M.]</span>
+                    <span class="bg-white p-2 rounded border border-gray-200 mt-1 inline-block self-start">Hey Chloe, just got an alert that my flight to Seattle is delayed by two hours due to a mechanical issue.</span>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="font-bold text-sky-700">Chloe Evans [4:17 P.M.]</span>
+                    <span class="bg-sky-100 p-2 rounded border border-sky-200 mt-1 inline-block self-end text-right">Oh no! That means you'll miss the opening dinner for the conference tonight.</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-blue-700">Marcus Wright [4:18 P.M.]</span>
+                    <span class="bg-white p-2 rounded border border-gray-200 mt-1 inline-block self-start">I know. Can you find Mr. Davidson at the venue and let him know why I'm not there? I don't want him to think I forgot.</span>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="font-bold text-sky-700">Chloe Evans [4:20 P.M.]</span>
+                    <span class="bg-sky-100 p-2 rounded border border-sky-200 mt-1 inline-block self-end text-right">Sure thing. I'll pass the message along. Try to get some rest at the airport!</span>
+                </div>
+            </div>
+        `,
+        "149-150": `
+            <div class="border border-gray-800 p-6 text-center bg-white shadow-sm font-sans">
+                <h1 class="text-3xl font-bold mb-2 text-sky-700">AuraFit Smartwatch</h1>
+                <h2 class="text-xl font-bold mb-4 bg-sky-700 text-white py-2">Your Ultimate Health Companion</h2>
+                <p class="mb-4 text-sm text-justify">Take control of your fitness journey with the all-new AuraFit Smartwatch. Featuring a sleek, lightweight design and a vibrant OLED display, the AuraFit is built to keep up with your active lifestyle.</p>
+                <ul class="text-sm text-left max-w-xs mx-auto space-y-2 mb-6 font-bold text-gray-700">
+                    <li>✓ 24/7 Heart Rate Monitoring</li>
+                    <li>✓ Built-in GPS for accurate tracking</li>
+                    <li>✓ Water-resistant up to 50 meters</li>
+                    <li>✓ 10-day battery life on a single charge</li>
+                </ul>
+                <p class="text-sm italic mb-4 font-bold text-sky-800">Order online today and receive a free interchangeable sport band!</p>
+                <p class="text-xs text-gray-500">Offer valid while supplies last. Available exclusively at www.auratech.com.</p>
+            </div>
+        `,
+        "151-152": `
+            <div class="border-l-4 border-sky-600 bg-sky-50 p-6 font-sans text-sm shadow-sm">
+                <h2 class="font-bold text-lg mb-4 border-b border-sky-200 pb-2 uppercase tracking-wider">Internal Memorandum</h2>
+                <div class="grid grid-cols-[80px_1fr] gap-2 mb-4 font-bold">
+                    <div class="text-gray-600">TO:</div><div>All Department Heads</div>
+                    <div class="text-gray-600">FROM:</div><div>Rachel Green, Human Resources</div>
+                    <div class="text-gray-600">DATE:</div><div>October 12</div>
+                    <div class="text-gray-600">RE:</div><div>Annual Performance Reviews</div>
+                </div>
+                <p class="mb-3 text-justify">This is a reminder that the annual performance review cycle begins next week. All department heads are required to schedule one-on-one evaluation meetings with their team members between October 18 and November 5.</p>
+                <p class="text-justify">Please ensure that the standardized evaluation forms are completed and submitted to the HR department via the secure portal no later than November 10. Blank forms can be downloaded from the company intranet. If you have any questions about the evaluation criteria, please contact me directly.</p>
+            </div>
+        `,
+        "153-155": `
+            <div class="border border-gray-300 bg-white p-5 text-sm font-sans shadow-sm">
+                <table class="w-full text-left mb-4 border-b border-gray-200 pb-2">
+                    <tr><th class="py-1 w-20 text-gray-500">To:</th><td>Arthur Pendelton &lt;a.pendelton@horizontech.com&gt;</td></tr>
+                    <tr><th class="py-1 text-gray-500">From:</th><td>Sarah Jenkins &lt;s.jenkins@horizontech.com&gt;</td></tr>
+                    <tr><th class="py-1 text-gray-500">Date:</th><td>February 20</td></tr>
+                    <tr><th class="py-1 text-gray-500 font-bold">Subject:</th><td class="font-bold">Promotion Offer</td></tr>
+                </table>
+                <p class="mb-3">Dear Arthur,</p>
+                <p class="mb-3 text-justify">Following our discussions last week, I am thrilled to officially offer you the position of Senior Data Analyst, effective March 1. Your exceptional work on the recent cloud migration project demonstrated exactly the kind of leadership we need in this role.</p>
+                <p class="mb-3 text-justify">As a Senior Analyst, you will be overseeing a team of four junior analysts and reporting directly to me. This promotion includes a 15% salary increase, details of which are outlined in the attached updated employment contract.</p>
+                <p class="mb-3 text-justify">Please review the contract, sign it, and return a scanned copy to HR by Friday, February 24. We will announce your promotion to the rest of the department at the staff meeting next Monday.</p>
+                <p>Congratulations!<br><br>Sarah Jenkins<br>Director of IT Operations</p>
+            </div>
+        `,
+        "156-157": `
+            <div class="border-2 border-black p-6 bg-[#fffdf0] text-center font-sans shadow-md max-w-sm mx-auto">
+                <h1 class="text-xl font-black mb-2 uppercase"><i class="fas fa-bolt text-yellow-500 mr-2"></i> Scheduled Outage</h1>
+                <h2 class="text-sm font-bold text-gray-700 mb-4 border-b border-gray-300 pb-2">Central City Power Grid</h2>
+                <p class="text-sm text-justify mb-4">Central City Power will be conducting essential maintenance on the main power lines servicing the downtown commercial district. This work is necessary to upgrade grid capacity before the summer season.</p>
+                <p class="text-sm text-justify font-bold bg-yellow-100 p-2 border border-yellow-300 mb-4">A temporary power outage will occur on Sunday, April 18, from 2:00 A.M. to 6:00 A.M.</p>
+                <p class="text-sm text-justify mb-4">Buildings in the affected zone will be without electricity during this four-hour window. Businesses are advised to power down sensitive electronic equipment prior to the outage to prevent potential damage when service is restored.</p>
+                <p class="text-xs text-gray-500 mt-2">Questions? Call our 24/7 hotline at 1-800-555-9900.</p>
+            </div>
+        `,
+        "158-160": `
+            <div class="font-serif leading-relaxed text-justify bg-white p-6 border border-gray-300 shadow-sm">
+                <h1 class="text-2xl font-bold mb-2">Local Architect Wins Prestigious Award</h1>
+                <p class="text-sm text-gray-500 italic mb-4">By David Choi, The Daily Chronicle | August 5</p>
+                <p class="mb-3">BOSTON—Elena Rostova, founder of Rostova Design Group, was honored last night with the National Institute of Architects' (NIA) Innovation Award. The award recognizes outstanding achievements in sustainable building design and urban planning.</p>
+                <p class="mb-3">Rostova was selected from a pool of over two hundred nominees nationwide. The committee specifically highlighted her work on the "Green Harbor" project, a mixed-use commercial and residential complex in South Boston that utilizes advanced solar technology and rainwater harvesting systems. "Elena's visionary approach proves that eco-friendly design can be both functional and aesthetically stunning," said NIA President Marcus Vance during the ceremony.</p>
+                <p>The Rostova Design Group, which started as a small two-person firm five years ago, has grown significantly under her leadership. Rostova stated that the award prize money will be used to fund an internship program for architecture students from local universities.</p>
+            </div>
+        `,
+        "161-163": `
+            <div class="font-sans text-sm leading-relaxed p-6 bg-white border border-gray-200">
+                <p class="mb-4 text-right text-gray-600">November 10</p>
+                <p class="mb-4">Mr. Kenneth Bradley<br>Director of Admissions<br>Wellington Business School<br>London, UK</p>
+                <p class="mb-3">Dear Mr. Bradley,</p>
+                <p class="mb-3 text-justify">It is my absolute pleasure to write this letter of recommendation for Julianne Moore, who is applying for the MBA program at Wellington Business School. I have been Julianne's direct supervisor at Vertex Financial for the past three years, where she works as a financial consultant.</p>
+                <p class="mb-3 text-justify">Julianne is a highly analytical and driven individual. Last year, she spearheaded a comprehensive market analysis that identified a new investment sector, ultimately increasing our portfolio revenue by 12%. She possesses a rare combination of quantitative skills and excellent client-facing communication.</p>
+                <p class="mb-3 text-justify">I have no doubt that Julianne will thrive in a rigorous academic environment like Wellington. She is a natural leader who constantly seeks to expand her knowledge. I wholeheartedly recommend her for your program.</p>
+                <p>Sincerely,</p>
+                <p class="mt-4 font-bold text-gray-800">Gregory House</p>
+                <p class="text-xs text-gray-600">Senior Partner, Vertex Financial</p>
+            </div>
+        `,
+        "164-167": `
+            <div class="bg-gray-100 p-4 rounded-lg font-sans text-sm space-y-4 shadow-sm border border-gray-300 max-w-lg mx-auto">
+                <div class="text-center text-xs text-gray-500 font-bold uppercase mb-2">IT Support Chat</div>
+                <div>
+                    <p class="font-bold text-sky-700 border-b border-gray-300 pb-1 mb-1">HelpDesk (Lisa) [10:05 A.M.]</p>
+                    <p>Hello! You have reached the IT HelpDesk. How can I assist you today?</p>
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800 border-b border-gray-300 pb-1 mb-1">Daniel Vance [10:06 A.M.]</p>
+                    <p>Hi Lisa. I'm trying to log in to the employee payroll portal, but it keeps rejecting my password. It says my account is locked.</p>
+                </div>
+                <div>
+                    <p class="font-bold text-sky-700 border-b border-gray-300 pb-1 mb-1">HelpDesk (Lisa) [10:08 A.M.]</p>
+                    <p>I can help with that. The system automatically locks accounts after three failed login attempts for security reasons. I just need to verify your identity. Can you provide your employee ID number?</p>
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800 border-b border-gray-300 pb-1 mb-1">Daniel Vance [10:09 A.M.]</p>
+                    <p>Sure, it's DV-4482.</p>
+                </div>
+                <div>
+                    <p class="font-bold text-sky-700 border-b border-gray-300 pb-1 mb-1">HelpDesk (Lisa) [10:11 A.M.]</p>
+                    <p>Thank you. I have unlocked your account and sent a temporary password to your company email address. Please log in using that temporary password and then you will be prompted to create a new one.</p>
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800 border-b border-gray-300 pb-1 mb-1">Daniel Vance [10:13 A.M.]</p>
+                    <p>Got the email. I'm in now. Thanks for the quick help!</p>
+                </div>
+            </div>
+        `,
+        "168-171": `
+            <div class="font-serif text-justify bg-[#fdfbf7] p-8 border border-gray-200">
+                <h1 class="text-2xl font-bold text-center mb-6 font-sans text-gray-800">Tech Giants Announce Historic Merger</h1>
+                
+                <p class="mb-4">In a move that has sent ripples through the technology sector, Silicon Valley competitors OmniCorp and Zenith Systems officially announced their merger early Wednesday morning. The combined entity, which will be known as OmniZen, is projected to hold a commanding 40% share of the global cloud computing market. [1] "This merger allows us to combine our resources and accelerate innovation," stated OmniCorp CEO, Valerie Dunn.</p>
+                
+                <p class="mb-4">The boards of directors for both companies unanimously approved the $15 billion deal late last night. — [2] — The merger is expected to be finalized by the end of the third quarter, pending regulatory approval from government antitrust agencies.</p>
+
+                <p class="mb-4">Industry analysts predict that the merger will lead to significant restructuring within the new company. [3] While executives have assured the public that no immediate layoffs are planned, it is widely anticipated that redundant departments, such as human resources and marketing, will be consolidated.</p>
+                
+                <p>Zenith Systems' headquarters in Austin, Texas, will serve as the primary research and development hub for OmniZen. — [4] — Meanwhile, OmniCorp's current campus in San Jose will act as the corporate headquarters.</p>
+            </div>
+        `,
+        "172-175": `
+            <div class="bg-white border-2 border-gray-400 p-6 text-sm font-sans">
+                <table class="w-full text-left mb-4 bg-gray-50 border border-gray-300 p-2">
+                    <tr><th class="py-1 px-2 w-24 text-gray-600">To:</th><td class="py-1 px-2">All Employees</td></tr>
+                    <tr><th class="py-1 px-2 text-gray-600">From:</th><td class="py-1 px-2">Accounting Department</td></tr>
+                    <tr><th class="py-1 px-2 text-gray-600">Date:</th><td class="py-1 px-2">May 1</td></tr>
+                    <tr><th class="py-1 px-2 text-gray-600">Subject:</th><td class="py-1 px-2 font-bold">New Expense Reporting System</td></tr>
+                </table>
+                
+                <p class="mb-3 text-justify">Please be advised that the company is transitioning to a digital expense reporting system effective June 1. — [1] — This new software, ExpenseTrack, will replace the current paper-based system that we have used for the past five years.</p>
+                
+                <p class="mb-3 text-justify">Starting in June, all employees must submit reimbursement requests through the ExpenseTrack mobile app or web portal. You will no longer need to physically mail receipts to the accounting office. — [2] — Instead, simply take a photo of your receipt using your smartphone and upload it directly to the app.</p>
+                
+                <p class="mb-3 text-justify">We believe this transition will significantly speed up the reimbursement process. — [3] — Under the old system, it typically took three weeks for funds to be dispersed. With ExpenseTrack, approved expenses will be deposited into your bank account within five business days.</p>
+                
+                <p class="mb-3 text-justify">To help everyone get accustomed to the new software, the IT department will host a series of webinars next week. — [4] — Attendance at one of these sessions is highly recommended.</p>
+            </div>
+        `,
+        "176-180": `
+            <div class="space-y-6 font-sans text-sm">
+                <!-- Schedule -->
+                <div class="border border-gray-400 bg-white p-5 shadow-sm">
+                    <h2 class="text-center font-bold text-lg uppercase tracking-wider mb-2 text-sky-800">Global Marketing Summit 2024</h2>
+                    <h3 class="text-center text-gray-600 italic mb-4">Day 2 Schedule: Thursday, September 14</h3>
+                    
+                    <table class="w-full border-collapse border border-gray-300">
+                        <tr class="bg-sky-100 text-sky-900">
+                            <th class="border border-gray-300 p-2 w-1/4">Time</th>
+                            <th class="border border-gray-300 p-2 w-1/2">Session Title</th>
+                            <th class="border border-gray-300 p-2 w-1/4">Location</th>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 font-mono text-center">9:00 A.M.</td>
+                            <td class="border border-gray-300 p-2 font-bold">Keynote: Consumer Trends in Asia</td>
+                            <td class="border border-gray-300 p-2 text-center">Main Hall</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="border border-gray-300 p-2 font-mono text-center">11:00 A.M.</td>
+                            <td class="border border-gray-300 p-2">Panel A: Social Media Influencer Strategies<br><span class="text-xs text-gray-500">Requires pre-registration</span></td>
+                            <td class="border border-gray-300 p-2 text-center">Room 102</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 font-mono text-center">11:00 A.M.</td>
+                            <td class="border border-gray-300 p-2">Panel B: Email Marketing Metrics</td>
+                            <td class="border border-gray-300 p-2 text-center">Room 105</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="border border-gray-300 p-2 font-mono text-center">1:00 P.M.</td>
+                            <td class="border border-gray-300 p-2 italic text-gray-500 text-center">Networking Lunch</td>
+                            <td class="border border-gray-300 p-2 text-center">Terrace</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 font-mono text-center">3:00 P.M.</td>
+                            <td class="border border-gray-300 p-2">Workshop: Brand Crisis Management</td>
+                            <td class="border border-gray-300 p-2 text-center">Room 201</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Email -->
+                <div class="border border-gray-300 bg-gray-50 p-5 shadow-inner">
+                    <p class="mb-2"><strong>To:</strong> summit_registration@globalmarketing.org</p>
+                    <p class="mb-2"><strong>From:</strong> Julianne Moore &lt;j.moore@peakmedia.com&gt;</p>
+                    <p class="mb-2 border-b border-gray-300 pb-2"><strong>Date:</strong> September 12</p>
+                    
+                    <p class="mb-3 text-justify">Hello,</p>
+                    <p class="mb-3 text-justify">I am registered to attend the Global Marketing Summit this week (Registration ID: JM-992). I am writing to request a change to my schedule for Thursday.</p>
+                    <p class="mb-3 text-justify">When I originally registered last month, I signed up for the 11:00 A.M. session in Room 102 because my company was launching a new product with brand ambassadors. However, that campaign has been put on hold. Instead, my director has asked me to gather information on improving our newsletter open rates. Is it possible for me to switch to the session taking place in Room 105 at that same time?</p>
+                    <p class="mb-3 text-justify">I plan to attend the keynote address in the morning and the afternoon workshop as originally scheduled.</p>
+                    <p>Thank you for your assistance,<br>Julianne Moore</p>
+                </div>
+            </div>
+        `,
+        "181-185": `
+            <div class="space-y-6 font-sans text-sm">
+                <!-- Web Page -->
+                <div class="border-t-8 border-sky-600 bg-white p-6 shadow-sm">
+                    <h1 class="text-2xl font-bold mb-1 text-sky-700">Swift Relocation Services</h1>
+                    <p class="italic text-gray-600 mb-4 border-b border-gray-200 pb-3">Moving You Forward, Swiftly and Safely.</p>
+                    <p class="mb-3 text-justify">Swift Relocation Services has been the premier moving company in the Tri-State area for over 15 years. Whether you are moving across town or across the country, our team of professional movers guarantees a stress-free experience.</p>
+                    
+                    <h3 class="font-bold text-gray-800 mb-2">Our Services:</h3>
+                    <ul class="list-disc pl-5 space-y-2 mb-4">
+                        <li><strong>Standard Move:</strong> We load your pre-packed boxes and furniture, transport them to your new location, and unload them in the designated rooms.</li>
+                        <li><strong>Premium Packing Service:</strong> Our team safely packs all your belongings using high-quality materials before the move. Includes unpacking at the destination.</li>
+                        <li><strong>Secure Storage:</strong> Need a place to keep your items between leases? We offer climate-controlled storage units at competitive monthly rates.</li>
+                    </ul>
+                    <p class="text-sm bg-sky-50 p-2 border border-sky-200 rounded"><em>Note: All moves booked at least 30 days in advance receive a 10% early-bird discount on transportation fees.</em></p>
+                </div>
+
+                <!-- Form Submission -->
+                <div class="border border-gray-400 bg-gray-100 p-5 shadow-inner max-w-lg mx-auto">
+                    <h3 class="font-bold uppercase tracking-wider text-center border-b border-gray-300 pb-2 mb-4">Online Quote Request</h3>
+                    <div class="grid grid-cols-[130px_1fr] gap-y-2 text-sm">
+                        <div class="font-bold text-gray-600">Name:</div><div class="bg-white px-2 py-1 border border-gray-300">David Cho</div>
+                        <div class="font-bold text-gray-600">Current Address:</div><div class="bg-white px-2 py-1 border border-gray-300">122 Maple St, Apt 4B</div>
+                        <div class="font-bold text-gray-600">Destination:</div><div class="bg-white px-2 py-1 border border-gray-300">890 Oak Ave, Single Family Home</div>
+                        <div class="font-bold text-gray-600">Target Move Date:</div><div class="bg-white px-2 py-1 border border-gray-300">July 20</div>
+                        <div class="font-bold text-gray-600">Service Requested:</div><div class="bg-white px-2 py-1 border border-gray-300">Standard Move + Secure Storage</div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="font-bold text-gray-600 mb-1">Additional Comments:</p>
+                        <p class="bg-white p-2 border border-gray-300 text-gray-800 italic">I am submitting this request on June 5. My lease at the Maple St. apartment ends on July 20, but the house on Oak Ave will not be ready for me to move into until August 1. Therefore, I will need you to hold my furniture and boxes for approximately two weeks after you pick them up.</p>
+                    </div>
+                </div>
+            </div>
+        `,
+        "186-190": `
+            <div class="space-y-6 font-sans text-sm">
+                <!-- Job Posting -->
+                <div class="border-2 border-gray-800 p-5 bg-white shadow-sm">
+                    <h2 class="font-black text-xl mb-2 text-sky-700">Career Opportunity: Graphic Designer</h2>
+                    <p class="font-bold mb-4 border-b border-gray-300 pb-2">Luminate Media Group | Full-Time | New York City</p>
+                    <p class="mb-3 text-justify">Luminate Media Group is seeking a creative and detail-oriented Graphic Designer to join our marketing team. The ideal candidate will be responsible for creating visual concepts for our digital advertising campaigns, social media channels, and print brochures.</p>
+                    <p class="font-bold mb-1">Requirements:</p>
+                    <ul class="list-disc pl-5 mb-4">
+                        <li>Bachelor's degree in Graphic Design or a related field.</li>
+                        <li>Minimum of 3 years of professional design experience.</li>
+                        <li>Proficiency in Adobe Creative Suite (Photoshop, Illustrator, InDesign).</li>
+                        <li>A strong portfolio demonstrating versatility in design styles.</li>
+                    </ul>
+                    <p>To apply, please send your resume and a link to your digital portfolio to HR director, Brenda Vance, at b.vance@luminatemedia.com by October 15.</p>
+                </div>
+
+                <!-- Email 1 (Cover Letter) -->
+                <div class="border border-gray-300 p-4 bg-gray-50 shadow-inner">
+                    <p><strong>To:</strong> b.vance@luminatemedia.com</p>
+                    <p><strong>From:</strong> mark.russo@webmail.net</p>
+                    <p class="border-b border-gray-300 pb-2 mb-2"><strong>Date:</strong> October 10</p>
+                    <p class="mb-3 text-justify">Dear Ms. Vance,</p>
+                    <p class="mb-3 text-justify">I am writing to express my strong interest in the Graphic Designer position at Luminate Media Group. I graduated with a degree in Design from State University four years ago. Since then, I have been working as a junior designer at a boutique marketing firm, where I specialize in creating engaging social media graphics.</p>
+                    <p class="mb-3 text-justify">I am highly proficient in the software programs listed in your requirements and am eager to bring my skills to a larger agency like Luminate. My resume is attached to this email, and you can view my complete portfolio at www.mrusso-design.com.</p>
+                    <p>Thank you for your time and consideration.</p>
+                    <p>Sincerely,<br>Mark Russo</p>
+                </div>
+
+                <!-- Email 2 (HR Response) -->
+                <div class="border border-gray-300 p-4 bg-white shadow-sm">
+                    <p><strong>To:</strong> mark.russo@webmail.net</p>
+                    <p><strong>From:</strong> b.vance@luminatemedia.com</p>
+                    <p class="border-b border-gray-300 pb-2 mb-2"><strong>Date:</strong> October 18</p>
+                    <p class="mb-3 text-justify">Dear Mr. Russo,</p>
+                    <p class="mb-3 text-justify">Thank you for applying to Luminate Media Group. Our creative director reviewed your online portfolio and was very impressed by the print brochure layouts you designed for your previous clients.</p>
+                    <p class="mb-3 text-justify">We would like to invite you to our office for a formal interview on Tuesday, October 25 at 2:00 P.M. The interview will consist of a 30-minute discussion with the creative team, followed by a short 45-minute skills assessment where you will be asked to mock up a digital ad using provided assets.</p>
+                    <p class="mb-3 text-justify">Please reply to this email by Thursday to confirm if you are available at this time.</p>
+                    <p>Best regards,<br>Brenda Vance<br>HR Director</p>
+                </div>
+            </div>
+        `,
+        "191-195": `
+            <div class="space-y-6 font-sans text-sm">
+                <!-- Website Policy -->
+                <div class="border border-gray-400 p-6 bg-[#f0f8ff] shadow-sm">
+                    <h1 class="text-2xl font-serif text-sky-900 mb-2">The Grand Hotel - Guest Policies</h1>
+                    <p class="mb-3 text-justify">Welcome to The Grand Hotel. To ensure a pleasant stay for all our guests, please review our policies.</p>
+                    <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li><strong>Check-in / Check-out:</strong> Check-in begins at 3:00 P.M. Check-out is strictly at 11:00 A.M. Late check-outs must be approved by the front desk and incur a $50 fee.</li>
+                        <li><strong>Breakfast:</strong> A complimentary continental breakfast is served daily in the lobby from 6:30 A.M. to 9:30 A.M. for all registered guests.</li>
+                        <li><strong>Fitness Center:</strong> The gym and indoor pool are open 24 hours a day. Guests must use their room keycard to access the facility.</li>
+                        <li><strong>Parking:</strong> On-site valet parking is available for an additional charge of $25 per night.</li>
+                    </ul>
+                </div>
+
+                <!-- Email 1 (Complaint) -->
+                <div class="border-t-4 border-red-500 bg-white p-5 shadow-sm">
+                    <p><strong>To:</strong> management@thegrandhotel.com</p>
+                    <p><strong>From:</strong> h.foster@globalmail.com</p>
+                    <p class="border-b border-gray-300 pb-2 mb-2"><strong>Date:</strong> March 12</p>
+                    <p class="mb-3 text-justify">To the Manager,</p>
+                    <p class="mb-3 text-justify">I recently stayed at your hotel for a business trip from March 8 to March 10 (Room 412). While the room was comfortable, I experienced two significant issues during my stay.</p>
+                    <p class="mb-3 text-justify">First, when I went down to the lobby for breakfast at 9:15 A.M. on Wednesday, the staff was already clearing away all the food and refused to let me get a cup of coffee. Your website clearly states the times food should be available. Second, my final bill included a $50 fee for a late check-out. I left my room and handed my keys to the front desk at 10:45 A.M. on Friday, which is before the deadline.</p>
+                    <p>I would appreciate an explanation and a refund for the erroneous fee.</p>
+                    <p>Helen Foster</p>
+                </div>
+
+                <!-- Email 2 (Manager Reply) -->
+                <div class="border border-gray-300 p-5 bg-gray-50 shadow-inner">
+                    <p><strong>To:</strong> h.foster@globalmail.com</p>
+                    <p><strong>From:</strong> management@thegrandhotel.com</p>
+                    <p class="border-b border-gray-300 pb-2 mb-2"><strong>Date:</strong> March 14</p>
+                    <p class="mb-3 text-justify">Dear Ms. Foster,</p>
+                    <p class="mb-3 text-justify">Thank you for reaching out and sharing your experience. I sincerely apologize for the inconvenience you faced during your stay.</p>
+                    <p class="mb-3 text-justify">Regarding the morning meal, you are absolutely correct. Food service should remain open until the posted time. I have spoken with the catering manager to ensure staff do not begin cleaning up early in the future. As for the check-out fee, our computer system shows that the front desk agent did not process your key return until 11:30 A.M., which triggered the automatic charge. This was our error.</p>
+                    <p class="mb-3 text-justify">I have processed a refund of $50 to your credit card. Please allow 3-5 business days for it to appear on your statement. As an apology for the breakfast incident, I am also mailing you a voucher for a complimentary dinner at our hotel restaurant, valid for your next visit.</p>
+                    <p>Sincerely,<br>Thomas Vance, General Manager</p>
+                </div>
+            </div>
+        `,
+        "196-200": `
+            <div class="space-y-6 font-sans text-sm">
+                <!-- Memo -->
+                <div class="border-l-4 border-sky-600 bg-white p-5 shadow-sm">
+                    <h2 class="font-bold text-lg mb-2 uppercase tracking-wide">Memorandum</h2>
+                    <div class="grid grid-cols-[80px_1fr] gap-1 mb-4 border-b border-gray-200 pb-2 text-gray-700">
+                        <div class="font-bold">To:</div><div>All Department Managers</div>
+                        <div class="font-bold">From:</div><div>Frank Castillo, Director of Finance</div>
+                        <div class="font-bold">Date:</div><div>November 1</div>
+                        <div class="font-bold">Subject:</div><div>Upcoming External Audit</div>
+                    </div>
+                    <p class="mb-3 text-justify">Please be advised that an external accounting firm will be conducting a comprehensive audit of our financial records for the current fiscal year. The auditors will be on-site at our headquarters from Monday, November 15 through Friday, November 19.</p>
+                    <p class="mb-3 text-justify">To prepare for this, all department managers must submit their final departmental expense reports and budget reconciliations to my office no later than Wednesday, November 10. It is crucial that all documentation is organized and accurate to ensure the audit proceeds smoothly.</p>
+                </div>
+
+                <!-- Checklist -->
+                <div class="border border-gray-400 bg-gray-50 p-4 shadow-inner">
+                    <h3 class="font-bold text-base mb-3 text-sky-900 border-b border-gray-300 pb-1">Audit Preparation Checklist - Marketing Department</h3>
+                    <ul class="list-none space-y-3">
+                        <li class="flex items-start"><i class="far fa-check-square text-green-600 mt-1 mr-2 text-lg"></i> <div><strong>Step 1:</strong> Compile all vendor invoices from Q1 - Q3.<br><span class="text-xs text-gray-500">Completed by: S. Jenkins (Oct 28)</span></div></li>
+                        <li class="flex items-start"><i class="far fa-check-square text-green-600 mt-1 mr-2 text-lg"></i> <div><strong>Step 2:</strong> Reconcile travel and entertainment expenses for the sales team.<br><span class="text-xs text-gray-500">Completed by: M. Russo (Oct 30)</span></div></li>
+                        <li class="flex items-start"><i class="far fa-square text-gray-400 mt-1 mr-2 text-lg"></i> <div><strong>Step 3:</strong> Finalize advertising budget report for Q4 projections.<br><span class="text-xs text-gray-500">Assigned to: D. Cho (Due Nov 8)</span></div></li>
+                        <li class="flex items-start"><i class="far fa-square text-gray-400 mt-1 mr-2 text-lg"></i> <div><strong>Step 4:</strong> Submit compiled dossier to the Director of Finance.<br><span class="text-xs text-gray-500">Assigned to: D. Cho (Due Nov 10)</span></div></li>
+                    </ul>
+                </div>
+
+                <!-- Email -->
+                <div class="border border-gray-300 p-5 bg-white shadow-sm">
+                    <p><strong>To:</strong> Frank Castillo &lt;f.castillo@company.com&gt;</p>
+                    <p><strong>From:</strong> David Cho &lt;d.cho@company.com&gt;</p>
+                    <p class="border-b border-gray-300 pb-2 mb-2"><strong>Date:</strong> November 8</p>
+                    <p class="mb-3 text-justify">Hi Frank,</p>
+                    <p class="mb-3 text-justify">I am writing regarding the deadline for the departmental expense submissions. My team has successfully completed the compilation of past invoices and travel expenses. However, we are currently waiting on final cost projections from our international media buyer to complete step 3 of our internal checklist.</p>
+                    <p class="mb-3 text-justify">The media buyer informed us that those figures won't be available until Thursday afternoon. Therefore, I will not be able to hand over the complete marketing dossier by your Wednesday deadline. Would it be possible to get an extension until Friday morning at 9:00 A.M.?</p>
+                    <p>Thank you for understanding,<br>David Cho<br>Marketing Manager</p>
+                </div>
+            </div>
+        `
+    };
+
+    const questionsDB = {
+        // Part 5 (30 questions)
+        101: { text: "The supervisor requested that all staff members keep their passwords -----.", A: "secure", B: "securely", C: "security", D: "secures", correct: "A" },
+        102: { text: "The new marketing strategy was ----- successful, leading to a 30% increase in sales.", A: "high", B: "highly", C: "higher", D: "highest", correct: "B" },
+        103: { text: "Please review the attached document and ----- any changes before the meeting.", A: "make", B: "making", C: "made", D: "makes", correct: "A" },
+        104: { text: "----- the heavy rain, the outdoor concert was postponed until next week.", A: "Because", B: "Due to", C: "Although", D: "However", correct: "B" },
+        105: { text: "The company plans to ----- its operations into the European market by next year.", A: "expand", B: "expansion", C: "expansive", D: "expands", correct: "A" },
+        106: { text: "Mr. Lee will be traveling to Tokyo ----- business next Monday.", A: "on", B: "in", C: "at", D: "for", correct: "A" },
+        107: { text: "All visitors are required to sign in at the front desk ----- entering the laboratory.", A: "while", B: "before", C: "then", D: "soon", correct: "B" },
+        108: { text: "The committee has not yet reached a ----- regarding the proposed budget cuts.", A: "decide", B: "decision", C: "decisive", D: "decidedly", correct: "B" },
+        109: { text: "Ms. Gomez is the most ----- candidate for the management position.", A: "qualify", B: "qualifies", C: "qualified", D: "qualifying", correct: "C" },
+        110: { text: "The factory ----- operates three shifts to meet the growing demand for its products.", A: "current", B: "currently", C: "currency", D: "currents", correct: "B" },
+        111: { text: "If you have any questions, please do not hesitate to contact the ----- service department.", A: "custom", B: "customary", C: "customer", D: "customize", correct: "C" },
+        112: { text: "The CEO announced that the merger ----- finalized by the end of the month.", A: "will be", B: "has been", C: "was", D: "is being", correct: "A" },
+        113: { text: "Employees must submit their expense reports ----- five business days of returning from a trip.", A: "within", B: "during", C: "about", D: "since", correct: "A" },
+        114: { text: "The new software is designed to help users organize their files more -----.", A: "efficient", B: "efficiency", C: "efficiently", D: "efficients", correct: "C" },
+        115: { text: "Dr. Vance will deliver the keynote address ----- the conference opening ceremony.", A: "at", B: "in", C: "on", D: "to", correct: "A" },
+        116: { text: "The board of directors ----- the proposal to build a new research facility in Austin.", A: "approve", B: "approved", C: "approval", D: "approving", correct: "B" },
+        117: { text: "We apologize for the inconvenience and appreciate your ----- while we resolve the issue.", A: "patient", B: "patience", C: "patiently", D: "patients", correct: "B" },
+        118: { text: "The restaurant is known for its ----- atmosphere and excellent cuisine.", A: "invite", B: "inviting", C: "invitation", D: "invited", correct: "B" },
+        119: { text: "----- completing the training program, employees will receive a certificate.", A: "Upon", B: "With", C: "That", D: "Which", correct: "A" },
+        120: { text: "The sales team worked ----- to exceed their quarterly targets.", A: "collaborate", B: "collaboration", C: "collaborator", D: "collaboratively", correct: "D" },
+        121: { text: "The updated employee manual contains ----- instructions on how to request time off.", A: "specify", B: "specific", C: "specifically", D: "specification", correct: "B" },
+        122: { text: "The building's new security system is much more advanced ----- the previous one.", A: "then", B: "than", C: "that", D: "this", correct: "B" },
+        123: { text: "Mr. Henderson is ----- responsible for overseeing the international shipping logistics.", A: "primary", B: "prime", C: "primarily", D: "primer", correct: "C" },
+        124: { text: "The graphic designer presented three different concepts, and the client chose the one that was most -----.", A: "innovate", B: "innovation", C: "innovative", D: "innovatively", correct: "C" },
+        125: { text: "Due to the unexpected snowstorm, several flights were ----- delayed or canceled.", A: "either", B: "both", C: "neither", D: "not only", correct: "A" },
+        126: { text: "The financial analyst predicted a steady ----- in interest rates over the next six months.", A: "grow", B: "growing", C: "growth", D: "grows", correct: "C" },
+        127: { text: "Before signing the lease, it is advisable to read all the terms and ----- carefully.", A: "conditions", B: "conditional", C: "conditioned", D: "conditioner", correct: "A" },
+        128: { text: "The new cafeteria vendor offers a wider ----- of healthy lunch options.", A: "select", B: "selection", C: "selective", D: "selectively", correct: "B" },
+        129: { text: "Ms. Croft ----- her rapid promotion to the mentorship she received from senior management.", A: "attributes", B: "acquires", C: "assigns", D: "attracts", correct: "A" },
+        130: { text: "Only personnel with the proper clearance are ----- to access the restricted server room.", A: "permit", B: "permission", C: "permitted", D: "permits", correct: "C" },
+
+        // Part 6 (Texts)
+        131: { part: 6, group: "131-134", text: "Select the best answer for blank [ 131 ] in the passage.", A: "complete", B: "completes", C: "completed", D: "completing", correct: "A" },
+        132: { part: 6, group: "131-134", text: "Select the best sentence to fill blank [ 132 ] in the passage.", A: "The parking lot will be expanded to hold more cars.", B: "Please ensure you have your parking pass visible.", C: "This overflow lot is situated three blocks south of our building.", D: "The repaving project will cost thousands of dollars.", correct: "C" },
+        133: { part: 6, group: "131-134", text: "Select the best answer for blank [ 133 ] in the passage.", A: "inconvenient", B: "inconvenience", C: "inconveniences", D: "inconveniently", correct: "B" },
+        134: { part: 6, group: "131-134", text: "Select the best answer for blank [ 134 ] in the passage.", A: "improve", B: "improving", C: "improved", D: "improvement", correct: "A" },
+
+        135: { part: 6, group: "135-138", text: "Select the best answer for blank [ 135 ] in the passage.", A: "implement", B: "implements", C: "implemented", D: "implementing", correct: "D" },
+        136: { part: 6, group: "135-138", text: "Select the best sentence to fill blank [ 136 ] in the passage.", A: "You can update your payment method there as well.", B: "We will mail you a printed copy of the invoice next week.", C: "Our office hours are Monday to Friday.", D: "This ensures that your digital invoices will reach you promptly.", correct: "D" },
+        137: { part: 6, group: "135-138", text: "Select the best answer for blank [ 137 ] in the passage.", A: "prefer", B: "prefers", C: "preferred", D: "preferring", correct: "A" },
+        138: { part: 6, group: "135-138", text: "Select the best answer for blank [ 138 ] in the passage.", A: "patron", B: "patronize", C: "patronage", D: "patrons", correct: "C" },
+
+        139: { part: 6, group: "139-142", text: "Select the best answer for blank [ 139 ] in the passage.", A: "vary", B: "variety", C: "various", D: "variously", correct: "B" },
+        140: { part: 6, group: "139-142", text: "Select the best answer for blank [ 140 ] in the passage.", A: "However", B: "Instead", C: "Furthermore", D: "Although", correct: "C" },
+        141: { part: 6, group: "139-142", text: "Select the best sentence to fill blank [ 141 ] in the passage.", A: "We do not deliver outside the city limits.", B: "Just let us know your requirements when you place your order.", C: "Our chefs have won multiple awards.", D: "The sandwiches are our most popular item.", correct: "B" },
+        142: { part: 6, group: "139-142", text: "Select the best answer for blank [ 142 ] in the passage.", A: "Visit", B: "Visiting", C: "Visited", D: "Visitor", correct: "A" },
+
+        143: { part: 6, group: "143-146", text: "Select the best answer for blank [ 143 ] in the passage.", A: "transit", B: "transitively", C: "transition", D: "transitional", correct: "C" },
+        144: { part: 6, group: "143-146", text: "Select the best sentence to fill blank [ 144 ] in the passage.", A: "Please leave the boxes open for inspection.", B: "Be sure to label each box clearly with your name.", C: "The new office will have better lighting.", D: "We are hiring more staff next month.", correct: "B" },
+        145: { part: 6, group: "143-146", text: "Select the best answer for blank [ 145 ] in the passage.", A: "crucial", B: "crucially", C: "cruelty", D: "crude", correct: "A" },
+        146: { part: 6, group: "143-146", text: "Select the best answer for blank [ 146 ] in the passage.", A: "addition", B: "additional", C: "additionally", D: "add", correct: "B" },
+
+        // Part 7 (Comprehension)
+        147: { part: 7, group: "147-148", text: "Why is Marcus Wright unable to attend the dinner?", A: "He is stuck in traffic.", B: "He is sick.", C: "His flight is delayed.", D: "He forgot about the event.", correct: "C" },
+        148: { part: 7, group: "147-148", text: "What does Marcus ask Chloe to do?", A: "Pick him up from the airport.", B: "Inform Mr. Davidson about his absence.", C: "Save him a plate of food.", D: "Reschedule his presentation.", correct: "B" },
+
+        149: { part: 7, group: "149-150", text: "What product is being advertised?", A: "A mobile phone", B: "A fitness tracking watch", C: "A GPS navigation system", D: "A water bottle", correct: "B" },
+        150: { part: 7, group: "149-150", text: "What do customers receive if they order online?", A: "Free shipping", B: "A discount code", C: "A complimentary sport band", D: "An extended warranty", correct: "C" },
+
+        151: { part: 7, group: "151-152", text: "What must department heads do between October 18 and November 5?", A: "Attend a training seminar", B: "Submit budget reports", C: "Conduct performance evaluation meetings", D: "Download new HR software", correct: "C" },
+        152: { part: 7, group: "151-152", text: "How should the completed forms be submitted?", A: "By mailing them to the HR office", B: "By uploading them to a secure portal", C: "By handing them to Rachel Green", D: "By emailing them as attachments", correct: "B" },
+
+        153: { part: 7, group: "153-155", text: "Why did Sarah Jenkins write to Arthur Pendelton?", A: "To invite him to a project meeting", B: "To offer him a job promotion", C: "To request a copy of his contract", D: "To announce a salary reduction", correct: "B" },
+        154: { part: 7, group: "153-155", text: "What is mentioned as a reason for Arthur's promotion?", A: "His length of time at the company", B: "His work on a cloud migration project", C: "His previous management experience", D: "His excellent customer service skills", correct: "B" },
+        155: { part: 7, group: "153-155", text: "What must Arthur do by February 24?", A: "Lead a staff meeting", B: "Hire four junior analysts", C: "Return a signed contract to HR", D: "Complete a training course", correct: "C" },
+
+        156: { part: 7, group: "156-157", text: "What is the purpose of the scheduled outage?", A: "To repair storm damage", B: "To upgrade grid capacity", C: "To test emergency generators", D: "To install solar panels", correct: "B" },
+        157: { part: 7, group: "156-157", text: "What are businesses advised to do before the outage?", A: "Turn off sensitive electronic equipment", B: "Close their stores for the entire day", C: "Call the 24/7 hotline", D: "Relocate to a different district", correct: "A" },
+
+        158: { part: 7, group: "158-160", text: "Why did Elena Rostova receive an award?", A: "For designing a new art museum", B: "For achievements in sustainable building design", C: "For publishing an architecture book", D: "For restoring a historic landmark", correct: "B" },
+        159: { part: 7, group: "158-160", text: "What is a feature of the 'Green Harbor' project?", A: "It is located underground.", B: "It uses rainwater harvesting systems.", C: "It is entirely powered by wind.", D: "It was built fifty years ago.", correct: "B" },
+        160: { part: 7, group: "158-160", text: "How will Rostova use the prize money?", A: "To expand her office space", B: "To travel to an international conference", C: "To fund an internship program for students", D: "To purchase new design software", correct: "C" },
+
+        161: { part: 7, group: "161-163", text: "Why was the letter written?", A: "To apply for a job at Vertex Financial", B: "To recommend Julianne Moore for an academic program", C: "To request funding for a market analysis", D: "To introduce a new financial consultant", correct: "B" },
+        162: { part: 7, group: "161-163", text: "What did Julianne Moore accomplish last year?", A: "She graduated from Wellington Business School.", B: "She became a senior partner.", C: "She increased portfolio revenue by 12%.", D: "She trained new employees.", correct: "C" },
+        163: { part: 7, group: "161-163", text: "Who is Kenneth Bradley?", A: "Julianne's supervisor", B: "A financial consultant", C: "The Director of Admissions", D: "A client of Vertex Financial", correct: "C" },
+
+        164: { part: 7, group: "164-167", text: "What is Daniel's problem?", A: "He forgot his employee ID.", B: "His computer will not turn on.", C: "His payroll portal account is locked.", D: "He did not receive his paycheck.", correct: "C" },
+        165: { part: 7, group: "164-167", text: "Why does the system lock accounts?", A: "For routine maintenance", B: "After three failed login attempts", C: "When an employee resigns", D: "During the weekend", correct: "B" },
+        166: { part: 7, group: "164-167", text: "What does Lisa ask Daniel to provide?", A: "His date of birth", B: "His department name", C: "His employee ID number", D: "His manager's email", correct: "C" },
+        167: { part: 7, group: "164-167", text: "How does Lisa resolve the issue?", A: "She sends a temporary password to his email.", B: "She changes his employee ID.", C: "She tells him to restart his computer.", D: "She calls his supervisor.", correct: "A" },
+
+        168: { part: 7, group: "168-171", text: "What is the main topic of the article?", A: "A new software release", B: "A merger between two technology companies", C: "The resignation of a CEO", D: "A lawsuit regarding antitrust laws", correct: "B" },
+        169: { part: 7, group: "168-171", text: "What is projected for the new company, OmniZen?", A: "It will close its Texas office.", B: "It will hold a 40% share of the cloud computing market.", C: "It will focus exclusively on hardware.", D: "It will hire thousands of new employees.", correct: "B" },
+        170: { part: 7, group: "168-171", text: "What do analysts expect will happen after the merger?", A: "Product prices will increase.", B: "The CEO will be replaced.", C: "Redundant departments will be consolidated.", D: "The company will move overseas.", correct: "C" },
+        171: { part: 7, group: "168-171", text: "In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? \"However, this timeline is not entirely guaranteed.\"", A: "[1]", B: "[2]", C: "[3]", D: "[4]", correct: "B" },
+
+        172: { part: 7, group: "172-175", text: "What is the purpose of the memo?", A: "To announce a new health insurance plan", B: "To explain a transition to a digital expense reporting system", C: "To schedule a mandatory accounting meeting", D: "To outline new travel policies", correct: "B" },
+        173: { part: 7, group: "172-175", text: "How should employees submit receipts in June?", A: "By mailing them to the accounting office", B: "By handing them to their manager", C: "By uploading a photo of them via the ExpenseTrack app", D: "By faxing them to IT", correct: "C" },
+        174: { part: 7, group: "172-175", text: "What is one benefit of the new system?", A: "It offers higher reimbursement rates.", B: "It disperses funds much faster than the old system.", C: "It does not require receipts for small purchases.", D: "It automatically books travel arrangements.", correct: "B" },
+        175: { part: 7, group: "172-175", text: "In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? \"You can easily do this from anywhere, whether you are in the office or on a business trip.\"", A: "[1]", B: "[2]", C: "[3]", D: "[4]", correct: "B" },
+
+        // Double Passages
+        176: { part: 7, group: "176-180", text: "According to the schedule, which session requires attendees to register in advance?", A: "Consumer Trends in Asia", B: "Social Media Influencer Strategies", C: "Email Marketing Metrics", D: "Brand Crisis Management", correct: "B" },
+        177: { part: 7, group: "176-180", text: "Where will the networking lunch take place?", A: "Main Hall", B: "Room 102", C: "Terrace", D: "Room 201", correct: "C" },
+        178: { part: 7, group: "176-180", text: "Why does Julianne Moore want to change her schedule?", A: "She is arriving late to the summit.", B: "Her company canceled a product launch campaign.", C: "She wants to eat lunch earlier.", D: "She is presenting at the email marketing panel.", correct: "B" },
+        179: { part: 7, group: "176-180", text: "Which session does Julianne currently want to attend at 11:00 A.M.?", A: "Consumer Trends in Asia", B: "Social Media Influencer Strategies", C: "Email Marketing Metrics", D: "Brand Crisis Management", correct: "C" },
+        180: { part: 7, group: "176-180", text: "What session will Julianne attend at 3:00 P.M.?", A: "Consumer Trends in Asia", B: "Social Media Influencer Strategies", C: "Email Marketing Metrics", D: "Brand Crisis Management", correct: "D" },
+
+        181: { part: 7, group: "181-185", text: "What type of business is Swift Relocation Services?", A: "A real estate agency", B: "A moving company", C: "A home cleaning service", D: "A furniture store", correct: "B" },
+        182: { part: 7, group: "181-185", text: "What is included in the Premium Packing Service?", A: "Climate-controlled storage", B: "Free moving boxes", C: "Unpacking at the destination", D: "A 10% discount", correct: "C" },
+        183: { part: 7, group: "181-185", text: "When is David Cho's target move date?", A: "June 5", B: "July 20", C: "August 1", D: "August 20", correct: "B" },
+        184: { part: 7, group: "181-185", text: "Why does David need secure storage?", A: "His new house is smaller than his apartment.", B: "He is moving to a different state.", C: "His new house will not be ready until August 1.", D: "He wants to sell his old furniture.", correct: "C" },
+        185: { part: 7, group: "181-185", text: "Will David receive the early-bird discount?", A: "Yes, because he booked more than 30 days in advance.", B: "Yes, because he requested premium packing.", C: "No, because he is using secure storage.", D: "No, because he booked less than 30 days in advance.", correct: "A" },
+
+        // Triple Passages
+        186: { part: 7, group: "186-190", text: "What software proficiency is required for the Graphic Designer role?", A: "Microsoft Office", B: "Adobe Creative Suite", C: "Final Cut Pro", D: "AutoCAD", correct: "B" },
+        187: { part: 7, group: "186-190", text: "Where does Mark Russo currently work?", A: "Luminate Media Group", B: "State University", C: "A boutique marketing firm", D: "A web development company", correct: "C" },
+        188: { part: 7, group: "186-190", text: "How did Mark Russo submit his portfolio?", A: "He attached a PDF file.", B: "He mailed a physical copy.", C: "He provided a link to his website.", D: "He brought it to the interview.", correct: "C" },
+        189: { part: 7, group: "186-190", text: "What part of Mark's portfolio impressed the creative director?", A: "His social media graphics", B: "His digital ad mockups", C: "His logo designs", D: "His print brochure layouts", correct: "D" },
+        190: { part: 7, group: "186-190", text: "What will Mark be asked to do during the skills assessment?", A: "Design a print brochure", B: "Mock up a digital ad", C: "Write a marketing plan", D: "Present his portfolio to the CEO", correct: "B" },
+
+        191: { part: 7, group: "191-195", text: "According to the policy, when is the complimentary breakfast served?", A: "5:30 A.M. to 8:30 A.M.", B: "6:00 A.M. to 10:00 A.M.", C: "6:30 A.M. to 9:30 A.M.", D: "7:00 A.M. to 11:00 A.M.", correct: "C" },
+        192: { part: 7, group: "191-195", text: "How much does valet parking cost per night?", A: "$15", B: "$25", C: "$50", D: "It is free.", correct: "B" },
+        193: { part: 7, group: "191-195", text: "Why was Helen Foster frustrated about breakfast?", A: "The food was cold.", B: "The staff started cleaning up before 9:30 A.M.", C: "There was no coffee available at 6:30 A.M.", D: "She was charged for the meal.", correct: "B" },
+        194: { part: 7, group: "191-195", text: "Why was Helen charged a $50 fee?", A: "She used the valet parking for two nights.", B: "She damaged her room keycard.", C: "The front desk agent processed her check-out late.", D: "She requested a late check-out.", correct: "C" },
+        195: { part: 7, group: "191-195", text: "What compensation does Thomas Vance offer Helen?", A: "A free night's stay", B: "A full refund of her hotel bill", C: "Free valet parking", D: "A $50 refund and a dinner voucher", correct: "D" },
+
+        196: { part: 7, group: "196-200", text: "What is happening at the headquarters from November 15 to November 19?", A: "A corporate retreat", B: "An external financial audit", C: "A software upgrade", D: "A marketing summit", correct: "B" },
+        197: { part: 7, group: "196-200", text: "When are the final departmental expense reports due?", A: "November 1", B: "November 8", C: "November 10", D: "November 15", correct: "C" },
+        198: { part: 7, group: "196-200", text: "According to the checklist, who reconciled the travel expenses?", A: "Frank Castillo", B: "Sarah Jenkins", C: "David Cho", D: "Mark Russo", correct: "D" },
+        199: { part: 7, group: "196-200", text: "Why is David Cho asking for an extension?", A: "His team is missing vendor invoices.", B: "He is waiting for cost projections from a media buyer.", C: "He has been out of the office on a business trip.", D: "The software system is down.", correct: "B" },
+        200: { part: 7, group: "196-200", text: "When does David want to submit the marketing dossier?", A: "Wednesday afternoon", B: "Thursday afternoon", C: "Friday morning", D: "Monday morning", correct: "C" }
+    };
+
+    const partDirections = {
+        5: "<strong>Directions:</strong> A word or phrase is missing in each of the sentences below. Four answer choices are given below each sentence. Select the best answer to complete the sentence.",
+        6: "<strong>Directions:</strong> Read the texts that follow. A word, phrase, or sentence is missing in parts of each text. Four answer choices for each question are given below each text. Select the best answer to complete the text.",
+        7: "<strong>Directions:</strong> In this part you will read a selection of texts, such as magazine and newspaper articles, e-mails, and instant messages. Each text or set of texts is followed by several questions. Select the best answer for each question."
+    };
+
+    function startSimulation() {
+        document.getElementById('welcome-screen').classList.remove('active');
+        document.getElementById('general-directions-screen').classList.add('active');
+        
+        document.getElementById('global-header').classList.remove('hidden');
+        document.getElementById('global-header').classList.add('flex');
+        document.getElementById('exam-subheader').classList.remove('hidden');
+        document.getElementById('exam-subheader').classList.add('flex');
+        
+        startTimer();
+    }
+
+    function showDirectionScreen(partNum) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('direction-screen').classList.add('active');
+        document.getElementById('global-footer').classList.add('hidden');
+        
+        document.getElementById('nav-sidebar').classList.remove('hidden');
+        document.getElementById('nav-sidebar').classList.add('flex');
+        renderQuestionGrid();
+
+        document.getElementById('dir-title').innerText = `PART ${partNum}`;
+        document.getElementById('dir-content').innerHTML = partDirections[partNum];
+        document.getElementById('dir-btn-text').innerText = `Part ${partNum}`;
+        
+        testData.currentPart = partNum;
+    }
+
+    function startPartFromDirection() {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('main-app').classList.add('active');
+        document.getElementById('global-footer').classList.remove('hidden');
+        document.getElementById('global-footer').classList.add('flex');
+        
+        let firstQ = 101;
+        if (testData.currentPart === 6) firstQ = 131;
+        if (testData.currentPart === 7) firstQ = 147;
+        
+        goToQuestion(firstQ);
+    }
+
+    function switchPart(newPart) {
+        if(newPart !== testData.currentPart) {
+            showDirectionScreen(newPart);
+        }
+    }
+
+    function getPartFromQNum(qNum) {
+        if(qNum >= 101 && qNum <= 130) return 5;
+        if(qNum >= 131 && qNum <= 146) return 6;
+        if(qNum >= 147 && qNum <= 200) return 7;
+        return 5;
+    }
+
+    function startTimer() {
+        if(timerInterval) return; 
+        const timerEl = document.getElementById('timer');
+        timerInterval = setInterval(() => {
+            if (testData.timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                finishTest();
+                return;
+            }
+            testData.timeRemaining--;
+            
+            const m = Math.floor(testData.timeRemaining / 60);
+            const s = testData.timeRemaining % 60;
+            timerEl.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            
+            if(testData.timeRemaining < 300) {
+                timerEl.classList.add('text-red-600');
+            }
+        }, 1000);
+    }
+
+    function renderQuestionGrid() {
+        const grid = document.getElementById('question-grid');
+        grid.innerHTML = '';
+        for (let i = 101; i <= 200; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            btn.className = `grid-btn ${testData.answers[i] ? 'answered' : ''} ${i === testData.currentQ ? 'active' : ''}`;
+            btn.onclick = () => {
+                let targetPart = getPartFromQNum(i);
+                if(targetPart !== testData.currentPart && testData.currentPart !== 0) {
+                    testData.currentQ = i; 
+                    switchPart(targetPart);
+                } else {
+                    goToQuestion(i);
+                }
+            };
+            grid.appendChild(btn);
+        }
+    }
+
+    function goToQuestion(qNum) {
+        if (qNum < 101 || qNum > 200) return;
+        
+        let targetPart = getPartFromQNum(qNum);
+        
+        if(!document.getElementById('main-app').classList.contains('active')) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('main-app').classList.add('active');
+            document.getElementById('global-footer').classList.remove('hidden');
+            document.getElementById('global-footer').classList.add('flex');
+        }
+
+        testData.currentQ = qNum;
+        testData.currentPart = targetPart;
+        
+        const qData = questionsDB[qNum];
+        document.getElementById('q-counter').innerText = (qData && qData.group) ? qData.group : qNum;
+        document.getElementById('part-badge').innerText = `PART ${targetPart}`;
+        
+        let miniDir = targetPart === 5 ? "Select the best answer to complete the sentence." : 
+                      targetPart === 6 ? "Select the best answer to complete the text." :
+                                         "Select the best answer for each question.";
+        document.getElementById('part-mini-dir').innerText = miniDir;
+        
+        renderQuestionGrid();
+
+        const passageContainer = document.getElementById('passage-container');
+        const passageContent = document.getElementById('passage-content');
+        const questionContainer = document.getElementById('question-container');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+
+        if(targetPart === 5 || !qData.group) {
+            testData.currentGroup = null; 
+            passageContainer.classList.add('hidden');
+            questionContainer.classList.remove('lg:w-1/2');
+            questionText.style.display = 'block';
+            
+            questionText.innerHTML = qData ? qData.text : "Question data unavailable.";
+            
+            let optionsHtml = '';
+            ['A', 'B', 'C', 'D'].forEach(letter => {
+                const isSelected = testData.answers[qNum] === letter;
+                const optText = qData ? qData[letter] : "Option unavailable";
+                optionsHtml += `
+                    <label class="option-label ${isSelected ? 'selected' : ''}" onclick="selectOption(${qNum}, '${letter}')">
+                        <div class="radio-circle">${letter}</div>
+                        <div class="option-text">${optText}</div>
+                        <input type="radio" name="q${qNum}" value="${letter}" ${isSelected ? 'checked' : ''}>
+                    </label>
+                `;
+            });
+            optionsContainer.innerHTML = optionsHtml;
+
+        } else {
+            if (testData.currentGroup === qData.group && document.getElementById(`q-block-${qNum}`)) {
+                const qBlock = document.getElementById(`q-block-${qNum}`);
+                qBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                document.querySelectorAll('[id^="q-block-"]').forEach(el => el.classList.remove('bg-sky-50', 'p-4', 'rounded-lg'));
+                qBlock.classList.add('bg-sky-50', 'p-4', 'rounded-lg');
+                
+                if(targetPart === 6) {
+                    const blanks = passageContent.querySelectorAll('.blank-space');
+                    blanks.forEach(b => {
+                        b.classList.remove('bg-yellow-200', 'border-yellow-500', 'text-yellow-800');
+                        if(b.innerText == qNum) {
+                            b.classList.add('bg-yellow-200', 'border-yellow-500', 'text-yellow-800');
+                        }
+                    });
+                }
+            } else {
+                testData.currentGroup = qData.group;
+                passageContainer.classList.remove('hidden');
+                questionContainer.classList.add('lg:w-1/2');
+                passageContent.innerHTML = passagesData[qData.group] || "Passage data unavailable.";
+                
+                if(targetPart === 6) {
+                    const blanks = passageContent.querySelectorAll('.blank-space');
+                    blanks.forEach(b => {
+                        if(b.innerText == qNum) {
+                            b.classList.add('bg-yellow-200', 'border-yellow-500', 'text-yellow-800');
+                        }
+                    });
+                }
+                
+                passageContent.scrollTop = 0; 
+                questionText.style.display = 'none'; 
+                
+                const groupQs = Object.keys(questionsDB)
+                    .filter(k => questionsDB[k].group === qData.group)
+                    .map(Number)
+                    .sort((a,b) => a-b);
+                    
+                let groupHtml = '';
+                groupQs.forEach(gqNum => {
+                    const gqData = questionsDB[gqNum];
+                    groupHtml += `
+                        <div class="mb-8 pb-6 border-b border-gray-200" id="q-block-${gqNum}">
+                            <div class="flex items-start mb-4">
+                                <div class="bg-[#0369a1] text-white text-xs font-bold px-2 py-1 mr-3 rounded shrink-0 mt-0.5">${gqNum}</div>
+                                <div class="text-base font-medium text-gray-800">${gqData.text}</div>
+                            </div>
+                            <div class="space-y-2 pl-10">
+                    `;
+                    
+                    ['A', 'B', 'C', 'D'].forEach(letter => {
+                        const isSelected = testData.answers[gqNum] === letter;
+                        const optText = gqData[letter];
+                        groupHtml += `
+                            <label class="option-label ${isSelected ? 'selected' : ''}" onclick="selectOption(${gqNum}, '${letter}')">
+                                <div class="radio-circle">${letter}</div>
+                                <div class="option-text">${optText}</div>
+                                <input type="radio" name="q${gqNum}" value="${letter}" ${isSelected ? 'checked' : ''}>
+                            </label>
+                        `;
+                    });
+                    groupHtml += `</div></div>`;
+                });
+                
+                optionsContainer.innerHTML = groupHtml;
+                
+                setTimeout(() => {
+                    const qBlock = document.getElementById(`q-block-${qNum}`);
+                    if(qBlock) {
+                        qBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        document.querySelectorAll('[id^="q-block-"]').forEach(el => el.classList.remove('bg-sky-50', 'p-4', 'rounded-lg'));
+                        qBlock.classList.add('bg-sky-50', 'p-4', 'rounded-lg');
+                    }
+                }, 50);
+            }
+        }
+
+        document.getElementById('prev-btn').disabled = (qNum === 101);
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (qNum === 200) {
+            nextBtn.innerHTML = 'Finish <i class="fas fa-check ml-2"></i>';
+            nextBtn.onclick = finishTest;
+        } else {
+            nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right ml-2"></i>';
+            nextBtn.onclick = () => goToQuestion(testData.currentQ + 1);
+        }
+    }
+
+    function selectOption(qNum, letter) {
+        testData.answers[qNum] = letter;
+        
+        const qLabels = document.querySelectorAll(`input[name="q${qNum}"]`);
+        if (qLabels.length > 0) {
+            qLabels.forEach(radio => {
+                radio.checked = (radio.value === letter);
+                if (radio.value === letter) {
+                    radio.parentElement.classList.add('selected');
+                } else {
+                    radio.parentElement.classList.remove('selected');
+                }
+            });
+            
+            testData.currentQ = qNum;
+            document.getElementById('q-counter').innerText = questionsDB[qNum].group ? questionsDB[qNum].group : qNum;
+            
+            const qBlock = document.getElementById(`q-block-${qNum}`);
+            if (qBlock) {
+                document.querySelectorAll('[id^="q-block-"]').forEach(el => el.classList.remove('bg-sky-50', 'p-4', 'rounded-lg'));
+                qBlock.classList.add('bg-sky-50', 'p-4', 'rounded-lg');
+            }
+            
+            renderQuestionGrid();
+        } else {
+            goToQuestion(qNum); 
+        }
+    }
+
+    function finishTest() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null; 
+        }
+        
+        let rawScore = 0;
+        for(let i = 101; i <= 200; i++) {
+            if(testData.answers[i] === questionsDB[i]?.correct) {
+                rawScore++;
+            }
+        }
+
+        let scaledMin = 5, scaledMax = 495;
+        if(rawScore >= 96) { scaledMin = 460; scaledMax = 495; }
+        else if(rawScore >= 91) { scaledMin = 420; scaledMax = 490; }
+        else if(rawScore >= 86) { scaledMin = 390; scaledMax = 460; }
+        else if(rawScore >= 81) { scaledMin = 355; scaledMax = 435; }
+        else if(rawScore >= 76) { scaledMin = 325; scaledMax = 410; }
+        else if(rawScore >= 71) { scaledMin = 295; scaledMax = 385; }
+        else if(rawScore >= 66) { scaledMin = 270; scaledMax = 360; }
+        else if(rawScore >= 61) { scaledMin = 235; scaledMax = 330; }
+        else if(rawScore >= 56) { scaledMin = 210; scaledMax = 300; }
+        else if(rawScore >= 51) { scaledMin = 180; scaledMax = 270; }
+        else if(rawScore >= 46) { scaledMin = 155; scaledMax = 240; }
+        else if(rawScore >= 41) { scaledMin = 135; scaledMax = 215; }
+        else if(rawScore >= 36) { scaledMin = 115; scaledMax = 180; }
+        else if(rawScore >= 31) { scaledMin = 95; scaledMax = 145; }
+        else if(rawScore >= 26) { scaledMin = 75; scaledMax = 120; }
+        else if(rawScore >= 21) { scaledMin = 60; scaledMax = 95; }
+        else if(rawScore >= 16) { scaledMin = 45; scaledMax = 75; }
+        else if(rawScore >= 11) { scaledMin = 30; scaledMax = 55; }
+        else if(rawScore >= 6)  { scaledMin = 10; scaledMax = 40; }
+        else if(rawScore >= 1)  { scaledMin = 5; scaledMax = 30; }
+        else { scaledMin = 5; scaledMax = 15; }
+
+        document.getElementById('raw-score').innerText = rawScore;
+        document.getElementById('scaled-score').innerText = `${scaledMin} - ${scaledMax}`;
+
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('nav-sidebar').classList.add('hidden');
+        document.getElementById('nav-sidebar').classList.remove('flex');
+        document.getElementById('global-footer').classList.add('hidden');
+        document.getElementById('global-footer').classList.remove('flex');
+        document.getElementById('results-screen').classList.add('active');
+        document.getElementById('exam-subheader').classList.add('hidden');
+        document.getElementById('exam-subheader').classList.remove('flex');
+
+        renderReviewGrid();
+    }
+
+    function renderReviewGrid() {
+        const grid = document.getElementById('review-grid');
+        grid.innerHTML = '';
+        for (let i = 101; i <= 200; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            let statusClass = 'unanswered';
+            if (testData.answers[i]) {
+                if (testData.answers[i] === questionsDB[i]?.correct) statusClass = 'correct';
+                else statusClass = 'incorrect';
+            }
+            btn.className = `grid-btn review-grid-btn ${statusClass}`;
+            btn.onclick = () => openReviewModal(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function openReviewModal(qNum) {
+        const modal = document.getElementById('review-modal');
+        const content = document.getElementById('review-modal-content');
+        const qData = questionsDB[qNum];
+        
+        document.getElementById('modal-title').innerText = `Question ${qNum} Review`;
+        document.getElementById('modal-user-ans').innerText = testData.answers[qNum] || "None";
+        document.getElementById('modal-correct-ans').innerText = qData.correct;
+        
+        const userAnsEl = document.getElementById('modal-user-ans');
+        if(testData.answers[qNum] === qData.correct) {
+            userAnsEl.className = "text-xl font-bold text-green-700";
+        } else {
+            userAnsEl.className = "text-xl font-bold text-red-600";
+        }
+
+        const pContainer = document.getElementById('modal-passage-container');
+        if (qData.group && passagesData[qData.group]) {
+            pContainer.classList.remove('hidden');
+            document.getElementById('modal-passage').innerHTML = passagesData[qData.group];
+        } else {
+            pContainer.classList.add('hidden');
+        }
+
+        document.getElementById('modal-q-text').innerHTML = qData.text;
+        
+        let opts = '';
+        ['A', 'B', 'C', 'D'].forEach(letter => {
+            const isCorr = letter === qData.correct;
+            const isUser = letter === testData.answers[qNum];
+            let colorCls = 'text-gray-600';
+            let icon = '';
+            
+            if(isCorr) { colorCls = 'text-green-700 font-bold bg-green-50 p-2 rounded'; icon = '<i class="fas fa-check text-green-600 mr-2"></i>'; }
+            else if(isUser) { colorCls = 'text-red-600 line-through p-2'; icon = '<i class="fas fa-times text-red-500 mr-2"></i>'; }
+            else { colorCls = 'p-2'; icon = '<span class="mr-6"></span>';}
+
+            opts += `<div class="${colorCls} flex items-start">${icon}<span><strong>(${letter})</strong> ${qData[letter]}</span></div>`;
+        });
+        document.getElementById('modal-options').innerHTML = opts;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeReviewModal() {
+        const modal = document.getElementById('review-modal');
+        const content = document.getElementById('review-modal-content');
+        modal.classList.add('opacity-0');
+        content.classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const nameInput = document.getElementById('candidate-name').value.trim();
+        const candidateName = nameInput ? nameInput : 'Candidate';
+        const rawScore = document.getElementById('raw-score').innerText;
+        const scaledScore = document.getElementById('scaled-score').innerText;
+        const numericRawScore = parseInt(rawScore);
+        
+        doc.setFillColor(3, 105, 161);
+        doc.rect(0, 0, 210, 35, 'F');
+        
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
+        doc.text("TOEIC Reading Practice 3 - Score Report", 105, 22, null, null, "center");
+        
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Name:`, 20, 55);
+        doc.setFont('helvetica', 'bold');
+        doc.text(candidateName, 40, 55);
+        
+        doc.setFont('helvetica', 'normal');
+        const today = new Date().toLocaleDateString('en-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+        doc.text(`Date:`, 130, 55);
+        doc.setFont('helvetica', 'bold');
+        doc.text(today, 145, 55);
+        
+        doc.setDrawColor(200, 200, 200);
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(20, 70, 170, 40, 3, 3, 'FD');
+        
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text("RAW SCORE", 60, 85, null, null, "center");
+        doc.text("ESTIMATED SCALED SCORE", 145, 85, null, null, "center");
+        
+        doc.setFontSize(24);
+        doc.setTextColor(3, 105, 161);
+        doc.text(`${rawScore} / 100`, 60, 100, null, null, "center");
+        
+        doc.setTextColor(22, 101, 52);
+        doc.text(scaledScore, 145, 100, null, null, "center");
+        
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Reading Performance Feedback", 20, 135);
+        
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        
+        let feedback = "";
+        if (numericRawScore >= 85) {
+            feedback = "Excellent reading comprehension! You easily navigate complex vocabulary, grasp nuanced meanings across multiple texts, and locate detailed information rapidly. Maintain this sharp focus!";
+        } else if (numericRawScore >= 60) {
+            feedback = "Good work! You have strong reading skills and can confidently handle business correspondence and articles. To improve, practice quickly scanning paired passages to connect related information efficiently.";
+        } else if (numericRawScore >= 35) {
+            feedback = "You have a solid foundation! You understand straightforward texts well. Focus on expanding your business vocabulary and practice pacing yourself so you don't run out of time on the longer Part 7 sections.";
+        } else {
+            feedback = "Keep practicing! Reading in a second language requires consistent effort. Build your skills by reading short English news articles daily and studying common grammar structures tested in Part 5.";
+        }
+        
+        const splitFeedback = doc.splitTextToSize(feedback, 170);
+        doc.text(splitFeedback, 20, 145);
+        
+        doc.setFontSize(9);
+        doc.setTextColor(120, 120, 120);
+        doc.setFont('helvetica', 'italic');
+        const disclaimer = "Disclaimer: This report is generated from an unofficial practice tool. The score provided is an estimation/prediction based on raw score conversions and is NOT endorsed by, affiliated with, or approved by ETS. TOEIC® is a registered trademark of ETS.";
+        const splitDisclaimer = doc.splitTextToSize(disclaimer, 170);
+        doc.text(splitDisclaimer, 20, 270);
+        
+        doc.save(`TOEIC_Reading_Test_3_Report_${candidateName.replace(/\s+/g, '_')}.pdf`);
+    }
+</script>
+
+</body>
+</html>

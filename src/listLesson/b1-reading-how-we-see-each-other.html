@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Reading - How We See Each Other</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- Base & Deck Styling --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937; /* Dark Gray 800 - "Dark Room" effect */
+            padding: 0;
+            margin: 0;
+        }
+
+        .slide {
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start; /* Align slides to the top by default */
+            align-items: center;
+            padding: 2rem 2rem 120px 2rem; /* Mobile padding */
+            border-radius: 0;
+            background-color: white; /* The "slide" itself is white */
+            box-shadow: none;
+            width: 100%;
+            height: 100vh; /* Full viewport height */
+            margin: 0;
+            box-sizing: border-box; /* Include padding in height */
+            overflow-y: auto; /* Allow slide to scroll if content overflows */
+        }
+
+        @media (min-width: 768px) {
+            .slide {
+                padding: 4rem 4rem 120px 4rem; /* Desktop padding */
+            }
+        }
+
+        .slide.active {
+            display: flex;
+        }
+        
+        /* --- Special rule to center the title slide --- */
+        .slide[data-slide="1"] {
+            justify-content: center;
+        }
+
+        /* --- Slide Content Styling --- */
+        .slide-title {
+            font-size: 2rem; /* 32px */
+            font-weight: 700;
+            color: #4f46e5; /* Indigo 600 - Presentation theme color */
+            width: 100%;
+            max-width: 1000px;
+            text-align: left;
+            margin-bottom: 2.5rem; /* 40px */
+            padding-bottom: 1rem; /* 16px */
+            border-bottom: 3px solid #e0e7ff; /* Indigo 100 */
+        }
+
+        @media (min-width: 768px) {
+            .slide-title {
+                font-size: 2.5rem; /* 40px */
+            }
+        }
+
+        .slide-content {
+            width: 100%;
+            flex-grow: 1;
+            max-width: 1000px; /* Constrain content width */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Navigation Bar --- */
+        nav {
+            background-color: #ffffff; /* White */
+            border-top: 1px solid #e5e7eb; /* Gray 200 */
+            padding: 1rem 2rem;
+        }
+
+        @media (min-width: 768px) {
+            nav {
+                padding: 1.5rem 4rem;
+            }
+        }
+
+        #slide-counter {
+            color: #374151; /* Gray 700 */
+            font-weight: 500;
+        }
+
+        /* --- Button Styling --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 0.5rem; /* 8px */
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        /* Primary button (Next) */
+        .btn-primary {
+            background-color: #4f46e5; /* Indigo 600 */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca; /* Indigo 700 */
+        }
+        .btn-primary:disabled {
+            background-color: #a5b4fc; /* Indigo 300 */
+            cursor: not-allowed;
+        }
+
+        /* Secondary button (Prev) - Light Theme */
+        .btn-secondary {
+            background-color: #e5e7eb; /* Gray 200 */
+            color: #374151; /* Gray 700 */
+            border: 1px solid transparent; /* Remove dark theme border */
+        }
+        .btn-secondary:hover {
+            background-color: #d1d5db; /* Gray 300 */
+        }
+        .btn-secondary:disabled {
+            background-color: #f3f4f6; /* Gray 100 */
+            color: #9ca3af; /* Gray 400 */
+            border-color: transparent; /* Remove dark theme border */
+            cursor: not-allowed;
+        }
+
+        /* Answer button */
+        .btn-answer {
+            background-color: #10b981; /* Emerald 500 */
+            color: white;
+            font-size: 0.875rem; /* 14px */
+            padding: 0.5rem 1rem;
+        }
+        .btn-answer:hover {
+            background-color: #059669; /* Emerald 600 */
+        }
+
+        /* Form elements */
+        .form-input, .form-select {
+            width: 100%;
+            border-radius: 0.375rem; /* 6px */
+            border: 1px solid #d1d5db; /* Gray 300 */
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px #c7d2fe; /* Indigo 100 */
+        }
+
+        /* Answer display */
+        .answer-key {
+            display: none; /* Hidden by default */
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: #f0fdf4; /* Green 50 */
+            border: 1px solid #bbf7d0; /* Green 200 */
+            border-radius: 0.5rem;
+        }
+        .answer-key strong {
+            color: #15803d; /* Green 700 */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="slide-deck-container">
+        
+        <!-- Slide 1: Title Slide -->
+        <section class="slide active" data-slide="1">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-800">How We See Each Other</h1>
+                <p class="text-2xl md:text-3xl text-gray-600 mt-4">Perceptions and Bias in the Workplace</p>
+                <div class="mt-12 text-lg text-gray-500 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 justify-center">
+                    <span class="inline-block bg-gray-100 rounded-full px-4 py-2">Course: Business English Issues</span>
+                    <span class="inline-block bg-gray-100 rounded-full px-4 py-2">Level: Intermediate (B1-B2)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Lesson Objectives -->
+        <section class="slide" data-slide="2">
+            <h2 class="slide-title">Today's Objectives</h2>
+            <div class="slide-content">
+                <p class="text-xl text-gray-700 mb-6">By the end of this lesson, you will be able to:</p>
+                <ul class="list-none space-y-4">
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-circle-check text-green-500 text-2xl mr-3 mt-1"></i>
+                        <span><strong class="font-medium text-gray-900">Reflect</strong> on relationships with managers.</span>
+                    </li>
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-circle-check text-green-500 text-2xl mr-3 mt-1"></i>
+                        <span><strong class="font-medium text-gray-900">Define and use</strong> key vocabulary for feedback and perception.</span>
+                    </li>
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-circle-check text-green-500 text-2xl mr-3 mt-1"></i>
+                        <span><strong class="font-medium text-gray-900">Read and analyze</strong> an article on gender bias in management.</span>
+                    </li>
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-circle-check text-green-500 text-2xl mr-3 mt-1"></i>
+                        <span><strong class="font-medium text-gray-900">Listen to and understand</strong> different perspectives on managers.</span>
+                    </li>
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-circle-check text-green-500 text-2xl mr-3 mt-1"></i>
+                        <span><strong class="font-medium text-gray-900">Formulate and express</strong> your opinions on workplace expectations.</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Slide 3: Warm-Up -->
+        <section class="slide" data-slide="3">
+            <h2 class="slide-title">Warm-Up: Your Manager</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-6">Take two minutes to think about your own answers to these questions. Be prepared to share your thoughts.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Individual Reflection <i class="fa-solid fa-user ml-2"></i></h3>
+                        <ul class="list-disc list-inside space-y-3 text-gray-700">
+                            <li>What is your relationship like with your current or a past manager?</li>
+                            <li>Does it make a difference to you whether your manager is a man or a woman? Why/why not?</li>
+                        </ul>
+                    </div>
+                    <div class="bg-indigo-50 p-6 rounded-lg border border-indigo-200">
+                        <h3 class="text-xl font-semibold text-indigo-800 mb-4">Class Discussion <i class="fa-solid fa-users ml-2"></i></h3>
+                        <p class="text-indigo-700">Be prepared to share your thoughts with the class.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4 & 5: Key Vocabulary (Matching) -->
+        <section class="slide" data-slide="4">
+            <h2 class="slide-title">Key Vocabulary: Part A (Matching)</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">Match the words (1-8) to the correct definitions (a-h). Use the dropdown menus.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                    <!-- Column 1: Words + Selects -->
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-4 items-center">
+                            <label for="vocab-1" class="font-semibold text-gray-700">1. competency (n)</label>
+                            <select id="vocab-1" class="form-select"></select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 items-center">
+                            <label for="vocab-2" class="font-semibold text-gray-700">2. criticism (n)</label>
+                            <select id="vocab-2" class="form-select"></select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 items-center">
+                            <label for="vocab-3" class="font-semibold text-gray-700">3. expectation (n)</label>
+                            <select id="vocab-3" class="form-select"></select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 items-center">
+                            <label for="vocab-4" class="font-semibold text-gray-700">4. feedback (n)</label>
+                            <select id="vocab-4" class="form-select"></select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 items-center">
+                            <label for="vocab-5" class="font-semibold text-gray-700">5. participant (n)</label>
+                            <select id="vocab-5" class="form-select"></select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 items-center">
+                            <label for="vocab-6" class="font-semibold text-gray-700">6. perception (n)</label>
+                            <select id="vocab-6" class="form-select"></select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 items-center">
+                            <label for="vocab-7" class="font-semibold text-gray-700">7. prior (adj.)</label>
+                            <select id="vocab-7" class="form-select"></select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 items-center">
+                            <label for="vocab-8" class="font-semibold text-gray-700">8. regardless (adv.)</label>
+                            <select id="vocab-8" class="form-select"></select>
+                        </div>
+                    </div>
+                    <!-- Column 2: Definitions -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Definitions</h3>
+                        <ul class="list-none space-y-2 text-gray-700" id="vocab-definitions">
+                            <!-- Definitions will be populated by JS -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Vocabulary Check (Answers) -->
+        <section class="slide" data-slide="5">
+            <h2 class="slide-title">Vocabulary: Answers (Part A)</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">Click the button to check your answers from the previous slide.</p>
+                <button id="check-vocab-A" class="btn btn-answer">Check Answers</button>
+                <div id="answer-key-A" class="answer-key mt-4">
+                    <ul class="list-none space-y-2">
+                        <li><strong>1. competency (n)</strong> -> a. the ability to do a particular task</li>
+                        <li><strong>2. criticism (n)</strong> -> g. the act of giving a negative opinion...</li>
+                        <li><strong>3. expectation (n)</strong> -> h. what someone thinks is going to happen</li>
+                        <li><strong>4. feedback (n)</strong> -> b. advice or opinions about the quality of...</li>
+                        <li><strong>5. participant (n)</strong> -> c. a person who is involved...</li>
+                        <li><strong>6. perception (n)</strong> -> e. the way someone thinks about...</li>
+                        <li><strong>7. prior (adj.)</strong> -> f. happening before a particular event</li>
+                        <li><strong>8. regardless (adv.)</strong> -> d. in a way that doesn't focus on...</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Key Vocabulary (Word Forms) -->
+        <section class="slide" data-slide="6">
+            <h2 class="slide-title">Key Vocabulary: Part B (Word Forms)</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-6">Complete the sentences with a different form of the word in parentheses.</p>
+                <div class="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-4 gap-y-4 items-center">
+                    <!-- Row 1 -->
+                    <label for="wordform-1" class="text-gray-700 flex-shrink-0">1. I think she's completely</label>
+                    <div class="flex flex-col sm:flex-row items-center gap-2">
+                        <input type="text" id="wordform-1" class="form-input w-full sm:w-48" placeholder="answer">
+                        <span class="text-gray-600 w-full sm:w-auto">, to be honest. (competency)</span>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <label for="wordform-2" class="text-gray-700 flex-shrink-0">2. She</label>
+                    <div class="flex flex-col sm:flex-row items-center gap-2">
+                        <input type="text" id="wordform-2" class="form-input w-full sm:w-48" placeholder="answer">
+                        <span class="text-gray-600 w-full sm:w-auto">my presentation. (criticism)</span>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <label for="wordform-3" class="text-gray-700 flex-shrink-0">3. ...it was totally</label>
+                    <div class="flex flex-col sm:flex-row items-center gap-2">
+                        <input type="text" id="wordform-3" class="form-input w-full sm:w-48" placeholder="answer">
+                        <span class="text-gray-600 w-full sm:w-auto">. (expectation)</span>
+                    </div>
+
+                    <!-- Row 4 -->
+                    <label for="wordform-4" class="text-gray-700 flex-shrink-0">4. ...people from our department to</label>
+                    <div class="flex flex-col sm:flex-row items-center gap-2">
+                        <input type="text" id="wordform-4" class="form-input w-full sm:w-48" placeholder="answer">
+                        <span class="text-gray-600 w-full sm:w-auto">in a quiz. (participant)</span>
+                    </div>
+
+                    <!-- Row 5 -->
+                    <label for="wordform-5" class="text-gray-700 flex-shrink-0">5. I don't really</label>
+                    <div class="flex flex-col sm:flex-row items-center gap-2">
+                        <input type="text" id="wordform-5" class="form-input w-full sm:w-48" placeholder="answer">
+                        <span class="text-gray-600 w-full sm:w-auto">Chloe as... (perception)</span>
+                    </div>
+
+                    <!-- Row 6 -->
+                    <label for="wordform-6" class="text-gray-700 flex-shrink-0">6. ...ask you to</label>
+                    <div class="flex flex-col sm:flex-row items-center gap-2">
+                        <input type="text" id="wordform-6" class="form-input w-full sm:w-48" placeholder="answer">
+                        <span class="text-gray-600 w-full sm:w-auto">that today, please. (prior)</span>
+                    </div>
+
+                    <!-- Row 7 -->
+                    <label for="wordform-7" class="text-gray-700 flex-shrink-0">7. He doesn't show any</label>
+                    <div class="flex flex-col sm:flex-row items-center gap-2">
+                        <input type="text" id="wordform-7" class="form-input w-full sm:w-48" placeholder="answer">
+                        <span class="text-gray-600 w-full sm:w-auto">for other people's feelings. (regardless)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Vocabulary Check (Word Forms Answers) -->
+        <section class="slide" data-slide="7">
+            <h2 class="slide-title">Vocabulary: Answers (Part B)</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">Click the button to check your answers from the previous slide.</p>
+                <button id="check-vocab-B" class="btn btn-answer">Show Answers</button>
+                <div id="answer-key-B" class="answer-key mt-4">
+                    <ul class="list-none space-y-2 text-lg">
+                        <li>1. <strong>incompetent</strong> (adj.)</li>
+                        <li>2. <strong>criticized</strong> (v)</li>
+                        <li>3. <strong>unexpected</strong> (adj.)</li>
+                        <li>4. <strong>participate</strong> (v)</li>
+                        <li>5. <strong>perceive</strong> (v)</li>
+                        <li>6. <strong>prioritize</strong> (v)</li>
+                        <li>7. <strong>regard</strong> (n)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Before You Read -->
+        <section class="slide" data-slide="8">
+            <h2 class="slide-title">Before You Read: Predict</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">The article "Who's the Boss?" has 8 gaps. Predict which word from Part A goes in which gap. You may need to change the form.</p>
+                <div class="flex flex-wrap gap-3 justify-center p-4 bg-gray-50 rounded-lg">
+                    <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200 font-medium">competency</span>
+                    <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200 font-medium">criticism</span>
+                    <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200 font-medium">expectation</span>
+                    <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200 font-medium">feedback</span>
+                    <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200 font-medium">participant</span>
+                    <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200 font-medium">perception</span>
+                    <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200 font-medium">prior</span>
+                    <span class="bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200 font-medium">regardless</span>
+                </div>
+                <!-- This is a thinking task, so no input is needed, but we can add placeholders -->
+                <div class="mt-6 grid grid-cols-4 gap-4">
+                    <div class="flex items-center gap-2">1. <input type="text" class="form-input w-full" placeholder="Gap 1"></div>
+                    <div class="flex items-center gap-2">2. <input type="text" class="form-input w-full" placeholder="Gap 2"></div>
+                    <div class="flex items-center gap-2">3. <input type="text" class="form-input w-full" placeholder="Gap 3"></div>
+                    <div class="flex items-center gap-2">4. <input type="text" class="form-input w-full" placeholder="Gap 4"></div>
+                    <div class="flex items-center gap-2">5. <input type="text" class="form-input w-full" placeholder="Gap 5"></div>
+                    <div class="flex items-center gap-2">6. <input type="text" class="form-input w-full" placeholder="Gap 6"></div>
+                    <div class="flex items-center gap-2">7. <input type="text" class="form-input w-full" placeholder="Gap 7"></div>
+                    <div class="flex items-center gap-2">8. <input type="text" class="form-input w-full" placeholder="Gap 8"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 10: Reading Task -->
+        <section class="slide" data-slide="9">
+            <h2 class="slide-title">Reading: Who's the Boss?</h2>
+            <div class="slide-content text-center">
+                <!-- Link added here -->
+                <div class="mb-6">
+                    <a href="https://images.wakelet.com/resize?id=BGVf21Tf98YQo2LA7DCMg&w=1600&h=actual&q=85" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700">
+                        <i class="fa-solid fa-arrow-up-right-from-square mr-3"></i>
+                        Click to Open Reading in New Tab
+                    </a>
+                </div>
+                <!-- End of link -->
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Individual Task</h3>
+                <p class="text-lg text-gray-700 mb-4">Please read the article "Men and women in management" from your handout or digital file.</p>
+                <ul class="list-disc list-inside text-left max-w-lg mx-auto space-y-2">
+                    <li>Check your predictions for the vocabulary in gaps 1-8.</li>
+                    <li>As you read, underline the main finding of the study described in paragraph B.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Slide 11: Reading Check (Answers) -->
+        <section class="slide" data-slide="10">
+            <h2 class="slide-title">Reading: Vocabulary Answers</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">How many did you predict correctly? Click the button to see the answers.</p>
+                <button id="check-reading-vocab" class="btn btn-answer">Show Answers</button>
+                <div id="answer-key-reading-vocab" class="answer-key mt-4">
+                    <ol class="list-decimal list-inside font-medium text-lg space-y-2">
+                        <li>criticism</li>
+                        <li>participants</li>
+                        <li>regardless</li>
+                        <li>feedback</li>
+                        <li>Prior</li>
+                        <li>expectations</li>
+                        <li>competency</li>
+                        <li>perception</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 12: Comprehension (Numbers) -->
+        <section class="slide" data-slide="11">
+            <h2 class="slide-title">Comprehension: What Do the Numbers Mean?</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">Quickly scan the article again. Write down what each of these numbers refers to.</p>
+                <div class="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-4 gap-y-3 items-center max-w-2xl">
+                    <label for="num-1" class="font-semibold text-gray-700">a. 2,700 -</label>
+                    <input type="text" id="num-1" class="form-input" placeholder="What does 2,700 refer to?">
+                    
+                    <label for="num-2" class="font-semibold text-gray-700">b. 3 -</label>
+                    <input type="text" id="num-2" class="form-input" placeholder="What does 3 refer to?">
+                    
+                    <label for="num-3" class="font-semibold text-gray-700">c. 45 -</label>
+                    <input type="text" id="num-3" class="form-input" placeholder="What does 45 refer to?">
+                    
+                    <label for="num-4" class="font-semibold text-gray-700">d. 37 -</label>
+                    <input type="text" id="num-4" class="form-input" placeholder="What does 37 refer to?">
+                    
+                    <label for="num-5" class="font-semibold text-gray-700">e. 27 -</label>
+                    <input type="text" id="num-5" class="form-input" placeholder="What does 27 refer to?">
+                    
+                    <label for="num-6" class="font-semibold text-gray-700">f. 6 -</label>
+                    <input type="text" id="num-6" class="form-input" placeholder="What does 6 refer to?">
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 13: Comprehension Check (Numbers Answers) -->
+        <section class="slide" data-slide="12">
+            <h2 class="slide-title">Comprehension: Answers (Numbers)</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">Click the button to check your answers.</p>
+                <button id="check-comp-numbers" class="btn btn-answer">Show Answers</button>
+                <div id="answer-key-comp-numbers" class="answer-key mt-4">
+                    <ul class="list-none space-y-2">
+                        <li><strong>a. 2,700:</strong> The number of employees in Martin Abel's study.</li>
+                        <li><strong>b. 3:</strong> Times less likely workers think men are to give positive feedback (than women).</li>
+                        <li><strong>c. 45:</strong> The percentage of women employees in S&P 500 companies.</li>
+                        <li><strong>d. 37:</strong> The percentage of women in middle management (S&P 500).</li>
+                        <li><strong>e. 27:</strong> The percentage of women in senior management (S&P 500).</li>
+                        <li><strong>f. 6:</strong> The percentage of female CEOs (S&P 500).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 14: Comprehension (Summary) -->
+        <section class="slide" data-slide="13">
+            <h2 class="slide-title">Comprehension: Summary Gap-Fill</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">Complete the gaps with one, two, or three words from the article.</p>
+                <blockquote class="border-l-4 border-indigo-300 pl-6 py-2 space-y-3 text-gray-700 text-lg">
+                    <p>In an imaginary situation, your boss... says he's concerned that you're not (1) <input type="text" class="form-input inline-block w-full sm:w-48 mx-1" placeholder="Gap 1"> on your work... Or would you start (2) <input type="text" class="form-input inline-block w-full sm:w-48 mx-1" placeholder="Gap 2">?</p>
+                    <p>...When participants thought the criticism came from a female, their reaction was always (3) <input type="text" class="form-input inline-block w-full sm:w-48 mx-1" placeholder="Gap 3">...</p>
+                    <p>...Having previously had (4) <input type="text" class="form-input inline-block w-full sm:w-48 mx-1" placeholder="Gap 4"> made no difference...</p>
+                    <p>This was (5) <input type="text" class="form-input inline-block w-full sm:w-48 mx-1" placeholder="Gap 5"> in the negative reactions...</p>
+                    <p>If we consider this information in (6) <input type="text" class="form-input inline-block w-full sm:w-48 mx-1" placeholder="Gap 6">, it is problematic.</p>
+                    <p>...they generally get better results (7) <input type="text" class="form-input inline-block w-full sm:w-48 mx-1" placeholder="Gap 7"> and leadership tests.</p>
+                    <p>...not making the most of women's (8) <input type="text" class="form-input inline-block w-full sm:w-48 mx-1" placeholder="Gap 8"> in business...</p>
+                </blockquote>
+            </div>
+        </section>
+
+        <!-- Slide 15: Comprehension Check (Summary Answers) -->
+        <section class="slide" data-slide="14">
+            <h2 class="slide-title">Comprehension: Answers (Summary)</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">Click the button to check your summary answers.</p>
+                <button id="check-comp-summary" class="btn btn-answer">Show Answers</button>
+                <div id="answer-key-comp-summary" class="answer-key mt-4">
+                    <ol class="list-decimal list-inside font-medium text-lg space-y-2">
+                        <li>focused</li>
+                        <li>finding another job</li>
+                        <li>more negative</li>
+                        <li>a female manager</li>
+                        <li>the driving factor</li>
+                        <li>a wider context</li>
+                        <li>in education</li>
+                        <li>skills</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 16: Listening (Gist) -->
+        <section class="slide" data-slide="15">
+            <h2 class="slide-title">Listening: For Gist</h2>
+            <div class="slide-content text-center">
+                <i class="fa-solid fa-headphones text-7xl text-indigo-400 mb-6"></i>
+                
+                <!-- Link added here -->
+                <div class="mb-6">
+                    <a href="https://www.linguahouse.com/esl-lesson-plans/business-english/how-we-see-each-other/audioplayer/how-we-see-each-other-bemp3" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700">
+                        <i class="fa-solid fa-play mr-3"></i>
+                        Open Audio in New Tab
+                    </a>
+                </div>
+                <!-- End of link -->
+
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Individual Task</h3>
+                <p class="text-lg text-gray-700 mb-6 text-left">You will hear three people speaking. Listen for the main idea. Which one question are they all answering?</p>
+                <div class="space-y-3 max-w-lg mx-auto text-left">
+                    <label class="flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <input type="radio" name="gist-q" value="1" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-3 text-lg text-gray-700">1. Do men or women make better managers?</span>
+                    </label>
+                    <label class="flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <input type="radio" name="gist-q" value="2" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-3 text-lg text-gray-700">2. Would you prefer a man or a woman as your boss?</span>
+                    </label>
+                    <label class="flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <input type="radio" name="gist-q" value="3" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500">
+                        <span class="ml-3 text-lg text-gray-700">3. Was your favorite manager a man or a woman?</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 17: Listening Check (Gist Answer) -->
+        <section class="slide" data-slide="16">
+            <h2 class="slide-title">Listening: Gist Answer</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">Click the button to reveal the correct question.</p>
+                <button id="check-listen-gist" class="btn btn-answer">Show Answer</button>
+                <div id="answer-key-listen-gist" class="answer-key mt-4 text-center">
+                    <p class="text-xl font-medium text-gray-800">The correct question was:</p>
+                    <p class="text-2xl font-semibold text-green-700 mt-2">[X] 2. Would you prefer a man or a woman as your boss?</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 18: Listening (Detail) -->
+        <section class="slide" data-slide="17">
+            <h2 class="slide-title">Listening: For Detail</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">Listen again. Who says what? Check the correct boxes.</p>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="p-3 border-b font-semibold text-gray-700">Who...</th>
+                            <th class="p-3 border-b font-semibold text-gray-700 text-center">Speaker 1</th>
+                            <th class="p-3 border-b font-semibold text-gray-700 text-center">Speaker 2</th>
+                            <th class="p-3 border-b font-semibold text-gray-700 text-center">Speaker 3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">a. has had a bad experience with female and male managers?</td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500" data-answer="true"></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">b. thinks men are likely to be less sympathetic...?</td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500" data-answer="true"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">c. has feelings about work caused by childhood experiences?</td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500" data-answer="true"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">d. had a relationship problem that affected their work?</td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500" data-answer="true"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">e. thinks female managers judge what other women wear?</td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500" data-answer="true"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border-b">f. thinks personality is more important than gender?</td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500"></td>
+                            <td class="p-3 border-b text-center"><input type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500" data-answer="true"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Slide 19: Listening Check (Detail Answers) -->
+        <section class="slide" data-slide="18">
+            <h2 class="slide-title">Listening: Detailed Answers</h2>
+            <div class="slide-content">
+                <p class="text-lg mb-4">Click the button to see where you were correct. Correct answers will be highlighted on the previous slide.</p>
+                <button id="check-listen-detail" class="btn btn-answer">Show Answers</button>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3"><i class="fa-solid fa-user mr-2"></i>Speaker 1</h3>
+                        <ul class="list-disc list-inside space-y-1 text-gray-700">
+                            <li>b. thinks men are less sympathetic</li>
+                            <li>d. had a relationship problem</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3"><i class="fa-solid fa-user mr-2"></i>Speaker 2</h3>
+                        <ul class="list-disc list-inside space-y-1 text-gray-700">
+                            <li>c. feelings caused by childhood</li>
+                            <li>e. thinks female managers judge wear</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3"><i class="fa-solid fa-user mr-2"></i>Speaker 3</h3>
+                        <ul class="list-disc list-inside space-y-1 text-gray-700">
+                            <li>a. bad experiences with both</li>
+                            <li>f. personality is more important</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 20: Speaking Practice (1/2) -->
+        <section class="slide" data-slide="19">
+            <h2 class="slide-title">Speaking Practice (Part 1)</h2>
+            <div class="slide-content">
+                <i class="fa-solid fa-comments text-7xl text-indigo-400 mb-6 text-center w-full"></i>
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Prepare Your Answers</h3>
+                <p class="text-lg text-gray-700 mb-6">Prepare your own answers to the following questions. Be ready to share with the class.</p>
+                <ul class="list-none space-y-4">
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-comment-dots text-indigo-500 text-2xl mr-3 mt-1"></i>
+                        <span>What is your opinion on the article? Do you think it's true for you? Why/why not?</span>
+                    </li>
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-comment-dots text-indigo-500 text-2xl mr-3 mt-1"></i>
+                        <span>Have you had experience with male and female managers? What were your experiences like?</span>
+                    </li>
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-comment-dots text-indigo-500 text-2xl mr-3 mt-1"></i>
+                        <span>Which of the speakers (1, 2, or 3) did you agree or disagree with most? Why?</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Slide 21: Speaking Practice (2/2) -->
+        <section class="slide" data-slide="20">
+            <h2 class="slide-title">Speaking Practice (Part 2)</h2>
+            <div class="slide-content">
+                <i class="fa-solid fa-microphone-lines text-7xl text-indigo-400 mb-6 text-center w-full"></i>
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Continue Preparing</h3>
+                <p class="text-lg text-gray-700 mb-6">Continue preparing your answers to these questions.</p>
+                <ul class="list-none space-y-4">
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-comment-dots text-indigo-500 text-2xl mr-3 mt-1"></i>
+                        <span>How do you react if you get criticism about your work?</span>
+                    </li>
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-comment-dots text-indigo-500 text-2xl mr-3 mt-1"></i>
+                        <span>What do you think your manager's perception is of you and your work?</span>
+                    </li>
+                    <li class="flex items-start text-lg">
+                        <i class="fa-solid fa-comment-dots text-indigo-500 text-2xl mr-3 mt-1"></i>
+                        <span>What are your expectations of a good manager?</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Slide 22: Extended Activity (Homework) -->
+        <section class="slide" data-slide="21">
+            <h2 class="slide-title">Extended Activity / Homework</h2>
+            <div class="slide-content">
+                <i class="fa-solid fa-pencil-alt text-7xl text-indigo-400 mb-6 text-center w-full"></i>
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Individual Task</h3>
+                <p class="text-lg text-gray-700 mb-6">Imagine you are your manager. Write feedback about your own work from your manager's point of view (at least 150 words).</p>
+                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">Consider these questions:</h4>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>What areas of your work are you doing well with?</li>
+                        <li>What criticism would they give about your work?</li>
+                        <li>Is there any training you need? What would your manager suggest?</li>
+                    </ul>
+                </div>
+                <textarea class="form-input mt-4 w-full" rows="6" placeholder="Start writing your feedback here..."></textarea>
+            </div>
+        </section>
+
+        <!-- Slide 23: Wrap-Up -->
+        <section class="slide" data-slide="22">
+            <h2 class="slide-title">Lesson Review</h2>
+            <div class="slide-content">
+                <i class="fa-solid fa-clipboard-question text-7xl text-indigo-400 mb-6 text-center w-full"></i>
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Final Reflection</h3>
+                <p class="text-lg text-gray-700 mb-6">Think about these final questions. Be prepared to share one final thought.</p>
+                <ul class="list-none space-y-4">
+                    <li class="flex items-start text-lg p-4 bg-gray-50 rounded-lg">
+                        <i class="fa-solid fa-lightbulb text-yellow-500 text-2xl mr-3 mt-1"></i>
+                        <span>What was the most surprising fact from today's article?</span>
+                    </li>
+                    <li class="flex items-start text-lg p-4 bg-gray-50 rounded-lg">
+                        <i class="fa-solid fa-lightbulb text-yellow-500 text-2xl mr-3 mt-1"></i>
+                        <span>What is the difference between 'criticism' and 'feedback' in your own words?</span>
+                    </li>
+                    <li class="flex items-start text-lg p-4 bg-gray-50 rounded-lg">
+                        <i class="fa-solid fa-lightbulb text-yellow-500 text-2xl mr-3 mt-1"></i>
+                        <span>What is one expectation you will have for your next manager?</span>
+                    </li>
+                </ul>
+                <p class="text-center text-3xl font-bold text-gray-800 mt-12">Thank you!</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Navigation -->
+    <!-- Removed Tailwind classes for bg, shadow, border, max-w, mx-auto and p. These are handled in <style> -->
+    <nav class="flex justify-between items-center fixed bottom-0 left-0 right-0 z-10">
+        <button id="prev-btn" class="btn btn-secondary" disabled>
+            <i class="fa-solid fa-arrow-left mr-2"></i> Previous
+        </button>
+        <div id="slide-counter" class="text-gray-600 font-medium">
+            Slide 1 / 22
+        </div>
+        <button id="next-btn" class="btn btn-primary">
+            Next <i class="fa-solid fa-arrow-right ml-2"></i>
+        </button>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentSlide = 1;
+            const slides = document.querySelectorAll('.slide');
+            const totalSlides = slides.length;
+
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const slideCounter = document.getElementById('slide-counter');
+
+            // --- Populate Vocab Matching ---
+            const definitions = [
+                { id: 'a', text: 'the ability to do a particular task' },
+                { id: 'b', text: 'advice or opinions about the quality of something' },
+                { id: 'c', text: 'a person who is involved in an activity with other people' },
+                { id: 'd', text: "in a way that doesn't focus on previous information or difficulties" },
+                { id: 'e', text: 'the way someone thinks about a particular person or situation' },
+                { id: 'f', text: 'happening before a particular event' },
+                { id: 'g', text: 'the act of giving a negative opinion about the quality of something' },
+                { id: 'h', text: 'what someone thinks is going to happen' }
+            ];
+            
+            const defsList = document.getElementById('vocab-definitions');
+            const selects = document.querySelectorAll('select[id^="vocab-"]');
+            
+            // Populate definition list
+            definitions.forEach(def => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong class="text-indigo-600 mr-2">${def.id}.</strong> ${def.text}`;
+                if (defsList) {
+                    defsList.appendChild(li);
+                }
+            });
+
+            // Populate select dropdowns
+            const defaultOption = document.createElement('option');
+            defaultOption.value = "";
+            defaultOption.textContent = "Select...";
+            
+            const optionsHtml = [defaultOption, ...definitions.map(def => {
+                const option = document.createElement('option');
+                option.value = def.id;
+                option.textContent = def.id;
+                return option;
+            })];
+            
+            selects.forEach(select => {
+                optionsHtml.forEach(opt => select.appendChild(opt.cloneNode(true)));
+            });
+
+            // --- Function to show a slide ---
+            function showSlide(slideNumber) {
+                // Hide current active slide
+                const activeSlide = document.querySelector('.slide.active');
+                if (activeSlide) {
+                    activeSlide.classList.remove('active');
+                }
+
+                // Show new slide
+                const newSlide = document.querySelector(`.slide[data-slide="${slideNumber}"]`);
+                if (newSlide) {
+                    newSlide.classList.add('active');
+                    // Scroll to top of slide content on navigation
+                    newSlide.scrollTop = 0;
+                }
+
+                // Update current slide number
+                currentSlide = slideNumber;
+
+                // Update counter
+                slideCounter.textContent = `Slide ${currentSlide} / ${totalSlides}`;
+
+                // Update button states
+                prevBtn.disabled = (currentSlide === 1);
+                nextBtn.disabled = (currentSlide === totalSlides);
+            }
+
+            // --- Event Listeners for Nav ---
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < totalSlides) {
+                    showSlide(currentSlide + 1);
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 1) {
+                    showSlide(currentSlide - 1);
+                }
+            });
+
+            // --- Event Listeners for Answer Buttons ---
+            function setupAnswerButton(buttonId, keyId) {
+                const button = document.getElementById(buttonId);
+                const key = document.getElementById(keyId);
+                if (button && key) {
+                    button.addEventListener('click', () => {
+                        key.style.display = 'block';
+                        button.textContent = 'Answers Shown';
+                        button.disabled = true;
+                    });
+                }
+            }
+            
+            setupAnswerButton('check-vocab-A', 'answer-key-A');
+            setupAnswerButton('check-vocab-B', 'answer-key-B');
+            setupAnswerButton('check-reading-vocab', 'answer-key-reading-vocab');
+            setupAnswerButton('check-comp-numbers', 'answer-key-comp-numbers');
+            setupAnswerButton('check-comp-summary', 'answer-key-comp-summary');
+            setupAnswerButton('check-listen-gist', 'answer-key-listen-gist');
+
+            // Special handler for listening detail
+            const checkListenDetail = document.getElementById('check-listen-detail');
+            if (checkListenDetail) {
+                checkListenDetail.addEventListener('click', () => {
+                    const correctCheckboxes = document.querySelectorAll('input[type="checkbox"][data-answer="true"]');
+                    correctCheckboxes.forEach(box => {
+                        // Highlight the correct answer by making the box green
+                        box.classList.remove('text-indigo-600', 'focus:ring-indigo-500');
+                        box.classList.add('text-green-500', 'focus:ring-green-400');
+                        // Check it, in case the user didn't
+                        box.checked = true;
+                    });
+                    checkListenDetail.textContent = 'Answers Shown';
+                    checkListenDetail.disabled = true;
+                });
+            }
+
+            // --- Initialize First Slide ---
+            showSlide(1);
+        });
+    </script>
+</body>
+</html>

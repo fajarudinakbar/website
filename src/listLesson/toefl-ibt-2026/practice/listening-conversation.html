@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iBET Practice: Listen to a Conversation</title>
+<!-- Load Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+    background-color: #f8fafc;
+}
+h1, h2, h3, .brand-font {
+    font-family: 'Montserrat', sans-serif;
+}
+/* Transcript Box */
+.transcript-container {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    margin-top: 1.5rem;
+}
+.transcript-tag {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background-color: #3b82f6;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+/* Audio Controls Container */
+.audio-controls {
+    position: absolute;
+    top: -14px;
+    right: 20px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Shared Button Styles */
+.control-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: white;
+    border: 1px solid #bfdbfe;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+    cursor: pointer;
+    color: #2563eb;
+    text-decoration: none; /* For anchor tags acting as buttons */
+}
+.control-btn:hover:not(:disabled) {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+}
+.control-btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
+    background-color: #f1f5f9;
+    color: #64748b;
+}
+
+/* Specific Button Tweaks */
+.transcript-toggle-btn {
+    display: none; /* Hidden by default */
+    color: #475569;
+    border-color: #cbd5e1;
+}
+.transcript-toggle-btn:hover {
+    color: #1e293b;
+    background-color: #f1f5f9;
+}
+
+/* Transcript Text Area */
+.transcript-text {
+    display: none; /* Hidden content by default */
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.speaker-a { color: #1e40af; font-weight: 600; }
+.speaker-b { color: #b45309; font-weight: 600; }
+
+/* Question Card */
+.question-card {
+    background-color: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+/* Options */
+.option-btn {
+    display: flex;
+    width: 100%;
+    text-align: left;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    background: white;
+}
+.option-btn:hover:not(:disabled) {
+    border-color: #cbd5e1;
+    background-color: #f1f5f9;
+}
+.option-btn.selected {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+.option-btn.correct {
+    border-color: #22c55e;
+    background-color: #dcfce7;
+    color: #14532d;
+}
+.option-btn.incorrect {
+    border-color: #ef4444;
+    background-color: #fee2e2;
+    color: #7f1d1d;
+}
+
+/* Feedback */
+.feedback-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f0fdf4;
+    border-left: 4px solid #22c55e;
+    border-radius: 0.25rem;
+    display: none;
+    font-size: 0.9rem;
+    color: #166534;
+}
+.feedback-fail {
+    background-color: #fef2f2;
+    border-left-color: #ef4444;
+    color: #991b1b;
+}
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<div class="container mx-auto p-4 md:p-8 max-w-4xl">
+
+<!-- Header -->
+<header class="text-center mb-10">
+<h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2">iBET Practice</h1>
+<h2 class="text-xl text-blue-600 font-semibold">Listening: Listen to a Conversation</h2>
+
+<div class="flex flex-wrap justify-center gap-3 mt-4 text-sm font-medium text-slate-600">
+<span class="bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">Skill: Detailed Comprehension</span>
+<span class="bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">Format: 2 Conversations</span>
+<span class="bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">Items: 10</span>
+</div>
+</header>
+
+<main id="main-content">
+<!-- Content injected by JS -->
+</main>
+
+<footer class="text-center mt-12 py-6 border-t border-slate-200">
+<p class="text-slate-500 text-sm font-medium">Designed by <a href="https://fajarudinakbar.online" class="text-blue-600 hover:underline">fajarudinakbar.online</a></p>
+</footer>
+</div>
+
+<script>
+// --- DATA ---
+const conversations = [
+    {
+        id: 1,
+        title: "Conversation 1: Campus Housing",
+        description: "Listen to a conversation between a student and a housing officer.",
+        audioSrc: "https://github.com/fajarudinakbar/audio/raw/refs/heads/main/ibet/listening/conversation/conversation1%20-%20campus%20housing.wav",
+        transcript: `
+            <p class="mb-2"><span class="speaker-a">Student (Leo):</span> Hi, excuse me. I'm Leo Miller. I stopped by earlier about a room change request?</p>
+            <p class="mb-2"><span class="speaker-b">Officer (Ms. Jensen):</span> Oh, right. Leo. I have your file here. You're currently in Hallington Hall, correct?</p>
+            <p class="mb-2"><span class="speaker-a">Student:</span> Yeah, room 204. But honestly, it's impossible to study there. The construction work on the new science center is happening right outside my window. It starts at 7 AM every morning. The drilling is relentless.</p>
+            <p class="mb-2"><span class="speaker-b">Officer:</span> I see. That does sound distracting. I know they're behind schedule, so they've ramped up the work hours. Unfortunately, as I checked earlier, all single rooms in the quiet zones are fully booked for this semester.</p>
+            <p class="mb-2"><span class="speaker-a">Student:</span> Oh no. Is there nothing available? Even a shared room in a different building?</p>
+            <p class="mb-2"><span class="speaker-b">Officer:</span> Well, there is one spot that just opened up in West Dorms. It's a double, so you'd have a roommate, but it faces the inner courtyard. It's very quiet.</p>
+            <p class="mb-2"><span class="speaker-a">Student:</span> A roommate? I haven't had a roommate since freshman year. Who is it?</p>
+            <p class="mb-2"><span class="speaker-b">Officer:</span> I can't give out personal details yet, but he's a biology major. Usually spends a lot of time in the lab. It might be a good fit if you need quiet time.</p>
+            <p class="mb-2"><span class="speaker-a">Student:</span> Okay... I suppose that's better than the jackhammers. When could I move?</p>
+            <p class="mb-2"><span class="speaker-b">Officer:</span> You can pick up the key on Friday. But you'll need to fill out this transfer form first and get your current RA to sign it.</p>
+        `,
+        questions: [
+            {
+                q: "Why does the student go to see the housing officer?",
+                options: ["To complain about his roommate", "To request a room change due to noise", "To apply for a job in the housing office", "To ask when the construction will finish"],
+                correct: 1,
+                explanation: "The student explicitly states, 'It's impossible to study there... The drilling is relentless,' and asks for a room change."
+            },
+            {
+                q: "What is the main problem with the student's current room?",
+                options: ["It is too expensive", "It is too far from his classes", "It is affected by construction noise", "The heating system is broken"],
+                correct: 2,
+                explanation: "He mentions the 'construction work on the new science center' and 'drilling' right outside his window."
+            },
+            {
+                q: "What does the officer imply about the single rooms?",
+                options: ["They are cheaper than double rooms", "They are all currently occupied", "They are reserved for seniors only", "They are located near the construction site"],
+                correct: 1,
+                explanation: "She says, 'all single rooms in the quiet zones are fully booked for this semester.'"
+            },
+            {
+                q: "What is a potential disadvantage of the available room in West Dorms?",
+                options: ["It faces a noisy street", "It is much smaller", "The student would have to share with a roommate", "It is available only for two weeks"],
+                correct: 2,
+                explanation: "The student expresses hesitation: 'A roommate? I haven't had a roommate since freshman year.'"
+            },
+            {
+                q: "What must the student do before moving?",
+                options: ["Pay a transfer fee", "Get a signature from his Resident Advisor (RA)", "Meet the new roommate", "Help with the construction work"],
+                correct: 1,
+                explanation: "The officer instructs him to 'fill out this transfer form first and get your current RA to sign it.'"
+            }
+        ]
+    },
+    {
+        id: 2,
+        title: "Conversation 2: Academic Office Hours",
+        description: "Listen to a conversation between a student and a psychology professor.",
+        audioSrc: "https://github.com/fajarudinakbar/audio/raw/refs/heads/main/ibet/listening/conversation/conversation2%20-%20academic%20office%20hours.wav",
+        transcript: `
+            <p class="mb-2"><span class="speaker-a">Student (Sarah):</span> Professor Aris? Do you have a minute? I was looking over my notes from Tuesday's lecture on 'Cognitive Dissonance,' and I'm a bit confused.</p>
+            <p class="mb-2"><span class="speaker-b">Professor (Dr. Aris):</span> Sure, Sarah. Come in. Cognitive dissonance can be tricky. What specifically is confusing you?</p>
+            <p class="mb-2"><span class="speaker-a">Student:</span> Well, I understand it's about having conflicting ideas. But is it just about being hypocritical? Like saying you love animals but eating meat?</p>
+            <p class="mb-2"><span class="speaker-b">Professor:</span> Not exactly. It's not just the hypocrisy; it's the <em>mental discomfort</em> that comes from it. The theory says we have an inner drive to hold all our attitudes and beliefs in harmony. When there is inconsistency, we feel uncomfortable, so we try to fix it.</p>
+            <p class="mb-2"><span class="speaker-a">Student:</span> Oh, so the 'dissonance' is the bad feeling?</p>
+            <p class="mb-2"><span class="speaker-b">Professor:</span> Precisely. Think about the classic example: smoking. A smoker knows smoking causes cancer (belief A), but they smoke two packs a day (behavior B). This creates dissonance.</p>
+            <p class="mb-2"><span class="speaker-a">Student:</span> So they quit smoking to fix it?</p>
+            <p class="mb-2"><span class="speaker-b">Professor:</span> Ideally! That would be changing the behavior. But often, it's easier to change the <em>belief</em>. They might convince themselves, 'Oh, the research is flawed,' or 'My grandfather smoked and lived to be 90.' They rationalize it to reduce the discomfort without stopping the behavior.</p>
+            <p class="mb-2"><span class="speaker-a">Student:</span> That makes so much sense! I was missing the 'rationalization' part. Is this going to be on the midterm?</p>
+            <p class="mb-2"><span class="speaker-b">Professor:</span> Yes, there will be a short essay question on it. You might want to review Festinger's original study in the textbook.</p>
+        `,
+        questions: [
+            {
+                q: "What is the main topic of the conversation?",
+                options: ["The date of the midterm exam", "A clarification of a psychological theory", "The health risks of smoking", "How to write a research paper"],
+                correct: 1,
+                explanation: "The student explicitly asks for help understanding 'Cognitive Dissonance' from a previous lecture."
+            },
+            {
+                q: "How does the professor define 'cognitive dissonance'?",
+                options: ["The act of lying to others", "The mental discomfort caused by conflicting beliefs or behaviors", "A type of memory loss", "The ability to multitask effectively"],
+                correct: 1,
+                explanation: "He states, 'It's the mental discomfort... When there is inconsistency, we feel uncomfortable.'"
+            },
+            {
+                q: "Why does the professor mention smoking?",
+                options: ["To warn the student about health risks", "To illustrate how people reduce dissonance by rationalizing", "To explain why he quit smoking", "To change the subject"],
+                correct: 1,
+                explanation: "He uses smoking as a 'classic example' to show how people change their beliefs (rationalize) to match their behavior."
+            },
+            {
+                q: "According to the professor, what is one way people deal with dissonance usually?",
+                options: ["They ignore it completely", "They always change their behavior immediately", "They change their belief to justify the behavior", "They seek professional help"],
+                correct: 2,
+                explanation: "He says, 'often, it's easier to change the belief... They rationalize it to reduce the discomfort without stopping the behavior.'"
+            },
+            {
+                q: "What advice does the professor give for the midterm?",
+                options: ["To memorize the definition of hypocrisy", "To review Festinger's original study", "To write an essay about smoking", "To skip the question if she is unsure"],
+                correct: 1,
+                explanation: "His final advice is: 'You might want to review Festinger's original study in the textbook.'"
+            }
+        ]
+    }
+];
+
+// --- AUDIO LOGIC ---
+let currentAudio = null;
+
+function playConversationAudio(cIndex, buttonElement) {
+    // 1. Stop any currently playing audio
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+
+    // 2. Play new audio
+    const url = conversations[cIndex].audioSrc;
+    currentAudio = new Audio(url);
+    
+    // Optional: Visual Feedback
+    const originalText = buttonElement.innerHTML;
+    
+    currentAudio.play().catch(e => {
+        console.error("Playback failed", e);
+        alert("Could not play audio. Please check your connection.");
+    });
+
+    // Reset button icon when audio ends
+    currentAudio.onended = () => {
+        // Keeps the UI simple, logic primarily just plays the sound
+    };
+}
+
+// --- UI UTILS ---
+function toggleTranscript(cIndex) {
+    const content = document.getElementById(`transcript-content-${cIndex}`);
+    const btn = document.getElementById(`transcript-toggle-${cIndex}`);
+
+    if (content.style.display === 'block') {
+        content.style.display = 'none';
+        btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg> Show Transcript`;
+    } else {
+        content.style.display = 'block';
+        btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg> Hide Transcript`;
+    }
+}
+
+// --- RENDER LOGIC ---
+function renderContent() {
+    const main = document.getElementById('main-content');
+
+    conversations.forEach((conv, cIndex) => {
+        // 1. Conversation Header & Transcript
+        const section = document.createElement('section');
+        section.className = "mb-12 border-b border-slate-200 pb-8 last:border-0";
+
+        section.innerHTML = `
+            <h3 class="text-2xl font-bold text-slate-800 mb-2">${conv.title}</h3>
+            <p class="text-slate-600 mb-6 italic">${conv.description}</p>
+
+            <div class="transcript-container shadow-sm">
+                <div class="transcript-tag">Audio Transcript</div>
+                
+                <div class="audio-controls">
+                    <!-- Show Transcript (Hidden Initially) -->
+                    <button id="transcript-toggle-${cIndex}" onclick="toggleTranscript(${cIndex})" class="control-btn transcript-toggle-btn">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        Show Transcript
+                    </button>
+
+                    <!-- Play Audio -->
+                    <button onclick="playConversationAudio(${cIndex}, this)" class="control-btn">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+                        Play Audio
+                    </button>
+                </div>
+
+                <!-- Transcript Content (Hidden) -->
+                <div id="transcript-content-${cIndex}" class="transcript-text leading-relaxed text-slate-700">
+                    ${conv.transcript}
+                </div>
+            </div>
+
+            <h4 class="text-lg font-bold text-slate-900 mb-4 pl-1 border-l-4 border-blue-500">&nbsp;Questions</h4>
+            <div id="questions-container-${cIndex}"></div>
+        `;
+
+        main.appendChild(section);
+
+        // 2. Render Questions for this conversation
+        const qContainer = section.querySelector(`#questions-container-${cIndex}`);
+        
+        conv.questions.forEach((item, qIndex) => {
+            const uniqueId = `${cIndex}-${qIndex}`; // Unique ID for each question
+
+            const qCard = document.createElement('div');
+            qCard.className = "question-card";
+            
+            let optsHtml = '';
+            item.options.forEach((opt, oIndex) => {
+                optsHtml += `<button class="option-btn" onclick="checkAnswer(${cIndex}, ${qIndex}, ${oIndex}, this)">
+                    <span class="font-bold mr-3 text-slate-400 w-6">${String.fromCharCode(65 + oIndex)}.</span>
+                    ${opt}
+                </button>`;
+            });
+
+            qCard.innerHTML = `
+                <p class="font-semibold text-slate-800 mb-3"><span class="text-blue-600 mr-2">${qIndex + 1}.</span> ${item.q}</p>
+                <div>${optsHtml}</div>
+                <div id="feedback-${uniqueId}" class="feedback-box"></div>
+            `;
+
+            qContainer.appendChild(qCard);
+        });
+    });
+}
+
+// --- INTERACTION LOGIC ---
+const attempts = {}; // Key: "cIndex-qIndex", Value: count
+
+function checkAnswer(cIndex, qIndex, oIndex, btn) {
+    const uniqueId = `${cIndex}-${qIndex}`;
+    const feedbackEl = document.getElementById(`feedback-${uniqueId}`);
+    const parent = btn.parentElement;
+
+    // Check if already correct
+    if (parent.querySelector('.correct')) return;
+
+    // Init attempts
+    if (!attempts[uniqueId]) attempts[uniqueId] = 0;
+
+    // Reset selection style
+    Array.from(parent.children).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    const correctIndex = conversations[cIndex].questions[qIndex].correct;
+
+    if (oIndex === correctIndex) {
+        // Correct
+        btn.classList.remove('selected');
+        btn.classList.add('correct');
+        feedbackEl.innerHTML = `<strong>Correct!</strong> ${conversations[cIndex].questions[qIndex].explanation}`;
+        feedbackEl.className = "feedback-box block";
+        
+        // Show Transcript Button (Scaffolding: Success reveals text)
+        document.getElementById(`transcript-toggle-${cIndex}`).style.display = 'inline-flex';
+
+    } else {
+        // Incorrect
+        attempts[uniqueId]++;
+        btn.classList.remove('selected');
+        btn.classList.add('incorrect');
+
+        // 2nd Attempt Rule
+        if (attempts[uniqueId] >= 2) {
+            const buttons = parent.querySelectorAll('.option-btn');
+            buttons[correctIndex].classList.add('correct'); // Reveal Answer
+            
+            feedbackEl.innerHTML = `<strong>Answer Revealed:</strong> The correct answer is (${String.fromCharCode(65 + correctIndex)}).<br><em>Why?</em> ${conversations[cIndex].questions[qIndex].explanation}`;
+            feedbackEl.className = "feedback-box feedback-fail block";
+
+            // Show Transcript Button (Scaffolding: Failure also reveals text)
+            document.getElementById(`transcript-toggle-${cIndex}`).style.display = 'inline-flex';
+        }
+    }
+}
+
+// Initialize
+renderContent();
+
+</script>
+</body>
+</html>

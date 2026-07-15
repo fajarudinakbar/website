@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>A1 Listening - Prices and Quantities</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#edd8ff',
+                            200: '#d9b3ff',
+                            300: '#c285ff',
+                            400: '#a855f7',
+                            500: '#9333ea',
+                            600: '#7e22ce',
+                            700: '#6b21a8',
+                            800: '#581c87',
+                            900: '#3b0764',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-lg': '12px 12px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f5f3ff;
+            background-image: radial-gradient(#d8b4fe 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f3ff;
+            border-left: 3px solid #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0f172a;
+            border: 3px solid #f5f3ff;
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7e22ce;
+        }
+
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            font-weight: 800;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .neo-btn:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .neo-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #9333ea;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            font-weight: 700;
+        }
+        .option-label:hover {
+            background-color: #faf5ff;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        .option-label.correct {
+            background-color: #10b981 !important;
+            color: white !important;
+        }
+        .option-label.incorrect {
+            background-color: #ef4444 !important;
+            color: white !important;
+        }
+        .option-label.hint-border {
+            border-color: #f59e0b !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-6 md:p-8 lg:p-12 text-2xl">
+
+    <div class="max-w-6xl mx-auto bg-white border-4 border-dark shadow-neo p-6 sm:p-10 lg:p-12 relative overflow-hidden">
+        
+        <div class="absolute top-0 left-0 right-0 h-4 bg-gradient-to-r from-purple-500 via-amber-400 to-emerald-400 border-b-4 border-dark"></div>
+
+        <div class="flex flex-wrap items-center gap-3 mt-4 mb-8 text-xl font-black uppercase tracking-wider text-dark">
+            <span class="bg-brand-200 border-2 border-dark px-3 py-1 shadow-neo-sm">A1 (GSE 22-29)</span>
+            <i data-lucide="chevron-right" class="w-5 h-5 text-dark shrink-0"></i>
+            <span class="bg-amber-200 border-2 border-dark px-3 py-1 shadow-neo-sm">Listening</span>
+            <i data-lucide="chevron-right" class="w-5 h-5 text-dark shrink-0"></i>
+            <span class="bg-[#facc15] border-2 border-dark px-3 py-1 shadow-neo-sm">Prices and Quantities</span>
+        </div>
+
+        <header class="border-b-4 border-dark pb-8 mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-dark leading-none">
+                    Prices and Quantities
+                </h1>
+                <p class="text-xl md:text-2xl font-bold text-slate-600 mt-3 text-pretty">
+                    Listen to the conversation at the market. Then, do the exercises below.
+                </p>
+            </div>
+            <button id="main-reset-btn" onclick="openResetModal()" class="neo-btn bg-[#ef4444] text-white px-6 py-4 text-xl shrink-0">
+                <i data-lucide="rotate-ccw" class="w-6 h-6"></i> Reset Progress
+            </button>
+        </header>
+
+        <div class="bg-[#fefce8] border-3 border-dark p-6 mb-10 shadow-neo-sm flex items-start gap-4">
+            <div class="bg-[#fbbf24] p-3 border-2 border-dark shrink-0">
+                <i data-lucide="info" class="w-8 h-8 text-dark"></i>
+            </div>
+            <p class="text-xl md:text-2xl text-dark font-bold leading-relaxed text-pretty">
+                <span class="uppercase font-black text-2xl mr-2">Instructions:</span> Play the audio in the Listening Center. Answer all the questions. Use the "Check Answers" buttons to see your score.
+            </p>
+        </div>
+
+        <section class="mb-12 border-4 border-dark shadow-neo bg-[#e0f2fe]">
+            <div class="p-6 md:p-8 bg-[#38bdf8] border-b-4 border-dark flex items-center gap-4">
+                <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                    1
+                </div>
+                <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tight text-dark">Part 1: Vocabulary Practice</h2>
+            </div>
+            
+            <div class="p-6 md:p-8 space-y-8 bg-white">
+                <div class="bg-purple-50 border-3 border-dark p-6 shadow-neo-sm">
+                    <h3 class="text-xl md:text-2xl font-black uppercase text-dark flex items-center gap-2 mb-4">
+                        <span class="bg-purple-300 px-3 py-1 border-2 border-dark text-lg shadow-neo-sm">Task 1</span> Words for Shopping
+                    </h3>
+                    
+                    <p class="text-lg md:text-xl font-bold text-slate-700 mb-6 leading-relaxed">
+                        Look at the table below to see words about prices and quantities. Then, fill in the blanks using the correct words from the box.
+                    </p>
+
+                    <div class="overflow-x-auto border-3 border-dark shadow-neo-sm mb-8 bg-white">
+                        <table class="w-full text-left text-lg md:text-xl border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 border-b-3 border-dark">
+                                    <th class="p-4 font-black border-r-3 border-dark uppercase whitespace-nowrap">Word</th>
+                                    <th class="p-4 font-black border-r-3 border-dark uppercase whitespace-nowrap">What it Means</th>
+                                    <th class="p-4 font-black uppercase">Sentence Example</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y-2 divide-dark font-bold">
+                                <tr>
+                                    <td class="p-4 border-r-3 border-dark bg-blue-50 whitespace-nowrap">kilo</td>
+                                    <td class="p-4 border-r-3 border-dark italic">Weight</td>
+                                    <td class="p-4">I want to buy one <span class="bg-yellow-100 px-2 py-0.5 border border-dashed border-dark text-brand-700">kilo</span> of fruit.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 border-r-3 border-dark bg-purple-50 whitespace-nowrap">bottle</td>
+                                    <td class="p-4 border-r-3 border-dark italic">Drinks / Liquids</td>
+                                    <td class="p-4">Please give me a <span class="bg-yellow-100 px-2 py-0.5 border border-dashed border-dark text-brand-700">bottle</span> of water.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 border-r-3 border-dark bg-emerald-50 whitespace-nowrap">dollars</td>
+                                    <td class="p-4 border-r-3 border-dark italic">Money</td>
+                                    <td class="p-4">The apples cost four <span class="bg-yellow-100 px-2 py-0.5 border border-dashed border-dark text-brand-700">dollars</span>.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 border-r-3 border-dark bg-amber-50 whitespace-nowrap">total</td>
+                                    <td class="p-4 border-r-3 border-dark italic">Total Money</td>
+                                    <td class="p-4">The <span class="bg-yellow-100 px-2 py-0.5 border border-dashed border-dark text-brand-700">total</span> cost for food is ten dollars.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 border-r-3 border-dark bg-rose-50 whitespace-nowrap">change</td>
+                                    <td class="p-4 border-r-3 border-dark italic">Money Back</td>
+                                    <td class="p-4">Here is your cash <span class="bg-yellow-100 px-2 py-0.5 border border-dashed border-dark text-brand-700">change</span> from the bill.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 p-4 bg-white border-3 border-dark mb-6 shadow-neo-sm justify-center">
+                        <span class="bg-dark text-white px-4 py-2 text-xl font-black uppercase select-none">dollars</span>
+                        <span class="bg-dark text-white px-4 py-2 text-xl font-black uppercase select-none">bottle</span>
+                        <span class="bg-dark text-white px-4 py-2 text-xl font-black uppercase select-none">total</span>
+                        <span class="bg-dark text-white px-4 py-2 text-xl font-black uppercase select-none">change</span>
+                        <span class="bg-dark text-white px-4 py-2 text-xl font-black uppercase select-none">kilo</span>
+                    </div>
+
+                    <div class="space-y-6 text-xl md:text-2xl font-bold text-dark">
+                        <div class="flex flex-col gap-2 p-4 bg-white border-2 border-dark rounded">
+                            <div class="flex flex-wrap items-center gap-3 leading-relaxed">
+                                <span class="overflow-wrap: normal;">1. I need to buy one</span>
+                                <input type="text" id="p1-q1" class="text-input w-full sm:w-56 text-xl p-2 mt-0 inline-block text-center uppercase" placeholder="blank">
+                                <span class="overflow-wrap: normal;">of fresh green apples.</span>
+                            </div>
+                            <div id="feedback-p1-q1" class="mt-2"></div>
+                        </div>
+
+                        <div class="flex flex-col gap-2 p-4 bg-white border-2 border-dark rounded">
+                            <div class="flex flex-wrap items-center gap-3 leading-relaxed">
+                                <span class="overflow-wrap: normal;">2. The cost of the orange juice is three</span>
+                                <input type="text" id="p1-q2" class="text-input w-full sm:w-56 text-xl p-2 mt-0 inline-block text-center uppercase" placeholder="blank">
+                                <span class="overflow-wrap: normal;">.</span>
+                            </div>
+                            <div id="feedback-p1-q2" class="mt-2"></div>
+                        </div>
+
+                        <div class="flex flex-col gap-2 p-4 bg-white border-2 border-dark rounded">
+                            <div class="flex flex-wrap items-center gap-3 leading-relaxed">
+                                <span class="overflow-wrap: normal;">3. Please put the milk inside a clean plastic</span>
+                                <input type="text" id="p1-q3" class="text-input w-full sm:w-56 text-xl p-2 mt-0 inline-block text-center uppercase" placeholder="blank">
+                                <span class="overflow-wrap: normal;">.</span>
+                            </div>
+                            <div id="feedback-p1-q3" class="mt-2"></div>
+                        </div>
+
+                        <div class="flex flex-col gap-2 p-4 bg-white border-2 border-dark rounded">
+                            <div class="flex flex-wrap items-center gap-3 leading-relaxed">
+                                <span class="overflow-wrap: normal;">4. The</span>
+                                <input type="text" id="p1-q4" class="text-input w-full sm:w-56 text-xl p-2 mt-0 inline-block text-center uppercase" placeholder="blank">
+                                <span class="overflow-wrap: normal;">price for all your shopping is twelve dollars.</span>
+                            </div>
+                            <div id="feedback-p1-q4" class="mt-2"></div>
+                        </div>
+
+                        <div class="flex flex-col gap-2 p-4 bg-white border-2 border-dark rounded">
+                            <div class="flex flex-wrap items-center gap-3 leading-relaxed">
+                                <span class="overflow-wrap: normal;">5. You pay with twenty dollars, so here is your</span>
+                                <input type="text" id="p1-q5" class="text-input w-full sm:w-56 text-xl p-2 mt-0 inline-block text-center uppercase" placeholder="blank">
+                                <span class="overflow-wrap: normal;">.</span>
+                            </div>
+                            <div id="feedback-p1-q5" class="mt-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="checkPhase1()" class="neo-btn bg-[#a855f7] text-white px-8 py-4 text-xl shadow-neo-sm">
+                            Check Answers
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12 border-4 border-dark shadow-neo bg-[#fefce8]">
+            <div class="p-6 md:p-8 bg-[#fbbf24] border-b-4 border-dark flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm">
+                        <i data-lucide="youtube" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tight text-dark">Listening Center</h2>
+                </div>
+            </div>
+
+            <div class="p-6 md:p-8 bg-white border-b-4 border-dark">
+                <div class="bg-stone-100 border-4 border-dark p-6 shadow-neo-sm">
+                    <div class="w-full bg-black border-4 border-dark shadow-neo-sm overflow-hidden relative aspect-video max-w-4xl mx-auto">
+                        <iframe id="yt-player-iframe" 
+                                class="absolute inset-0 w-full h-full" 
+                                src="https://www.youtube.com/embed/_smo4gvHQGg?rel=0" 
+                                title="Prices and Quantities Video" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 md:p-8 bg-stone-50">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-xl md:text-2xl font-black uppercase text-dark flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-6 h-6"></i> Video Script
+                    </h4>
+                    <button onclick="toggleTranscript()" class="neo-btn bg-white text-dark px-4 py-2 text-base">
+                        <span id="transcript-toggle-text">Show Transcript</span>
+                    </button>
+                </div>
+
+                <div id="transcript-container" class="hidden bg-white border-3 border-dark p-6 shadow-neo-sm space-y-4">
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-blue-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 1:</strong> Hello. Can I help you?
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-purple-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 2:</strong> Yes, please. I need some apples. How much are they?
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-blue-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 1:</strong> The red apples are two dollars for one kilo.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-purple-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 2:</strong> Great. I want two kilos of red apples, please.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-blue-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 1:</strong> Okay, that is four dollars. Do you need anything else?
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-purple-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 2:</strong> Yes. How much is a bottle of orange juice?
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-blue-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 1:</strong> One bottle of orange juice costs three dollars.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-purple-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 2:</strong> I want three bottles of orange juice, please.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-blue-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 1:</strong> Perfect. That is nine dollars for the juice. The total price is thirteen dollars.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-purple-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 2:</strong> Here is fifteen dollars.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-blue-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 1:</strong> Thank you. Here is your change: two dollars.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-purple-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 2:</strong> Thank you very much. Goodbye.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12 border-4 border-dark shadow-neo bg-[#ecfdf5]">
+            <div class="p-6 md:p-8 bg-[#10b981] border-b-4 border-dark flex items-center gap-4">
+                <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                    2
+                </div>
+                <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tight text-white">Part 2: Check Your Understanding</h2>
+            </div>
+
+            <div class="p-6 md:p-8 space-y-12 bg-white">
+                
+                <div class="bg-teal-50 border-3 border-dark p-6 shadow-neo-sm">
+                    <h3 class="text-xl md:text-2xl font-black uppercase text-dark flex items-center gap-2 mb-4">
+                        <span class="bg-[#10b981] text-white px-3 py-1 border-2 border-dark text-lg shadow-neo-sm">Activity 1</span> Choose the Correct Answer
+                    </h3>
+                    <p class="text-lg md:text-xl font-bold text-slate-700 mb-6 leading-relaxed">
+                        Listen to the conversation. Then, choose the correct answer (A, B, or C) for each question.
+                    </p>
+
+                    <div id="mcq-container" class="space-y-8"></div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="checkMCQ()" class="neo-btn bg-[#10b981] text-white px-8 py-4 text-xl shadow-neo-sm">
+                            Check Answers
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border-3 border-dark p-6 shadow-neo-sm">
+                    <h3 class="text-xl md:text-2xl font-black uppercase text-dark flex items-center gap-2 mb-4">
+                        <span class="bg-amber-300 px-3 py-1 border-2 border-dark text-lg shadow-neo-sm">Activity 2</span> Fill in the Blanks
+                    </h3>
+                    <p class="text-lg md:text-xl font-bold text-slate-700 mb-6 leading-relaxed">
+                        Listen again. Fill in the blanks with the exact words you hear.
+                    </p>
+
+                    <div class="bg-white border-3 border-dark p-6 shadow-neo-sm space-y-6 text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <div class="text-justify leading-loose">
+                            Speaker 2 wants to buy red apples, which cost 
+                            <div class="inline-block mx-1 relative align-middle">
+                                <input type="text" id="a2-q1" class="text-input w-48 text-xl p-2 mt-0 text-center uppercase" placeholder="blank 1">
+                            </div>
+                            dollars for one kilo. Speaker 2 decides to buy a quantity of 
+                            <div class="inline-block mx-1 relative align-middle">
+                                <input type="text" id="a2-q2" class="text-input w-48 text-xl p-2 mt-0 text-center uppercase" placeholder="blank 2">
+                            </div>
+                            kilos of apples. Speaker 2 also requests 
+                            <div class="inline-block mx-1 relative align-middle">
+                                <input type="text" id="a2-q3" class="text-input w-48 text-xl p-2 mt-0 text-center uppercase" placeholder="blank 3">
+                            </div>
+                            bottles of orange juice. The price for all the items combined comes to a 
+                            <div class="inline-block mx-1 relative align-middle">
+                                <input type="text" id="a2-q4" class="text-input w-48 text-xl p-2 mt-0 text-center uppercase" placeholder="blank 4">
+                            </div>
+                            of thirteen dollars. Speaker 2 pays with a fifteen dollar bill, and Speaker 1 gives back two dollars as 
+                            <div class="inline-block mx-1 relative align-middle">
+                                <input type="text" id="a2-q5" class="text-input w-48 text-xl p-2 mt-0 text-center uppercase" placeholder="blank 5">
+                            </div>
+                            .
+                        </div>
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+                        <div id="feedback-a2-q1"></div>
+                        <div id="feedback-a2-q2"></div>
+                        <div id="feedback-a2-q3"></div>
+                        <div id="feedback-a2-q4"></div>
+                        <div id="feedback-a2-q5"></div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="checkDetailedExtraction()" class="neo-btn bg-amber-400 text-dark px-8 py-4 text-xl shadow-neo-sm">
+                            Check Answers
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-indigo-50 border-3 border-dark p-6 shadow-neo-sm">
+                    <h3 class="text-xl md:text-2xl font-black uppercase text-dark flex items-center gap-2 mb-4">
+                        <span class="bg-indigo-300 px-3 py-1 border-2 border-dark text-lg shadow-neo-sm">Activity 3</span> Match the Meanings
+                    </h3>
+                    <p class="text-lg md:text-xl font-bold text-slate-700 mb-6 leading-relaxed">
+                        Match each question on the left with the correct answer on the right.
+                    </p>
+
+                    <div id="dialogue-container" class="space-y-4"></div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="checkDialogueSynthesis()" class="neo-btn bg-[#6366f1] text-white px-8 py-4 text-xl shadow-neo-sm">
+                            Check Answers
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="mb-12 border-4 border-dark shadow-neo bg-[#fae8ff]">
+            <div class="p-6 md:p-8 bg-[#d946ef] border-b-4 border-dark flex items-center gap-4">
+                <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                    3
+                </div>
+                <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tight text-white">Part 3: Speaking Practice</h2>
+            </div>
+
+            <div class="p-6 md:p-8 space-y-8 bg-white">
+                <div class="border-3 border-dark p-6 bg-purple-50 shadow-neo-sm">
+                    <h3 class="text-xl md:text-2xl font-black text-dark uppercase mb-3">
+                        Task: Practice Your Market Conversation
+                    </h3>
+                    <p class="text-lg md:text-xl font-bold text-slate-700 leading-relaxed">
+                        Work with a partner. Practice talking at a market. Type your items, numbers, and prices below to make your own roleplay conversation.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">Seller Name</label>
+                            <input type="text" id="tbl-seller" class="text-input p-3" placeholder="e.g. Marco" oninput="generateStudentIntroductionScript()">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">Fruit Name</label>
+                            <input type="text" id="tbl-fruit" class="text-input p-3" placeholder="e.g. red apples" oninput="generateStudentIntroductionScript()">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">Fruit Price</label>
+                            <input type="text" id="tbl-fruit-price" class="text-input p-3" placeholder="e.g. two dollars for one kilo" oninput="generateStudentIntroductionScript()">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">How many kilos?</label>
+                            <input type="text" id="tbl-fruit-qty" class="text-input p-3" placeholder="e.g. two kilos" oninput="generateStudentIntroductionScript()">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">Drink Name</label>
+                            <input type="text" id="tbl-drink" class="text-input p-3" placeholder="e.g. orange juice" oninput="generateStudentIntroductionScript()">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">Drink Price (Per Bottle)</label>
+                            <input type="text" id="tbl-drink-price" class="text-input p-3" placeholder="e.g. three dollars" oninput="generateStudentIntroductionScript()">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="block text-lg font-black uppercase text-dark mb-2">Your Story Preview</label>
+                        <div class="border-4 border-dark p-6 bg-white shadow-neo flex-1 flex flex-col justify-between">
+                            <p id="introduction-script-preview" class="text-xl md:text-2xl font-bold leading-relaxed text-slate-800 text-justify">
+                                (Type your information in the boxes on the left to see your conversation here!)
+                            </p>
+                            
+                            <div class="mt-6 pt-6 border-t-2 border-dashed border-dark flex flex-wrap gap-3 justify-end">
+                                <button onclick="copyIntroductionScript()" class="neo-btn bg-amber-400 text-dark px-4 py-3 text-base">
+                                    <i data-lucide="copy" class="w-5 h-5"></i> Copy Script
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center">
+            <p class="text-dark text-lg md:text-xl font-black uppercase tracking-wider bg-[#facc15] inline-block px-6 py-3 border-3 border-dark shadow-neo-sm">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="underline">Fajarudin Akbar</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <div id="reset-confirm-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white border-4 border-dark p-6 md:p-8 max-w-md w-full shadow-neo relative">
+            <h3 class="text-2xl md:text-3xl font-black uppercase text-dark mb-4">Reset Progress?</h3>
+            <p class="text-lg md:text-xl font-bold text-slate-700 mb-6 leading-relaxed">
+                Are you sure you want to clear everything? Your answers will be deleted.
+            </p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeResetModal()" class="neo-btn bg-stone-200 text-dark px-5 py-3 text-base">Cancel</button>
+                <button onclick="performWorksheetReset()" class="neo-btn bg-[#ef4444] text-white px-5 py-3 text-base">Reset All</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-notification-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white border-4 border-dark p-6 md:p-8 max-w-md w-full shadow-neo relative">
+            <h3 id="alert-title" class="text-2xl md:text-3xl font-black uppercase text-dark mb-4">Notification</h3>
+            <p id="alert-msg" class="text-lg md:text-xl font-bold text-slate-700 mb-6 leading-relaxed">Alert message details.</p>
+            <div class="flex justify-end">
+                <button onclick="closeAlertModal()" class="neo-btn bg-dark text-white px-6 py-3 text-base">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-notif" class="fixed top-8 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-6 py-4 shadow-[6px_6px_0_0_#0f172a] transition-all duration-300 -translate-y-24 opacity-0 z-[100] flex items-center gap-3 font-black text-sm md:text-base uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="bell" class="w-6 h-6 text-brand-600"></i>
+        <span id="toast-text">Toast Alert!</span>
+    </div>
+
+    <script>
+        const state = {
+            attempts: {},  
+            status: {}     
+        };
+
+        const phase1Data = {
+            "p1-q1": { correct: "kilo", hint: "A word for weight.", explanation: "The video script says: 'The red apples are two dollars for one kilo.'" },
+            "p1-q2": { correct: "dollars", hint: "A word for money.", explanation: "The script says: 'The red apples are two dollars...'" },
+            "p1-q3": { correct: "bottle", hint: "A container for drinks.", explanation: "Speaker 2 asks: 'How much is a bottle of orange juice?'" },
+            "p1-q4": { correct: "total", hint: "All the money you must pay.", explanation: "Speaker 1 says: 'The total price is thirteen dollars.'" },
+            "p1-q5": { correct: "change", hint: "The money you get back.", explanation: "Speaker 1 says: 'Here is your change: two dollars.'" }
+        };
+
+        const mcqQuestionsData = [
+            {
+                id: "mcq-q1",
+                question: "1. What is the conversation about?",
+                correct: "A",
+                options: {
+                    A: "A. Buying food and drinks",
+                    B: "B. Booking a hotel room",
+                    C: "C. Asking for directions"
+                },
+                hint: "Think about the food and drinks they talk about.",
+                explanation: "The conversation is about buying red apples and juice."
+            },
+            {
+                id: "mcq-q2",
+                question: "2. Who is talking?",
+                correct: "B",
+                options: {
+                    A: "A. Teacher and student",
+                    B: "B. Seller and customer",
+                    C: "C. Manager and worker"
+                },
+                hint: "One person sells things, and one person buys things.",
+                explanation: "One person is selling food, and the other person is buying it."
+            },
+            {
+                id: "mcq-q3",
+                question: "3. Is the customer polite?",
+                correct: "A",
+                options: {
+                    A: "A. Polite and friendly",
+                    B: "B. Angry",
+                    C: "C. Worried"
+                },
+                hint: "The customer says 'please' and 'thank you'.",
+                explanation: "The customer says 'Yes, please' and 'Thank you very much.'"
+            },
+            {
+                id: "mcq-q4",
+                question: "4. What does the customer want to do?",
+                correct: "B",
+                options: {
+                    A: "A. Sell office items",
+                    B: "B. Buy specific items",
+                    C: "C. Find a lost wallet"
+                },
+                hint: "The customer wants to get apples and juice.",
+                explanation: "The customer asks for prices to buy apples and juice."
+            },
+            {
+                id: "mcq-q5",
+                question: "5. How do the speakers talk to each other?",
+                correct: "B",
+                options: {
+                    A: "A. Strictly formal",
+                    B: "B. Friendly and helpful",
+                    C: "C. Unfriendly"
+                },
+                hint: "They are polite and answer questions clearly.",
+                explanation: "The seller helps the customer buy things easily."
+            }
+        ];
+
+        const a2Data = {
+            "a2-q1": { correct: "two", hint: "The price of red apples per kilo.", explanation: "Speaker 1 says: 'The red apples are two dollars...'" },
+            "a2-q2": { correct: "two", hint: "How many kilos of apples.", explanation: "Speaker 2 says: 'I want two kilos of red apples...'" },
+            "a2-q3": { correct: "three", hint: "How many bottles of juice.", explanation: "Speaker 2 says: 'I want three bottles of orange juice...'" },
+            "a2-q4": { correct: "total", hint: "The word for all the money together.", explanation: "The script says: 'The total price is thirteen dollars.'" },
+            "a2-q5": { correct: "change", hint: "The money you get back.", explanation: "Speaker 1 says: 'Here is your change: two dollars.'" }
+        };
+
+        const a3Data = [
+            { id: "a3-q1", prompt: "1. How much are the red apples?", correct: "ans-c", hint: "The seller says the price for a kilo.", explanation: "Matches C: 'They are two dollars for one kilo.'" },
+            { id: "a3-q2", prompt: "2. Do you need anything else?", correct: "ans-e", hint: "The customer asks about the juice.", explanation: "Matches E: 'Yes. How much is a bottle of orange juice?'" },
+            { id: "a3-q3", prompt: "3. How much is a bottle of orange juice?", correct: "ans-a", hint: "The seller tells the price of the juice.", explanation: "Matches A: 'One bottle of orange juice costs three dollars.'" },
+            { id: "a3-q4", prompt: "4. Here is fifteen dollars.", correct: "ans-b", hint: "The seller gives the money back.", explanation: "Matches B: 'Thank you. Here is your change: two dollars.'" },
+            { id: "a3-q5", prompt: "5. Thank you very much. Goodbye.", correct: "ans-d", hint: "A polite way to say goodbye.", explanation: "Matches D: 'Goodbye.'" }
+        ];
+
+        const a3Responses = {
+            "ans-a": "A. One bottle of orange juice costs three dollars.",
+            "ans-b": "B. Thank you. Here is your change: two dollars.",
+            "ans-c": "C. They are two dollars for one kilo.",
+            "ans-d": "D. Goodbye.",
+            "ans-e": "E. Yes. How much is a bottle of orange juice?"
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderMCQOptions();
+            renderDialogueSynthesis();
+        });
+
+        function toggleTranscript() {
+            const container = document.getElementById('transcript-container');
+            const buttonText = document.getElementById('transcript-toggle-text');
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                buttonText.innerText = "Hide Transcript";
+            } else {
+                container.classList.add('hidden');
+                buttonText.innerText = "Show Transcript";
+            }
+        }
+
+        function openResetModal() {
+            document.getElementById('reset-confirm-modal').classList.remove('hidden');
+        }
+        function closeResetModal() {
+            document.getElementById('reset-confirm-modal').classList.add('hidden');
+        }
+        function openAlertModal(title, msg) {
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-msg').innerText = msg;
+            document.getElementById('alert-notification-modal').classList.remove('hidden');
+        }
+        function closeAlertModal() {
+            document.getElementById('alert-notification-modal').classList.add('hidden');
+        }
+
+        function showBrutalistToast(msg) {
+            const toast = document.getElementById('toast-notif');
+            const text = document.getElementById('toast-text');
+            text.innerText = msg;
+            toast.classList.remove('-translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        function renderMCQOptions() {
+            const container = document.getElementById('mcq-container');
+            container.innerHTML = "";
+            mcqQuestionsData.forEach((q, idx) => {
+                let html = `
+                    <div class="bg-white border-2 border-dark p-6 rounded" id="mcq-card-${q.id}">
+                        <h4 class="text-xl md:text-2xl font-black text-dark mb-4">${q.question}</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="options-group-${q.id}">
+                `;
+                for (const [key, val] of Object.entries(q.options)) {
+                    html += `
+                        <label class="option-label" id="label-${q.id}-${key}">
+                            <input type="radio" name="${q.id}" value="${key}" class="w-6 h-6 accent-brand-500">
+                            <span>${val}</span>
+                        </label>
+                    `;
+                }
+                html += `
+                        </div>
+                        <div id="feedback-${q.id}" class="mt-4"></div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function renderDialogueSynthesis() {
+            const container = document.getElementById('dialogue-container');
+            container.innerHTML = "";
+            
+            let optionsHtml = '<option value="">-- Choose the Best Match --</option>';
+            for (const [key, value] of Object.entries(a3Responses)) {
+                optionsHtml += `<option value="${key}">${value}</option>`;
+            }
+
+            a3Data.forEach(item => {
+                let html = `
+                    <div class="flex flex-col md:flex-row md:items-center gap-4 p-4 bg-white border-2 border-dark rounded" id="diag-card-${item.id}">
+                        <div class="md:w-1/2 font-bold text-xl md:text-2xl text-dark leading-relaxed">${item.prompt}</div>
+                        <div class="md:w-1/2 flex items-center gap-3">
+                            <select id="${item.id}" class="text-input py-2 mt-0 text-sm md:text-base cursor-pointer truncate flex-1">
+                                ${optionsHtml}
+                            </select>
+                            <span id="feedback-${item.id}" class="w-8 shrink-0 flex justify-center"></span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function evaluateField(fieldId, userAns, targetVal, hintStr, explStr, feedbackDom, fieldDom) {
+            feedbackDom.innerHTML = "";
+            fieldDom.classList.remove('border-amber-400', 'bg-amber-50', 'border-rose-500', 'bg-rose-50', 'border-emerald-500', 'bg-emerald-50');
+
+            if (!state.attempts[fieldId]) {
+                state.attempts[fieldId] = 0;
+            }
+
+            const cleanUser = userAns.trim().toLowerCase();
+            const cleanTarget = targetVal.trim().toLowerCase();
+
+            if (cleanUser === cleanTarget) {
+                state.status[fieldId] = "correct";
+                fieldDom.disabled = true;
+                fieldDom.classList.add('border-emerald-500', 'bg-emerald-50');
+                feedbackDom.innerHTML = `
+                    <div class="flex items-center gap-2 text-emerald-700 font-bold p-3 bg-emerald-50 border-2 border-emerald-500 rounded text-lg md:text-xl">
+                        <i data-lucide="check" class="w-6 h-6 shrink-0"></i> Correct!
+                    </div>
+                `;
+                lucide.createIcons();
+                return true;
+            } else {
+                state.attempts[fieldId]++;
+                if (state.attempts[fieldId] === 1) {
+                    state.status[fieldId] = "hint";
+                    fieldDom.classList.add('border-amber-400', 'bg-amber-50');
+                    feedbackDom.innerHTML = `
+                        <div class="flex flex-col gap-1 text-amber-880 p-3 bg-amber-50 border-2 border-amber-400 rounded text-lg md:text-xl">
+                            <span class="font-black uppercase flex items-center gap-1"><i data-lucide="help-circle" class="w-5 h-5 shrink-0"></i> Try Again (1/2 Attempts)</span>
+                            <p class="text-sm md:text-base italic">Hint: ${hintStr}</p>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    return false;
+                } else {
+                    state.status[fieldId] = "failed";
+                    fieldDom.disabled = true;
+                    fieldDom.value = targetVal.toUpperCase();
+                    fieldDom.classList.add('border-rose-500', 'bg-rose-50');
+                    feedbackDom.innerHTML = `
+                        <div class="flex flex-col gap-1 text-rose-800 p-3 bg-rose-50 border-2 border-rose-500 rounded text-lg md:text-xl">
+                            <span class="font-black uppercase flex items-center gap-1"><i data-lucide="lock" class="w-5 h-5 shrink-0"></i> Locked (2/2 Attempts)</span>
+                            <p class="text-sm md:text-base font-black">Correct Answer: <span class="underline">${targetVal.toUpperCase()}</span></p>
+                            <p class="text-sm md:text-base italic text-slate-700">${explStr}</p>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    return false;
+                }
+            }
+        }
+
+        function checkPhase1() {
+            let empty = false;
+            for (const id of Object.keys(phase1Data)) {
+                const el = document.getElementById(id);
+                if (el && el.value.trim() === "") {
+                    empty = true;
+                    break;
+                }
+            }
+
+            if (empty) {
+                openAlertModal("Incomplete Answers", "Please fill in all blanks before checking.");
+                return;
+            }
+
+            for (const [id, target] of Object.entries(phase1Data)) {
+                const el = document.getElementById(id);
+                const feedbackEl = document.getElementById(`feedback-${id}`);
+                if (!el) continue;
+
+                evaluateField(id, el.value, target.correct, target.hint, target.explanation, feedbackEl, el);
+            }
+            showBrutalistToast("Part 1 answers checked!");
+        }
+
+        function checkMCQ() {
+            let incomplete = false;
+            mcqQuestionsData.forEach(item => {
+                const radio = document.querySelector(`input[name="${item.id}"]:checked`);
+                if (!radio) {
+                    incomplete = true;
+                }
+            });
+
+            if (incomplete) {
+                openAlertModal("Unanswered Questions", "Please answer all questions in Activity 1.");
+                return;
+            }
+
+            mcqQuestionsData.forEach(item => {
+                const radio = document.querySelector(`input[name="${item.id}"]:checked`);
+                const userChoice = radio ? radio.value : "";
+                const feedbackEl = document.getElementById(`feedback-${item.id}`);
+
+                if (!state.attempts[item.id]) {
+                    state.attempts[item.id] = 0;
+                    state.status[item.id] = "unsolved";
+                }
+
+                if (state.status[item.id] === "solved" || state.status[item.id] === "failed") {
+                    return;
+                }
+
+                if (userChoice === item.correct) {
+                    state.status[item.id] = "solved";
+                    document.getElementsByName(item.id).forEach(el => el.disabled = true);
+                    const userLabel = document.getElementById(`label-${item.id}-${userChoice}`);
+                    if (userLabel) userLabel.classList.add('correct');
+                    feedbackEl.innerHTML = `
+                        <div class="flex items-center gap-2 text-emerald-700 font-bold p-2 bg-emerald-50 border-2 border-emerald-500 rounded text-lg">
+                            <i data-lucide="check" class="w-5 h-5 shrink-0"></i> Correct!
+                        </div>
+                    `;
+                } else {
+                    state.attempts[item.id]++;
+                    if (state.attempts[item.id] === 1) {
+                        state.status[item.id] = "hint";
+                        const userLabel = document.getElementById(`label-${item.id}-${userChoice}`);
+                        if (userLabel) userLabel.classList.add('hint-border');
+                        feedbackEl.innerHTML = `
+                            <div class="flex flex-col gap-1 text-amber-800 p-2 bg-amber-50 border-2 border-amber-400 rounded text-lg">
+                                <span class="font-bold uppercase"><i data-lucide="help-circle" class="w-5 h-5 inline shrink-0 mr-1"></i> Try Again (1/2 Attempts)</span>
+                                <p class="text-sm italic">Hint: ${item.hint}</p>
+                            </div>
+                        `;
+                    } else {
+                        state.status[item.id] = "failed";
+                        document.getElementsByName(item.id).forEach(el => el.disabled = true);
+                        const userLabel = document.getElementById(`label-${item.id}-${userChoice}`);
+                        const correctLabel = document.getElementById(`label-${item.id}-${item.correct}`);
+                        if (userLabel) userLabel.classList.add('incorrect');
+                        if (correctLabel) correctLabel.classList.add('correct');
+                        feedbackEl.innerHTML = `
+                            <div class="flex flex-col gap-1 text-rose-800 p-2 bg-rose-50 border-2 border-rose-500 rounded text-lg">
+                                <span class="font-bold uppercase"><i data-lucide="lock" class="w-5 h-5 inline shrink-0 mr-1"></i> Locked (2/2 Attempts)</span>
+                                <p class="text-sm font-black">Correct Answer Option: <span class="underline">${item.correct}</span></p>
+                                <p class="text-sm italic">${item.explanation}</p>
+                            </div>
+                        `;
+                    }
+                }
+            });
+            lucide.createIcons();
+            showBrutalistToast("Activity 1 answers checked!");
+        }
+
+        function checkDetailedExtraction() {
+            let empty = false;
+            for (const id of Object.keys(a2Data)) {
+                const el = document.getElementById(id);
+                if (el && el.value.trim() === "") {
+                    empty = true;
+                    break;
+                }
+            }
+
+            if (empty) {
+                openAlertModal("Empty Blanks", "Please fill in all blanks before checking.");
+                return;
+            }
+
+            for (const [id, target] of Object.entries(a2Data)) {
+                const el = document.getElementById(id);
+                const feedbackEl = document.getElementById(`feedback-${id}`);
+                if (!el) continue;
+
+                evaluateField(id, el.value, target.correct, target.hint, target.explanation, feedbackEl, el);
+            }
+            showBrutalistToast("Activity 2 blanks checked!");
+        }
+
+        function checkDialogueSynthesis() {
+            let empty = false;
+            a3Data.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el && el.value === "") {
+                    empty = true;
+                }
+            });
+
+            if (empty) {
+                openAlertModal("Incomplete Matching", "Please match all sentences to their answers.");
+                return;
+            }
+
+            a3Data.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (!el) return;
+
+                const userVal = el.value;
+                const feedbackEl = document.getElementById(`feedback-${item.id}`);
+
+                if (!state.attempts[item.id]) {
+                    state.attempts[item.id] = 0;
+                    state.status[item.id] = "unsolved";
+                }
+
+                if (state.status[item.id] === "solved" || state.status[item.id] === "failed") {
+                    return;
+                }
+
+                if (userVal === item.correct) {
+                    state.status[item.id] = "solved";
+                    el.disabled = true;
+                    el.className = "text-input py-2 mt-0 text-sm md:text-base border-emerald-600 bg-emerald-50 shadow-none text-emerald-800";
+                    feedbackEl.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6 text-[#22c55e]"></i>';
+                } else {
+                    state.attempts[item.id]++;
+                    if (state.attempts[item.id] === 1) {
+                        state.status[item.id] = "hint";
+                        el.className = "text-input py-2 mt-0 text-sm md:text-base border-amber-500 bg-amber-50";
+                        feedbackEl.innerHTML = '<i data-lucide="help-circle" class="w-6 h-6 text-[#d97706]" title="' + item.hint + '"></i>';
+                    } else {
+                        state.status[item.id] = "failed";
+                        el.disabled = true;
+                        el.value = item.correct;
+                        el.className = "text-input py-2 mt-0 text-sm md:text-base border-rose-600 bg-rose-50 shadow-none text-rose-800";
+                        feedbackEl.innerHTML = '<i data-lucide="x-circle" class="w-6 h-6 text-[#ef4444]" title="' + item.explanation + '"></i>';
+                    }
+                }
+            });
+            lucide.createIcons();
+            showBrutalistToast("Activity 3 matching checked!");
+        }
+
+        function generateStudentIntroductionScript() {
+            const seller = document.getElementById('tbl-seller').value || "[Seller Name]";
+            const fruit = document.getElementById('tbl-fruit').value || "[Fruit Name]";
+            const fruitPrice = document.getElementById('tbl-fruit-price').value || "[Fruit Price]";
+            const fruitQty = document.getElementById('tbl-fruit-qty').value || "[Fruit Quantity]";
+            const drink = document.getElementById('tbl-drink').value || "[Drink Name]";
+            const drinkPrice = document.getElementById('tbl-drink-price').value || "[Drink Price]";
+
+            const dialogOutput = `${seller}: Hello. Can I help you?\n\nYou: Yes, please. I need some ${fruit}. How much are they?\n\n${seller}: The ${fruit} are ${fruitPrice}.\n\nYou: Great. I want ${fruitQty} of ${fruit}, please.\n\n${seller}: Okay. Do you need anything else?\n\nYou: Yes. How much is a bottle of ${drink}?\n\n${seller}: One bottle of ${drink} costs ${drinkPrice}.\n\nYou: Perfect. I want ${drink}. Thank you very much!`;
+            
+            document.getElementById('introduction-script-preview').innerText = dialogOutput;
+        }
+
+        function copyIntroductionScript() {
+            const scriptText = document.getElementById('introduction-script-preview').innerText;
+            const tempArea = document.createElement("textarea");
+            tempArea.value = scriptText;
+            document.body.appendChild(tempArea);
+            tempArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showBrutalistToast("Roleplay script copied!");
+            } catch (err) {
+                showBrutalistToast("Copy failed. Please copy manually.");
+            }
+            document.body.removeChild(tempArea);
+        }
+
+        function performWorksheetReset() {
+            state.attempts = {};
+            state.status = {};
+
+            const formInputs = [
+                "p1-q1", "p1-q2", "p1-q3", "p1-q4", "p1-q5",
+                "a2-q1", "a2-q2", "a2-q3", "a2-q4", "a2-q5",
+                "tbl-seller", "tbl-fruit", "tbl-fruit-price", "tbl-fruit-qty", "tbl-drink", "tbl-drink-price"
+            ];
+
+            formInputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.value = "";
+                    el.disabled = false;
+                    if (id.startsWith('tbl-')) {
+                        el.className = "text-input p-3";
+                    } else if (id.startsWith('a2-')) {
+                        el.className = "text-input w-48 text-xl p-2 mt-0 text-center uppercase";
+                    } else {
+                        el.className = "text-input w-full sm:w-56 text-xl p-2 mt-0 inline-block text-center uppercase";
+                    }
+                }
+            });
+
+            renderMCQOptions();
+            renderDialogueSynthesis();
+
+            const feedbacks = [
+                "feedback-p1-q1", "feedback-p1-q2", "feedback-p1-q3", "feedback-p1-q4", "feedback-p1-q5",
+                "feedback-a2-q1", "feedback-a2-q2", "feedback-a2-q3", "feedback-a2-q4", "feedback-a2-q5"
+            ];
+            feedbacks.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = "";
+            });
+
+            document.getElementById('introduction-script-preview').innerText = "(Type your information in the boxes on the left to see your conversation here!)";
+
+            closeResetModal();
+            showBrutalistToast("Progress successfully reset!");
+        }
+    </script>
+</body>
+</html>

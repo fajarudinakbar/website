@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaking Activity Randomizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            background-color: #f4f4f0;
+            background-image: radial-gradient(#000 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .brutal-border {
+            border: 4px solid #000;
+        }
+        .brutal-shadow {
+            box-shadow: 8px 8px 0px 0px #000;
+        }
+        .brutal-button {
+            transition: all 0.1s ease-in-out;
+        }
+        .brutal-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 10px 10px 0px 0px #000;
+        }
+        .brutal-button:active {
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0px 0px #000;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col">
+
+    <header class="mb-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-black text-black bg-[#FFE66D] inline-block p-4 brutal-border brutal-shadow uppercase tracking-tight">
+            Speaking Activity Randomizer
+        </h1>
+    </header>
+
+    <main class="flex-grow flex flex-col lg:flex-row gap-8 items-start max-w-screen-2xl mx-auto w-full">
+        <!-- Left Column: Participant List -->
+        <div class="w-full lg:w-1/4 flex flex-col gap-8">
+            <div class="bg-[#4ECDC4] brutal-border brutal-shadow p-6">
+                <h2 class="text-xl xl:text-2xl font-black mb-4 uppercase flex justify-between items-center">
+                    <span>Participant List</span>
+                    <span id="counterBadge" class="bg-white text-black text-sm px-3 py-1 brutal-border">0/0</span>
+                </h2>
+                <p class="text-black font-bold mb-4 text-sm xl:text-base">Input names separated by commas or new lines. The wheel ensures everyone speaks before the list resets.</p>
+                <textarea id="namesInput" class="w-full h-48 p-4 brutal-border font-bold text-lg resize-none focus:outline-none focus:ring-4 focus:ring-black mb-4" placeholder="Enter names here..."></textarea>
+                <button id="updateBtn" class="bg-white text-black text-lg xl:text-xl font-black py-3 px-6 brutal-border brutal-shadow brutal-button uppercase w-full">
+                    Update Roster
+                </button>
+            </div>
+
+            <div class="bg-white brutal-border brutal-shadow p-6 hidden lg:block">
+                <h2 class="text-xl font-black mb-2 uppercase">How it works</h2>
+                <ul class="list-disc list-inside font-bold space-y-2 text-sm">
+                    <li>The wheel visualizes remaining students.</li>
+                    <li>Once selected, a student is removed from the current round.</li>
+                    <li>A random discussion question is displayed.</li>
+                    <li>When the wheel is empty, it automatically refills.</li>
+                    <li>A student will never be chosen twice in a row.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Center Column: Wheel -->
+        <div class="w-full lg:w-1/2 bg-white brutal-border brutal-shadow p-6 flex flex-col items-center relative order-first lg:order-none">
+            <div class="relative w-full aspect-square max-w-[500px]">
+                <canvas id="wheelCanvas" width="500" height="500" class="rounded-full brutal-border"></canvas>
+                <!-- Pointer -->
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[40px] border-t-black drop-shadow-[0_4px_0_rgba(0,0,0,1)] z-10"></div>
+            </div>
+            
+            <button id="spinBtn" class="mt-8 bg-[#FF6B6B] text-black text-2xl font-black py-4 px-12 brutal-border brutal-shadow brutal-button uppercase tracking-wider w-full max-w-[300px]">
+                Spin the Wheel!
+            </button>
+        </div>
+
+        <!-- Right Column: Question Bank -->
+        <div class="w-full lg:w-1/4 flex flex-col gap-8">
+            <div id="questionBank" class="bg-[#FF9FEE] brutal-border brutal-shadow p-6">
+                <h2 class="text-xl xl:text-2xl font-black mb-4 uppercase">
+                    <span>Question Bank</span>
+                </h2>
+                <p class="text-black font-bold mb-4 text-sm xl:text-base">Input discussion prompts here (one per line). These will be assigned randomly when a student is selected.</p>
+                <textarea id="questionsInput" class="w-full lg:h-[450px] h-48 p-4 brutal-border font-bold text-lg resize-none focus:outline-none focus:ring-4 focus:ring-black mb-4" placeholder="Enter questions here..."></textarea>
+                <button id="updateQuestionsBtn" class="bg-white text-black text-lg xl:text-xl font-black py-3 px-6 brutal-border brutal-shadow brutal-button uppercase w-full">
+                    Update Questions
+                </button>
+            </div>
+            
+            <!-- How it works (Mobile only, shows at bottom) -->
+            <div class="bg-white brutal-border brutal-shadow p-6 lg:hidden">
+                <h2 class="text-xl font-black mb-2 uppercase">How it works</h2>
+                <ul class="list-disc list-inside font-bold space-y-2 text-sm">
+                    <li>The wheel visualizes remaining students.</li>
+                    <li>Once selected, a student is removed from the current round.</li>
+                    <li>A random discussion question is displayed.</li>
+                    <li>When the wheel is empty, it automatically refills.</li>
+                    <li>A student will never be chosen twice in a row.</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-[#FFE66D] border-4 border-black p-8 shadow-[16px_16px_0_0_#000] max-w-2xl w-full flex flex-col items-center text-center transform scale-95 transition-transform duration-200" id="modalContent">
+            <p class="text-lg font-bold mb-2 uppercase tracking-widest text-gray-700">Selected Participant</p>
+            <h2 class="text-5xl md:text-7xl font-black mb-8 text-[#FF6B6B] drop-shadow-[2px_2px_0_#000]" id="winnerName">Name</h2>
+            
+            <div class="bg-white brutal-border p-6 w-full mb-8 relative">
+                <div class="absolute -top-3 -left-3 bg-[#4ECDC4] brutal-border px-2 py-1 font-black text-sm uppercase">Discussion Question</div>
+                <p class="text-2xl md:text-3xl font-bold mt-2" id="winnerQuestion">Question goes here?</p>
+            </div>
+            
+            <button id="closeModalBtn" class="bg-white text-black text-xl font-black py-3 px-12 brutal-border shadow-[4px_4px_0_0_#000] brutal-button uppercase">
+                Got it!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let activeQuestions = [
+            "What kind of school experience do people usually have in your country?",
+            "What subjects are usually the most useful in school?",
+            "What activities do students often enjoy when they are younger?",
+            "What makes a good learning experience?",
+            "What challenges do people often face when they start working?",
+            "What is a common mistake people make when learning something new?",
+            "What kind of experiences help people grow the most?",
+            "What do people usually remember from their early education?",
+            "What does a typical working day look like for many people today?",
+            "What are common challenges in daily life now?",
+            "What do people usually do to relax after work?",
+            "What makes a job enjoyable or difficult?",
+            "What kind of communication is most effective at work?",
+            "What skills are important in everyday life?",
+            "What makes a good team or group?",
+            "What habits help people stay productive?",
+            "What skills will be important in the future?",
+            "How will work change in the next few years?",
+            "What kind of jobs will become more important?",
+            "What should people learn to prepare for the future?",
+            "What changes would improve people’s daily lives?",
+            "What kind of lifestyle do people want in the future?",
+            "What is something new people should try to grow?",
+            "What goals are common for people today?",
+            "Is it better to work alone or in a team? Why?",
+            "What is more important: experience or education?",
+            "How should people deal with difficult situations?",
+            "What makes communication clear or unclear?",
+            "What should people do when they don’t understand something?",
+            "What is the best way to learn a new skill?",
+            "What makes a conversation interesting?",
+            "What helps people feel confident when speaking?"
+        ];
+
+        const colors = [
+            '#FF6B6B', '#4ECDC4', '#FFE66D', '#FF8C42', 
+            '#A1C3D1', '#B565A7', '#C7F464', '#FF9FEE',
+            '#38dbff', '#00e5a3'
+        ];
+
+        let masterNames = ["Rizky", "Siti", "Budi", "Ayu", "Dewi", "Reza"];
+        let availableNames = [];
+        let lastNamePicked = null;
+        let askedQuestions = {};
+
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const updateBtn = document.getElementById('updateBtn');
+        const namesInput = document.getElementById('namesInput');
+        const counterBadge = document.getElementById('counterBadge');
+        const questionsInput = document.getElementById('questionsInput');
+        const updateQuestionsBtn = document.getElementById('updateQuestionsBtn');
+        
+        const resultModal = document.getElementById('resultModal');
+        const modalContent = document.getElementById('modalContent');
+        const winnerNameEl = document.getElementById('winnerName');
+        const winnerQuestionEl = document.getElementById('winnerQuestion');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        function init() {
+            namesInput.value = masterNames.join('\n');
+            questionsInput.value = activeQuestions.join('\n');
+            resetAvailableNames();
+            drawWheel();
+        }
+
+        function resetAvailableNames() {
+            availableNames = [...masterNames];
+            updateCounter();
+        }
+
+        function updateCounter() {
+            counterBadge.textContent = `${availableNames.length}/${masterNames.length}`;
+        }
+
+        function handleUpdateRoster() {
+            const inputText = namesInput.value;
+            const newNames = inputText.split(/[\n,]+/).map(n => n.trim()).filter(n => n.length > 0);
+            
+            if (newNames.length < 2) {
+                alert("Please enter at least 2 names to ensure a proper communicative activity.");
+                return;
+            }
+
+            masterNames = newNames;
+            resetAvailableNames();
+            lastNamePicked = null;
+            currentRotation = 0;
+            askedQuestions = {};
+            drawWheel();
+        }
+
+        function handleUpdateQuestions() {
+            const inputText = questionsInput.value;
+            const newQuestions = inputText.split('\n').map(q => q.trim()).filter(q => q.length > 0);
+            
+            if (newQuestions.length < 1) {
+                alert("Please enter at least 1 question.");
+                return;
+            }
+
+            activeQuestions = newQuestions;
+            askedQuestions = {};
+            alert("Discussion questions updated successfully!");
+        }
+
+        function drawWheel() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 240;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (availableNames.length === 0) return;
+
+            const sliceAngle = (2 * Math.PI) / availableNames.length;
+
+            for (let i = 0; i < availableNames.length; i++) {
+                const angle = currentRotation + i * sliceAngle;
+
+                // Draw slice
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, angle, angle + sliceAngle);
+                ctx.lineTo(centerX, centerY);
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = '#000';
+                ctx.stroke();
+
+                // Draw text
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle + sliceAngle / 2);
+                ctx.textAlign = "right";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "#000";
+                
+                // Adjust font size based on name length
+                let fontSize = 24;
+                if (availableNames[i].length > 10) fontSize = 18;
+                if (availableNames[i].length > 15) fontSize = 14;
+                
+                ctx.font = `900 ${fontSize}px 'Space Grotesk', sans-serif`;
+                
+                // Optional text shadow for readability
+                ctx.shadowColor = "white";
+                ctx.shadowBlur = 4;
+                ctx.lineWidth = 3;
+                
+                ctx.fillText(availableNames[i].toUpperCase(), radius - 20, 0);
+                ctx.restore();
+            }
+            
+            // Center pin
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 15, 0, 2 * Math.PI);
+            ctx.fillStyle = '#000';
+            ctx.fill();
+        }
+
+        function easeOutQuart(x) {
+            return 1 - Math.pow(1 - x, 4);
+        }
+
+        function spinWheel() {
+            if (isSpinning || availableNames.length === 0) return;
+            isSpinning = true;
+
+            // Determine winner index
+            let winIndex;
+            if (availableNames.length > 1) {
+                do {
+                    winIndex = Math.floor(Math.random() * availableNames.length);
+                } while (availableNames[winIndex] === lastNamePicked && lastNamePicked !== null);
+            } else {
+                winIndex = 0;
+            }
+
+            const winnerName = availableNames[winIndex];
+            const sliceAngle = (2 * Math.PI) / availableNames.length;
+            
+            // Target is the top of the wheel (-PI/2)
+            const targetTop = -Math.PI / 2;
+            const sliceCenterOffset = winIndex * sliceAngle + (sliceAngle / 2);
+            
+            // Calculate exact rotation needed so winner lands at top
+            let finalRotation = targetTop - sliceCenterOffset;
+            
+            // Add extra spins for visual effect (5 to 8 full spins)
+            const extraSpins = Math.floor(Math.random() * 4) + 5;
+            finalRotation += (Math.PI * 2 * extraSpins);
+
+            const startRotation = currentRotation;
+            const duration = 4000;
+            let startTime = null;
+
+            function animate(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = timestamp - startTime;
+                const percent = Math.min(progress / duration, 1);
+                
+                currentRotation = startRotation + (finalRotation - startRotation) * easeOutQuart(percent);
+                drawWheel();
+
+                if (percent < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    currentRotation = currentRotation % (2 * Math.PI);
+                    isSpinning = false;
+                    finishSpin(winnerName, winIndex);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function finishSpin(winnerName, winIndex) {
+            lastNamePicked = winnerName;
+            
+            // Remove winner from current round
+            availableNames.splice(winIndex, 1);
+            
+            // Initialize question tracking for this student
+            if (!askedQuestions[winnerName]) {
+                askedQuestions[winnerName] = [];
+            }
+            
+            // Find questions not yet asked to this student
+            let availableQs = activeQuestions.filter(q => !askedQuestions[winnerName].includes(q));
+            
+            // Reset student's history if they have answered all questions
+            if (availableQs.length === 0) {
+                askedQuestions[winnerName] = [];
+                availableQs = activeQuestions;
+            }
+            
+            // Select random question from the available pool
+            const randomQ = availableQs[Math.floor(Math.random() * availableQs.length)];
+            
+            // Record that this question was asked
+            askedQuestions[winnerName].push(randomQ);
+            
+            showModal(winnerName, randomQ);
+
+            // Refill logic handled after modal closes to give users a chance to see the wheel update
+        }
+
+        function showModal(name, question) {
+            winnerNameEl.textContent = name;
+            winnerQuestionEl.textContent = question;
+            resultModal.classList.remove('hidden');
+            
+            // Pop animation
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                resultModal.classList.add('hidden');
+                
+                // Refill if empty
+                if (availableNames.length === 0) {
+                    resetAvailableNames();
+                } else {
+                    updateCounter();
+                }
+                
+                drawWheel();
+            }, 200);
+        }
+
+        updateBtn.addEventListener('click', handleUpdateRoster);
+        updateQuestionsBtn.addEventListener('click', handleUpdateQuestions);
+        spinBtn.addEventListener('click', spinWheel);
+        closeModalBtn.addEventListener('click', closeModal);
+
+        // Initialize on load
+        init();
+
+    </script>
+</body>
+</html>

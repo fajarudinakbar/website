@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Listening - Starting a Conversation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+
+        /* Custom Range Slider for Audio */
+        input[type=range] {
+            -webkit-appearance: none; 
+            background: transparent; 
+        }
+        
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+        }
+
+        input[type=range]:focus {
+            outline: none; 
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-slate-100 relative">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base text-slate-500 mb-8 flex gap-2 font-medium uppercase tracking-wider">
+            <span>General English</span> <span>&gt;</span> 
+            <span>Listening</span> <span>&gt;</span> 
+            <span>B1 Level</span> <span>&gt;</span> 
+            <span class="text-cyan-700 font-bold">Social Interaction</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-700 to-blue-600 tracking-tight mb-3">
+                    Starting a Conversation
+                </h1>
+                <p class="text-xl text-slate-500 font-medium">Topic: Community Events, Small Talk, and Social Skills</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-lg text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-cyan-600 p-6 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-xl text-slate-700 leading-relaxed">
+                <i class="fas fa-comments mr-3 text-cyan-600"></i> 
+                <strong>Instructions:</strong> Complete the <strong>Preparation</strong> tasks first. Then read the script (or listen if audio is available) and complete the comprehension tasks.
+            </p>
+        </div>
+
+        <!-- Section 1: Preparation (Cyan Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-2xl font-bold text-cyan-900">Preparation (Tasks 1–2)</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-2xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 5000px;">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 1 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-cyan-800">Task 1: Warm-Up Discussion</h3>
+                            <button onclick="toggleAnswer('ans-t1', this)" class="text-base font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-5 py-2.5 rounded-lg hover:bg-cyan-50 transition-colors shadow-sm">Show Sample</button>
+                        </div>
+                        <div class="space-y-4">
+                            <p class="text-lg text-slate-700 font-medium">How do you feel before meeting new people? Where do people meet socially? What makes it comfortable?</p>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none h-32" placeholder="Write your thoughts..."></textarea>
+                            <div id="ans-t1" class="answer-box hidden mt-4 p-4 bg-cyan-50 border border-cyan-200 rounded-xl text-base text-slate-700">
+                                <strong>Sample Ideas:</strong> I often feel nervous or shy. People meet at parks, cafes, or community events. A conversation feels comfortable when the other person smiles and asks questions.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 2: Vocab -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-cyan-800">Task 2: Vocabulary Preparation</h3>
+                            <button onclick="checkVocab()" class="text-base font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-5 py-2.5 rounded-lg hover:bg-cyan-50 transition-colors shadow-sm">Check Vocabulary</button>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-6">Match the words with their meanings.</p>
+                        <div id="vocab-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Listening Script (Blue Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-file-alt"></i></div>
+                    <span class="text-2xl font-bold text-blue-900">Listening Script</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 3000px;">
+                <div class="p-10 bg-white border-t border-blue-50">
+                    
+                    <!-- Custom Audio Player -->
+                    <div class="bg-blue-50 p-6 rounded-xl mb-8 flex flex-col md:flex-row items-center gap-6 border border-blue-100 shadow-sm">
+                        
+                        <!-- Icon & Label -->
+                        <div class="flex items-center gap-4 w-full md:w-auto">
+                            <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md">
+                                <i class="fas fa-headphones text-xl"></i>
+                            </div>
+                            <div class="hidden md:block">
+                                <h4 class="font-bold text-blue-900 text-lg">Audio Track</h4>
+                                <p class="text-sm text-blue-600 font-medium">Listen to the conversation</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Controls -->
+                        <div class="flex-1 w-full bg-white p-4 rounded-2xl shadow-sm border border-blue-100 flex items-center gap-4">
+                            <!-- Play/Pause Btn -->
+                            <button id="play-btn" class="w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-md group outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i id="play-icon" class="fas fa-play text-lg ml-1 group-hover:scale-110 transition-transform"></i>
+                            </button>
+                            
+                            <!-- Progress Bar & Time -->
+                            <div class="flex-1">
+                                <input type="range" id="seek-slider" class="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-blue-600 hover:accent-blue-700 transition-all" value="0" max="100">
+                                <div class="flex justify-between text-xs font-bold text-slate-400 mt-2 px-1">
+                                    <span id="current-time">0:00</span>
+                                    <span id="duration">0:00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hidden Native Audio Element -->
+                        <audio id="audio-element" preload="metadata">
+                            <source src="https://github.com/fajarudinakbar/audio/raw/refs/heads/main/B1%20Listening%20-%20Starting%20a%20Conversation.wav" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+
+                    <!-- Transcript Header with Toggle -->
+                    <div class="mb-6 flex flex-wrap justify-between items-center gap-4 border-b border-blue-100 pb-4">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-align-left text-blue-400"></i>
+                            <h3 class="text-xl font-bold text-blue-900">Transcript</h3>
+                        </div>
+                        <button onclick="toggleTranscript()" id="btn-transcript" class="flex items-center gap-2 text-sm font-bold text-blue-600 border border-blue-200 bg-white px-5 py-2.5 rounded-lg hover:bg-blue-50 transition-colors shadow-sm">
+                            <i class="fas fa-eye"></i> Show Transcript
+                        </button>
+                    </div>
+
+                    <!-- Script Text (Initially Hidden) -->
+                    <div id="script-text" class="hidden prose prose-slate max-w-none text-justify leading-loose text-xl">
+                        <p class="text-slate-500 italic mb-4 text-base">Note: This text represents the conversation. Read it aloud with a partner or read silently.</p>
+                        <p><strong>Nina:</strong> Hi, is this seat free?</p>
+                        <p><strong>Arif:</strong> Yes, it is. Please, go ahead.</p>
+                        <p><strong>Nina:</strong> Thanks. I’m Nina. This is my first time coming to this event.</p>
+                        <p><strong>Arif:</strong> Nice to meet you, Nina. I’m Arif. I’ve been coming here for a few months now.</p>
+                        <p><strong>Nina:</strong> Oh really? I was a bit nervous before coming. I didn’t know anyone.</p>
+                        <p><strong>Arif:</strong> I understand. I felt the same way at first. Why did you decide to join?</p>
+                        <p><strong>Nina:</strong> I work from home, so I don’t meet many people during the week. I wanted to be more social.</p>
+                        <p><strong>Arif:</strong> That makes sense. I work full-time in an office, but I still felt a bit isolated. This event helps me relax after work.</p>
+                        <p><strong>Nina:</strong> That sounds nice. Everyone seems friendly so far.</p>
+                        <p><strong>Arif:</strong> Yes, I think so too. I’ve noticed that people here listen and ask questions. It makes conversations easier.</p>
+                        <p><strong>Nina:</strong> I agree. When someone listens, I feel more comfortable talking.</p>
+                        <p><strong>Arif:</strong> Exactly. Simple conversations can really help people feel connected.</p>
+                        <p><strong>Nina:</strong> I’m glad I came today. Starting a conversation is hard, but this feels good.</p>
+                        <p><strong>Arif:</strong> I’m glad to hear that. It gets easier with practice.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Comprehension (Emerald Theme) - Tasks 3-5 -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-2xl font-bold text-emerald-900">Comprehension (Tasks 3–5)</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 3 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-emerald-800">Task 3: General Understanding</h3>
+                            <button onclick="toggleAnswer('ans-t3', this)" class="text-base font-bold text-emerald-600 border-2 border-emerald-200 bg-white px-5 py-2.5 rounded-lg hover:bg-emerald-50 transition-colors shadow-sm">Show Answers</button>
+                        </div>
+                        <div class="space-y-4">
+                            <p class="text-lg text-slate-700 font-medium">Where are they? Why did Nina join? How does she feel at the end?</p>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none h-32"></textarea>
+                            <div id="ans-t3" class="answer-box hidden mt-6 p-6 bg-emerald-50 rounded-xl border border-emerald-200 text-lg text-slate-700">
+                                <ul class="list-disc pl-6 space-y-3">
+                                    <li>They are at a community event.</li>
+                                    <li>Nina joined to be more social because she works from home.</li>
+                                    <li>She feels glad she came and feels good about the conversation.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 4 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-emerald-800">Task 4: Detail Check</h3>
+                            <button onclick="toggleAnswer('ans-t4', this)" class="text-base font-bold text-emerald-600 border-2 border-emerald-200 bg-white px-5 py-2.5 rounded-lg hover:bg-emerald-50 transition-colors shadow-sm">Show Answers</button>
+                        </div>
+                        <div class="space-y-6">
+                            <textarea placeholder="Why does Arif attend?" class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none h-24"></textarea>
+                            <textarea placeholder="What makes conversations easier?" class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none h-24"></textarea>
+                            <textarea placeholder="What do they agree about listening?" class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none h-24"></textarea>
+                        </div>
+                        <div id="ans-t4" class="answer-box hidden mt-8 p-8 bg-emerald-50 rounded-2xl border border-emerald-200 text-lg text-slate-700">
+                            <ul class="list-disc pl-6 space-y-3">
+                                <li>Arif attends to relax after work and avoid isolation.</li>
+                                <li>People listening and asking questions makes it easier.</li>
+                                <li>They agree that listening makes people feel comfortable talking.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 5 (True/False) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-emerald-800">Task 5: True or False</h3>
+                            <button onclick="checkTF()" class="text-base font-bold text-emerald-600 border-2 border-emerald-200 bg-white px-5 py-2.5 rounded-lg hover:bg-emerald-50 transition-colors shadow-sm">Check T/F</button>
+                        </div>
+                        <div id="tf-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Analysis (Orange Theme) - Task 6 -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-orange-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-8 bg-orange-50 hover:bg-orange-100 border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-orange-200 text-orange-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-2xl font-bold text-orange-900">Analysis (Task 6)</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 6 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-orange-800">Task 6: Cause and Effect</h3>
+                            <button onclick="toggleAnswer('ans-t6', this)" class="text-base font-bold text-orange-600 border-2 border-orange-200 bg-white px-5 py-2.5 rounded-lg hover:bg-orange-50 transition-colors shadow-sm">Show Sample</button>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4"><span class="w-1/2 font-bold text-lg">Working from home →</span> <input type="text" class="flex-1 p-3 border-b-2 border-slate-300 focus:outline-none focus:border-orange-500 text-lg"></div>
+                            <div class="flex items-center gap-4"><span class="w-1/2 font-bold text-lg">Feeling listened to →</span> <input type="text" class="flex-1 p-3 border-b-2 border-slate-300 focus:outline-none focus:border-orange-500 text-lg"></div>
+                            <div class="flex items-center gap-4"><span class="w-1/2 font-bold text-lg">Friendly conversations →</span> <input type="text" class="flex-1 p-3 border-b-2 border-slate-300 focus:outline-none focus:border-orange-500 text-lg"></div>
+                            <div class="flex items-center gap-4"><span class="w-1/2 font-bold text-lg">Joining social events →</span> <input type="text" class="flex-1 p-3 border-b-2 border-slate-300 focus:outline-none focus:border-orange-500 text-lg"></div>
+                        </div>
+                        <div id="ans-t6" class="answer-box hidden mt-8 p-8 bg-orange-50 rounded-2xl border border-orange-200 text-lg text-slate-700">
+                            <ul class="list-disc pl-6 space-y-4">
+                                <li>...people may feel isolated.</li>
+                                <li>...people feel more comfortable.</li>
+                                <li>...stronger social connections.</li>
+                                <li>...more chances to meet people.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Speaking & Discussion (Violet Theme) - Tasks 7-9 -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-2xl font-bold text-violet-900">Speaking & Discussion (Tasks 7-9)</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 7 -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-violet-800 mb-4">Task 7: Personal Experience</h3>
+                        <p class="text-lg text-slate-600 mb-4">Do you enjoy meeting new people? How do you start? How do you show listening?</p>
+                        <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-32"></textarea>
+                    </div>
+
+                    <!-- Task 8 -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-violet-800 mb-4">Task 8: Discussion - Social Skills</h3>
+                        <p class="text-lg text-slate-600 mb-4">Why the nervousness? Good listening habits? How to build confidence?</p>
+                        <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-32"></textarea>
+                    </div>
+
+                    <!-- Task 9 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-violet-800">Task 9: Case Study - Social Problem Solving</h3>
+                            <button onclick="toggleAnswer('ans-c1', this)" class="text-base font-bold text-violet-600 border-2 border-violet-200 bg-white px-5 py-2.5 rounded-lg hover:bg-violet-50 transition-colors shadow-sm">Show Sample</button>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-4"><strong>Scenario:</strong> New member stops coming because no one talked to them. </p>
+                        <div class="mb-4 text-base text-slate-700 bg-violet-50 p-4 rounded-lg border border-violet-100">
+                            <strong>Discuss:</strong>
+                            <ul class="list-disc pl-5 space-y-1 mt-2">
+                                <li>What went wrong in the conversation?</li>
+                                <li>What could group members do differently?</li>
+                                <li>What advice would you give the new member?</li>
+                            </ul>
+                        </div>
+                        <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-32"></textarea>
+                        <div id="ans-c1" class="answer-box hidden mt-6 p-6 bg-violet-50 border border-violet-200 rounded-xl text-base text-slate-700">
+                            <strong>Wrong:</strong> Lack of welcoming behavior or questions.<br>
+                            <strong>Differently:</strong> Assign a "greeter" or actively ask open questions to new people.<br>
+                            <strong>Advice:</strong> Try one more time, but perhaps initiate a conversation yourself using "Is this seat free?" like Nina did.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Reflection (Rose Theme) - Task 10 -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-2xl font-bold text-rose-900">Reflection (Task 10)</span>
+                </div>
+                <i id="icon-part6" class="fas fa-chevron-down text-rose-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part6" class="accordion-content">
+                <div class="p-10 bg-white space-y-8">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-rose-800">Task 10: Final Reflection</h3>
+                            <button onclick="toggleAnswer('ans-t10', this)" class="text-base font-bold text-rose-600 border-2 border-rose-200 bg-white px-5 py-2.5 rounded-lg hover:bg-rose-50 transition-colors shadow-sm">Show Sample Summary</button>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-4">Summarize the conversation. Main message? Importance of listening?</p>
+                        <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-48"></textarea>
+                        <div id="ans-t10" class="answer-box hidden mt-4 p-4 bg-rose-50 border border-rose-200 rounded-xl text-base text-slate-700 leading-relaxed">
+                            <strong>Sample Summary:</strong> Nina and Arif meet at a community event. Nina is new and nervous, but Arif welcomes her. They discuss why they joined—Nina works from home and wants to be social, while Arif wants to relax after office work. They agree that friendly people and good listening make conversations easier. By the end, Nina feels comfortable and glad she came.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-lg font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-cyan-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        
+        // Attempts Tracking
+        const attempts = {};
+
+        // Task 2: Vocab Data
+        const vocabData = [
+            { id: "v1", word: "1. nervous", correct: "c", explanation: "Nervous means feeling worried or unsure.", options: { a: "feeling calm", b: "kind and welcoming", c: "feeling worried", d: "feeling close to others", e: "feeling alone", f: "feeling at ease" } },
+            { id: "v2", word: "2. isolated", correct: "e", explanation: "Isolated means feeling alone." },
+            { id: "v3", word: "3. friendly", correct: "b", explanation: "Friendly people are kind and welcoming." },
+            { id: "v4", word: "4. relaxed", correct: "a", explanation: "Relaxed means feeling calm." },
+            { id: "v5", word: "5. connected", correct: "d", explanation: "Connected means feeling close to others." },
+            { id: "v6", word: "6. comfortable", correct: "f", explanation: "Comfortable means feeling at ease." }
+        ];
+
+        // Task 5: True/False
+        const tfData = [
+            { id: "tf1", text: "1. Nina has attended the event before.", correct: "False", explanation: "Nina says it is her first time." },
+            { id: "tf2", text: "2. Arif feels isolated at work sometimes.", correct: "True", explanation: "Arif says he sometimes feels isolated despite working in an office." },
+            { id: "tf3", text: "3. Nina feels comfortable because Arif listens to her.", correct: "True", explanation: "Nina says listening makes her feel comfortable." },
+            { id: "tf4", text: "4. Arif thinks conversations are always easy.", correct: "False", explanation: "Arif says conversations become easier with practice, not that they are always easy." }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            const optionsHtml = `
+                <option value="">Select meaning...</option>
+                <option value="a">a. feeling calm</option>
+                <option value="b">b. kind and welcoming</option>
+                <option value="c">c. feeling worried</option>
+                <option value="d">d. feeling close to others</option>
+                <option value="e">e. feeling alone</option>
+                <option value="f">f. feeling at ease</option>
+            `;
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col gap-2 p-4 bg-cyan-50/50 rounded-xl border border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4">
+                        <div class="md:w-1/3 font-bold text-cyan-900">${item.word}</div>
+                        <div class="md:w-2/3 flex items-center gap-4">
+                            <select id="${item.id}" class="flex-1 p-3 border border-slate-300 rounded-lg text-lg focus:outline-none focus:border-cyan-500 cursor-pointer bg-white">
+                                ${optionsHtml}
+                            </select>
+                            <div id="feedback-${item.id}" class="w-auto flex-shrink-0 text-lg font-bold min-w-[24px]"></div>
+                        </div>
+                    </div>
+                    <div id="explain-${item.id}" class="hidden mt-2 p-3 bg-cyan-100 text-cyan-900 text-base rounded-lg border border-cyan-200"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col gap-2 p-4 border-b border-emerald-100 last:border-0">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between">
+                        <span class="text-lg text-slate-700 mb-3 sm:mb-0 w-full sm:w-2/3">${item.text}</span>
+                        <div class="flex items-center gap-6 text-lg font-medium">
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-600">
+                                <input type="radio" name="${item.id}" value="True" class="w-5 h-5 accent-emerald-600"> True
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-600">
+                                <input type="radio" name="${item.id}" value="False" class="w-5 h-5 accent-emerald-600"> False
+                            </label>
+                            <span id="feedback-${item.id}" class="w-8 flex justify-center text-xl"></span>
+                        </div>
+                    </div>
+                    <div id="explain-${item.id}" class="hidden mt-2 p-3 bg-emerald-100 text-emerald-900 text-base rounded-lg border border-emerald-200"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    select.classList.add('border-green-500', 'bg-green-50');
+                    select.disabled = true;
+                    explainDiv.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-sm font-bold text-red-600 bg-red-100 px-2 rounded">Ans: ${item.correct}</span>`;
+                        explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct}</strong><br>${item.explanation}`;
+                        explainDiv.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    }
+                    select.classList.add('border-red-300');
+                }
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    radios.forEach(r => r.disabled = true);
+                    explainDiv.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-sm font-bold text-red-600 bg-red-100 px-2 rounded">Ans: ${item.correct}</span>`;
+                        explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct}</strong><br>${item.explanation}`;
+                        explainDiv.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                    }
+                }
+            });
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Sample";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+        
+        function toggleTranscript() {
+            const transcript = document.getElementById('script-text');
+            const btn = document.getElementById('btn-transcript');
+            
+            if (transcript.classList.contains('hidden')) {
+                transcript.classList.remove('hidden');
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Transcript';
+                btn.classList.add('bg-blue-100');
+            } else {
+                transcript.classList.add('hidden');
+                btn.innerHTML = '<i class="fas fa-eye"></i> Show Transcript';
+                btn.classList.remove('bg-blue-100');
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                for (const key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                document.querySelectorAll('select').forEach(s => { s.value = ""; s.disabled = false; s.classList.remove('border-green-500', 'bg-green-50', 'border-red-300'); });
+                
+                // Clear Feedback & Explanations
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('[id^="explain-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.add('hidden');
+                });
+                
+                // Hide Answers
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+                
+                // Reset Transcript
+                const transcript = document.getElementById('script-text');
+                const transBtn = document.getElementById('btn-transcript');
+                transcript.classList.add('hidden');
+                transBtn.innerHTML = '<i class="fas fa-eye"></i> Show Transcript';
+                transBtn.classList.remove('bg-blue-100');
+                
+                // Reset Buttons
+                document.querySelectorAll('button').forEach(btn => {
+                   if(btn.innerText.includes("Hide Answer")) btn.innerText = "Show Sample";
+                   if(btn.innerText.includes("Hide Answers")) btn.innerText = "Show Answers"; 
+                });
+                
+                // Reset Audio Player UI
+                const audio = document.getElementById('audio-element');
+                audio.pause();
+                audio.currentTime = 0;
+                document.getElementById('play-icon').className = "fas fa-play text-lg ml-1 group-hover:scale-110 transition-transform";
+                document.getElementById('seek-slider').value = 0;
+                document.getElementById('current-time').textContent = "0:00";
+            }
+        }
+
+        // --- Custom Audio Player Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderTF();
+
+            const audio = document.getElementById('audio-element');
+            const playBtn = document.getElementById('play-btn');
+            const playIcon = document.getElementById('play-icon');
+            const slider = document.getElementById('seek-slider');
+            const currentTimeSpan = document.getElementById('current-time');
+            const durationSpan = document.getElementById('duration');
+
+            // Format helper
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+
+            // Play/Pause Toggle
+            playBtn.addEventListener('click', () => {
+                if(audio.paused) {
+                    audio.play();
+                    playIcon.className = "fas fa-pause text-lg group-hover:scale-110 transition-transform";
+                } else {
+                    audio.pause();
+                    playIcon.className = "fas fa-play text-lg ml-1 group-hover:scale-110 transition-transform";
+                }
+            });
+
+            // Update Time & Slider
+            audio.addEventListener('timeupdate', () => {
+                const current = audio.currentTime;
+                const duration = audio.duration;
+                
+                if(!isNaN(duration)) {
+                    slider.max = Math.floor(duration);
+                    slider.value = Math.floor(current);
+                    currentTimeSpan.textContent = formatTime(current);
+                }
+            });
+
+            // Set Duration on Load
+            audio.addEventListener('loadedmetadata', () => {
+                if(audio.duration === Infinity) {
+                   // Fallback for some browsers if streaming/blob
+                   audio.currentTime = 1e101;
+                   audio.ontimeupdate = function() {
+                       this.ontimeupdate = () => {};
+                       audio.currentTime = 0; 
+                   }
+                } else {
+                    durationSpan.textContent = formatTime(audio.duration);
+                    slider.max = Math.floor(audio.duration);
+                }
+            });
+
+            // Seek functionality
+            slider.addEventListener('input', () => {
+                audio.currentTime = slider.value;
+                currentTimeSpan.textContent = formatTime(slider.value);
+            });
+            
+            // Audio Ended
+            audio.addEventListener('ended', () => {
+                playIcon.className = "fas fa-play text-lg ml-1 group-hover:scale-110 transition-transform";
+                audio.currentTime = 0;
+                slider.value = 0;
+            });
+        });
+
+    </script>
+</body>
+</html>

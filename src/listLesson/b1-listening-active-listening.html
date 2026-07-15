@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>B1 / GSE 43-58 Listening - The Art of Active Listening</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons for professional vector graphics -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Neo-Brutalist Components */
+        .neo-card {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            font-weight: 800;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            margin-top: 0.5rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+
+        /* Ghost Text Layering - Dictation Styling */
+        .c-wrapper {
+            position: relative;
+            display: inline-block;
+            height: 1.8em;
+            vertical-align: middle;
+            margin: 0 0.1em;
+            border-bottom: 3px solid #0f172a;
+            background-color: transparent;
+            transition: all 0.2s;
+            max-width: 100%;
+        }
+        .c-wrapper:focus-within {
+            border-bottom-color: #545be0;
+            border-bottom-width: 4px;
+            background-color: #e7e9ff;
+        }
+        .c-wrapper.correct {
+            border-bottom-color: #22c55e;
+            border-bottom-width: 4px;
+            background-color: #dcfce7;
+        }
+        .c-wrapper.incorrect {
+            border-bottom-color: #ef4444;
+            border-bottom-width: 4px;
+            background-color: #fee2e2;
+        }
+
+        .c-ghost-bg, .c-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-family: monospace;
+            letter-spacing: 0.15em;
+            font-size: 1.1em;
+            line-height: 1.6em;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 0 0.3em;
+            margin: 0;
+            text-align: left;
+            white-space: pre;
+        }
+        .c-ghost-bg {
+            color: #94a3b8;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .ghost-typed {
+            opacity: 0;
+        }
+        .c-input {
+            color: #0f172a;
+            z-index: 2;
+            caret-color: #545be0;
+            font-weight: 700;
+        }
+        .c-wrapper.correct .c-input {
+            color: #15803d;
+            font-weight: 900;
+        }
+        .c-wrapper.incorrect .c-input {
+            color: #b91c1c;
+        }
+
+        /* Radio Options - Brutalist Style */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #0f172a;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0px 0px #0f172a;
+        }
+        .option-label.correct {
+            background-color: #4ade80;
+            border-color: #0f172a;
+            color: #0f172a;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        .option-label.incorrect {
+            background-color: #f87171;
+            border-color: #0f172a;
+            color: #ffffff;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+
+        /* Transcript Box Styling */
+        .transcript-box {
+            background-color: #ffffff;
+            border: 3px solid #0f172a;
+            padding: 1rem;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            color: #0f172a;
+            line-height: 1.8;
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .transcript-box { padding: 1.5rem; }
+        }
+        .transcript-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ffffff;
+            background-color: #0f172a;
+            padding: 0.25rem 0.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-6 md:p-8 text-sm md:text-base">
+
+    <div class="max-w-6xl mx-auto bg-white p-5 sm:p-8 lg:p-10 border-4 border-dark shadow-neo">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs sm:text-sm md:text-base text-dark mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Academic English</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Listening</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-[#facc15] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">B1 / GSE 43-58</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">The Art of Active Listening</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-dark uppercase tracking-tight mb-3 md:mb-4 text-balance">
+                    The Art of Active Listening
+                </h1>
+                <p class="text-lg sm:text-xl md:text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-1 border-2 border-dark text-pretty">
+                    Topic: Focus, Distractions, and Effective Communication
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-2 px-5 py-3 text-sm md:text-base text-dark bg-[#f87171] uppercase tracking-wide">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#fefce8] border-3 border-dark p-5 md:p-6 mb-8 md:mb-12 shadow-neo-sm flex items-start gap-4 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                <i data-lucide="headphones" class="w-24 h-24 md:w-32 md:h-32 text-dark"></i>
+            </div>
+            <div class="bg-[#facc15] p-2 border-2 border-dark shrink-0 relative z-10">
+                <i data-lucide="info" class="w-6 h-6 text-dark"></i>
+            </div>
+            <p class="text-base md:text-lg text-dark font-bold leading-relaxed text-pretty relative z-10">
+                <span class="uppercase font-black text-xl mr-2">Instructions:</span> Complete the Preparation tasks to activate your vocabulary. Then apply listening skills to understand academic talks, decode daily requests, and complete audio dictations. Click <strong>Listen</strong> to simulate the audio before checking the transcript.
+            </p>
+        </div>
+
+        <!-- Section 1: Preparation -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#eff6ff]">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        1
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Preparation & Awareness</span>
+                </div>
+                <div id="icon-wrapper-part1" class="transition-transform duration-300 transform rotate-180 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part1" class="accordion-content active border-t-4 border-dark" style="max-height: 5000px;">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8">
+                    
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 1: Warm Up Thinking</h3>
+                        <ul class="list-disc pl-6 md:pl-8 space-y-3 text-base md:text-lg text-slate-800 font-bold leading-relaxed mb-6">
+                            <li>Have you ever talked to someone who was looking at their phone? How did it make you feel?</li>
+                            <li>What is the difference between hearing a sound and actually listening to a person?</li>
+                        </ul>
+                        <textarea class="text-input" placeholder="Share your thoughts..."></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 1.1: AI Support</h3>
+                        <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] mb-4">
+                            <p class="font-black text-[#0284c7] uppercase mb-2 flex items-center gap-2">
+                                <i data-lucide="bot" class="w-5 h-5"></i> AI Partner Prompt:
+                            </p>
+                            <p class="font-mono text-sm md:text-base text-slate-700 bg-slate-50 p-3 border-2 border-dark italic">
+                                "I am a B1 English student. Can you explain what 'active listening' means in simple terms? Please give me two examples of what an active listener does with their body language."
+                            </p>
+                        </div>
+                        <textarea class="text-input h-32" placeholder="Notes from AI..."></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">The Hook: Auditory Awareness</h3>
+                        <p class="mb-5 md:mb-6 text-base md:text-lg text-slate-800 font-medium leading-relaxed text-pretty">Sometimes we hear people speak, but we do not process the information. Listen to the conversation below and find the problem.</p>
+                        
+                        <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo-sm">
+                            <h4 class="text-base md:text-lg font-black text-dark uppercase mb-4 border-b-2 border-dark pb-2 flex items-center gap-2 text-balance">
+                                <i data-lucide="ear" class="w-5 h-5 text-brand-500"></i> Noticing Activity
+                            </h4>
+                            
+                            <div class="transcript-box bg-slate-50">
+                                <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 mb-2">
+                                    <span class="transcript-label">Audio Track 1</span>
+                                    <div class="flex flex-wrap gap-2 w-full sm:w-auto flex-1">
+                                        <button onclick="tts.playConversation(audioScripts.step1)" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-brand-200 text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-brand-300 flex-1 sm:flex-none">
+                                            <i data-lucide="volume-2" class="w-4 h-4 sm:w-5 sm:h-5"></i> Listen
+                                        </button>
+                                        <button onclick="tts.stop()" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-white text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-slate-100 flex-1 sm:flex-none">
+                                            <i data-lucide="square" class="w-4 h-4 sm:w-5 sm:h-5"></i> Stop
+                                        </button>
+                                        <button onclick="toggleTranscript('trans1')" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-white text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-slate-100 sm:ml-auto w-full sm:w-auto">
+                                            <i data-lucide="eye" class="w-4 h-4 sm:w-5 sm:h-5"></i> Transcript
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="trans1" class="hidden mt-4 pt-4 border-t-2 border-dark text-base font-medium">
+                                    <p><strong>Woman:</strong> So, the meeting is tomorrow at 10 AM in Room B.<br>
+                                    <strong>Man:</strong> Wait, what time is the meeting again?<br>
+                                    <strong>Woman:</strong> Were you even listening to me?<br>
+                                    <strong>Man:</strong> Sorry, I was distracted by this email.</p>
+                                </div>
+                            </div>
+
+                            <p class="mb-4 font-black text-dark text-base md:text-lg">Question: What does the woman imply about the man?</p>
+                            <div class="space-y-4 text-sm md:text-base text-slate-800">
+                                <label class="option-label text-pretty"><input type="radio" name="s1-q1" value="A"> A) He has a problem with his hearing.</label>
+                                <label class="option-label text-pretty"><input type="radio" name="s1-q1" value="B"> B) He was not paying attention to her words.</label>
+                            </div>
+                            
+                            <div class="pt-5 md:pt-6 border-t-4 border-dark mt-6">
+                                <button id="check-step1" class="neo-btn w-full sm:w-auto bg-brand-500 text-white px-6 py-3 text-base md:text-lg uppercase tracking-wide flex items-center justify-center gap-3">
+                                    <i data-lucide="lightbulb" class="w-6 h-6"></i> Check Insight
+                                </button>
+                            </div>
+                            
+                            <div id="res-s1" class="hidden answer-box bg-[#f0fdf4] border-4 border-dark shadow-neo-sm p-5 md:p-6 mt-6">
+                                <div class="text-lg md:text-xl font-black text-dark mb-3 flex items-center gap-2 uppercase text-balance">
+                                    <i data-lucide="check-circle" class="w-6 h-6 text-[#22c55e]"></i> Answer & Insight
+                                </div>
+                                <p class="text-sm md:text-base text-slate-800 leading-relaxed font-medium">
+                                    <strong class="text-dark bg-[#4ade80] border-2 border-dark px-2 py-1 font-black uppercase inline-block mb-2 shadow-[2px_2px_0_0_#0f172a]">Correct: B</strong><br>
+                                    The woman realizes the man heard her voice but did not process the information because his focus was on an email.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Vocabulary & Strategy -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#e0e7ff]">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#818cf8] hover:bg-[#6366f1] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        2
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Vocabulary & Guided Practice</span>
+                </div>
+                <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part2" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8 bg-white">
+                    
+                    <div>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                            <h3 class="text-xl md:text-2xl font-black text-dark uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 2: Vocabulary in Context</h3>
+                            <button onclick="checkVocab()" class="neo-btn bg-white text-dark px-4 py-2 uppercase text-sm md:text-base flex items-center gap-2">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i> Check Vocabulary
+                            </button>
+                        </div>
+                        <p class="text-base md:text-lg font-bold text-slate-800 mb-6 bg-brand-100 inline-block px-3 py-1 border-2 border-dark">Read the sentences and choose the correct meaning for the bold word.</p>
+                        <div id="vocab-container" class="space-y-6 text-base md:text-lg"></div>
+                    </div>
+
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo-sm mt-10">
+                        <span class="inline-flex items-center gap-2 bg-[#60a5fa] text-dark border-2 border-dark px-3 py-1 font-black text-xs md:text-sm mb-4 uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">
+                            <i data-lucide="target" class="w-4 h-4"></i> Strategy: Catching Keywords (Dictation)
+                        </span>
+                        <p class="mb-5 md:mb-6 text-base md:text-lg text-slate-800 font-medium leading-relaxed text-pretty">The <strong>"Keyword" Rule:</strong> In a listening dictation task, focus on stressed content words like nouns and verbs. These words carry the main meaning of the sentence and are often missing in the blanks.</p>
+                        
+                        <div class="transcript-box bg-slate-50 mb-6">
+                            <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 mb-2">
+                                <span class="transcript-label">Audio Example</span>
+                                <div class="flex flex-wrap gap-2 w-full sm:w-auto flex-1">
+                                    <button onclick="tts.play(audioScripts.step2_dict, 'female')" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-[#818cf8] text-white text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-[#6366f1] flex-1 sm:flex-none">
+                                        <i data-lucide="volume-2" class="w-4 h-4 sm:w-5 sm:h-5"></i> Listen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="step-2-dict" class="bg-slate-50 border-3 border-dark p-4 md:p-6 shadow-inner text-base md:text-xl lg:text-2xl leading-loose text-slate-800 mb-6 font-medium break-words overflow-wrap-normal">
+                            "Active <span class="whitespace-nowrap"><input type="text" class="c-input" data-ans="listening" autocomplete="off"></span> takes <span class="whitespace-nowrap"><input type="text" class="c-input" data-ans="effort" autocomplete="off"></span>."
+                        </div>
+                        
+                        <button id="check-step2-dict" class="neo-btn bg-[#60a5fa] text-dark px-4 py-2 uppercase text-sm md:text-base flex items-center gap-2 mb-6">
+                            <i data-lucide="check-circle" class="w-5 h-5"></i> Check Dictation
+                        </button>
+
+                        <div id="res-s2-dict" class="hidden answer-box border-3 border-dark p-5 md:p-6 bg-[#fefce8] shadow-neo-sm">
+                            <h4 class="text-lg md:text-xl font-black text-dark mb-4 uppercase flex items-center gap-2 border-b-2 border-dark pb-2 text-balance">
+                                <i data-lucide="message-circle" class="w-5 h-5"></i> Think-Aloud Logic:
+                            </h4>
+                            <ul class="list-none space-y-4 text-sm md:text-base text-slate-800 font-medium leading-relaxed">
+                                <li class="text-pretty"><span class="font-mono bg-white px-2 py-1 border-2 border-dark font-black text-dark mr-2 inline-block shadow-[2px_2px_0_0_#0f172a]">listening:</span> This is the core noun of the sentence and receives clear stress in the audio.</li>
+                                <li class="text-pretty"><span class="font-mono bg-white px-2 py-1 border-2 border-dark font-black text-dark mr-2 inline-block shadow-[2px_2px_0_0_#0f172a]">effort:</span> This is the object noun explaining what active listening requires. It is heavily stressed at the end of the sentence.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Controlled Practice -->
+        <div class="mb-6 border-4 border-dark shadow-neo bg-[#dcfce7]">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        3
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Controlled Practice</span>
+                </div>
+                <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8 bg-white">
+                    
+                    <p class="text-base md:text-lg text-slate-800 font-bold mb-4 bg-brand-100 inline-block px-3 py-1 border-2 border-dark text-pretty">Listen to the audio prompts and complete the following items.</p>
+
+                    <!-- Part A: Dictation -->
+                    <div id="step-3-dict" class="mb-10">
+                        <h4 class="text-lg md:text-xl font-black text-dark mb-4 md:mb-6 pb-2 border-b-4 border-dark uppercase flex items-center gap-2 text-balance">
+                            <i data-lucide="keyboard" class="w-6 h-6 text-[#4ade80]"></i> Part A: Dictation Precision
+                        </h4>
+                        
+                        <div class="bg-[#f8fafc] p-5 md:p-8 border-3 border-dark shadow-inner space-y-8 text-base md:text-xl leading-loose text-dark font-medium overflow-wrap-normal">
+                            
+                            <div class="flex flex-col gap-3 border-b-2 border-slate-300 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <button onclick="tts.play(audioScripts.step3_dict_1, 'male')" class="neo-btn px-3 py-1 bg-[#4ade80] text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-[#22c55e]">
+                                        <i data-lucide="volume-2" class="w-4 h-4"></i> Listen
+                                    </button>
+                                </div>
+                                <div class="text-pretty">
+                                    <span class="font-black mr-2">1.</span> You <span class="whitespace-nowrap"><input class="c-input" data-ans="must" autocomplete="off"></span> <span class="whitespace-nowrap"><input class="c-input" data-ans="pay" autocomplete="off"></span> <span class="whitespace-nowrap"><input class="c-input" data-ans="attention" autocomplete="off"></span>.
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-3 border-b-2 border-slate-300 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <button onclick="tts.play(audioScripts.step3_dict_2, 'female')" class="neo-btn px-3 py-1 bg-[#4ade80] text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-[#22c55e]">
+                                        <i data-lucide="volume-2" class="w-4 h-4"></i> Listen
+                                    </button>
+                                </div>
+                                <div class="text-pretty">
+                                    <span class="font-black mr-2">2.</span> Do <span class="whitespace-nowrap"><input class="c-input" data-ans="not" autocomplete="off"></span> <span class="whitespace-nowrap"><input class="c-input" data-ans="look" autocomplete="off"></span> at your <span class="whitespace-nowrap"><input class="c-input" data-ans="phone" autocomplete="off"></span>.
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-3 border-b-2 border-slate-300 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <button onclick="tts.play(audioScripts.step3_dict_3, 'male')" class="neo-btn px-3 py-1 bg-[#4ade80] text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-[#22c55e]">
+                                        <i data-lucide="volume-2" class="w-4 h-4"></i> Listen
+                                    </button>
+                                </div>
+                                <div class="text-pretty">
+                                    <span class="font-black mr-2">3.</span> Try to <span class="whitespace-nowrap"><input class="c-input" data-ans="understand" autocomplete="off"></span> the <span class="whitespace-nowrap"><input class="c-input" data-ans="speaker" autocomplete="off"></span>.
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-3 border-b-2 border-slate-300 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <button onclick="tts.play(audioScripts.step3_dict_4, 'female')" class="neo-btn px-3 py-1 bg-[#4ade80] text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-[#22c55e]">
+                                        <i data-lucide="volume-2" class="w-4 h-4"></i> Listen
+                                    </button>
+                                </div>
+                                <div class="text-pretty">
+                                    <span class="font-black mr-2">4.</span> It is <span class="whitespace-nowrap"><input class="c-input" data-ans="bad" autocomplete="off"></span> to <span class="whitespace-nowrap"><input class="c-input" data-ans="interrupt" autocomplete="off"></span> people.
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-3">
+                                <div class="flex items-center gap-3">
+                                    <button onclick="tts.play(audioScripts.step3_dict_5, 'male')" class="neo-btn px-3 py-1 bg-[#4ade80] text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-[#22c55e]">
+                                        <i data-lucide="volume-2" class="w-4 h-4"></i> Listen
+                                    </button>
+                                </div>
+                                <div class="text-pretty">
+                                    <span class="font-black mr-2">5.</span> Ask <span class="whitespace-nowrap"><input class="c-input" data-ans="questions" autocomplete="off"></span> if you are <span class="whitespace-nowrap"><input class="c-input" data-ans="confused" autocomplete="off"></span>.
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Part B: Logic -->
+                    <div class="mb-8">
+                        <h4 class="text-lg md:text-xl font-black text-dark mb-4 md:mb-6 pb-2 border-b-4 border-dark uppercase flex items-center gap-2 text-balance">
+                            <i data-lucide="brain" class="w-6 h-6 text-[#facc15]"></i> Part B: Daily Life & Academic Logic
+                        </h4>
+                        <div class="space-y-6 md:space-y-8">
+                            
+                            <!-- Item 6 -->
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform">
+                                <span class="inline-block text-xs md:text-sm bg-[#60a5fa] text-dark border-2 border-dark px-3 py-1 font-black uppercase tracking-wider mb-4 shadow-[2px_2px_0_0_#0f172a]">Daily Life</span>
+                                <div class="transcript-box bg-slate-50 mb-4">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <button onclick="tts.play(audioScripts.step3_6, 'female')" class="neo-btn px-3 py-2 bg-[#4ade80] text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-[#22c55e]">
+                                            <i data-lucide="volume-2" class="w-4 h-4"></i> Listen
+                                        </button>
+                                        <button onclick="tts.stop()" class="neo-btn px-3 py-2 bg-white text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-slate-100">
+                                            <i data-lucide="square" class="w-4 h-4"></i> Stop
+                                        </button>
+                                        <button onclick="toggleTranscript('trans3_6')" class="neo-btn px-3 py-2 bg-white text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-slate-100">
+                                            <i data-lucide="eye" class="w-4 h-4"></i> Transcript
+                                        </button>
+                                    </div>
+                                    <div id="trans3_6" class="hidden text-sm md:text-base italic font-bold mt-4 pt-4 border-t-2 border-dark text-slate-800 text-pretty">
+                                        "Attention students in the study hall. Please remember to switch your phones to silent mode and step outside if you need to take a call. We want to keep this area quiet for everyone."
+                                    </div>
+                                </div>
+                                <p class="mb-4 font-black text-dark text-base md:text-lg text-pretty">Question: Where should a student go to answer their phone?</p>
+                                <input id="s3-q6" type="text" class="text-input text-sm md:text-base" placeholder="Your answer...">
+                            </div>
+
+                            <!-- Item 7 -->
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform">
+                                <span class="inline-block text-xs md:text-sm bg-[#f87171] text-white border-2 border-dark px-3 py-1 font-black uppercase tracking-wider mb-4 shadow-[2px_2px_0_0_#0f172a]">Academic</span>
+                                <div class="transcript-box bg-slate-50 mb-4">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <button onclick="tts.play(audioScripts.step3_7, 'male')" class="neo-btn px-3 py-2 bg-[#4ade80] text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-[#22c55e]">
+                                            <i data-lucide="volume-2" class="w-4 h-4"></i> Listen
+                                        </button>
+                                        <button onclick="tts.stop()" class="neo-btn px-3 py-2 bg-white text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-slate-100">
+                                            <i data-lucide="square" class="w-4 h-4"></i> Stop
+                                        </button>
+                                        <button onclick="toggleTranscript('trans3_7')" class="neo-btn px-3 py-2 bg-white text-dark text-xs font-black uppercase flex items-center gap-2 hover:bg-slate-100">
+                                            <i data-lucide="eye" class="w-4 h-4"></i> Transcript
+                                        </button>
+                                    </div>
+                                    <div id="trans3_7" class="hidden text-sm md:text-base italic font-bold mt-4 pt-4 border-t-2 border-dark text-slate-800 text-pretty">
+                                        "Before we begin the group discussion, please close your laptops. I want you fully focused on what your classmates are saying, not taking notes right now."
+                                    </div>
+                                </div>
+                                <p class="mb-4 font-black text-dark text-base md:text-lg text-pretty">Question: What does the teacher want the students to avoid doing?</p>
+                                <input id="s3-q7" type="text" class="text-input text-sm md:text-base" placeholder="Your answer...">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t-4 border-dark">
+                        <button id="check-step3" class="neo-btn w-full sm:w-auto bg-[#4ade80] text-dark px-6 py-4 text-base md:text-lg uppercase tracking-wide flex items-center justify-center gap-3">
+                            <i data-lucide="check-square" class="w-6 h-6"></i> Check Answers & Explanation
+                        </button>
+                    </div>
+                    
+                    <!-- Explanations -->
+                    <div id="s3-explanation" class="hidden answer-box bg-[#f0fdf4] border-4 border-dark shadow-neo-sm p-5 md:p-8 mt-8">
+                        <div class="text-lg md:text-xl font-black text-dark mb-6 flex items-center gap-3 border-b-2 border-dark pb-3 uppercase text-balance">
+                            <i data-lucide="clipboard-check" class="w-6 h-6 text-[#22c55e]"></i> Answer Key & Explanations
+                        </div>
+                        <div class="space-y-6 text-sm md:text-base text-slate-800 leading-relaxed font-medium">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Part A (Dictation):</strong>
+                                <ul class="list-decimal pl-6 space-y-2">
+                                    <li><span class="text-[#15803d] font-bold">must</span>, <span class="text-[#15803d] font-bold">pay</span>, <span class="text-[#15803d] font-bold">attention</span></li>
+                                    <li><span class="text-[#15803d] font-bold">not</span>, <span class="text-[#15803d] font-bold">look</span>, <span class="text-[#15803d] font-bold">phone</span></li>
+                                    <li><span class="text-[#15803d] font-bold">understand</span>, <span class="text-[#15803d] font-bold">speaker</span></li>
+                                    <li><span class="text-[#15803d] font-bold">bad</span>, <span class="text-[#15803d] font-bold">interrupt</span></li>
+                                    <li><span class="text-[#15803d] font-bold">questions</span>, <span class="text-[#15803d] font-bold">confused</span></li>
+                                </ul>
+                            </div>
+                            <hr class="border-dark border-2">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Part B (Logic):</strong>
+                                <ul class="list-disc pl-6 space-y-4">
+                                    <li class="text-pretty"><strong>6. Outside / Step outside:</strong> The announcement explicitly tells students to step outside for calls.</li>
+                                    <li class="text-pretty"><strong>7. Taking notes / Using laptops:</strong> The teacher wants laptops closed to ensure full focus on classmates.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Real Test Simulation -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#fff7ed]">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#fb923c] hover:bg-[#f97316] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        4
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Real Test Simulation</span>
+                </div>
+                <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8 bg-white">
+                    
+                    <!-- Task 1 -->
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo">
+                        <h3 class="text-lg md:text-xl font-black text-dark mb-6 flex flex-wrap items-center gap-3 border-b-2 border-dark pb-3 text-balance">
+                            <span class="bg-[#60a5fa] border-2 border-dark text-dark px-3 py-1 text-xs md:text-sm uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">Part 1</span>
+                            Choose a Response
+                        </h3>
+                        
+                        <div class="transcript-box bg-slate-50 mb-6">
+                            <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 mb-2">
+                                <span class="transcript-label">Audio Prompt</span>
+                                <div class="flex flex-wrap gap-2 w-full sm:w-auto flex-1">
+                                    <button onclick="tts.play(audioScripts.step4_1, 'male')" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-[#fb923c] text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-[#f97316] flex-1 sm:flex-none">
+                                        <i data-lucide="volume-2" class="w-4 h-4 sm:w-5 sm:h-5"></i> Listen
+                                    </button>
+                                    <button onclick="tts.stop()" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-white text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-slate-100 flex-1 sm:flex-none">
+                                        <i data-lucide="square" class="w-4 h-4 sm:w-5 sm:h-5"></i> Stop
+                                    </button>
+                                    <button onclick="toggleTranscript('trans4_1')" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-white text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-slate-100 sm:ml-auto w-full sm:w-auto">
+                                        <i data-lucide="eye" class="w-4 h-4 sm:w-5 sm:h-5"></i> Transcript
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="trans4_1" class="hidden mt-4 pt-4 border-t-2 border-dark">
+                                <p class="italic font-bold text-slate-800 text-base md:text-lg text-pretty">"I am sorry, I missed that last part about the homework deadline. Can you repeat it?"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 text-sm md:text-base text-slate-800">
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p1" value="A"> A) Sure, I said the assignment is due on Friday.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p1" value="B"> B) I like repeating things.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p1" value="C"> C) The library is open today.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p1" value="D"> D) Homework is important for your grades.</label>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo">
+                        <h3 class="text-lg md:text-xl font-black text-dark mb-6 flex flex-wrap items-center gap-3 border-b-2 border-dark pb-3 text-balance">
+                            <span class="bg-[#4ade80] border-2 border-dark text-dark px-3 py-1 text-xs md:text-sm uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">Part 2</span>
+                            Conversation (Campus Life & Academics)
+                        </h3>
+                        
+                        <div class="transcript-box bg-slate-50 mb-6">
+                            <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 mb-2">
+                                <span class="transcript-label">Conversation</span>
+                                <div class="flex flex-wrap gap-2 w-full sm:w-auto flex-1">
+                                    <button onclick="tts.playConversation(audioScripts.step4_2)" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-[#fb923c] text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-[#f97316] flex-1 sm:flex-none">
+                                        <i data-lucide="volume-2" class="w-4 h-4 sm:w-5 sm:h-5"></i> Listen
+                                    </button>
+                                    <button onclick="tts.stop()" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-white text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-slate-100 flex-1 sm:flex-none">
+                                        <i data-lucide="square" class="w-4 h-4 sm:w-5 sm:h-5"></i> Stop
+                                    </button>
+                                    <button onclick="toggleTranscript('trans4_2')" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-white text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-slate-100 sm:ml-auto w-full sm:w-auto">
+                                        <i data-lucide="eye" class="w-4 h-4 sm:w-5 sm:h-5"></i> Transcript
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="trans4_2" class="hidden mt-4 pt-4 border-t-2 border-dark text-slate-800 text-base md:text-lg font-medium space-y-3">
+                                <p class="text-pretty"><strong class="font-black">Student:</strong> Professor, I was trying to write down everything you said in class, and I got completely lost.</p>
+                                <p class="text-pretty"><strong class="font-black">Professor:</strong> That is very common. You should not try to copy every word. Just write key words and listen to my main ideas instead.</p>
+                                <p class="text-pretty"><strong class="font-black">Student:</strong> But what if I forget the details?</p>
+                                <p class="text-pretty"><strong class="font-black">Professor:</strong> If you understand the big picture, the details are in the textbook. Focus your attention on understanding, not typing.</p>
+                            </div>
+                        </div>
+                        
+                        <p class="mb-4 font-black text-dark text-base md:text-lg text-pretty">Question: What does the professor advise the student to do?</p>
+                        <input type="text" id="s4-p2-q" class="text-input text-sm md:text-base font-medium" placeholder="Your answer...">
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo">
+                        <h3 class="text-lg md:text-xl font-black text-dark mb-6 flex flex-wrap items-center gap-3 border-b-2 border-dark pb-3 text-balance">
+                            <span class="bg-[#c084fc] border-2 border-dark text-dark px-3 py-1 text-xs md:text-sm uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">Part 3</span>
+                            Announcement (Academic)
+                        </h3>
+                        
+                        <div class="transcript-box bg-slate-50 mb-6">
+                            <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 mb-2">
+                                <span class="transcript-label">Announcement</span>
+                                <div class="flex flex-wrap gap-2 w-full sm:w-auto flex-1">
+                                    <button onclick="tts.play(audioScripts.step4_3, 'female')" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-[#fb923c] text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-[#f97316] flex-1 sm:flex-none">
+                                        <i data-lucide="volume-2" class="w-4 h-4 sm:w-5 sm:h-5"></i> Listen
+                                    </button>
+                                    <button onclick="tts.stop()" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-white text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-slate-100 flex-1 sm:flex-none">
+                                        <i data-lucide="square" class="w-4 h-4 sm:w-5 sm:h-5"></i> Stop
+                                    </button>
+                                    <button onclick="toggleTranscript('trans4_3')" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-white text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-slate-100 sm:ml-auto w-full sm:w-auto">
+                                        <i data-lucide="eye" class="w-4 h-4 sm:w-5 sm:h-5"></i> Transcript
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="trans4_3" class="hidden mt-4 pt-4 border-t-2 border-dark">
+                                <p class="italic text-slate-800 text-base md:text-lg font-bold text-pretty">"Attention all students. The student success center is offering a free workshop on active listening skills this Wednesday. Space is very limited, so please sign up at the front desk today if you wish to attend."</p>
+                            </div>
+                        </div>
+                        
+                        <p class="mb-4 font-black text-dark text-base md:text-lg text-pretty">Question: How can students join the workshop?</p>
+                        <div class="space-y-4 text-sm md:text-base text-slate-800">
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="A"> A) They must sign up online.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="B"> B) They can just show up on Wednesday.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="C"> C) They must sign up at the front desk today.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="D"> D) They need a permission form.</label>
+                        </div>
+                    </div>
+
+                    <!-- Task 4 -->
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo">
+                        <h3 class="text-lg md:text-xl font-black text-dark mb-6 flex flex-wrap items-center gap-3 border-b-2 border-dark pb-3 text-balance">
+                            <span class="bg-[#facc15] border-2 border-dark text-dark px-3 py-1 text-xs md:text-sm uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">Part 4</span>
+                            Academic Talk (Psychology)
+                        </h3>
+                        
+                        <div class="transcript-box bg-slate-50 mb-6">
+                            <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 mb-2">
+                                <span class="transcript-label">Lecture</span>
+                                <div class="flex flex-wrap gap-2 w-full sm:w-auto flex-1">
+                                    <button onclick="tts.play(audioScripts.step4_4, 'male')" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-[#fb923c] text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-[#f97316] flex-1 sm:flex-none">
+                                        <i data-lucide="volume-2" class="w-4 h-4 sm:w-5 sm:h-5"></i> Listen
+                                    </button>
+                                    <button onclick="tts.stop()" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-white text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-slate-100 flex-1 sm:flex-none">
+                                        <i data-lucide="square" class="w-4 h-4 sm:w-5 sm:h-5"></i> Stop
+                                    </button>
+                                    <button onclick="toggleTranscript('trans4_4')" class="neo-btn px-3 py-2 sm:px-4 sm:py-2 bg-white text-dark text-xs sm:text-sm font-black uppercase flex items-center justify-center gap-2 hover:bg-slate-100 sm:ml-auto w-full sm:w-auto">
+                                        <i data-lucide="eye" class="w-4 h-4 sm:w-5 sm:h-5"></i> Transcript
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="trans4_4" class="hidden mt-4 pt-4 border-t-2 border-dark">
+                                <p class="italic text-slate-800 text-base md:text-lg font-bold text-pretty">"Active listening is not just hearing words. It requires you to be fully engaged with the speaker. You should show the speaker you are paying attention by nodding your head or making eye contact. You can also ask questions to clarify points you missed. This active approach prevents misunderstandings and builds trust between people."</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div>
+                                <p class="mb-3 font-black text-dark text-base md:text-lg text-pretty">Question 1: What is a physical sign of active listening?</p>
+                                <input type="text" id="s4-p4-q1" class="text-input text-sm md:text-base font-medium" placeholder="Your answer...">
+                            </div>
+                            <div>
+                                <p class="mb-3 font-black text-dark text-base md:text-lg text-pretty">Question 2: What is one benefit of active listening mentioned in the lecture?</p>
+                                <input type="text" id="s4-p4-q2" class="text-input text-sm md:text-base font-medium" placeholder="Your answer...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t-4 border-dark mt-8">
+                        <button id="check-step4" class="neo-btn w-full sm:w-auto bg-[#fb923c] text-dark px-6 py-4 text-base md:text-lg uppercase tracking-wide flex items-center justify-center gap-3">
+                            <i data-lucide="flag" class="w-6 h-6"></i> Check Simulation Answers
+                        </button>
+                    </div>
+
+                    <!-- Explanations -->
+                    <div id="res-s4" class="hidden answer-box bg-[#fff7ed] border-4 border-dark shadow-neo-sm p-5 md:p-8 mt-6">
+                        <div class="text-lg md:text-xl font-black text-dark mb-6 flex items-center gap-3 border-b-2 border-dark pb-3 uppercase text-balance">
+                            <i data-lucide="clipboard-check" class="w-6 h-6 text-[#ea580c]"></i> Answer Key & Explanations
+                        </div>
+                        <div class="space-y-6 text-sm md:text-base text-slate-800 leading-relaxed font-medium">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Part 1:</strong>
+                                <p class="mb-2"><strong class="text-dark bg-[#4ade80] border-2 border-dark px-2 py-0.5 font-black uppercase inline-block shadow-[2px_2px_0_0_#0f172a]">Correct: A</strong></p>
+                                <p class="text-slate-800 bg-white p-3 border-2 border-dark text-pretty"><em>Reasoning:</em> Directly and naturally answers the request to repeat the deadline information.</p>
+                            </div>
+                            <hr class="border-dark border-2">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Part 2:</strong>
+                                <p class="mb-2 text-pretty"><strong class="text-dark bg-[#4ade80] border-2 border-dark px-2 py-0.5 font-black uppercase inline-block mr-2 shadow-[2px_2px_0_0_#0f172a]">Correct Idea:</strong> Write key words instead of full sentences.</p>
+                                <p class="text-slate-800 bg-white p-3 border-2 border-dark text-pretty"><em>Reasoning:</em> The professor advises the student to "just write key words and listen to my main ideas."</p>
+                            </div>
+                            <hr class="border-dark border-2">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Part 3:</strong>
+                                <p class="mb-2 text-pretty"><strong class="text-dark bg-[#4ade80] border-2 border-dark px-2 py-0.5 font-black uppercase inline-block mr-2 shadow-[2px_2px_0_0_#0f172a]">Correct: C</strong> They must sign up at the front desk today.</p>
+                                <p class="text-slate-800 bg-white p-3 border-2 border-dark text-pretty"><em>Reasoning:</em> The announcement clearly states "please sign up at the front desk today" to join.</p>
+                            </div>
+                            <hr class="border-dark border-2">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Part 4:</strong>
+                                <p class="mb-3 text-pretty"><strong class="text-dark bg-[#4ade80] border-2 border-dark px-2 py-0.5 font-black uppercase inline-block mr-2 shadow-[2px_2px_0_0_#0f172a]">Q1 Correct Idea:</strong> Nodding or making eye contact.</p>
+                                <p class="mb-2 text-pretty"><strong class="text-dark bg-[#4ade80] border-2 border-dark px-2 py-0.5 font-black uppercase inline-block mr-2 shadow-[2px_2px_0_0_#0f172a]">Q2 Correct Idea:</strong> It prevents misunderstandings or it builds trust.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Speaking & Debate -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#ffe4e6]">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#fb7185] hover:bg-[#f43f5e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        5
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Speaking & Debate</span>
+                </div>
+                <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 bg-white space-y-12">
+                    
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 5: Personal Position</h3>
+                        <ul class="list-disc pl-6 md:pl-8 space-y-3 text-base md:text-lg text-slate-800 font-bold leading-relaxed mb-6 bg-slate-50 p-5 border-3 border-dark">
+                            <li>Is it rude to look at a phone when someone is talking to you? Why or why not?</li>
+                            <li>How do you personally show someone that you are paying full attention to them?</li>
+                        </ul>
+                        <textarea class="text-input text-base md:text-lg" placeholder="Write down your talking points..."></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 5.1: AI Role Play</h3>
+                        <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                            <p class="font-black text-[#e11d48] uppercase mb-2 flex items-center gap-2">
+                                <i data-lucide="bot" class="w-5 h-5"></i> AI Partner Prompt:
+                            </p>
+                            <p class="font-mono text-sm md:text-base text-slate-700 bg-slate-50 p-3 border-2 border-dark italic">
+                                "Act as my friend who is upset because I was distracted by my phone while you were talking. I will try to apologize and ask you to clarify what you said. Please respond naturally as a B1 level speaker."
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Reflection -->
+        <div class="mb-4 border-4 border-dark shadow-neo bg-[#f3e8ff]">
+            <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#c084fc] hover:bg-[#a855f7] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        6
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Final Reflection</span>
+                </div>
+                <div id="icon-wrapper-part6" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part6" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 bg-white">
+                    <p class="text-base md:text-lg text-slate-800 font-bold mb-6 bg-brand-100 inline-block px-3 py-2 border-2 border-dark text-pretty">
+                        Write a short summary of the lesson. Mention the difference between hearing and active listening. Try to use the words <span class="bg-white px-1 border border-dark">distracted</span> and <span class="bg-white px-1 border border-dark">clarify</span>.
+                    </p>
+                    <textarea class="text-input h-48 text-base md:text-lg" placeholder="My reflection..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center">
+            <p class="text-dark text-sm md:text-base font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Init Lucide Icons
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderVocab();
+        });
+
+        const vocabData = [
+            { id: "v1", sentence: "It is hard to <strong>concentrate</strong> when the room is noisy.", correct: "b", options: { a: "To forget something important", b: "To focus all your attention on something", c: "To speak very loudly" } },
+            { id: "v2", sentence: "He was <strong>distracted</strong> by his phone and missed the instructions.", correct: "a", options: { a: "Unable to pay attention because of something else", b: "Very happy and excited", c: "Listening carefully" } },
+            { id: "v3", sentence: "Can you <strong>clarify</strong> what you mean by that?", correct: "b", options: { a: "To make something more confusing", b: "To make something easier to understand", c: "To stop someone from talking" } },
+            { id: "v4", sentence: "An <strong>engaged</strong> listener looks at the speaker and nods.", correct: "a", options: { a: "Fully involved and interested in something", b: "Bored and waiting to leave", c: "Angry about the topic" } },
+            { id: "v5", sentence: "Please do not <strong>interrupt</strong> me while I am speaking.", correct: "a", options: { a: "To stop someone from talking by saying or doing something", b: "To help someone finish their sentence", c: "To listen quietly" } },
+            { id: "v6", sentence: "Poor listening often leads to a <strong>misunderstanding</strong>.", correct: "b", options: { a: "A great relationship", b: "A failure to understand correctly", c: "A clear and simple message" } }
+        ];
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => `
+                <div class="p-5 md:p-6 bg-slate-50 border-3 border-dark shadow-neo-sm">
+                    <p class="mb-4 italic text-dark font-medium bg-white p-3 border-2 border-dark text-pretty">"${item.sentence}"</p>
+                    <div class="flex flex-col gap-3">
+                        ${Object.entries(item.options).map(([key, val]) => `
+                            <label class="option-label">
+                                <input type="radio" name="${item.id}" value="${key}">
+                                <span>${key.toUpperCase()}) ${val}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="mt-4 font-black uppercase tracking-wide min-h-[32px]"></div>
+                </div>
+            `).join('');
+        }
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                let val = "";
+                radios.forEach(r => { if(r.checked) val = r.value; });
+                
+                // Reset labels
+                document.querySelectorAll(`input[name="${item.id}"]`).forEach(input => {
+                    const label = input.closest('label');
+                    label.classList.remove('correct', 'incorrect');
+                    if (input.value === item.correct && val !== "") {
+                         label.classList.add('correct');
+                    } else if (input.checked && input.value !== item.correct) {
+                         label.classList.add('incorrect');
+                    }
+                });
+
+                if (val === item.correct) {
+                    feedback.innerHTML = '<span class="text-[#15803d] bg-[#dcfce7] px-2 py-1 border-2 border-dark inline-block">Correct!</span>';
+                } else if (val !== "") {
+                    feedback.innerHTML = '<span class="text-[#b91c1c] bg-[#fee2e2] px-2 py-1 border-2 border-dark inline-block">Try again!</span>';
+                }
+            });
+        }
+
+        // --- Helper: Check Inputs ---
+        function validateInputs(containerId) {
+            const inputs = document.querySelectorAll(`#${containerId} .c-input`);
+            inputs.forEach(input => {
+                const correct = input.getAttribute('data-ans').toLowerCase();
+                const userVal = input.value.trim().toLowerCase();
+                const wrapper = input.closest('.c-wrapper');
+                if(userVal === correct) {
+                    wrapper.classList.remove('incorrect');
+                    wrapper.classList.add('correct');
+                } else {
+                    wrapper.classList.remove('correct');
+                    wrapper.classList.add('incorrect');
+                }
+            });
+        }
+
+        // --- Helper: Set Radio Visuals ---
+        function setRadioVisuals(name, correctVal) {
+            const inputs = document.querySelectorAll(`input[name="${name}"]`);
+            inputs.forEach(input => {
+                const label = input.closest('label');
+                if (input.value === correctVal) {
+                    label.classList.add('correct');
+                    label.classList.remove('incorrect');
+                } else if (input.checked) {
+                    label.classList.add('incorrect');
+                } else {
+                    label.classList.remove('correct', 'incorrect');
+                }
+            });
+        }
+
+        // --- Helper: Check Text Inputs ---
+        function checkText(id, keywords) {
+            const el = document.getElementById(id);
+            const val = el.value.toLowerCase();
+            if(val === "") return; // Skip empty
+            const isCorrect = keywords.some(k => val.includes(k));
+            if(isCorrect) {
+                // Apply Brutalist Success styles
+                el.classList.add('border-[#22c55e]', 'bg-[#dcfce7]', 'text-[#15803d]');
+                el.classList.remove('border-[#ef4444]', 'bg-[#fee2e2]', 'text-[#b91c1c]', 'border-[#0f172a]');
+            } else {
+                // Apply Brutalist Error styles
+                el.classList.add('border-[#ef4444]', 'bg-[#fee2e2]', 'text-[#b91c1c]');
+                el.classList.remove('border-[#22c55e]', 'bg-[#dcfce7]', 'text-[#15803d]', 'border-[#0f172a]');
+            }
+        }
+
+        function toggleTranscript(id) {
+            const el = document.getElementById(id);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                // Clear textareas and inputs
+                document.querySelectorAll('textarea, input[type="text"]').forEach(el => {
+                    el.value = "";
+                    el.classList.remove('border-[#22c55e]', 'bg-[#dcfce7]', 'text-[#15803d]', 'border-[#ef4444]', 'bg-[#fee2e2]', 'text-[#b91c1c]');
+                    el.classList.add('border-[#0f172a]'); 
+                });
+                
+                // Clear Radios
+                document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+                document.querySelectorAll('.option-label').forEach(l => l.classList.remove('correct', 'incorrect'));
+                
+                // Clear Feedbacks
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                
+                // Clear Dictation Inputs
+                document.querySelectorAll('.c-input').forEach(i => {
+                    if(!i.disabled) {
+                        i.value = "";
+                        const wrapper = i.closest('.c-wrapper');
+                        if(wrapper) {
+                            wrapper.classList.remove('correct', 'incorrect');
+                            const typedSpan = wrapper.querySelector('.ghost-typed');
+                            const underSpan = wrapper.querySelector('.ghost-underscores');
+                            if (typedSpan && underSpan) {
+                                typedSpan.textContent = "";
+                                underSpan.textContent = '_'.repeat(i.maxLength);
+                            }
+                        }
+                    }
+                });
+
+                // Hide Explanations
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+            }
+        }
+
+        // --- Init Ghost Text Layering for Dictation Inputs ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.c-input').forEach(input => {
+                const ans = input.getAttribute('data-ans');
+                if(!ans) return; // Skip if no data-ans
+                const len = ans.length;
+
+                const wrapper = document.createElement('span');
+                wrapper.className = 'c-wrapper';
+                
+                // Ensure dynamic width generation accounts for text scaling
+                wrapper.style.width = `calc(${len}ch + ${len * 0.15}em + 0.6em)`;
+
+                const ghost = document.createElement('span');
+                ghost.className = 'c-ghost-bg';
+                ghost.innerHTML = `<span class="ghost-typed"></span><span class="ghost-underscores">${'_'.repeat(len)}</span>`;
+
+                input.maxLength = len;
+                
+                input.parentNode.insertBefore(wrapper, input);
+                wrapper.appendChild(ghost);
+                wrapper.appendChild(input);
+
+                const typedSpan = ghost.querySelector('.ghost-typed');
+                const underSpan = ghost.querySelector('.ghost-underscores');
+                
+                // Sync initial value
+                if (input.value) {
+                    typedSpan.textContent = input.value;
+                    const remaining = Math.max(0, len - input.value.length);
+                    underSpan.textContent = '_'.repeat(remaining);
+                }
+
+                // Sync typing in real-time
+                input.addEventListener('input', (e) => {
+                    const typed = e.target.value;
+                    typedSpan.textContent = typed;
+                    const remaining = Math.max(0, len - typed.length);
+                    underSpan.textContent = '_'.repeat(remaining);
+                    
+                    wrapper.classList.remove('correct', 'incorrect');
+                });
+            });
+
+            // Step 1 Check Insight
+            document.getElementById('check-step1').addEventListener('click', () => {
+                setRadioVisuals('s1-q1', 'B');
+                const exp = document.getElementById('res-s1');
+                exp.classList.remove('hidden');
+                exp.classList.add('visible');
+            });
+
+            // Step 2 Dictation Strategy Check
+            document.getElementById('check-step2-dict').addEventListener('click', () => {
+                validateInputs('step-2-dict');
+                const exp = document.getElementById('res-s2-dict');
+                exp.classList.remove('hidden');
+                exp.classList.add('visible');
+            });
+
+            // Step 3 Check
+            document.getElementById('check-step3').addEventListener('click', () => {
+                validateInputs('step-3-dict');
+                checkText('s3-q6', ['outside', 'step outside', 'out', 'leave']);
+                checkText('s3-q7', ['laptops', 'notes', 'typing', 'computers']);
+                
+                const exp = document.getElementById('s3-explanation');
+                exp.classList.remove('hidden');
+                exp.classList.add('visible');
+            });
+
+            // Step 4 Check
+            document.getElementById('check-step4').addEventListener('click', () => {
+                setRadioVisuals('s4-p1', 'A');
+                checkText('s4-p2-q', ['key', 'word', 'idea', 'listen']);
+                setRadioVisuals('s4-p3', 'C');
+                checkText('s4-p4-q1', ['nod', 'eye', 'contact']);
+                checkText('s4-p4-q2', ['trust', 'misunderstand']);
+                
+                const exp = document.getElementById('s4-explanation');
+                exp.classList.remove('hidden');
+                exp.classList.add('visible');
+            });
+        });
+
+        // --- Web Speech API Data Dictionary ---
+        const audioScripts = {
+            step1: [
+                { text: "So, the meeting is tomorrow at 10 AM in Room B.", gender: "female" },
+                { text: "Wait, what time is the meeting again?", gender: "male" },
+                { text: "Were you even listening to me?", gender: "female" },
+                { text: "Sorry, I was distracted by this email.", gender: "male" }
+            ],
+            step2_dict: "Active listening takes effort.",
+            step3_dict_1: "You must pay attention.",
+            step3_dict_2: "Do not look at your phone.",
+            step3_dict_3: "Try to understand the speaker.",
+            step3_dict_4: "It is bad to interrupt people.",
+            step3_dict_5: "Ask questions if you are confused.",
+            step3_6: "Attention students in the study hall. Please remember to switch your phones to silent mode and step outside if you need to take a call. We want to keep this area quiet for everyone.",
+            step3_7: "Before we begin the group discussion, please close your laptops. I want you fully focused on what your classmates are saying, not taking notes right now.",
+            step4_1: "I am sorry, I missed that last part about the homework deadline. Can you repeat it?",
+            step4_2: [
+                { text: "Professor, I was trying to write down everything you said in class, and I got completely lost.", gender: "female" },
+                { text: "That is very common. You should not try to copy every word. Just write key words and listen to my main ideas instead.", gender: "male" },
+                { text: "But what if I forget the details?", gender: "female" },
+                { text: "If you understand the big picture, the details are in the textbook. Focus your attention on understanding, not typing.", gender: "male" }
+            ],
+            step4_3: "Attention all students. The student success center is offering a free workshop on active listening skills this Wednesday. Space is very limited, so please sign up at the front desk today if you wish to attend.",
+            step4_4: "Active listening is not just hearing words. It requires you to be fully engaged with the speaker. You should show the speaker you are paying attention by nodding your head or making eye contact. You can also ask questions to clarify points you missed. This active approach prevents misunderstandings and builds trust between people."
+        };
+
+        // --- Text-To-Speech Controller ---
+        const tts = {
+            voices: [],
+            init() {
+                const loadVoices = () => {
+                    this.voices = window.speechSynthesis.getVoices();
+                };
+                loadVoices();
+                if (speechSynthesis.onvoiceschanged !== undefined) {
+                    speechSynthesis.onvoiceschanged = loadVoices;
+                }
+            },
+            getVoice(gender) {
+                let enVoices = this.voices.filter(v => v.lang.startsWith('en'));
+                
+                // Priority 1: Edge Native "Natural" Voices
+                let naturalVoices = enVoices.filter(v => v.name.includes('Natural'));
+                if (naturalVoices.length > 0) {
+                    if (gender === 'male') {
+                        return naturalVoices.find(v => v.name.includes('Guy') || v.name.includes('Christopher') || v.name.includes('William')) || naturalVoices[0];
+                    } else {
+                        return naturalVoices.find(v => v.name.includes('Aria') || v.name.includes('Jenny') || v.name.includes('Michelle')) || naturalVoices[0];
+                    }
+                }
+                
+                // Priority 2: Standard Microsoft Voices fallback
+                if (gender === 'male') {
+                    return enVoices.find(v => v.name.includes('David') || v.name.includes('Mark') || v.name.includes('George')) || enVoices[0];
+                } else {
+                    return enVoices.find(v => v.name.includes('Zira') || v.name.includes('Hazel') || v.name.includes('Susan')) || enVoices[0];
+                }
+            },
+            play(text, gender = 'female') {
+                window.speechSynthesis.cancel(); // Stop current speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.voice = this.getVoice(gender);
+                utterance.rate = 0.95; // Slightly slower for language learners
+                window.speechSynthesis.speak(utterance);
+            },
+            playConversation(lines) {
+                window.speechSynthesis.cancel();
+                let currentIndex = 0;
+                const speakNext = () => {
+                    if (currentIndex >= lines.length) return;
+                    let line = lines[currentIndex];
+                    let utterance = new SpeechSynthesisUtterance(line.text);
+                    utterance.voice = this.getVoice(line.gender);
+                    utterance.rate = 0.95;
+                    utterance.onend = () => {
+                        currentIndex++;
+                        speakNext();
+                    };
+                    window.speechSynthesis.speak(utterance);
+                }
+                speakNext();
+            },
+            stop() {
+                window.speechSynthesis.cancel();
+            }
+        };
+        // Initialize voices on load
+        tts.init();
+    </script>
+</body>
+</html>

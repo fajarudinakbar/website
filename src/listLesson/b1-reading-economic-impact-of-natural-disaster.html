@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Reading - Economic Impact of Natural Disasters</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs text-slate-400 mb-6 flex gap-2 font-medium uppercase tracking-wider">
+            <span>Business English</span> <span>&gt;</span> 
+            <span>Reading</span> <span>&gt;</span> 
+            <span>B1 Level</span> <span>&gt;</span> 
+            <span class="text-teal-600 font-bold">Economy & Environment</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-slate-800 tracking-tight mb-2">
+                    The Economic Impact of Natural Disasters
+                </h1>
+                <p class="text-slate-500 font-medium">Topic: Economy, Environment, and Current Events</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-red-500 transition-colors font-medium hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-4 border-teal-500 p-4 mb-8 rounded-r-lg">
+            <p class="text-slate-700">
+                <i class="fas fa-info-circle mr-2 text-teal-500"></i> 
+                <strong>Instructions:</strong> Read the text carefully and complete the exercises. Click "Check Answer" for quizzes and "Show Sample Answer" for open-ended questions.
+            </p>
+        </div>
+
+        <!-- Part 1: Pre-Reading Vocabulary (Cyan Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-cyan-100 shadow-sm">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 bg-cyan-50 hover:bg-cyan-100 border-l-4 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-cyan-200 text-cyan-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-lg font-bold text-cyan-900">Pre-Reading Vocabulary</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part1" class="accordion-content">
+                <div class="p-6 bg-white">
+                    <p class="mb-4 text-slate-600 font-medium">Match the business words (1–6) with their definitions (a–f).</p>
+                    <div id="vocab-container" class="space-y-3">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-6 flex justify-end" id="actions-vocab">
+                        <button onclick="checkVocab()" class="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                            Check Vocabulary
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: Reading Text (Blue Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-blue-100 shadow-sm">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-200 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-book-reader"></i></div>
+                    <span class="text-lg font-bold text-blue-900">Reading Text</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 2000px; opacity: 1;">
+                <div class="p-6 bg-white prose prose-slate max-w-none text-justify leading-relaxed text-sm md:text-base border-t border-blue-50">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 text-center md:text-left">Indonesia’s Economy and the Sumatra Floods</h3>
+                    <p class="mb-4">
+                        In late 2025, big floods hit several provinces in Sumatra, including North Sumatra, Aceh, and West Sumatra. These disasters damaged houses, roads, bridges, and farmland. Many families lost their homes and farmers lost their rice fields. Because of this, the local economy slowed down.
+                    </p>
+                    <p class="mb-4">
+                        The Indonesian government said that national growth will still be around 5.6% in the last quarter of 2025. However, growth in the disaster areas will be weaker. The government promised to help small businesses and families. One plan is to give financial relaxation, such as <strong>restructuring</strong> loans and removing <strong>bad debts</strong> for micro, small, and medium <strong>enterprises</strong> (MSMEs). This support is important because many small shops and farmers cannot continue without help.
+                    </p>
+                    <p class="mb-4">
+                        Economists from Celios estimated that the total loss from the floods is about 68.67 trillion rupiah. This is equal to 0.29% of Indonesia’s <strong>GDP</strong>. The damage is not only local. It also affects the national economy because trade between provinces is connected. For example, West Sumatra depends on goods from West Java. When roads are closed, <strong>supplies</strong> cannot arrive. This makes prices rise. In Riau, the price of chili may increase because of supply problems.
+                    </p>
+                    <p class="mb-4">
+                        The floods show how natural disasters can hurt the economy. When production stops and transport is blocked, people pay more for food and daily needs. At the same time, businesses lose income. The government must act quickly to repair roads and support farmers.
+                    </p>
+                    <p>
+                        In conclusion, the Sumatra floods caused serious damage. They reduced growth in the region and created losses for the whole country. The government is trying to help with financial programs, but <strong>recovery</strong> will take time. Strong cooperation between the government, businesses, and communities is needed to rebuild and protect the economy.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: Comprehension (Emerald Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-emerald-100 shadow-sm">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 bg-emerald-50 hover:bg-emerald-100 border-l-4 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-emerald-200 text-emerald-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-lg font-bold text-emerald-900">Comprehension Questions</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- 3A True False -->
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2">A. True or False?</h3>
+                        <div id="tf-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button onclick="checkTF()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check T/F
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3B Short Answer -->
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2">B. Short Answer</h3>
+                        <div class="space-y-6">
+                            <!-- Q1 -->
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <label class="text-sm font-medium text-slate-700">1. Who estimated the total financial loss caused by the floods?</label>
+                                    <button onclick="toggleAnswer('ans-sa1', this)" class="text-xs font-bold text-emerald-600 border border-emerald-200 bg-white px-2 py-1 rounded hover:bg-emerald-50 whitespace-nowrap ml-2">Show Sample Answer</button>
+                                </div>
+                                <textarea class="w-full p-2 border border-slate-200 rounded text-sm focus:ring-2 focus:ring-emerald-500 outline-none h-20"></textarea>
+                                <div id="ans-sa1" class="answer-box hidden mt-2 text-sm text-slate-700 bg-emerald-50 p-3 rounded border border-emerald-100">
+                                    <strong>Sample Answer:</strong> Economists from Celios estimated the loss.
+                                </div>
+                            </div>
+                            <!-- Q2 -->
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <label class="text-sm font-medium text-slate-700">2. Why might the price of chili increase in Riau?</label>
+                                    <button onclick="toggleAnswer('ans-sa2', this)" class="text-xs font-bold text-emerald-600 border border-emerald-200 bg-white px-2 py-1 rounded hover:bg-emerald-50 whitespace-nowrap ml-2">Show Sample Answer</button>
+                                </div>
+                                <textarea class="w-full p-2 border border-slate-200 rounded text-sm focus:ring-2 focus:ring-emerald-500 outline-none h-20"></textarea>
+                                <div id="ans-sa2" class="answer-box hidden mt-2 text-sm text-slate-700 bg-emerald-50 p-3 rounded border border-emerald-100">
+                                    <strong>Sample Answer:</strong> Because of supply problems caused by blocked transport/closed roads.
+                                </div>
+                            </div>
+                            <!-- Q3 -->
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <label class="text-sm font-medium text-slate-700">3. What are two things the government must do quickly?</label>
+                                    <button onclick="toggleAnswer('ans-sa3', this)" class="text-xs font-bold text-emerald-600 border border-emerald-200 bg-white px-2 py-1 rounded hover:bg-emerald-50 whitespace-nowrap ml-2">Show Sample Answer</button>
+                                </div>
+                                <textarea class="w-full p-2 border border-slate-200 rounded text-sm focus:ring-2 focus:ring-emerald-500 outline-none h-20"></textarea>
+                                <div id="ans-sa3" class="answer-box hidden mt-2 text-sm text-slate-700 bg-emerald-50 p-3 rounded border border-emerald-100">
+                                    <strong>Sample Answer:</strong> They must repair roads and support farmers.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: Language Focus (Orange Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-orange-100 shadow-sm">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 bg-orange-50 hover:bg-orange-100 border-l-4 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-orange-200 text-orange-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-lg font-bold text-orange-900">Language Focus: Cause & Effect</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-6 bg-white">
+                    <p class="mb-4 text-slate-600 font-medium">Connect the Cause (left) with the correct Effect (right).</p>
+                    <div id="cause-effect-container" class="space-y-3">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="checkCE()" class="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                            Check Matches
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: Discussion (Violet Theme) -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-violet-100 shadow-sm">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 bg-violet-50 hover:bg-violet-100 border-l-4 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-violet-200 text-violet-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-lg font-bold text-violet-900">Discussion</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-6 bg-white">
+                    <div class="bg-violet-50 p-4 rounded-lg border border-violet-100 mb-4">
+                        <p class="text-slate-700 italic text-sm">"The text mentions that 'Strong cooperation is needed.' Imagine you are a business owner in West Sumatra. What kind of help do you need most from the government right now? (Money, repaired roads, or tax breaks?)"</p>
+                    </div>
+                    
+                    <div class="flex justify-between items-center mb-2">
+                         <h3 class="font-bold text-violet-800 text-sm">Your Answer:</h3>
+                         <button onclick="toggleAnswer('ans-disc', this)" class="text-xs font-bold text-violet-600 border border-violet-200 bg-white px-3 py-1 rounded hover:bg-violet-50 transition-colors">Show Sample Ideas</button>
+                    </div>
+                    <textarea class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-violet-400 outline-none h-32" placeholder="Write your thoughts here..."></textarea>
+                    
+                    <div id="ans-disc" class="answer-box hidden mt-3 p-4 bg-white rounded-lg border border-violet-200 text-sm text-slate-700">
+                        <strong>Sample Ideas:</strong>
+                        <ul class="list-disc pl-5 mt-1 space-y-1">
+                            <li>"As a business owner, I need <strong>repaired roads</strong> first so I can get supplies."</li>
+                            <li>"I need <strong>tax breaks</strong> or loan restructuring because I lost income during the flood."</li>
+                            <li>"Direct <strong>financial aid</strong> is best to repair my shop immediately."</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-sm font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-teal-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        
+        // Part 1: Vocab
+        const vocabData = [
+            { id: "v1", word: "1. Enterprises", correct: "c", options: { a: "Total value of goods/services (GDP)", b: "Process of returning to normal", c: "Businesses or companies", d: "Changing loan terms", e: "Money owed (bad debt)", f: "Amount of goods available" } },
+            { id: "v2", word: "2. Restructuring", correct: "d" },
+            { id: "v3", word: "3. GDP", correct: "a" },
+            { id: "v4", word: "4. Recovery", correct: "b" },
+            { id: "v5", word: "5. Supply", correct: "f" },
+            { id: "v6", word: "6. Bad debt", correct: "e" }
+        ];
+
+        // Part 3A: True/False
+        const tfData = [
+            { id: "tf1", text: "The floods only affected North Sumatra.", correct: "False" },
+            { id: "tf2", text: "National economic growth is expected to be zero in late 2025.", correct: "False" },
+            { id: "tf3", text: "The government plans to help small businesses by restructuring their loans.", correct: "True" },
+            { id: "tf4", text: "The economic loss is estimated to be more than 68 trillion rupiah.", correct: "True" },
+            { id: "tf5", text: "Trade between West Sumatra and West Java is not affected by the floods.", correct: "False" }
+        ];
+
+        // Part 4: Cause Effect
+        const ceData = [
+            { id: "ce1", cause: "1. Roads and bridges were damaged.", correct: "b", options: { a: "Prices of goods rise.", b: "Supplies cannot arrive in West Sumatra.", c: "The local economy slowed down." } },
+            { id: "ce2", cause: "2. Farmers lost their rice fields.", correct: "c" },
+            { id: "ce3", cause: "3. Transport is blocked.", correct: "a" }
+        ];
+
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            const optionsHtml = `
+                <option value="">Select definition...</option>
+                <option value="a">a. Total value of goods/services (GDP)</option>
+                <option value="b">b. Process of returning to normal</option>
+                <option value="c">c. Businesses or companies</option>
+                <option value="d">d. Changing loan terms</option>
+                <option value="e">e. Money owed but uncollectible</option>
+                <option value="f">f. Amount of goods available</option>
+            `;
+
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col md:flex-row md:items-center gap-3 p-3 bg-white rounded-lg border border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <div class="md:w-1/3 font-bold text-cyan-900">${item.word}</div>
+                    <div class="md:w-2/3 flex items-center gap-2">
+                        <select id="${item.id}" class="flex-1 p-2 text-sm border border-slate-200 rounded bg-cyan-50 focus:ring-1 focus:ring-cyan-500 outline-none cursor-pointer">
+                            ${optionsHtml}
+                        </select>
+                        <span id="feedback-${item.id}" class="w-6 flex justify-center"></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-emerald-50 last:border-0" id="row-${item.id}">
+                    <span class="text-sm text-slate-700 mb-2 sm:mb-0 w-full sm:w-2/3">${item.text}</span>
+                    <div class="flex items-center gap-4 text-sm font-medium">
+                        <label class="flex items-center gap-1 cursor-pointer hover:text-emerald-600">
+                            <input type="radio" name="${item.id}" value="True" class="accent-emerald-600"> True
+                        </label>
+                        <label class="flex items-center gap-1 cursor-pointer hover:text-emerald-600">
+                            <input type="radio" name="${item.id}" value="False" class="accent-emerald-600"> False
+                        </label>
+                        <span id="feedback-${item.id}" class="ml-1 w-6"></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCE() {
+            const container = document.getElementById('cause-effect-container');
+            const optionsHtml = `
+                <option value="">Select Effect...</option>
+                <option value="a">a. Prices of goods rise.</option>
+                <option value="b">b. Supplies cannot arrive.</option>
+                <option value="c">c. The local economy slowed down.</option>
+            `;
+
+            container.innerHTML = ceData.map(item => `
+                <div class="flex flex-col md:flex-row md:items-center gap-3 p-3 bg-white rounded-lg border border-orange-100 hover:border-orange-300 transition-colors">
+                    <div class="md:w-1/2 font-medium text-orange-900 text-sm">${item.cause}</div>
+                    <div class="md:w-1/2 flex items-center gap-2">
+                        <i class="fas fa-arrow-right text-orange-300 hidden md:block"></i>
+                        <select id="${item.id}" class="flex-1 p-2 text-sm border border-slate-200 rounded bg-orange-50 focus:ring-1 focus:ring-orange-500 outline-none cursor-pointer">
+                            ${optionsHtml}
+                        </select>
+                        <span id="feedback-${item.id}" class="w-6 flex justify-center"></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            let correctCount = 0;
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    select.classList.add('border-green-500', 'bg-green-50');
+                    select.classList.remove('border-red-300');
+                    select.disabled = true;
+                    correctCount++;
+                } else {
+                    feedback.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    select.classList.add('border-red-300');
+                }
+            });
+            if(correctCount === vocabData.length) {
+                document.getElementById('actions-vocab').innerHTML = '<span class="text-cyan-700 font-bold">All Correct! Great job.</span>';
+            }
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    radios.forEach(r => r.disabled = true);
+                } else {
+                    feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                }
+            });
+        }
+
+        function checkCE() {
+            let correctCount = 0;
+            ceData.forEach(item => {
+                const select = document.getElementById(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    select.classList.add('border-green-500', 'bg-green-50');
+                    select.classList.remove('border-red-300');
+                    select.disabled = true;
+                    correctCount++;
+                } else {
+                    feedback.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    select.classList.add('border-red-300');
+                }
+            });
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Sample Answer";
+                if(btn.innerText.includes("Ideas")) btn.innerText = "Show Sample Ideas";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '2000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers?")) {
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                document.querySelectorAll('select').forEach(s => { s.value = ""; s.disabled = false; s.classList.remove('border-green-500', 'bg-green-50', 'border-red-300'); });
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+                document.querySelectorAll('button').forEach(btn => { if(btn.innerText.includes("Hide")) btn.innerText = "Show Sample Answer"; });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderTF();
+            renderCE();
+        });
+
+    </script>
+</body>
+</html>

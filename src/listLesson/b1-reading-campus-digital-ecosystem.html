@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>B1 (GSE 50) Reading - Campus Digital Ecosystems</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            overflow-wrap: normal;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 4px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 3px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+        .text-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            margin-top: 0.75rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .text-input:disabled {
+            background-color: #f1f5f9;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            white-space: nowrap;
+        }
+        .neo-btn:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px 0px #0f172a;
+        }
+        .neo-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Option Labels (Radios) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            border: 4px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.6;
+            font-weight: 800;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.35rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            accent-color: #0f172a;
+        }
+        .option-label:hover:not(.locked) {
+            background-color: #f8fafc;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .option-label.locked {
+            cursor: not-allowed;
+        }
+
+        /* 3-State Feedback Styles */
+        .state-amber {
+            background-color: #fef08a; 
+            border-color: #ca8a04;
+            color: #854d0e;
+        }
+        .state-rose {
+            background-color: #fecdd3; 
+            border-color: #e11d48;
+            color: #9f1239;
+        }
+        .state-emerald {
+            background-color: #a7f3d0; 
+            border-color: #059669;
+            color: #065f46;
+        }
+
+        /* AI Prompt Box */
+        .ai-prompt-neo {
+            background-color: #e0f2fe;
+            border: 4px solid #0f172a;
+            box-shadow: 6px 6px 0px 0px #0f172a;
+            padding: 1.5rem;
+            position: relative;
+        }
+        .ai-prompt-neo::before {
+            content: "AI ASSISTANT";
+            position: absolute;
+            top: -16px;
+            left: 16px;
+            background: #0ea5e9;
+            color: white;
+            padding: 4px 12px;
+            font-weight: 900;
+            border: 3px solid #0f172a;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 sm:p-6 md:p-10">
+
+    <div class="max-w-7xl mx-auto bg-white p-6 sm:p-10 lg:p-12 border-4 border-dark shadow-neo">
+        
+        <!-- Breadcrumbs (Matching Reference Image) -->
+        <div class="text-base sm:text-xl text-dark mb-10 flex gap-3 font-black uppercase tracking-wider items-center flex-wrap whitespace-nowrap">
+            <span class="bg-[#c4b5fd] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Professional English</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#c4b5fd] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Reading</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#facc15] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">B1 / GSE 50</span> 
+            <i data-lucide="chevron-right" class="w-5 h-5"></i> 
+            <span class="bg-[#818cf8] text-white px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a]">Campus Digital Ecosystems</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-8 mb-10 md:mb-14 border-b-4 border-dark pb-10">
+            <div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-dark uppercase tracking-tight mb-5 leading-tight">
+                    Campus Digital Ecosystems
+                </h1>
+                <p class="text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-4 py-2 border-3 border-dark">
+                    Topic: Navigating the Global Health University Portal
+                </p>
+            </div>
+            <div class="flex gap-4 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-3 px-6 py-4 text-xl text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-6 h-6"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#fefce8] border-4 border-dark p-6 md:p-8 mb-10 md:mb-14 shadow-neo flex items-start gap-5">
+            <div class="bg-[#facc15] p-3 border-3 border-dark shrink-0">
+                <i data-lucide="book-open" class="w-8 h-8 text-dark"></i>
+            </div>
+            <p class="text-xl md:text-2xl text-dark font-bold leading-relaxed">
+                <span class="uppercase font-black text-2xl mr-2">Instructions:</span> Complete the <strong>Preparation</strong> tasks first. Then read the university portal mockup in Section 2 and answer the comprehension tasks. Interactive quizzes use a strict 2-attempt system.
+            </p>
+        </div>
+
+        <!-- Accordion Container -->
+        <div class="space-y-10 md:space-y-12">
+
+            <!-- Part 1: Preparation (Cyan Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            1
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Preparation (Tasks 1 to 2)</span>
+                    </div>
+                    <div id="icon-wrapper-part1" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part1" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 1 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 1</span> Warm Up Thinking
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t1', this, 'Show Sample Ideas')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Ideas</button>
+                            </div>
+                            <ul class="list-disc pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>Do you prefer using a physical library or a digital portal for your medical research?</li>
+                                <li>What are the common challenges international students face when applying for scholarships online?</li>
+                                <li>Why is it important for a university to provide digital health tools like a "Symptom Checker"?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your thoughts here..."></textarea>
+                            
+                            <div id="ans-t1" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="lightbulb" class="w-8 h-8 inline mr-2 text-[#eab308] fill-current"></i>Sample Ideas:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li>I prefer digital portals because I can access the latest medical journals from anywhere at any time.</li>
+                                    <li>International students often struggle with confusing portal interfaces, strict formatting rules for document uploads, and understanding complex eligibility language.</li>
+                                    <li>A symptom checker prevents highly contagious students from coming to a busy clinic unnecessarily, protecting the campus community.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 1.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-10">
+                                <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 1.1</span> AI Support for Warm Up
+                            </h3>
+                            <div class="ai-prompt-neo mb-8 mt-4">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Explain the importance of 'Digital Literacy' for international medical students at the B1 English level. Summarize how navigating a university portal is a transferrable skill for future hospital work in 3 sentences. Avoid complex technical jargon."</p>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Draft your expected findings before comparing it to the AI's response.</p>
+                            <textarea class="text-input text-2xl mb-6" placeholder="Your draft..."></textarea>
+                            <button onclick="toggleAnswer('ans-t1-1', this, 'Show AI Sample Response')" class="neo-btn bg-[#0ea5e9] text-white px-5 py-3 text-xl">Show AI Sample Response</button>
+                            
+                            <div id="ans-t1-1" class="answer-box hidden mt-8 p-6 bg-slate-50 border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="bot" class="w-8 h-8 inline mr-2 text-[#0ea5e9]"></i>AI Response:</strong>
+                                <p class="font-bold text-xl md:text-2xl leading-relaxed italic border-l-4 border-[#0ea5e9] pl-4">"Digital literacy is essential because modern medicine relies on computers. Learning to use a university portal teaches you how to organize files, follow strict online rules, and protect private data. Later, you will use these exact same skills to manage patient records in a busy hospital system."</p>
+                            </div>
+                        </div>
+
+                        <!-- Task 2 (Interactive Vocab) -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 border-b-4 border-dark pb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#38bdf8] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 2</span> Tier 2 Vocabulary Check
+                                </h3>
+                                <button onclick="checkVocab()" class="neo-btn bg-[#38bdf8] text-dark px-8 py-4 text-xl">
+                                    Submit Answers
+                                </button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-8">Select the correct definition for the CAPITALIZED word in each context.</p>
+                            
+                            <div id="vocab-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Reading Content (Blue Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#eff6ff]">
+                <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black">
+                            <i data-lucide="desktop" class="w-8 h-8 md:w-10 md:h-10"></i>
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Core Content: Reading Passage</span>
+                    </div>
+                    <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-10">
+                        
+                        <h3 class="text-2xl md:text-3xl font-black text-dark uppercase tracking-wider mb-6 text-center">Global Health University Portal Mockup</h3>
+                        
+                        <!-- Portal Dashboard Mockup (Neo-Brutalist Adaptation) -->
+                        <div class="flex flex-col lg:flex-row border-4 border-dark shadow-neo bg-white overflow-hidden">
+                            
+                            <!-- Sidebar -->
+                            <div class="bg-dark text-white p-6 lg:w-[320px] shrink-0 border-b-4 lg:border-b-0 lg:border-r-4 border-dark">
+                                <div class="text-2xl font-black mb-10 tracking-tight text-white border-b-4 border-slate-600 pb-6 flex items-center gap-3">
+                                    <i data-lucide="globe" class="text-blue-400 w-8 h-8"></i> GHU Portal
+                                </div>
+                                
+                                <div class="bg-brand-500 text-white font-bold p-4 border-3 border-dark shadow-neo-sm mb-4 flex items-center gap-4 text-xl">
+                                    <i data-lucide="home" class="w-6 h-6"></i> <span>Dashboard Home</span>
+                                </div>
+                                <div class="hover:bg-slate-800 font-bold p-4 mb-4 flex items-center gap-4 text-xl transition-colors cursor-pointer border-3 border-transparent">
+                                    <i data-lucide="landmark" class="w-6 h-6"></i> <span>Grants & Aid</span>
+                                </div>
+                                <div class="hover:bg-slate-800 font-bold p-4 mb-4 flex items-center gap-4 text-xl transition-colors cursor-pointer border-3 border-transparent">
+                                    <i data-lucide="library" class="w-6 h-6"></i> <span>Digital Library</span>
+                                </div>
+                                <div class="hover:bg-slate-800 font-bold p-4 mb-4 flex items-center gap-4 text-xl transition-colors cursor-pointer border-3 border-transparent">
+                                    <i data-lucide="stethoscope" class="w-6 h-6"></i> <span>Health Center</span>
+                                </div>
+                                
+                                <div class="mt-16 text-lg text-slate-400 font-medium">
+                                    Logged in as:<br>
+                                    <strong class="text-white text-xl">International Resident</strong>
+                                </div>
+                            </div>
+                            
+                            <!-- Main Content -->
+                            <div class="p-6 md:p-10 flex-grow bg-[#f8fafc]">
+                                
+                                <div class="flex flex-col md:flex-row justify-between md:items-center border-b-4 border-dark pb-6 mb-8 gap-4">
+                                    <h2 class="text-3xl md:text-4xl font-black text-dark uppercase tracking-tight">Welcome to the Digital Portal</h2>
+                                    <span class="bg-[#d1fae5] text-dark border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-lg font-bold px-4 py-2 uppercase tracking-wider whitespace-nowrap">
+                                        System Active
+                                    </span>
+                                </div>
+
+                                <div class="text-2xl leading-relaxed text-slate-800 font-medium space-y-8">
+                                    <p>This platform is your primary resource for academic and administrative tasks at our institution.</p>
+                                    
+                                    <div class="bg-[#fefce8] border-4 border-dark p-6 shadow-neo-sm">
+                                        <h4 class="text-2xl font-black text-dark mb-4 flex items-center gap-3 uppercase">
+                                            <i data-lucide="info" class="text-amber-500 w-8 h-8"></i> Financial Aid Updates
+                                        </h4>
+                                        <p>First, students interested in financial aid should check the Grants tab. The application <strong class="font-black bg-amber-200 px-1 border-2 border-dark">ELIGIBILITY</strong> criteria for the International Excellence Scholarship have been updated for the 2026 academic year. All documents must be submitted by the deadline of June 15th to be <strong class="font-black bg-amber-200 px-1 border-2 border-dark">VALID</strong> for consideration.</p>
+                                    </div>
+
+                                    <div class="bg-[#d1fae5] border-4 border-dark p-6 shadow-neo-sm">
+                                        <h4 class="text-2xl font-black text-dark mb-4 flex items-center gap-3 uppercase">
+                                            <i data-lucide="book" class="text-emerald-500 w-8 h-8"></i> Library Services
+                                        </h4>
+                                        <p>Second, our digital library offers a wide range of services to support your research. Students can <strong class="font-black bg-emerald-200 px-1 border-2 border-dark">RENEW</strong> their borrowed textbooks online through the dashboard to avoid late fees. You can also book individual study rooms, provided you make a reservation at least 24 hours in advance.</p>
+                                    </div>
+
+                                    <div class="bg-[#ffe4e6] border-4 border-dark p-6 shadow-neo-sm">
+                                        <h4 class="text-2xl font-black text-dark mb-4 flex items-center gap-3 uppercase">
+                                            <i data-lucide="heart-pulse" class="text-rose-500 w-8 h-8"></i> Health and Safety
+                                        </h4>
+                                        <p>Finally, the University Health Center provides specific <strong class="font-black bg-rose-200 px-1 border-2 border-dark">PROTOCOLS</strong> for international residents to ensure community safety. Before your first clinical rotation, you must <strong class="font-black bg-rose-200 px-1 border-2 border-dark">UPLOAD</strong> a digital copy of your immunization records to the portal.</p>
+                                        <p class="mt-4">If you feel unwell, please use the Symptom Checker tool before booking a <strong class="font-black bg-rose-200 px-1 border-2 border-dark">VIRTUAL</strong> consultation with a campus doctor. Using these digital tools effectively is a key professional skill in the modern medical world.</p>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End Portal Mockup -->
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 3: Understanding (Emerald Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            3
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Understanding (Tasks 3 to 5)</span>
+                    </div>
+                    <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 3 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 3</span> General Understanding
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t3', this, 'Show Sample Answers')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Answers</button>
+                            </div>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>What is the primary function of the university portal described in the text?</li>
+                                <li>Which three university areas (scholarships, library, health) are discussed?</li>
+                                <li>What is the overall tone of the instructions provided to the students?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your answers here..."></textarea>
+                            
+                            <div id="ans-t3" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-square" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Sample Answers:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li><strong>Function:</strong> It is the primary resource for academic and administrative tasks.</li>
+                                    <li><strong>Areas Discussed:</strong> Financial Aid (Grants), Digital Library, and the University Health Center.</li>
+                                    <li><strong>Tone:</strong> Informative, professional, and directive (giving clear rules).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 4 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 4</span> Detail and Meaning
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t4', this, 'Show Sample Answers')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample Answers</button>
+                            </div>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>What is the specific date for the scholarship application deadline?</li>
+                                <li>How far in advance must a student reserve a library study room?</li>
+                                <li>What is the first step an unwell student should take before seeing a doctor?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Type your answers here..."></textarea>
+                            
+                            <div id="ans-t4" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-square" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Sample Answers:</strong>
+                                <ul class="list-disc pl-8 space-y-3 font-bold text-xl md:text-2xl">
+                                    <li><strong>Deadline:</strong> June 15th.</li>
+                                    <li><strong>Reservation Time:</strong> At least 24 hours in advance.</li>
+                                    <li><strong>First Step:</strong> Use the Symptom Checker tool on the portal.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 5 (Interactive T/F) -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 border-b-4 border-dark pb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#4ade80] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 5</span> True or False Check
+                                </h3>
+                                <button onclick="checkTF()" class="neo-btn bg-[#4ade80] text-dark px-8 py-4 text-xl">
+                                    Submit Answers
+                                </button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-8">Verify the following statements based on the text.</p>
+                            <div id="tf-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 4: Analysis (Orange Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#ffedd5]">
+                <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            4
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Analysis (Tasks 6 to 7)</span>
+                    </div>
+                    <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 6: Cause/Effect -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 6</span> Cause and Effect
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t6', this, 'Show Sample')" class="neo-btn bg-white text-dark px-5 py-3 text-xl">Show Sample</button>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-6">Identify the logical relationship between these statements from the text:</p>
+                            
+                            <div class="space-y-6">
+                                <div class="flex flex-col lg:flex-row lg:items-center gap-4 bg-white border-4 border-dark p-6">
+                                    <div class="lg:w-1/2">
+                                        <span class="font-black text-xl text-orange-900 block mb-2">Cause:</span>
+                                        <p class="font-bold text-xl text-dark">A student submits their scholarship documents on June 16th...</p>
+                                    </div>
+                                    <div class="lg:w-1/2 flex items-center gap-3">
+                                        <span class="font-black text-xl text-dark uppercase"><i data-lucide="arrow-right" class="w-6 h-6 inline"></i> Effect:</span> 
+                                        <input type="text" class="text-input mt-0 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] flex-1 text-xl py-3 px-4" placeholder="Type the effect...">
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col lg:flex-row lg:items-center gap-4 bg-white border-4 border-dark p-6">
+                                    <div class="lg:w-1/2">
+                                        <span class="font-black text-xl text-orange-900 block mb-2">Cause:</span>
+                                        <p class="font-bold text-xl text-dark">A student forgets to renew their library books online...</p>
+                                    </div>
+                                    <div class="lg:w-1/2 flex items-center gap-3">
+                                        <span class="font-black text-xl text-dark uppercase"><i data-lucide="arrow-right" class="w-6 h-6 inline"></i> Effect:</span> 
+                                        <input type="text" class="text-input mt-0 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] flex-1 text-xl py-3 px-4" placeholder="Type the effect...">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="ans-t6" class="answer-box hidden mt-8 p-6 bg-[#f0fdf4] border-4 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-circle" class="w-8 h-8 inline mr-2 text-[#eab308]"></i>Logical Effects:</strong>
+                                <ul class="list-disc pl-8 space-y-4 font-bold text-xl md:text-2xl">
+                                    <li><strong>Effect 1:</strong> ...the documents will not be valid for consideration for the scholarship. <em class="text-slate-600 block text-lg mt-1">(Logic: Missing a strict deadline results in disqualification).</em></li>
+                                    <li><strong>Effect 2:</strong> ...the student will have to pay late fees to the university library. <em class="text-slate-600 block text-lg mt-1">(Logic: Digital tools allow for prevention, but inaction leads to financial penalties).</em></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 6.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 6.1</span> AI Guided Extension
+                            </h3>
+                            <div class="ai-prompt-neo mb-8">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Review the Cause and Effect logic in Task 6. Now, evaluate the logic of the university's digital health protocols. How does the Symptom Checker act as a logical filter for university resources? Provide a B1 level explanation in 4 sentences."</p>
+                            </div>
+                            <textarea class="text-input text-2xl mb-4" placeholder="Your explanation..."></textarea>
+                        </div>
+
+                        <!-- Task 7 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 7</span> Speaking Personal Position
+                            </h3>
+                            <ul class="list-decimal pl-8 space-y-4 text-2xl text-slate-800 font-bold mb-6">
+                                <li>In your opinion, should all scholarship applications be 100 percent digital, or should paper options remain?</li>
+                                <li>How do you feel about sharing your immunization records on a digital platform?</li>
+                            </ul>
+                            <textarea class="text-input text-2xl" placeholder="Jot down your speaking points..."></textarea>
+                        </div>
+
+                        <!-- Task 7.1 -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#fb923c] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 7.1</span> AI as Practice Partner
+                            </h3>
+                            <div class="ai-prompt-neo mb-8">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Act as a University Admissions Officer. I am an international medical student asking about the scholarship deadline and how to upload my immunization records. Ask me three follow up questions to see if I have understood the portal instructions correctly. Keep your responses at a B1 English level and maintain a professional tone."</p>
+                            </div>
+                            <textarea class="text-input text-2xl mb-4" placeholder="Write your side of the dialogue..."></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 5: Case Studies (Violet Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fae8ff]">
+                <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            5
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Case Studies (Tasks 8 to 9)</span>
+                    </div>
+                    <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-12">
+                        
+                        <!-- Task 8 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 8</span> Discussion Contextual Skills
+                            </h3>
+                            <p class="text-2xl text-slate-800 font-bold mb-6 leading-relaxed"><strong class="text-dark bg-fuchsia-200 px-2 py-1 uppercase mr-2 border-2 border-dark">Digital Professionalism:</strong> When uploading personal medical data to a portal, what security precautions should a professional doctor take to protect their own information and their patients' information in the future?</p>
+                            <textarea class="text-input text-2xl" placeholder="Your discussion points..."></textarea>
+                        </div>
+
+                        <!-- Task 9: Roleplay/Dilemma -->
+                        <div class="bg-white border-4 border-dark shadow-neo p-6 md:p-8">
+                            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-6 border-b-4 border-dark pb-6">
+                                <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3">
+                                    <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 9</span> Case Study Decision Making
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t9', this, 'Show Evaluation')" class="neo-btn bg-[#e879f9] text-dark px-5 py-3 text-xl">Show Evaluation</button>
+                            </div>
+                            <div class="bg-[#fdf4ff] p-6 border-4 border-dark mb-8 shadow-[6px_6px_0_0_#0f172a]">
+                                <p class="text-2xl text-dark font-black uppercase mb-4 tracking-wide"><i data-lucide="alert-triangle" class="w-8 h-8 inline mr-2 text-fuchsia-600"></i> Scenario:</p>
+                                <p class="text-2xl text-slate-800 font-bold leading-relaxed mb-6">The university portal crashes two hours before the scholarship deadline. You have all your documents ready, but you cannot submit them.</p>
+                                <div class="space-y-4">
+                                    <div class="p-4 bg-white border-3 border-dark font-bold text-xl flex items-start gap-4">
+                                        <div class="bg-dark text-white p-2 shrink-0 mt-1"><i data-lucide="hourglass"></i></div> Option A: Wait for the portal to work again, even if it is after the deadline, and hope the university understands.
+                                    </div>
+                                    <div class="p-4 bg-white border-3 border-dark font-bold text-xl flex items-start gap-4">
+                                        <div class="bg-dark text-white p-2 shrink-0 mt-1"><i data-lucide="send"></i></div> Option B: Email the admissions office immediately with all your documents attached and a screenshot of the portal error.
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-2xl text-slate-800 font-bold mb-4">Discuss which option demonstrates better Strategic Thinking for a professional.</p>
+                            <textarea class="text-input text-2xl" placeholder="I would choose Option... because..."></textarea>
+                            
+                            <div id="ans-t9" class="answer-box hidden mt-8 p-6 bg-slate-50 border-4 border-dark text-slate-800 shadow-[6px_6px_0_0_#0f172a]">
+                                <strong class="font-black uppercase text-dark block mb-4 text-2xl"><i data-lucide="check-circle" class="w-8 h-8 inline mr-2 text-[#22c55e]"></i>Analysis:</strong>
+                                <p class="font-bold text-xl md:text-2xl leading-relaxed">Option B demonstrates clear professional accountability and problem solving. By taking a screenshot and sending the files before the deadline, you prove you completed the work on time despite the technical failure. Waiting silently (Option A) risks missing the opportunity completely, as administration cannot verify when you finished the work.</p>
+                            </div>
+                        </div>
+
+                        <!-- Task 9.1 -->
+                        <div class="bg-slate-50 border-4 border-dark shadow-neo p-6 md:p-8">
+                            <h3 class="font-black text-dark text-2xl uppercase flex items-center gap-3 mb-8">
+                                <span class="bg-[#e879f9] px-3 py-1.5 border-3 border-dark shadow-[3px_3px_0_0_#0f172a] text-xl whitespace-nowrap">Task 9.1</span> AI Role Play Comparison
+                            </h3>
+                            <div class="ai-prompt-neo mb-8">
+                                <p class="font-bold text-sky-900 text-2xl leading-relaxed">"Let's simulate a debate. AI: You argue that Option A is the only correct choice because official procedures must be followed strictly. Student: I will argue that Option B shows professional initiative and accountability. Exchange two points each in simple, formal English at the B1 level."</p>
+                            </div>
+                            <textarea class="text-input text-2xl mb-4" placeholder="Your argument..."></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 6: Reflection (Rose Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fff1f2]">
+                <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-6 md:p-8 lg:p-10 bg-[#fb7185] hover:bg-[#f43f5e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-6">
+                        <div class="bg-white border-4 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                            6
+                        </div>
+                        <span class="text-2xl md:text-3xl lg:text-4xl font-black text-dark uppercase tracking-tight">Summary and Reflection (Task 10)</span>
+                    </div>
+                    <div id="icon-wrapper-part6" class="transition-transform duration-300 shrink-0 ml-4 bg-white border-3 border-dark p-2">
+                        <i data-lucide="chevron-down" class="w-8 h-8 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part6" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-8 md:space-y-10">
+                        <div>
+                            <h3 class="text-3xl font-black text-dark mb-6 uppercase tracking-wide">Task 10: Final Reflection</h3>
+                            <p class="text-2xl text-slate-800 mb-8 font-bold leading-relaxed">Write 5 to 6 sentences reflecting on your experience with university or workplace digital portals. Use at least three CAPITALIZED words from Task 2 (for example: ELIGIBILITY, RENEW, VIRTUAL). How does learning to navigate these systems help you prepare for a medical career?</p>
+                            <textarea class="text-input h-64 text-2xl" placeholder="Draft your reflection here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t-4 border-dark text-center mb-8">
+            <p class="text-dark text-xl font-black uppercase tracking-wider bg-[#facc15] inline-block px-6 py-3 border-4 border-dark shadow-neo">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">Fajarudin Akbar</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-8 py-5 shadow-neo transition-all duration-300 translate-y-32 opacity-0 z-50 flex items-center gap-4 font-black text-xl uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="info" class="w-8 h-8 shrink-0 text-brand-600"></i> <span id="toast-msg">Notification</span>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- Init Lucide Icons ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderVocab();
+            renderTF();
+        });
+
+        // Track attempts globally
+        const attempts = {};
+
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { 
+                id: "v1", 
+                word: "ELIGIBILITY",
+                sentence: "The application ELIGIBILITY criteria for the International Excellence Scholarship have been updated.", 
+                correct: "a", 
+                options: { 
+                    a: "The state of being officially allowed to do or receive something.", 
+                    b: "The total cost of a university degree.", 
+                    c: "The physical location of the scholarship office." 
+                },
+                hint: "Think about meeting the requirements to be allowed to apply."
+            },
+            { 
+                id: "v2", 
+                word: "VALID",
+                sentence: "All documents must be submitted by the deadline to be VALID for consideration.", 
+                correct: "b", 
+                options: { 
+                    a: "To be very expensive or valuable.", 
+                    b: "Legally or officially acceptable.", 
+                    c: "Written in more than two languages." 
+                },
+                hint: "Means being acceptable or holding official weight."
+            },
+            { 
+                id: "v3", 
+                word: "RENEW",
+                sentence: "Students can RENEW their borrowed textbooks online to avoid late fees.", 
+                correct: "c", 
+                options: { 
+                    a: "To buy a completely new version of a book.", 
+                    b: "To throw away an old item and replace it.", 
+                    c: "To increase the period of time that something is effective or can be used." 
+                },
+                hint: "Think about extending a loan or extending time."
+            },
+            { 
+                id: "v4", 
+                word: "PROTOCOLS",
+                sentence: "The University Health Center provides specific PROTOCOLS for international residents.", 
+                correct: "a", 
+                options: { 
+                    a: "A set of formal rules for a particular situation or procedure.", 
+                    b: "A list of names of all the doctors in the city.", 
+                    c: "The physical map of the hospital building." 
+                },
+                hint: "A system of strict rules or procedures."
+            },
+            { 
+                id: "v5", 
+                word: "UPLOAD",
+                sentence: "You must UPLOAD a digital copy of your immunization records to the portal.", 
+                correct: "b", 
+                options: { 
+                    a: "To delete a file from a computer system.", 
+                    b: "To transfer data from a smaller device to a larger central system.", 
+                    c: "To print a document on physical paper." 
+                },
+                hint: "Sending digital information upwards to a server."
+            },
+            { 
+                id: "v6", 
+                word: "VIRTUAL",
+                sentence: "Use the checker before booking a VIRTUAL consultation with a campus doctor.", 
+                correct: "a", 
+                options: { 
+                    a: "Occurring through the use of computer software rather than physical presence.", 
+                    b: "Taking place very early in the morning.", 
+                    c: "A meeting that lasts for more than three hours." 
+                },
+                hint: "Happening online, like a video call."
+            }
+        ];
+
+        // 3. TRUE / FALSE DATA
+        const tfData = [
+            { 
+                id: "tf1", 
+                text: "1. The scholarship requirements are exactly the same as they were last year.", 
+                correct: "False", 
+                explanation: "The text says the criteria have been updated for the 2026 academic year.",
+                hint: "Read the Financial Aid Updates section closely."
+            },
+            { 
+                id: "tf2", 
+                text: "2. Students can extend their book loans without physically going to the library.", 
+                correct: "True", 
+                explanation: "It states students can renew their borrowed textbooks online to avoid late fees.",
+                hint: "Check the Library Services section regarding textbooks."
+            },
+            { 
+                id: "tf3", 
+                text: "3. A student can book a virtual consultation as their very first step if they feel sick.", 
+                correct: "False", 
+                explanation: "They must use the Symptom Checker tool BEFORE booking a virtual consultation.",
+                hint: "Look at the order of actions in the Health and Safety section."
+            },
+            { 
+                id: "tf4", 
+                text: "4. Digital records are required before a student begins working in a clinical setting.", 
+                correct: "True", 
+                explanation: "They must upload records before their first clinical rotation.",
+                hint: "What must be uploaded before clinical rotations?"
+            }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            if(vocabData.length === 0) return;
+
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="" disabled selected>Select definition...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${key.toUpperCase()}. ${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col xl:flex-row xl:items-center gap-6 p-6 bg-white border-4 border-dark shadow-neo-sm w-full">
+                    <div class="xl:w-2/5 font-black text-dark text-2xl bg-cyan-100 px-4 py-2 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">${item.word}</div>
+                    <div class="xl:w-3/5 flex flex-col gap-3">
+                        <select id="${item.id}" class="text-input mt-0 py-4 text-xl cursor-pointer w-full" onchange="resetVocabState('${item.id}')">
+                            ${optionsHtml}
+                        </select>
+                        <div id="feedback-${item.id}" class="text-xl font-bold hidden px-4 py-2 border-3 mt-2"></div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function resetVocabState(id) {
+            const select = document.getElementById(id);
+            const feedback = document.getElementById(`feedback-${id}`);
+            select.classList.remove('state-amber', 'state-rose', 'state-emerald');
+            feedback.classList.add('hidden');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="bg-white p-6 md:p-8 border-4 border-dark shadow-neo mb-6 flex flex-col gap-6">
+                    <span class="text-2xl font-black text-dark leading-relaxed">${item.text}</span>
+                    <div class="flex flex-wrap items-center gap-6">
+                        <label class="option-label m-0 flex-1 justify-center py-4 text-2xl group">
+                            <input type="radio" name="${item.id}" value="True" class="mt-1 w-6 h-6 hidden" onchange="resetTFState('${item.id}')">
+                            <div class="w-6 h-6 border-3 border-dark rounded-sm group-[.locked]:bg-slate-200 mt-1 flex items-center justify-center shrink-0 radio-custom"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                            <span class="uppercase tracking-wide">True</span>
+                        </label>
+                        <label class="option-label m-0 flex-1 justify-center py-4 text-2xl group">
+                            <input type="radio" name="${item.id}" value="False" class="mt-1 w-6 h-6 hidden" onchange="resetTFState('${item.id}')">
+                            <div class="w-6 h-6 border-3 border-dark rounded-sm group-[.locked]:bg-slate-200 mt-1 flex items-center justify-center shrink-0 radio-custom"><div class="w-3 h-3 bg-dark hidden inner-dot"></div></div>
+                            <span class="uppercase tracking-wide">False</span>
+                        </label>
+                    </div>
+                    <div id="feedback-${item.id}" class="text-xl font-bold hidden px-5 py-4 border-3 mt-2 leading-relaxed"></div>
+                </div>
+            `).join('');
+
+            // Add custom radio behavior
+            setTimeout(() => {
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const name = e.target.name;
+                        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                            const dot = r.parentElement.querySelector('.inner-dot');
+                            if(r.checked) dot.classList.remove('hidden');
+                            else dot.classList.add('hidden');
+                        });
+                    });
+                });
+            }, 100);
+        }
+
+        function resetTFState(id) {
+            const feedback = document.getElementById(`feedback-${id}`);
+            const radios = document.getElementsByName(id);
+            radios.forEach(r => {
+                r.closest('.option-label').classList.remove('state-amber', 'state-rose', 'state-emerald');
+            });
+            feedback.classList.add('hidden');
+        }
+
+        // --- 3-State Logic Handlers ---
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3500);
+        }
+
+        function checkVocab() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+                
+                // Reset styles initially
+                select.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                feedback.classList.remove('state-amber', 'state-rose', 'state-emerald', 'hidden');
+
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Correct!';
+                    select.classList.add('state-emerald');
+                    feedback.classList.add('state-emerald');
+                    select.disabled = true;
+                    correctCount++;
+                    answeredCount++;
+                } else if (select.value !== "") {
+                    attempts[key]++;
+                    answeredCount++;
+                    if (attempts[key] >= 2) {
+                        select.disabled = true;
+                        select.classList.add('state-rose');
+                        feedback.classList.add('state-rose');
+                        feedback.innerHTML = `<i data-lucide="x-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Locked. The correct answer is <strong>${item.correct.toUpperCase()}</strong>.`;
+                    } else {
+                        select.classList.add('state-amber');
+                        feedback.classList.add('state-amber');
+                        feedback.innerHTML = `<i data-lucide="info" class="w-6 h-6 inline mr-2 align-middle"></i> Not quite. Hint: ${item.hint}`;
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                }
+            });
+            lucide.createIcons();
+            
+            if (answeredCount === 0) {
+                showToast("Please select at least one answer.");
+            } else if (correctCount === vocabData.length) {
+                showToast("Perfect! All vocabulary matched.");
+            } else {
+                showToast("Answers checked. Review the feedback.");
+            }
+        }
+
+        function checkTF() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const key = item.id;
+                let userVal = "";
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                radios.forEach(r => {
+                    const label = r.closest('.option-label');
+                    label.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                    if(r.checked) userVal = r.value;
+                });
+
+                feedback.classList.remove('state-amber', 'state-rose', 'state-emerald', 'hidden');
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = `<i data-lucide="check-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Correct! Reason: ${item.explanation}`;
+                    feedback.classList.add('state-emerald');
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        const label = r.closest('.option-label');
+                        label.classList.add('locked');
+                        if(r.checked) label.classList.add('state-emerald');
+                    });
+                    correctCount++;
+                    answeredCount++;
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    answeredCount++;
+                    if (attempts[key] >= 2) {
+                        feedback.innerHTML = `<i data-lucide="x-circle" class="w-6 h-6 inline mr-2 align-middle"></i> Locked. The correct answer is <strong>${item.correct}</strong>.<br><span class="mt-2 block">Reason: ${item.explanation}</span>`;
+                        feedback.classList.add('state-rose');
+                        radios.forEach(r => {
+                            r.disabled = true;
+                            const label = r.closest('.option-label');
+                            label.classList.add('locked');
+                            if(r.checked) label.classList.add('state-rose');
+                        });
+                    } else {
+                        feedback.innerHTML = `<i data-lucide="info" class="w-6 h-6 inline mr-2 align-middle"></i> Incorrect. Hint: ${item.hint}`;
+                        feedback.classList.add('state-amber');
+                        radios.forEach(r => {
+                            if(r.checked) r.closest('.option-label').classList.add('state-amber');
+                        });
+                    }
+                } else {
+                    feedback.classList.add('hidden');
+                }
+            });
+            lucide.createIcons();
+            
+            if (answeredCount === 0) {
+                showToast("Please answer at least one T/F question.");
+            } else if (correctCount === tfData.length) {
+                showToast("Excellent! All T/F answers correct.");
+            } else {
+                showToast("Answers checked. Review the feedback.");
+            }
+        }
+
+        // --- UI Interactions ---
+
+        function toggleAnswer(elementId, btn, baseText) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Output";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = baseText;
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Are you sure you want to clear all your progress?")) {
+                
+                for (let key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => i.value = "");
+                
+                document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                    r.checked = false; 
+                    r.disabled = false;
+                    r.parentElement.querySelector('.inner-dot').classList.add('hidden');
+                });
+                document.querySelectorAll('.option-label').forEach(label => {
+                    label.classList.remove('state-amber', 'state-rose', 'state-emerald', 'locked');
+                });
+                
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.classList.remove('state-amber', 'state-rose', 'state-emerald'); 
+                });
+                
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.remove('state-amber', 'state-rose', 'state-emerald');
+                    f.classList.add('hidden');
+                });
+                
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+                
+                document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                    const params = btn.getAttribute('onclick').match(/'([^']+)'/g);
+                    if(params && params.length >= 3) {
+                        btn.innerText = params[2].replace(/'/g, '');
+                    }
+                });
+                
+                showToast("All progress has been reset.");
+            }
+        }
+
+    </script>
+</body>
+</html>

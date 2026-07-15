@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Reading - Developing Reading Skills</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        ielts: {
+                            blue: '#0056D2', // IELTS Blue
+                            red: '#D40000',  // IELTS Red
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .reading-text { font-family: 'Merriweather', serif; line-height: 1.8; color: #374151; }
+        
+        /* Topic Sentence Interaction */
+        .topic-sentence {
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-radius: 4px;
+            padding: 2px 0;
+        }
+        .topic-sentence:hover { background-color: #eff6ff; }
+        .topic-sentence.correct { 
+            background-color: #dcfce7; 
+            border-bottom: 2px solid #16a34a; 
+            color: #14532d;
+            font-weight: 600;
+        }
+        .topic-sentence.incorrect { 
+            background-color: #fee2e2; 
+            color: #991b1b;
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Highlight for Scanning */
+        mark.scan-highlight {
+            background-color: #fef08a; /* yellow-200 */
+            padding: 2px 0;
+            border-radius: 2px;
+            font-weight: 600;
+            color: #854d0e;
+            animation: highlightPulse 2s infinite;
+        }
+
+        @keyframes highlightPulse {
+            0% { background-color: #fef08a; }
+            50% { background-color: #fde047; }
+            100% { background-color: #fef08a; }
+        }
+
+        /* Animations */
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Custom Scrollbar for Reading Text */
+        .custom-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-4 py-4 max-w-5xl">
+            <div class="flex justify-between items-center">
+                <h1 class="text-xl font-bold text-gray-800 flex items-center gap-3">
+                    <span class="bg-ielts-red text-white px-2 py-1 rounded text-sm font-black tracking-wider">IELTS</span>
+                    <span class="text-ielts-blue">Reading Skills</span>
+                </h1>
+                <div class="text-sm font-medium text-gray-500" id="step-indicator">
+                    Step <span id="current-step-num">0</span> of 4
+                </div>
+            </div>
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 h-1.5 mt-4 rounded-full overflow-hidden">
+                <div id="progress-bar" class="bg-ielts-blue h-full transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-5xl">
+        
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed top-24 right-4 z-50 transform translate-x-full transition-transform duration-300">
+            <div id="toast-content" class="bg-white border-l-4 border-blue-500 shadow-lg rounded p-4 flex items-center gap-3">
+                <i class="fa-solid fa-circle-info text-blue-500 text-xl"></i>
+                <span class="font-medium">Notification</span>
+            </div>
+        </div>
+
+        <!-- VIEW: Home -->
+        <section id="step-home" class="step-view fade-in">
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden text-center max-w-3xl mx-auto">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-10 text-white">
+                    <i class="fa-solid fa-book-open-reader text-6xl mb-4 opacity-90"></i>
+                    <h2 class="text-3xl font-bold mb-2">Developing Reading Skills</h2>
+                    <p class="opacity-90">Interactive Practice for IELTS Success</p>
+                </div>
+                <div class="p-8 md:p-12">
+                    <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                        This tool is designed to help you master the key reading skills needed for the IELTS exam: <strong>Surveying, Skimming, and Scanning</strong>. By practicing these techniques, you can read more efficiently and answer questions accurately under time pressure.
+                    </p>
+                    <button onclick="app.goToStep(0)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-lg shadow-md transition-all transform hover:-translate-y-1 text-lg">
+                        Start Practice
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 0: Definitions -->
+        <section id="step-0" class="step-view hidden fade-in">
+            <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+                <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                    <div class="bg-blue-100 text-blue-700 w-10 h-10 rounded-full flex items-center justify-center font-bold">0</div>
+                    <h2 class="text-2xl font-bold text-gray-800">Know Your Skills</h2>
+                </div>
+                
+                <p class="mb-6 text-gray-600">Select the correct reading skill for each definition.</p>
+                
+                <div id="definitions-container" class="space-y-4"></div>
+                
+                <div class="mt-8 pt-6 border-t flex justify-end">
+                    <button onclick="app.checkDefinitions()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow transition-colors">
+                        Check Answers
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 1: Surveying -->
+        <section id="step-1" class="step-view hidden fade-in">
+            <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+                <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                    <div class="bg-blue-100 text-blue-700 w-10 h-10 rounded-full flex items-center justify-center font-bold">1</div>
+                    <h2 class="text-2xl font-bold text-gray-800">Surveying the Text</h2>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-100 p-4 rounded-lg mb-6 flex justify-between items-center">
+                    <p class="text-blue-800 font-medium">
+                        <i class="fa-regular fa-clock mr-2"></i>
+                        You have 20 seconds to survey the text below.
+                    </p>
+                    <button id="start-survey-btn" onclick="app.startSurvey()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm transition-colors">
+                        Start Timer
+                    </button>
+                    <div id="survey-timer" class="hidden text-xl font-mono font-bold text-red-600 bg-white px-3 py-1 rounded border border-red-200">20s</div>
+                </div>
+
+                <!-- Text Container -->
+                <div id="survey-text-container" class="hidden reading-text p-6 bg-gray-50 border border-gray-200 rounded-lg mb-6 shadow-inner text-sm md:text-base">
+                    <!-- Text injected via JS -->
+                </div>
+
+                <!-- Survey Questions -->
+                <div id="survey-questions" class="hidden space-y-6 animate-pulse-once">
+                    <h3 class="font-bold text-lg text-gray-800 border-b pb-2">What did you notice?</h3>
+                    <div id="survey-q-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 2: Skimming -->
+        <section id="step-2" class="step-view hidden fade-in">
+            <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+                <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                    <div class="bg-blue-100 text-blue-700 w-10 h-10 rounded-full flex items-center justify-center font-bold">2</div>
+                    <h2 class="text-2xl font-bold text-gray-800">Skimming for Gist</h2>
+                </div>
+
+                <div class="mb-6">
+                    <p class="font-medium text-gray-700 mb-2">Part A: Identify Topic Sentences</p>
+                    <p class="text-sm text-gray-500 mb-4">Click the sentence in each paragraph that represents the main idea.</p>
+                    
+                    <div id="skimming-text-container" class="reading-text p-6 bg-yellow-50 border border-yellow-200 rounded-lg shadow-inner space-y-6">
+                        <!-- Text injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Matching Task (Hidden until topic sentences found) -->
+                <div id="skimming-matching-task" class="hidden mt-8 pt-8 border-t border-gray-200">
+                    <p class="font-medium text-gray-700 mb-4">Part B: Match Information to Paragraphs</p>
+                    <div id="skimming-matching-container" class="space-y-3 bg-gray-50 p-6 rounded-lg border border-gray-200"></div>
+                    
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="app.checkSkimmingMatches()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow transition-colors">
+                            Check Matches
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 3: Scanning -->
+        <section id="step-3" class="step-view hidden fade-in">
+            <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+                <div class="flex items-center gap-3 mb-6 border-b pb-4">
+                    <div class="bg-blue-100 text-blue-700 w-10 h-10 rounded-full flex items-center justify-center font-bold">3</div>
+                    <h2 class="text-2xl font-bold text-gray-800">Scanning for Details</h2>
+                </div>
+
+                <p class="mb-4 text-gray-600">Complete the table below. Use <strong>NO MORE THAN THREE WORDS</strong> from the passage.</p>
+
+                <!-- Changed Layout: Vertical Stack instead of Grid -->
+                <div class="flex flex-col gap-8">
+                    <!-- Text (Full Height, No Scroll) -->
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 relative">
+                        <div class="absolute top-0 left-0 bg-gray-200 text-gray-600 px-3 py-1 text-xs font-bold uppercase tracking-wide rounded-br">Source Text</div>
+                        <div id="scanning-text-container" class="reading-text text-base mt-4"></div>
+                    </div>
+
+                    <!-- Table (IELTS Format) -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border-collapse border border-gray-300">
+                            <thead class="text-xs text-white uppercase bg-gray-700">
+                                <tr>
+                                    <th scope="col" class="px-3 py-3 border border-gray-600">Species</th>
+                                    <th scope="col" class="px-3 py-3 border border-gray-600">Preferred climate</th>
+                                    <th scope="col" class="px-3 py-3 border border-gray-600">Start of active period</th>
+                                    <th scope="col" class="px-3 py-3 border border-gray-600">Generations per year</th>
+                                    <th scope="col" class="px-3 py-3 border border-gray-600">Complementary species</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white">
+                                <!-- Row 1 -->
+                                <tr>
+                                    <th scope="row" class="px-3 py-3 font-bold text-gray-900 border border-gray-300">French</th>
+                                    <td class="px-3 py-3 border border-gray-300">cool</td>
+                                    <td class="px-3 py-3 border border-gray-300">late spring</td>
+                                    <td class="px-3 py-3 border border-gray-300">1-2</td>
+                                    <td class="px-3 py-3 border border-gray-300">Spanish</td>
+                                </tr>
+                                <!-- Row 2 -->
+                                <tr>
+                                    <th scope="row" class="px-3 py-3 font-bold text-gray-900 border border-gray-300">Spanish</th>
+                                    <td class="px-3 py-3 border border-gray-300 bg-blue-50">
+                                        <input id="q9" type="text" class="w-full bg-transparent border-b border-blue-300 focus:outline-none focus:border-blue-600 px-1" placeholder="(9)...">
+                                    </td>
+                                    <td class="px-3 py-3 border border-gray-300 bg-blue-50">
+                                        <input id="q10" type="text" class="w-full bg-transparent border-b border-blue-300 focus:outline-none focus:border-blue-600 px-1" placeholder="(10)...">
+                                    </td>
+                                    <td class="px-3 py-3 border border-gray-300 bg-blue-50">
+                                        <input id="q11" type="text" class="w-full bg-transparent border-b border-blue-300 focus:outline-none focus:border-blue-600 px-1" placeholder="(11)...">
+                                    </td>
+                                    <td class="px-3 py-3 border border-gray-300 bg-gray-100"></td>
+                                </tr>
+                                <!-- Row 3 -->
+                                <tr>
+                                    <th scope="row" class="px-3 py-3 font-bold text-gray-900 border border-gray-300">South African ball roller</th>
+                                    <td class="px-3 py-3 border border-gray-300 bg-blue-50">
+                                        <input id="q12" type="text" class="w-full bg-transparent border-b border-blue-300 focus:outline-none focus:border-blue-600 px-1" placeholder="(12)...">
+                                    </td>
+                                    <td class="px-3 py-3 border border-gray-300 bg-gray-100"></td>
+                                    <td class="px-3 py-3 border border-gray-300 bg-gray-100"></td>
+                                    <td class="px-3 py-3 border border-gray-300 bg-blue-50">
+                                        <input id="q13" type="text" class="w-full bg-transparent border-b border-blue-300 focus:outline-none focus:border-blue-600 px-1" placeholder="(13)...">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="mt-6 flex justify-end">
+                            <button onclick="app.checkScanAnswers()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow transition-colors">
+                                Submit Answers
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPLETION -->
+        <section id="step-complete" class="step-view hidden fade-in">
+            <div class="bg-green-50 border border-green-200 rounded-xl p-12 text-center shadow-sm">
+                <div class="bg-white p-4 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-sm">
+                    <i class="fa-solid fa-check-double text-4xl text-green-600"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-green-800 mb-4">Congratulations!</h2>
+                <p class="text-green-700 mb-8 max-w-lg mx-auto">
+                    You have successfully completed all reading skill exercises. You have practiced analyzing the text layout, identifying main ideas, and locating specific details.
+                </p>
+                <button onclick="location.reload()" class="bg-white border-2 border-green-600 text-green-700 hover:bg-green-50 font-bold py-3 px-8 rounded-lg transition-colors">
+                    Practice Again
+                </button>
+            </div>
+        </section>
+
+        <!-- Navigation Buttons -->
+        <div id="nav-controls" class="hidden flex justify-between mt-8 border-t pt-6">
+            <button id="prev-btn" onclick="app.prevStep()" class="text-gray-500 hover:text-gray-800 font-medium px-4 py-2 flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Previous
+            </button>
+            <button id="next-btn" onclick="app.nextStep()" class="bg-gray-800 hover:bg-gray-900 text-white font-medium px-6 py-2 rounded shadow flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                Next <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 py-6 mt-auto text-center text-sm">
+        <p>Designed for IELTS Preparation | Fajarudin Akbar</p>
+    </footer>
+
+    <script>
+        const app = {
+            data: {
+                currentStep: -1, // -1 is Home
+                maxStep: 0,
+                attempts: {
+                    definitions: 0,
+                    skimmingMatch: 0,
+                    scanning: 0
+                },
+                textContent: {
+                    title: "A Remarkable Beetle",
+                    paragraphs: [
+                        { id: 'a', sentences: ["Introducing dung¹ beetles into a pasture is a simple process: approximately 1,500 beetles are released, a handful at a time, into fresh cow pats² in the cow pasture.", "The beetles immediately disappear beneath the pats digging and tunnelling and, if they successfully adapt to their new environment, soon become a permanent, self-sustaining part of the local ecology.", "In time they multiply and within three or four years the benefits to the pasture are obvious."], topicIdx: 0 },
+                        { id: 'b', sentences: ["Dung beetles work from the inside of the pat so they are sheltered from predators such as birds and foxes.", "Most species burrow into the soil and bury dung in tunnels directly underneath the pats, which are hollowed out from within.", "Some large species originating from France excavate tunnels to a depth of approximately 30 cm below the dung pat.", "These beetles make sausage-shaped brood chambers along the tunnels.", "The shallowest tunnels belong to a much smaller Spanish species that buries dung in chambers that hang like fruit from the branches of a pear tree.", "South African beetles dig narrow tunnels of approximately 20 cm below the surface of the pat.", "Some surface-dwelling beetles, including a South African species, cut perfectly-shaped balls from the pat, which are rolled away and attached to the bases of plants."], topicIdx: 0 },
+                        { id: 'c', sentences: ["For maximum dung burial in spring, summer and autumn, farmers require a variety of species with overlapping periods of activity.", "In the cooler environments of the state of Victoria, the large French species (2.5 cms long), is matched with smaller (half this size), temperate-climate Spanish species.", "The former are slow to recover from the winter cold and produce only one or two generations of offspring from late spring until autumn.", "The latter, which multiply rapidly in early spring, produce two to five generations annually.", "The South African ball-rolling species, being a sub-tropical beetle, prefers the climate of northern and coastal New South Wales where it commonly works with the South African tunneling species.", "In warmer climates, many species are active for longer periods of the year."], topicIdx: 0 }
+                    ],
+                    glossary: "<strong>Glossary</strong><br>1. dung: the droppings or excreta of animals<br>2. cow pats: droppings of cows"
+                },
+                skimmingTopics: [
+                    { text: "different species of beetles", answer: "c" },
+                    { text: "how the beetles get into the field", answer: "a" },
+                    { text: "what happens at different parts of the year", answer: "c" },
+                    { text: "what the beetles do inside the cowpat", answer: "b" },
+                    { text: "information about climate and the beetles", answer: "c" }
+                ],
+                surveyAnswers: { 'sq1': 'yes', 'sq2': 'no', 'sq3': 'no', 'sq4': 'yes' },
+                scanAnswers: { 
+                    q9: ['temperate'], 
+                    q10: ['early spring'], 
+                    q11: ['two to five', '2-5'], 
+                    q12: ['sub-tropical', 'sub tropical'], 
+                    q13: ['south african tunneling', 'south african tunnelling'] 
+                },
+                highlightPhrases: [
+                    "temperate", "early spring", "two to five", "sub-tropical", "South African tunneling"
+                ]
+            },
+
+            init() {
+                this.renderDefinitions();
+                this.renderText('skimming-text-container', true);
+                this.renderText('scanning-text-container', false);
+                this.renderText('survey-text-container', false);
+                this.renderSurveyQuestions();
+                this.renderSkimmingMatches();
+                this.updateNav();
+            },
+
+            // --- NAVIGATION ---
+            goToStep(step) {
+                // Hide all views first
+                document.querySelectorAll('.step-view').forEach(el => el.classList.add('hidden'));
+                
+                // Handle Home
+                if (step === -1) {
+                    document.getElementById('step-home').classList.remove('hidden');
+                    document.getElementById('nav-controls').classList.add('hidden');
+                } 
+                // Handle Completion (Step 4)
+                else if (step === 4) {
+                    document.getElementById('step-complete').classList.remove('hidden');
+                    document.getElementById('nav-controls').classList.add('hidden');
+                }
+                // Handle Regular Steps (0, 1, 2, 3)
+                else {
+                    const stepEl = document.getElementById(`step-${step}`);
+                    if (stepEl) {
+                        stepEl.classList.remove('hidden');
+                        stepEl.classList.add('fade-in');
+                        document.getElementById('nav-controls').classList.remove('hidden');
+                    }
+                }
+                
+                this.data.currentStep = step;
+                // Update max step logic
+                if(step > this.data.maxStep) this.data.maxStep = step;
+                
+                this.updateNav();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            nextStep() {
+                if (this.data.currentStep < 4) this.goToStep(this.data.currentStep + 1);
+            },
+
+            prevStep() {
+                if (this.data.currentStep > 0) this.goToStep(this.data.currentStep - 1);
+            },
+
+            updateNav() {
+                if (this.data.currentStep === -1) return;
+                
+                const steps = 4; // 0,1,2,3
+                const progress = ((this.data.currentStep + 1) / 4) * 100;
+                document.getElementById('progress-bar').style.width = `${Math.min(progress, 100)}%`;
+                document.getElementById('current-step-num').textContent = this.data.currentStep === 4 ? "Complete" : this.data.currentStep;
+
+                document.getElementById('prev-btn').disabled = this.data.currentStep === 0;
+                // Next button logic: unlocked only if maxStep allows
+                const nextBtn = document.getElementById('next-btn');
+                
+                // Logic: Must complete task to unlock next
+                // For simplicity in this demo, we allow clicking Next if maxStep >= currentStep
+                // But generally we want to force interaction.
+                // We will disable Next by default and enable it via checking functions.
+                nextBtn.disabled = this.data.currentStep >= this.data.maxStep;
+            },
+
+            unlockNext() {
+                this.data.maxStep = Math.max(this.data.maxStep, this.data.currentStep + 1);
+                this.updateNav();
+                this.showToast("Next step unlocked!", "success");
+            },
+
+            // --- UI HELPERS ---
+            showToast(msg, type) {
+                const toast = document.getElementById('toast');
+                const content = document.getElementById('toast-content');
+                
+                content.className = `bg-white border-l-4 shadow-lg rounded p-4 flex items-center gap-3 ${type === 'success' ? 'border-green-500' : (type === 'info' ? 'border-blue-500' : 'border-red-500')}`;
+                let iconClass = 'fa-circle-exclamation text-red-500';
+                if(type === 'success') iconClass = 'fa-circle-check text-green-500';
+                if(type === 'info') iconClass = 'fa-circle-info text-blue-500';
+
+                content.innerHTML = `
+                    <i class="fa-solid ${iconClass} text-xl"></i>
+                    <span class="font-medium text-gray-700">${msg}</span>
+                `;
+                
+                toast.classList.remove('translate-x-full');
+                setTimeout(() => toast.classList.add('translate-x-full'), 3000);
+            },
+
+            renderText(containerId, isSkimmable) {
+                const container = document.getElementById(containerId);
+                let html = `<h3 class="text-xl font-bold mb-4 text-center">${this.data.textContent.title}</h3>`;
+                
+                this.data.textContent.paragraphs.forEach(p => {
+                    html += `<div class="mb-4 text-justify leading-relaxed">`;
+                    if (isSkimmable) {
+                        p.sentences.forEach((s, idx) => {
+                            html += `<span class="topic-sentence" data-pid="${p.id}" data-idx="${idx}" onclick="app.checkTopicSentence(this)">${s}</span> `;
+                        });
+                    } else {
+                        html += p.sentences.join(' ');
+                    }
+                    html += `</div>`;
+                });
+                
+                html += `<div class="mt-6 pt-4 border-t text-sm text-gray-600 bg-gray-50 p-2 rounded">${this.data.textContent.glossary}</div>`;
+                container.innerHTML = html;
+            },
+
+            // --- STEP 0: DEFINITIONS ---
+            renderDefinitions() {
+                const defs = [
+                    { text: "Reading a text very quickly to get the general understanding and to get an idea of the organisation of the text.", answer: "skimming" },
+                    { text: "Reading a text with the specific purpose of extracting information such as numbers, facts, words etc.", answer: "scanning" },
+                    { text: "Looking at a text very quickly before reading to get an idea of lay-out: title, pictures, graphs, headings, glossary etc.", answer: "surveying" }
+                ];
+                
+                const container = document.getElementById('definitions-container');
+                container.innerHTML = defs.map((d, i) => `
+                    <div class="bg-gray-50 p-4 rounded border hover:shadow-sm transition-shadow">
+                        <p class="mb-3 font-medium text-gray-700">${d.text}</p>
+                        <select id="def-${i}" data-ans="${d.answer}" class="w-full md:w-auto border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+                            <option value="">Select skill...</option>
+                            <option value="surveying">Surveying</option>
+                            <option value="skimming">Skimming</option>
+                            <option value="scanning">Scanning</option>
+                        </select>
+                    </div>
+                `).join('');
+            },
+
+            checkDefinitions() {
+                this.data.attempts.definitions++;
+                let allCorrect = true;
+                const selects = document.querySelectorAll('#definitions-container select');
+                selects.forEach(sel => {
+                    if (sel.value === sel.dataset.ans) {
+                        sel.classList.add('border-green-500', 'bg-green-50', 'text-green-700');
+                        sel.classList.remove('border-red-500', 'bg-red-50');
+                    } else {
+                        sel.classList.add('border-red-500', 'bg-red-50', 'text-red-700');
+                        sel.classList.remove('border-green-500', 'bg-green-50');
+                        allCorrect = false;
+                    }
+                });
+                
+                if (allCorrect) {
+                    this.unlockNext();
+                } else if (this.data.attempts.definitions >= 2) {
+                    // Auto-resolve
+                    selects.forEach(sel => {
+                        sel.value = sel.dataset.ans;
+                        sel.classList.add('border-green-500', 'bg-green-50', 'text-green-700');
+                        sel.classList.remove('border-red-500', 'bg-red-50');
+                    });
+                    this.showToast("Max attempts reached. Correct answers shown.", "info");
+                    this.unlockNext();
+                } else {
+                    this.showToast(`Incorrect. Attempt ${this.data.attempts.definitions}/2`, "error");
+                }
+            },
+
+            // --- STEP 1: SURVEYING ---
+            startSurvey() {
+                document.getElementById('start-survey-btn').classList.add('hidden');
+                document.getElementById('survey-timer').classList.remove('hidden');
+                document.getElementById('survey-text-container').classList.remove('hidden');
+                
+                let time = 20;
+                const timerEl = document.getElementById('survey-timer');
+                
+                const interval = setInterval(() => {
+                    time--;
+                    timerEl.textContent = `${time}s`;
+                    if (time <= 0) {
+                        clearInterval(interval);
+                        document.getElementById('survey-text-container').classList.add('hidden');
+                        document.getElementById('survey-timer').classList.add('hidden');
+                        document.getElementById('survey-questions').classList.remove('hidden');
+                    }
+                }, 1000);
+            },
+
+            renderSurveyQuestions() {
+                const qs = [
+                    { id: 'sq1', t: "a) Does the text have a title?", a: "yes" },
+                    { id: 'sq2', t: "b) Does the text have sub-headings?", a: "no" },
+                    { id: 'sq3', t: "c) Does the text have diagrams or pictures?", a: "no" },
+                    { id: 'sq4', t: "d) Does the text have a glossary?", a: "yes" }
+                ];
+                
+                const container = document.getElementById('survey-q-list');
+                container.innerHTML = qs.map(q => `
+                    <div class="bg-gray-50 p-4 rounded border" id="box-${q.id}">
+                        <p class="mb-3 font-medium">${q.t}</p>
+                        <div class="flex gap-2">
+                            <button onclick="app.checkSurveyAnswer('${q.id}', '${q.a}', 'yes', this)" class="flex-1 border bg-white py-1 rounded hover:bg-gray-100 transition-colors">Yes</button>
+                            <button onclick="app.checkSurveyAnswer('${q.id}', '${q.a}', 'no', this)" class="flex-1 border bg-white py-1 rounded hover:bg-gray-100 transition-colors">No</button>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            checkSurveyAnswer(qid, correctAns, userAns, btn) {
+                const parent = btn.parentElement;
+                // Disable all buttons in this group
+                parent.querySelectorAll('button').forEach(b => b.disabled = true);
+                
+                // Logic Change: Make the text colored instead of background
+                if (correctAns === userAns) {
+                    btn.classList.add('bg-green-100', 'text-green-700', 'border-green-500', 'font-bold');
+                    document.getElementById(`box-${qid}`).classList.add('border-green-300', 'bg-green-50');
+                } else {
+                    btn.classList.add('bg-red-100', 'text-red-700', 'border-red-500', 'font-bold');
+                    // Highlight correct one
+                    const siblings = parent.querySelectorAll('button');
+                    siblings.forEach(b => {
+                        if(b.innerText.toLowerCase() === correctAns) b.classList.add('bg-green-100', 'text-green-700', 'border-green-500', 'font-bold');
+                    });
+                }
+
+                // Check if all answered
+                const totalAnswered = document.querySelectorAll('#survey-q-list button:disabled').length;
+                if (totalAnswered >= 8) { 
+                    this.unlockNext();
+                }
+            },
+
+            // --- STEP 2: SKIMMING ---
+            checkTopicSentence(el) {
+                if (el.classList.contains('correct')) return;
+                
+                const pid = el.dataset.pid;
+                const idx = parseInt(el.dataset.idx);
+                const pData = this.data.textContent.paragraphs.find(p => p.id === pid);
+                
+                if (idx === pData.topicIdx) {
+                    el.classList.add('correct');
+                    // Check if all 3 found
+                    const found = document.querySelectorAll('.topic-sentence.correct').length;
+                    if (found === 3) {
+                        document.getElementById('skimming-matching-task').classList.remove('hidden');
+                        setTimeout(() => document.getElementById('skimming-matching-task').scrollIntoView({behavior:'smooth'}), 500);
+                    }
+                } else {
+                    el.classList.add('incorrect');
+                    setTimeout(() => el.classList.remove('incorrect'), 500);
+                    this.showToast("Try again. Look for the main idea.", "error");
+                }
+            },
+
+            renderSkimmingMatches() {
+                const container = document.getElementById('skimming-matching-container');
+                container.innerHTML = this.data.skimmingTopics.map((t, i) => `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between p-3 bg-white border rounded hover:bg-gray-50">
+                        <span class="flex-1 mb-2 md:mb-0">${i+1}. ${t.text}</span>
+                        <select id="skim-match-${i}" data-ans="${t.answer}" class="md:w-40 border rounded px-2 py-1 bg-white focus:outline-none focus:border-blue-500">
+                            <option value="">Paragraph...</option>
+                            <option value="a">Paragraph A</option>
+                            <option value="b">Paragraph B</option>
+                            <option value="c">Paragraph C</option>
+                        </select>
+                    </div>
+                `).join('');
+            },
+
+            checkSkimmingMatches() {
+                this.data.attempts.skimmingMatch++;
+                let allCorrect = true;
+                const selects = document.querySelectorAll('#skimming-matching-container select');
+                selects.forEach(sel => {
+                    if (sel.value === sel.dataset.ans) {
+                        sel.classList.add('border-green-500', 'text-green-700', 'bg-green-50');
+                        sel.classList.remove('border-red-500');
+                    } else {
+                        sel.classList.add('border-red-500', 'bg-red-50');
+                        allCorrect = false;
+                    }
+                });
+
+                if(allCorrect) {
+                    this.unlockNext();
+                } else if (this.data.attempts.skimmingMatch >= 2) {
+                     // Auto-resolve
+                     selects.forEach(sel => {
+                        sel.value = sel.dataset.ans;
+                        sel.classList.add('border-green-500', 'text-green-700', 'bg-green-50');
+                        sel.classList.remove('border-red-500', 'bg-red-50');
+                     });
+                     this.showToast("Max attempts reached. Correct answers shown.", "info");
+                     this.unlockNext();
+                } else {
+                    this.showToast(`Check your matches. Attempt ${this.data.attempts.skimmingMatch}/2`, "error");
+                }
+            },
+
+            // --- STEP 3: SCANNING ---
+            highlightScanningText() {
+                const container = document.getElementById('scanning-text-container');
+                let html = container.innerHTML;
+                
+                // We use a safe replace to wrap phrases in <mark>
+                this.data.highlightPhrases.forEach(phrase => {
+                    const regex = new RegExp(`(${phrase})`, 'gi');
+                    html = html.replace(regex, '<mark class="scan-highlight">$1</mark>');
+                });
+                
+                container.innerHTML = html;
+            },
+
+            checkScanAnswers() {
+                this.data.attempts.scanning++;
+                let allCorrect = true;
+                
+                for (const [key, answers] of Object.entries(this.data.scanAnswers)) {
+                    const el = document.getElementById(key);
+                    const val = el.value.trim().toLowerCase();
+                    
+                    if (answers.includes(val)) {
+                        el.parentElement.classList.add('bg-green-100');
+                        el.classList.add('text-green-800', 'font-bold');
+                        el.classList.remove('border-red-500');
+                    } else {
+                        el.parentElement.classList.add('bg-red-100');
+                        el.classList.add('border-b-2', 'border-red-500');
+                        allCorrect = false;
+                    }
+                }
+
+                if (allCorrect) {
+                    this.highlightScanningText();
+                    this.showToast("All answers correct! Click 'Next' to finish.", "success");
+                    this.data.maxStep = 4;
+                    this.updateNav();
+                } else if (this.data.attempts.scanning >= 2) {
+                    // Auto-resolve
+                    for (const [key, answers] of Object.entries(this.data.scanAnswers)) {
+                        const el = document.getElementById(key);
+                        el.value = answers[0]; // Set to first acceptable answer
+                        el.parentElement.classList.remove('bg-red-100', 'border-red-500');
+                        el.parentElement.classList.add('bg-green-100');
+                        el.classList.add('text-green-800', 'font-bold');
+                    }
+                    this.highlightScanningText();
+                    this.showToast("Max attempts reached. Answers shown. Click 'Next' to finish.", "info");
+                    this.data.maxStep = 4;
+                    this.updateNav();
+                } else {
+                    this.showToast(`Some answers incorrect. Attempt ${this.data.attempts.scanning}/2`, "error");
+                }
+            }
+        };
+
+        // Start
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>

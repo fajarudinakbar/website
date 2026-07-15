@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B1 Listening - The Power of Boredom</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* AI Prompt Box Style */
+        .ai-prompt-box {
+            background-color: #f0f9ff; /* Sky 50 */
+            border-left: 6px solid #0284c7; /* Sky 600 */
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base text-slate-500 mb-8 flex gap-2 font-medium uppercase tracking-wider flex-wrap">
+            <span>General English</span> <span>&gt;</span> 
+            <span>Listening</span> <span>&gt;</span> 
+            <span>B1 Level / GSE 50</span> <span>&gt;</span> 
+            <span class="text-indigo-700 font-bold">Digital Well-being</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-600 tracking-tight mb-3">
+                    The Power of Boredom
+                </h1>
+                <p class="text-xl text-slate-500 font-medium">Topic: Finding Meaning in a Digital World</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-lg text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-indigo-600 p-6 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-xl text-slate-700 leading-relaxed">
+                <i class="fas fa-headphones mr-3 text-indigo-600"></i> 
+                <strong>Instructions:</strong> Complete the <strong>Preparation</strong> tasks first. Then watch the video and read the summary to answer the questions.
+                <br><span class="text-base text-slate-500 italic ml-10">(Note: Quizzes allow 2 attempts before showing the correct answer.)</span>
+            </p>
+        </div>
+
+        <!-- Section 1: Preparation (Cyan Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-2xl font-bold text-cyan-900">Preparation (Tasks 1-2)</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-2xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 5000px;">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 1: Warm-Up -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-cyan-800 mb-6">Task 1: Warm-Up Thinking</h3>
+                        <div class="space-y-4">
+                            <ul class="list-disc pl-6 text-lg text-slate-600 space-y-2">
+                                <li>When was the last time you were truly bored without your phone? What did you think about?</li>
+                                <li>Do you agree that smartphones are like an "addiction"? Why or why not?</li>
+                                <li>Why do you think many people feel nervous when they have nothing to do?</li>
+                            </ul>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none h-40" placeholder="Discuss your ideas here..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Task 1.1: AI Support -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-cyan-800 mb-4">Task 1.1: AI Support</h3>
+                        <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-700 mb-2 uppercase tracking-wide text-sm"><i class="fas fa-robot mr-2"></i>AI Prompt:</p>
+                            <p class="italic text-slate-700 bg-white p-4 rounded border border-sky-200 font-mono text-base">"I am a B1 English learner. Can you summarize the concept of 'The Default Mode Network' mentioned in the video using very simple English and give two examples of daily activities where this network might turn on?"</p>
+                        </div>
+                        <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-cyan-200 focus:border-cyan-500 outline-none h-24" placeholder="What did the AI say?"></textarea>
+                    </div>
+
+                    <!-- Task 2: Vocab MCQ -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-cyan-800">Task 2: Vocabulary in Context</h3>
+                            <button onclick="checkVocab()" class="text-base font-bold text-cyan-700 border-2 border-cyan-200 bg-white px-5 py-2.5 rounded-lg hover:bg-cyan-50 transition-colors shadow-sm">Check Vocabulary</button>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-4">Read the sentences and choose the correct meaning for the capitalized word.</p>
+                        <div id="vocab-container" class="space-y-6">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Video & Summary (Blue Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-film"></i></div>
+                    <span class="text-2xl font-bold text-blue-900">Listening / Viewing</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 3000px;">
+                <div class="p-10 bg-white">
+                    
+                    <!-- YouTube Video -->
+                    <div class="mb-8 rounded-xl overflow-hidden shadow-lg border border-slate-200">
+                        <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/orQKfIXMiA8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="border border-blue-200 rounded-xl overflow-hidden shadow-sm">
+                        <button onclick="toggleSummary()" class="w-full flex items-center justify-between p-4 bg-blue-50 text-blue-800 font-bold hover:bg-blue-100 transition-colors">
+                            <span>Read Video Summary</span>
+                            <i id="summary-icon" class="fas fa-chevron-down transform transition-transform duration-300"></i>
+                        </button>
+                        <div id="summary-content" class="hidden p-8 bg-white text-lg text-slate-700 leading-relaxed text-justify space-y-4">
+                            <h3 class="text-2xl font-bold text-slate-800 mb-4 text-center">Video Summary</h3>
+                            <p>In this talk, the speaker explains why being bored is actually necessary for a healthy and meaningful life. When we aren't <strong>cognitively</strong> occupied, our brain switches to the "Default Mode Network" (DMN). This is a set of brain structures that turn on when we have nothing else to think about. Research shows that people often dislike this state; in one experiment, many participants chose to give themselves a painful electric shock rather than sit in a room with nothing to do for 15 minutes.</p>
+                            <p>The speaker argues that we hate boredom because the DMN forces us to think about <strong>uncomfortable</strong> questions regarding our life's purpose and meaning. In previous generations, people had more time for this reflection. Today, however, we use our smartphones to <strong>eliminate</strong> every second of boredom. Even waiting for a traffic light for 15 seconds is enough for someone to pull out their phone. This "doom loop" prevents us from finding true meaning and leads to higher rates of depression and anxiety.</p>
+                            <p>To fix this, the speaker suggests practicing boredom. He recommends going to the gym or commuting without a phone or music. He also shares his personal <strong>protocols</strong>: no devices after 7:00 PM, no phones during family meals, and regular "cleanses" from social media. Although it feels like an addiction at first, he claims that embracing boredom eventually makes people feel calmer and happier. He reminds us that our grandparents didn't need to know every piece of news instantly, and neither do we.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Comprehension (Emerald Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-2xl font-bold text-emerald-900">Understanding (Tasks 3-5)</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 3 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-emerald-800">Task 3: General Understanding</h3>
+                            <button onclick="toggleAnswer('ans-t3', this)" class="text-base font-bold text-emerald-600 border-2 border-emerald-200 bg-white px-5 py-2.5 rounded-lg hover:bg-emerald-50 transition-colors shadow-sm">Show Sample Answers</button>
+                        </div>
+                        <div class="space-y-4">
+                            <ul class="list-disc pl-6 text-lg text-slate-700 space-y-2">
+                                <li>What is the speaker’s main argument about boredom?</li>
+                                <li>According to the speaker, what is the connection between smartphones and depression?</li>
+                                <li>What is the speaker’s advice regarding how we should use our phones at the gym?</li>
+                            </ul>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none h-40" placeholder="Type your answers here..."></textarea>
+                            <div id="ans-t3" class="answer-box hidden mt-6 p-6 bg-emerald-50 rounded-xl border border-emerald-200 text-lg text-slate-700">
+                                <strong>Sample Answers:</strong>
+                                <ul class="list-disc pl-6 mt-2 space-y-3">
+                                    <li>Boredom is necessary for a healthy and meaningful life because it allows our brains to reflect.</li>
+                                    <li>Smartphones eliminate boredom, preventing us from finding meaning, which leads to depression and anxiety.</li>
+                                    <li>He recommends going to the gym without a phone or music to practice being bored.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 4 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-emerald-800">Task 4: Detail and Meaning</h3>
+                            <button onclick="toggleAnswer('ans-t4', this)" class="text-base font-bold text-emerald-600 border-2 border-emerald-200 bg-white px-5 py-2.5 rounded-lg hover:bg-emerald-50 transition-colors shadow-sm">Show Sample Answers</button>
+                        </div>
+                        <div class="space-y-4">
+                            <ul class="list-disc pl-6 text-lg text-slate-700 space-y-2">
+                                <li>Describe the experiment conducted by Dan Gilbert at Harvard. What did people choose to do?</li>
+                                <li>Name two specific times of day when the speaker does NOT use his phone.</li>
+                                <li>Why does the speaker mention his grandparents at the end of the talk?</li>
+                            </ul>
+                            <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-emerald-200 focus:border-emerald-500 outline-none h-40"></textarea>
+                             <div id="ans-t4" class="answer-box hidden mt-6 p-6 bg-emerald-50 rounded-xl border border-emerald-200 text-lg text-slate-700">
+                                <strong>Sample Answers:</strong>
+                                <ul class="list-disc pl-6 mt-2 space-y-3">
+                                    <li>Participants were asked to sit in a room with nothing to do. Many chose to give themselves an electric shock rather than be bored for 15 minutes.</li>
+                                    <li>After 7:00 PM and during family meals.</li>
+                                    <li>To remind us that humans survived and lived well without needing instant news and constant connectivity.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 5: True/False -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-emerald-800">Task 5: Opinion Check (True/False)</h3>
+                            <button onclick="checkTF()" class="text-base font-bold text-emerald-600 border-2 border-emerald-200 bg-white px-5 py-2.5 rounded-lg hover:bg-emerald-50 transition-colors shadow-sm">Check Answers</button>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-4">State if True or False and provide a reason (optional self-check).</p>
+                        <div id="tf-container" class="space-y-6">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Analysis (Orange Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-orange-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-8 bg-orange-50 hover:bg-orange-100 border-l-8 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-orange-200 text-orange-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-2xl font-bold text-orange-900">Analysis (Tasks 6-6.1)</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 6: Matching -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-orange-800">Task 6: Cause and Effect Thinking</h3>
+                            <button onclick="checkMatching()" class="text-base font-bold text-orange-600 border-2 border-orange-200 bg-white px-5 py-2.5 rounded-lg hover:bg-orange-50 transition-colors shadow-sm">Check Matching</button>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-6">Match the Cause (number) to the Effect (letter).</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-8 mb-6">
+                             <div class="bg-orange-50 p-6 rounded-xl border border-orange-100">
+                                <h4 class="font-bold text-orange-900 mb-4 border-b border-orange-200 pb-2">Effects:</h4>
+                                <ul class="space-y-3 text-lg">
+                                    <li><strong>A.</strong> We start asking deep questions about purpose and meaning.</li>
+                                    <li><strong>B.</strong> We become less bored with ordinary things like our jobs and relationships.</li>
+                                    <li><strong>C.</strong> We shut off our DMN and miss the chance to think deeply.</li>
+                                </ul>
+                             </div>
+                             
+                             <div class="space-y-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 flex items-center justify-center bg-orange-100 rounded-full font-bold text-orange-800">1</div>
+                                    <div class="flex-1">
+                                        <p class="font-medium">We use phones for every 15-second wait.</p>
+                                    </div>
+                                    <input type="text" id="match-1" maxlength="1" class="w-16 p-3 text-center border border-slate-300 rounded-lg text-xl uppercase font-bold focus:border-orange-500 outline-none" placeholder="?">
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 flex items-center justify-center bg-orange-100 rounded-full font-bold text-orange-800">2</div>
+                                    <div class="flex-1">
+                                        <p class="font-medium">The brain switches to the Default Mode Network.</p>
+                                    </div>
+                                    <input type="text" id="match-2" maxlength="1" class="w-16 p-3 text-center border border-slate-300 rounded-lg text-xl uppercase font-bold focus:border-orange-500 outline-none" placeholder="?">
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 flex items-center justify-center bg-orange-100 rounded-full font-bold text-orange-800">3</div>
+                                    <div class="flex-1">
+                                        <p class="font-medium">We practice periods of boredom longer than 15 minutes.</p>
+                                    </div>
+                                    <input type="text" id="match-3" maxlength="1" class="w-16 p-3 text-center border border-slate-300 rounded-lg text-xl uppercase font-bold focus:border-orange-500 outline-none" placeholder="?">
+                                </div>
+                             </div>
+                        </div>
+                        
+                        <div id="matching-feedback" class="hidden p-6 rounded-xl text-lg font-bold"></div>
+                    </div>
+
+                    <!-- Task 6.1: AI Extension -->
+                     <div>
+                         <h3 class="text-2xl font-bold text-orange-800 mb-4">Task 6.1: AI-Guided Extension</h3>
+                         <div class="ai-prompt-box">
+                            <p class="font-bold text-sky-700 mb-2 uppercase tracking-wide text-sm"><i class="fas fa-robot mr-2"></i>AI Prompt:</p>
+                            <p class="italic text-slate-700 bg-white p-4 rounded border border-sky-200 font-mono text-base">"I just learned about the 'doom loop of meaning' from a video about boredom. Can you explain this concept to me and provide a B1-level logical argument for why 'meaning' and 'happiness' are different?"</p>
+                        </div>
+                         <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-orange-200 focus:border-orange-500 outline-none h-32" placeholder="Write AI insights..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Speaking & Cases (Violet Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-2xl font-bold text-violet-900">Speaking & Case Studies</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-10 bg-white space-y-12">
+                    
+                    <!-- Task 7 -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-violet-800 mb-4">Task 7: Speaking – Personal Position</h3>
+                        <p class="text-lg text-slate-600 mb-4">Discuss or write:</p>
+                        <ul class="list-disc pl-6 text-lg text-slate-600 mb-4 space-y-2">
+                            <li>Could you sit in a room for 15 minutes with no phone and no music? Why or why not?</li>
+                            <li>Which of the speaker's "protocols" (no phone at meals, etc.) would be the hardest for you to follow?</li>
+                        </ul>
+                        <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-32"></textarea>
+                        
+                        <div class="mt-6">
+                             <h4 class="font-bold text-violet-800 mb-2">Task 7.1: AI Practice Partner</h4>
+                             <div class="ai-prompt-box">
+                                <p class="font-bold text-sky-700 mb-2 uppercase tracking-wide text-sm"><i class="fas fa-robot mr-2"></i>AI Prompt:</p>
+                                <p class="italic text-slate-700 bg-white p-4 rounded border border-sky-200 font-mono text-base">"I am trying to reduce my screen time. Act as my coach. I will tell you how many hours I spent on my phone today. Ask me two questions to help me identify which moments of 'boredom' I was trying to avoid and suggest one 'phone-free' activity for tomorrow."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 8 -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-violet-800 mb-4">Task 8: Discussion – Contextual Skills</h3>
+                        <p class="text-lg text-slate-600 mb-4">In your culture, is it considered rude to check your phone during a meal? Has this changed recently? How do you think children are affected by the lack of boredom compared to adults?</p>
+                        <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-32"></textarea>
+                    </div>
+
+                    <!-- Task 9 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-2xl font-bold text-violet-800">Task 9: Case Study – Decision Making</h3>
+                        </div>
+                        <div class="bg-violet-50 p-6 rounded-xl border border-violet-200 mb-4">
+                            <p class="text-lg text-slate-800"><strong>Scenario:</strong> Your company has noticed that employees are always on their phones during breaks and seem very stressed.</p>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-4"><strong>Discussion:</strong> Would a "No Phone Zone" in the breakroom help or make people more stressed? Should the company encourage 15 minutes of "doing nothing" as part of the workday? How would you explain the benefits of "boredom" to a boss who only cares about productivity?</p>
+                        <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-32"></textarea>
+
+                        <div class="mt-6">
+                             <h4 class="font-bold text-violet-800 mb-2">Task 9.1: AI Role Play Comparison</h4>
+                             <div class="ai-prompt-box">
+                                <p class="font-bold text-sky-700 mb-2 uppercase tracking-wide text-sm"><i class="fas fa-robot mr-2"></i>AI Prompt:</p>
+                                <p class="italic text-slate-700 bg-white p-4 rounded border border-sky-200 font-mono text-base">"Let's do a debate simulation. You are a tech executive who believes that constant connectivity is the key to progress and productivity. I am an employee who wants to implement 'boredom breaks' based on the Harvard research. Start the debate by telling me why boredom is a waste of company time."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Reflection (Rose Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-2xl font-bold text-rose-900">Final Reflection (Task 10)</span>
+                </div>
+                <i id="icon-part6" class="fas fa-chevron-down text-rose-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part6" class="accordion-content">
+                <div class="p-10 bg-white space-y-8">
+                    <div>
+                        <p class="text-lg text-slate-600 mb-4">Write 5–6 sentences reflecting on the video. Do you think boredom is a "skill" that you need to practice? Use at least two words from Task 2.</p>
+                        <textarea class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-40"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-lg font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        const attempts = {};
+
+        // Task 2: Vocab Data
+        const vocabData = [
+            { id: "v1", sentence: "Boredom is a tendency for us to not be occupied otherwise <strong>COGNITIVELY</strong>...", correct: "b", explanation: "Cognitively refers to mental processes like thinking and understanding.", options: { a: "Related to physical exercise", b: "Related to the process of thinking", c: "Related to social media apps" } },
+            { id: "v2", sentence: "The <strong>DEFAULT</strong> mode network is a bunch of structures in your brain that switch on when you don't have anything else to think about.", correct: "a", explanation: "Default means the automatic state or setting.", options: { a: "A setting chosen automatically", b: "An expensive computer system", c: "A physical muscle in the head" } },
+            { id: "v3", sentence: "The default mode network makes us think about things that might be kind of <strong>UNCOMFORTABLE</strong>.", correct: "a", explanation: "Uncomfortable means making you feel worried, embarrassed, or uneasy.", options: { a: "Making you feel uneasy", b: "Very soft and relaxing", c: "Extremely exciting and fun" } },
+            { id: "v4", sentence: "We’ve been able almost completely to <strong>ELIMINATE</strong> boredom.", correct: "b", explanation: "Eliminate means to remove or get rid of something completely.", options: { a: "To increase the amount", b: "To remove or get rid of completely", c: "To hide something" } },
+            { id: "v5", sentence: "I’m prone to the same <strong>PATHOLOGIES</strong> as anybody else because I have the same brain chemistry.", correct: "b", explanation: "Pathologies refers to unhealthy mental or physical states.", options: { a: "Types of digital software", b: "Unhealthy mental or physical conditions", c: "Ways of learning a language" } },
+            { id: "v6", sentence: "These <strong>PROTOCOLS</strong> are really really helpful and I recommend them to anybody and everybody.", correct: "a", explanation: "Protocols are a system of rules or a formal plan for how to do something.", options: { a: "A system of rules or formal plan", b: "A type of battery", c: "The sound a phone makes" } }
+        ];
+
+        // Task 5: True/False Data
+        const tfData = [
+            { id: "tf1", text: "The 'Default Mode Network' turns on when we are very busy with work.", correct: "False", explanation: "It switches on when you don't have anything else to think about." },
+            { id: "tf2", text: "Most people in the experiment preferred an electric shock over doing nothing.", correct: "True", explanation: "A big majority of participants gave themselves shocks instead of thinking about nothing." },
+            { id: "tf3", text: "The speaker says that we should never check our emails or be connected to the world.", correct: "False", explanation: "He checks emails to be 'functioning' but doesn't let his life revolve around it." },
+            { id: "tf4", text: "Using a phone to stop boredom makes it harder to find meaning in life.", correct: "True", explanation: "Every time you pull out your phone, it gets harder to find meaning; it's a 'doom loop'." }
+        ];
+
+        // Task 6: Matching Data Correct Answers
+        const matchingData = {
+            "match-1": "C", // Use phones -> Shut off DMN
+            "match-2": "A", // DMN switches on -> Ask deep questions
+            "match-3": "B"  // Practice boredom -> Less bored with ordinary things
+        };
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => `
+                <div class="flex flex-col gap-4 p-6 bg-cyan-50/50 rounded-xl border border-cyan-100 hover:border-cyan-300 transition-colors">
+                    <p class="text-lg text-slate-800 font-medium italic border-l-4 border-cyan-400 pl-3">"${item.sentence}"</p>
+                    <div class="flex flex-col gap-2">
+                        ${Object.entries(item.options).map(([key, val]) => `
+                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-cyan-50 hover:border-cyan-200 transition-all">
+                                <input type="radio" name="${item.id}" value="${key}" class="w-5 h-5 accent-cyan-600 shrink-0">
+                                <span class="text-base text-slate-700"><strong>${key})</strong> ${val}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-lg font-bold min-h-[28px] mt-2"></div>
+                    <div id="explain-${item.id}" class="hidden mt-2 p-3 bg-cyan-100 text-cyan-900 text-base rounded-lg border border-cyan-200"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col gap-3 p-6 bg-emerald-50/50 rounded-xl border border-emerald-100">
+                    <p class="text-lg font-medium text-emerald-900">"${item.text}"</p>
+                    <div class="flex flex-col md:flex-row md:items-start gap-4">
+                        <div class="flex items-center gap-6 text-lg font-medium">
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-600">
+                                <input type="radio" name="${item.id}" value="True" class="w-6 h-6 accent-emerald-600"> True
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-600">
+                                <input type="radio" name="${item.id}" value="False" class="w-6 h-6 accent-emerald-600"> False
+                            </label>
+                            <span id="feedback-${item.id}" class="w-8 flex justify-center text-xl"></span>
+                        </div>
+                        <input type="text" class="flex-1 p-2 border border-slate-300 rounded focus:border-emerald-500 outline-none text-base" placeholder="Reason (Optional for self-check)...">
+                    </div>
+                    <div id="explain-${item.id}" class="hidden mt-2 p-3 bg-emerald-100 text-emerald-900 text-base rounded-lg border border-emerald-200"></div>
+                </div>
+            `).join('');
+        }
+
+        // --- Logic Handlers ---
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Correct!</span>';
+                    radios.forEach(r => r.disabled = true);
+                    explainDiv.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                        feedback.innerHTML = `<span class="text-red-600 font-bold">Ans: ${item.correct.toUpperCase()})</span>`;
+                        explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct.toUpperCase()})</strong><br>${item.explanation}`;
+                        explainDiv.classList.remove('hidden');
+                        radios.forEach(r => r.disabled = true);
+                    } else {
+                        feedback.innerHTML = '<span class="text-orange-600"><i class="fas fa-times-circle mr-2"></i>Try again (1 attempt left)</span>';
+                    }
+                }
+            });
+        }
+
+        function checkTF() {
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const explainDiv = document.getElementById(`explain-${item.id}`);
+                const key = item.id;
+                
+                if (!attempts[key]) attempts[key] = 0;
+
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    radios.forEach(r => r.disabled = true);
+                    explainDiv.innerHTML = `<strong>Correct!</strong> ${item.explanation}`;
+                    explainDiv.classList.remove('hidden');
+                } else if (userVal !== "") {
+                    attempts[key]++;
+                    if(attempts[key] >= 2) {
+                         feedback.innerHTML = `<span class="text-sm font-bold text-red-600 bg-red-100 px-2 rounded">Ans: ${item.correct}</span>`;
+                         explainDiv.innerHTML = `<strong>Correct Answer: ${item.correct}</strong><br>${item.explanation}`;
+                         explainDiv.classList.remove('hidden');
+                         radios.forEach(r => r.disabled = true);
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-times text-red-500"></i>';
+                    }
+                }
+            });
+        }
+
+        function checkMatching() {
+            const feedback = document.getElementById('matching-feedback');
+            let allCorrect = true;
+
+            for (const [id, correctVal] of Object.entries(matchingData)) {
+                const input = document.getElementById(id);
+                const userVal = input.value.trim().toUpperCase();
+                
+                input.classList.remove('border-green-500', 'bg-green-100', 'border-red-500', 'bg-red-100');
+
+                if (userVal === correctVal) {
+                    input.classList.add('border-green-500', 'bg-green-100');
+                } else {
+                    allCorrect = false;
+                    input.classList.add('border-red-500', 'bg-red-100');
+                }
+            }
+
+            if (allCorrect) {
+                feedback.innerHTML = "<span class='text-green-600'><i class='fas fa-check-circle mr-2'></i>All connections are correct!</span>";
+                feedback.classList.remove('hidden', 'bg-red-50', 'text-red-700');
+                feedback.classList.add('bg-green-50');
+            } else {
+                feedback.innerHTML = "<span class='text-red-600'><i class='fas fa-exclamation-circle mr-2'></i>Some answers are incorrect. Check the red boxes.</span>";
+                feedback.classList.remove('hidden', 'bg-green-50');
+                feedback.classList.add('bg-red-50', 'text-red-700');
+            }
+        }
+
+        function toggleSummary() {
+            const content = document.getElementById("summary-content");
+            const icon = document.getElementById("summary-icon");
+            if (content.classList.contains("hidden")) {
+                content.classList.remove("hidden");
+                icon.classList.add("rotate-180");
+            } else {
+                content.classList.add("hidden");
+                icon.classList.remove("rotate-180");
+            }
+        }
+
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Answer";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show Sample";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                for (const key in attempts) delete attempts[key];
+
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="text"]').forEach(i => { i.value = ""; i.classList.remove('border-green-500', 'bg-green-100', 'border-red-500', 'bg-red-100'); });
+                document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+                
+                // Clear Feedback & Explanations
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('[id^="explain-"]').forEach(f => {
+                    f.innerHTML = "";
+                    f.classList.add('hidden');
+                });
+                
+                document.getElementById('matching-feedback').classList.add('hidden');
+
+                // Hide Answers
+                document.querySelectorAll('.answer-box').forEach(el => { el.classList.add('hidden'); el.classList.remove('visible'); });
+                
+                // Reset Buttons
+                document.querySelectorAll('button').forEach(btn => {
+                   if(btn.innerText.includes("Hide")) btn.innerText = "Show Sample"; 
+                });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderTF();
+        });
+
+    </script>
+</body>
+</html>

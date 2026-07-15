@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>A1 Listening - Planning Work Days</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7e22ce',
+                            800: '#6b21a8',
+                            900: '#581c87',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-lg': '12px 12px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f5f3ff;
+            background-image: radial-gradient(#d8b4fe 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f3ff;
+            border-left: 3px solid #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0f172a;
+            border: 3px solid #f5f3ff;
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b21a8;
+        }
+
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            font-weight: 800;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .neo-btn:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .neo-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #a855f7;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            font-weight: 700;
+        }
+        .option-label:hover {
+            background-color: #faf5ff;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+
+        .option-label.correct {
+            background-color: #10b981 !important;
+            color: white !important;
+        }
+        .option-label.incorrect {
+            background-color: #f43f5e !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-6 md:p-8 lg:p-12 text-2xl">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 sm:p-10 lg:p-12 border-4 border-dark shadow-neo relative overflow-hidden">
+        
+        <div class="absolute top-0 left-0 right-0 h-4 bg-gradient-to-r from-brand-400 via-amber-400 to-emerald-400 border-b-4 border-dark"></div>
+
+        <div class="flex flex-wrap items-center gap-3 mt-4 mb-8 text-xl font-black uppercase tracking-wider text-dark">
+            <span class="bg-brand-200 border-2 border-dark px-3 py-1 shadow-neo-sm">A1 (GSE 22-29)</span>
+            <i data-lucide="chevron-right" class="w-5 h-5 text-dark shrink-0"></i>
+            <span class="bg-amber-200 border-2 border-dark px-3 py-1 shadow-neo-sm">Listening</span>
+            <i data-lucide="chevron-right" class="w-5 h-5 text-dark shrink-0"></i>
+            <span class="bg-[#facc15] border-2 border-dark px-3 py-1 shadow-neo-sm">Planning Work Days</span>
+        </div>
+
+        <header class="border-b-4 border-dark pb-8 mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-dark leading-none">
+                    Planning Work Days
+                </h1>
+                <p class="text-xl md:text-2xl font-bold text-slate-600 mt-3 text-pretty">
+                    Listen to Anna and Ben talk about their work schedule. Then, do the exercises below.
+                </p>
+            </div>
+            <button id="main-reset-btn" onclick="openResetModal()" class="neo-btn bg-[#ef4444] text-white px-6 py-4 text-xl shrink-0">
+                <i data-lucide="rotate-ccw" class="w-6 h-6"></i> Reset Progress
+            </button>
+        </header>
+
+        <section class="mb-12 border-4 border-dark shadow-neo bg-[#f0f9ff]">
+            <div class="p-6 md:p-8 bg-[#38bdf8] border-b-4 border-dark flex items-center gap-4">
+                <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                    1
+                </div>
+                <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tight text-dark">Part 1: Vocabulary Practice</h2>
+            </div>
+            
+            <div class="p-6 md:p-8 space-y-8 bg-white">
+                <div class="bg-purple-50 border-3 border-dark p-6 shadow-neo-sm">
+                    
+                    <h3 class="text-2xl md:text-3xl font-black uppercase text-dark mb-4">Key Words and Phrases</h3>
+                    <p class="text-lg md:text-xl font-bold text-slate-700 leading-relaxed mb-6">
+                        Look at the examples in the box to see how we talk about time at work.
+                    </p>
+                    
+                    <div class="border-2 border-dark p-5 mb-8 bg-white shadow-neo-sm text-lg md:text-xl font-bold text-slate-800 space-y-3 leading-relaxed">
+                        <div>
+                            <span class="bg-amber-200 border border-dark px-2 py-0.5 rounded text-dark font-black">Monday / Wednesday / Friday:</span>
+                            <span>Days of the week. Example: I work on Monday.</span>
+                        </div>
+                        <div>
+                            <span class="bg-brand-200 border border-dark px-2 py-0.5 rounded text-dark font-black">May / June:</span>
+                            <span>Months of the year. Example: The project is in June.</span>
+                        </div>
+                        <div>
+                            <span class="bg-emerald-200 border border-dark px-2 py-0.5 rounded text-dark font-black">This morning:</span>
+                            <span>Today before 12:00 PM. Example: I have a meeting this morning.</span>
+                        </div>
+                    </div>
+
+                    <p class="text-xl md:text-2xl font-black text-dark uppercase tracking-wide mb-6 border-b-2 border-dashed border-dark pb-3">
+                        Read the sentences and fill in the blanks using the words from the box.
+                    </p>
+
+                    <div class="flex flex-wrap gap-3 p-4 bg-white border-3 border-dark mb-8 shadow-neo-sm justify-center">
+                        <span class="bg-dark text-white px-4 py-2 text-xl font-black uppercase select-all shadow-neo-sm">Monday</span>
+                        <span class="bg-dark text-white px-4 py-2 text-xl font-black uppercase select-all shadow-neo-sm">May</span>
+                        <span class="bg-dark text-white px-4 py-2 text-xl font-black uppercase select-all shadow-neo-sm">Friday</span>
+                        <span class="bg-dark text-white px-4 py-2 text-xl font-black uppercase select-all shadow-neo-sm">June</span>
+                        <span class="bg-dark text-white px-4 py-2 text-xl font-black uppercase select-all shadow-neo-sm">Wednesday</span>
+                    </div>
+
+                    <div class="space-y-6 text-xl md:text-2xl font-bold text-dark">
+                        <div class="flex flex-col gap-2 p-4 bg-white border-2 border-dark rounded">
+                            <div class="flex flex-wrap items-center gap-3 leading-relaxed">
+                                <span>1. The first day of the work week is</span>
+                                <input type="text" id="phase1-q1" class="text-input w-full sm:w-48 text-xl p-2 mt-0 inline-block text-center uppercase" placeholder="blank">
+                                <span>.</span>
+                            </div>
+                            <div id="feedback-phase1-q1" class="mt-2"></div>
+                        </div>
+
+                        <div class="flex flex-col gap-2 p-4 bg-white border-2 border-dark rounded">
+                            <div class="flex flex-wrap items-center gap-3 leading-relaxed">
+                                <span>2. The month before June is</span>
+                                <input type="text" id="phase1-q2" class="text-input w-full sm:w-48 text-xl p-2 mt-0 inline-block text-center uppercase" placeholder="blank">
+                                <span>.</span>
+                            </div>
+                            <div id="feedback-phase1-q2" class="mt-2"></div>
+                        </div>
+
+                        <div class="flex flex-col gap-2 p-4 bg-white border-2 border-dark rounded">
+                            <div class="flex flex-wrap items-center gap-3 leading-relaxed">
+                                <span>3. The day after Thursday is</span>
+                                <input type="text" id="phase1-q3" class="text-input w-full sm:w-48 text-xl p-2 mt-0 inline-block text-center uppercase" placeholder="blank">
+                                <span>.</span>
+                            </div>
+                            <div id="feedback-phase1-q3" class="mt-2"></div>
+                        </div>
+
+                        <div class="flex flex-col gap-2 p-4 bg-white border-2 border-dark rounded">
+                            <div class="flex flex-wrap items-center gap-3 leading-relaxed">
+                                <span>4. The sixth month of the year is</span>
+                                <input type="text" id="phase1-q4" class="text-input w-full sm:w-48 text-xl p-2 mt-0 inline-block text-center uppercase" placeholder="blank">
+                                <span>.</span>
+                            </div>
+                            <div id="feedback-phase1-q4" class="mt-2"></div>
+                        </div>
+
+                        <div class="flex flex-col gap-2 p-4 bg-white border-2 border-dark rounded">
+                            <div class="flex flex-wrap items-center gap-3 leading-relaxed">
+                                <span>5. The middle day of the work week is</span>
+                                <input type="text" id="phase1-q5" class="text-input w-full sm:w-48 text-xl p-2 mt-0 inline-block text-center uppercase" placeholder="blank">
+                                <span>.</span>
+                            </div>
+                            <div id="feedback-phase1-q5" class="mt-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="checkPhase1Sentences()" class="neo-btn bg-brand-500 text-white px-8 py-4 text-xl shadow-neo-sm">
+                            Check Answers
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12 border-4 border-dark shadow-neo bg-[#fefce8]">
+            <div class="p-6 md:p-8 bg-[#fbbf24] border-b-4 border-dark flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm">
+                        <i data-lucide="youtube" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tight text-dark">Listening Center</h2>
+                </div>
+            </div>
+
+            <div class="p-6 md:p-8 bg-white border-b-4 border-dark">
+                <div class="bg-stone-100 border-4 border-dark p-6 shadow-neo-sm">
+                    <div class="w-full bg-black border-4 border-dark shadow-neo-sm overflow-hidden relative aspect-video max-w-4xl mx-auto">
+                        <iframe id="yt-player-iframe" 
+                                class="absolute inset-0 w-full h-full" 
+                                src="https://www.youtube.com/embed/hXqHdSf5pyc?rel=0" 
+                                title="Planning work days audio track video" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 md:p-8 bg-stone-50">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-xl md:text-2xl font-black uppercase text-dark flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-6 h-6"></i> Video Script
+                    </h4>
+                    <button onclick="toggleTranscript()" class="neo-btn bg-white text-dark px-4 py-2 text-base">
+                        <span id="transcript-toggle-text">Show Transcript</span>
+                    </button>
+                </div>
+
+                <div id="transcript-container" class="hidden bg-white border-3 border-dark p-6 shadow-neo-sm space-y-4">
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-blue-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 1 (Ben):</strong> Good morning, Anna. Welcome to the office. Do you work here every Monday?
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-purple-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 2 (Anna):</strong> Hello, Ben. No, I do not work on Monday. I usually work on Wednesday and Friday.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-blue-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 1 (Ben):</strong> I see. Is your new project ready this month? Is it ready in May?
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-purple-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 2 (Anna):</strong> No, the project starts next month, in June. It is a very busy month for us.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-blue-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 1 (Ben):</strong> Yes, June is always busy. Do you have a team meeting today?
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-purple-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 2 (Anna):</strong> Yes, I have a big meeting this morning. It is at nine o'clock.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-blue-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 1 (Ben):</strong> Good luck with the meeting, Anna. Have a good day.
+                    </p>
+                    <p class="text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <strong class="bg-purple-100 border-2 border-dark px-2 py-0.5 rounded">Speaker 2 (Anna):</strong> Thank you, Ben. Have a great week.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12 border-4 border-dark shadow-neo bg-[#ecfdf5]">
+            <div class="p-6 md:p-8 bg-[#10b981] border-b-4 border-dark flex items-center gap-4">
+                <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                    2
+                </div>
+                <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tight text-white">Part 2: Core Listening Activities</h2>
+            </div>
+
+            <div class="p-6 md:p-8 space-y-12 bg-white">
+                
+                <div class="bg-teal-50 border-3 border-dark p-6 shadow-neo-sm">
+                    <h3 class="text-xl md:text-2xl font-black uppercase text-dark flex items-center gap-2 mb-4">
+                        <span class="bg-[#10b981] text-white px-3 py-1 border-2 border-dark text-lg shadow-neo-sm">Activity 1</span> Understanding the Main Idea
+                    </h3>
+                    <p class="text-lg md:text-xl font-bold text-slate-700 mb-6">
+                        Listen to the conversation. Choose True or False for each sentence.
+                    </p>
+
+                    <div id="tf-evaluation-container" class="space-y-6"></div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="checkTFSection()" class="neo-btn bg-[#10b981] text-white px-8 py-4 text-xl shadow-neo-sm">
+                            Check Answers
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border-3 border-dark p-6 shadow-neo-sm">
+                    <h3 class="text-xl md:text-2xl font-black uppercase text-dark flex items-center gap-2 mb-4">
+                        <span class="bg-amber-300 px-3 py-1 border-2 border-dark text-lg shadow-neo-sm">Activity 2</span> Listening for Specific Details
+                    </h3>
+                    <p class="text-lg md:text-xl font-bold text-slate-700 mb-6">
+                        Listen to the conversation again. Write one word or a number from the audio to complete each sentence.
+                    </p>
+
+                    <div class="bg-white border-3 border-dark p-6 shadow-neo-sm space-y-6 text-xl md:text-2xl font-bold text-dark leading-relaxed">
+                        <div class="text-justify leading-loose">
+                            Anna works on Wednesday and 
+                            <div class="inline-block mx-2 relative align-middle">
+                                <input type="text" id="extract-q1" class="text-input w-48 text-xl p-2 mt-0 text-center uppercase" placeholder="blank 1">
+                            </div>
+                            . The project starts next month, in 
+                            <div class="inline-block mx-2 relative align-middle">
+                                <input type="text" id="extract-q2" class="text-input w-48 text-xl p-2 mt-0 text-center uppercase" placeholder="blank 2">
+                            </div>
+                            . Anna has a big meeting this 
+                            <div class="inline-block mx-2 relative align-middle">
+                                <input type="text" id="extract-q3" class="text-input w-48 text-xl p-2 mt-0 text-center uppercase" placeholder="blank 3">
+                            </div>
+                            . The meeting is at 
+                            <div class="inline-block mx-2 relative align-middle">
+                                <input type="text" id="extract-q4" class="text-input w-48 text-xl p-2 mt-0 text-center uppercase" placeholder="blank 4">
+                            </div>
+                            o'clock. Ben wishes Anna a good 
+                            <div class="inline-block mx-2 relative align-middle">
+                                <input type="text" id="extract-q5" class="text-input w-48 text-xl p-2 mt-0 text-center uppercase" placeholder="blank 5">
+                            </div>
+                            .
+                        </div>
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+                        <div id="feedback-extract-q1"></div>
+                        <div id="feedback-extract-q2"></div>
+                        <div id="feedback-extract-q3"></div>
+                        <div id="feedback-extract-q4"></div>
+                        <div id="feedback-extract-q5"></div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="checkDetailedExtraction()" class="neo-btn bg-amber-400 text-dark px-8 py-4 text-xl shadow-neo-sm">
+                            Check Answers
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-indigo-50 border-3 border-dark p-6 shadow-neo-sm">
+                    <h3 class="text-xl md:text-2xl font-black uppercase text-dark flex items-center gap-2 mb-4">
+                        <span class="bg-indigo-300 px-3 py-1 border-2 border-dark text-lg shadow-neo-sm">Activity 3</span> Complete the Conversation
+                    </h3>
+                    <p class="text-lg md:text-xl font-bold text-slate-700 mb-6">
+                        Match each line from the conversation on the left with the correct response or follow-up sentence on the right.
+                    </p>
+
+                    <div id="synthesis-matching-container" class="space-y-4"></div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="checkSynthesisSection()" class="neo-btn bg-[#6366f1] text-white px-8 py-4 text-xl shadow-neo-sm">
+                            Check Answers
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="mb-12 border-4 border-dark shadow-neo bg-[#fae8ff]">
+            <div class="p-6 md:p-8 bg-[#d946ef] border-b-4 border-dark flex items-center gap-4">
+                <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-2xl md:text-3xl">
+                    3
+                </div>
+                <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tight text-white">Part 3: Speaking Practice</h2>
+            </div>
+
+            <div class="p-6 md:p-8 space-y-8 bg-white">
+                <div class="border-3 border-dark p-6 bg-purple-50">
+                    <h3 class="text-xl md:text-2xl font-black text-dark uppercase mb-3">
+                        Task: Talk About Your Work Schedule
+                    </h3>
+                    <p class="text-lg md:text-xl font-bold text-slate-700 leading-relaxed">
+                        Roleplay with a partner. Imagine you are at the office. Talk about your work schedule. Tell your partner which days of the week you work and which months are busy for you. Use the time words from today's lesson.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">My Name</label>
+                            <input type="text" id="tbl-name" class="text-input p-3" placeholder="e.g. David" oninput="generatePersonalPitch()">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">Days of the Week I Work</label>
+                            <input type="text" id="tbl-days" class="text-input p-3" placeholder="e.g. Wednesday and Friday" oninput="generatePersonalPitch()">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">Busy Months</label>
+                            <input type="text" id="tbl-busy" class="text-input p-3" placeholder="e.g. June" oninput="generatePersonalPitch()">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">Meeting Time</label>
+                            <input type="text" id="tbl-meeting" class="text-input p-3" placeholder="e.g. nine o'clock" oninput="generatePersonalPitch()">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-black uppercase text-dark mb-1">Workplace Goal</label>
+                            <input type="text" id="tbl-goal" class="text-input p-3" placeholder="e.g. complete the marketing project successfully" oninput="generatePersonalPitch()">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="block text-lg font-black uppercase text-dark mb-2">Your Story Preview</label>
+                        <div class="border-4 border-dark p-6 bg-white shadow-neo flex-1 flex flex-col justify-between">
+                            <p id="pitch-output-text" class="text-xl md:text-2xl font-bold leading-relaxed text-slate-800 text-justify">
+                                (Type your information in the boxes on the left to see your script here!)
+                            </p>
+                            
+                            <div class="mt-6 pt-6 border-t-2 border-dashed border-dark flex flex-wrap gap-3 justify-end">
+                                <button onclick="copyPersonalPitch()" class="neo-btn bg-amber-400 text-dark px-4 py-3 text-base">
+                                    <i data-lucide="copy" class="w-5 h-5"></i> Copy Script
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center">
+            <p class="text-dark text-lg md:text-xl font-black uppercase tracking-wider bg-[#fbbf24] inline-block px-6 py-3 border-3 border-dark shadow-neo-sm">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="underline">Fajarudin Akbar</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <div id="reset-confirm-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white border-4 border-dark p-6 md:p-8 max-w-md w-full shadow-neo relative">
+            <h3 class="text-2xl md:text-3xl font-black uppercase text-dark mb-4">Reset Progress?</h3>
+            <p class="text-lg md:text-xl font-bold text-slate-700 mb-6 leading-relaxed">
+                Are you sure you want to clear everything? Your answers will be deleted.
+            </p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeResetModal()" class="neo-btn bg-stone-200 text-dark px-5 py-3 text-base">Cancel</button>
+                <button onclick="performWorksheetReset()" class="neo-btn bg-[#ef4444] text-white px-5 py-3 text-base">Reset All</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-notification-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white border-4 border-dark p-6 md:p-8 max-w-md w-full shadow-neo relative">
+            <h3 id="alert-title" class="text-2xl md:text-3xl font-black uppercase text-dark mb-4">Notification</h3>
+            <p id="alert-msg" class="text-lg md:text-xl font-bold text-slate-700 mb-6 leading-relaxed">Alert message.</p>
+            <div class="flex justify-end">
+                <button onclick="closeAlertModal()" class="neo-btn bg-dark text-white px-6 py-3 text-base">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-notif" class="fixed top-8 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-6 py-4 shadow-[6px_6px_0_0_#0f172a] transition-all duration-300 -translate-y-24 opacity-0 z-[100] flex items-center gap-3 font-black text-sm md:text-base uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="bell" class="w-6 h-6 text-brand-600"></i>
+        <span id="toast-text">Success Message!</span>
+    </div>
+
+    <script>
+        const state = {
+            attempts: {},  
+            status: {}     
+        };
+
+        const phase1Data = {
+            "phase1-q1": { correct: "Monday", hint: "The weekday directly after Sunday.", explanation: "Monday is the start of the typical corporate work week." },
+            "phase1-q2": { correct: "May", hint: "The fifth month of the calendar year.", explanation: "May directly precedes June." },
+            "phase1-q3": { correct: "Friday", hint: "The weekday directly after Thursday.", explanation: "Friday is the fifth day of the normal work week." },
+            "phase1-q4": { correct: "June", hint: "The sixth month of the calendar year.", explanation: "June is the sixth month of the year." },
+            "phase1-q5": { correct: "Wednesday", hint: "The middle day of the normal work week.", explanation: "Wednesday sits exactly in the middle of a Monday to Friday schedule." }
+        };
+
+        const tfData = [
+            { id: "tf-q1", statement: "1. Ben and Anna talk at the office.", correct: "true", hint: "Ben welcomes Anna to the office at the beginning of the audio.", explanation: "True: Ben greets Anna saying, 'Welcome to the office.'" },
+            { id: "tf-q2", statement: "2. Anna works every Monday.", correct: "false", hint: "Listen to Anna's response when Ben asks if she works every Monday.", explanation: "False: Anna replies, 'No, I do not work on Monday. I usually work on Wednesday and Friday.'" },
+            { id: "tf-q3", statement: "3. The new project is ready now.", correct: "false", hint: "Is the project starting this month or next month?", explanation: "False: Anna notes, 'No, the project starts next month, in June.'" },
+            { id: "tf-q4", statement: "4. June is a very busy month.", correct: "true", hint: "How do Ben and Anna describe June?", explanation: "True: Anna states it is a busy month, and Ben agrees saying June is always busy." },
+            { id: "tf-q5", statement: "5. Anna has a meeting this morning.", correct: "true", hint: "Listen for details about Anna's meeting schedule today.", explanation: "True: Anna says, 'Yes, I have a big meeting this morning.'" }
+        ];
+
+        const extractionData = {
+            "extract-q1": { correct: "Friday", hint: "The day after Thursday.", explanation: "Anna states: 'I usually work on Wednesday and Friday.'" },
+            "extract-q2": { correct: "June", hint: "The sixth month of the year.", explanation: "Anna says: 'No, the project starts next month, in June.'" },
+            "extract-q3": { correct: "morning", hint: "The early part of the day before noon.", explanation: "Anna states: 'Yes, I have a big meeting this morning.'" },
+            "extract-q4": { correct: "nine", alternate: "9", hint: "The number of hours after midnight, between 8 and 10.", explanation: "Anna states: 'It is at nine o'clock.'" },
+            "extract-q5": { correct: "day", hint: "A common farewell wish: 'Have a good ...'", explanation: "Ben states: 'Good luck with the meeting, Anna. Have a good day.'" }
+        };
+
+        // Updated Activity 3 Data Structs to align contextually with the conversation
+        const dialogData = [
+            { id: "dialog-q1", prompt: "1. Ben asks: 'Do you work here every Monday?'", correct: "ans-b", hint: "Think about Anna's response regarding her regular weekly schedule.", explanation: "Matches B: Anna clarifies that she doesn't work on Monday but works on Wednesday and Friday." },
+            { id: "dialog-q2", prompt: "2. Ben asks: 'Is your new project ready in May?'", correct: "ans-a", hint: "Listen for when the project actually kicks off.", explanation: "Matches A: Anna mentions that the project starts next month, which is June." },
+            { id: "dialog-q3", prompt: "3. Ben asks: 'Do you have a team meeting today?'", correct: "ans-d", hint: "Look for Anna's confirmation of an early activity today.", explanation: "Matches D: Anna replies that she has a big meeting scheduled for this morning." },
+            { id: "dialog-q4", prompt: "4. Anna says: 'It is at nine o'clock.'", correct: "ans-e", hint: "How does Ben react immediately after hearing the meeting time?", explanation: "Matches E: Ben follows up directly by wishing her good luck with the meeting." },
+            { id: "dialog-q5", prompt: "5. Ben says: 'Have a good day.'", correct: "ans-c", hint: "How does Anna return the kind farewell expression?", explanation: "Matches C: Anna thanks Ben and responds by wishing him a great week." }
+        ];
+
+        const dialogAnswers = {
+            "ans-a": "A. 'No, the project starts next month, in June.'",
+            "ans-b": "B. 'Hello, Ben. No, I do not work on Monday.'",
+            "ans-c": "C. 'Thank you, Ben. Have a great week.'",
+            "ans-d": "D. 'Yes, I have a big meeting this morning.'",
+            "ans-e": "E. 'Good luck with the meeting, Anna. Have a good day.'"
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderTFEvaluation();
+            renderDialogueSynthesis();
+        });
+
+        function openResetModal() {
+            document.getElementById('reset-confirm-modal').classList.remove('hidden');
+        }
+        function closeResetModal() {
+            document.getElementById('reset-confirm-modal').classList.add('hidden');
+        }
+        function openAlertModal(title, msg) {
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-msg').innerText = msg;
+            document.getElementById('alert-notification-modal').classList.remove('hidden');
+        }
+        function closeAlertModal() {
+            document.getElementById('alert-notification-modal').classList.add('hidden');
+        }
+
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('toast-notif');
+            const textSpan = document.getElementById('toast-text');
+            textSpan.innerText = message;
+            
+            if (isSuccess) {
+                toast.style.borderColor = "#0f172a";
+                toast.style.backgroundColor = "#ecfdf5";
+            } else {
+                toast.style.borderColor = "#f43f5e";
+                toast.style.backgroundColor = "#fff1f2";
+            }
+
+            toast.classList.remove('-translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('-translate-y-24', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 4000);
+        }
+
+        function renderTFEvaluation() {
+            const container = document.getElementById('tf-evaluation-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="p-6 border-2 border-dark bg-white rounded flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="md:w-2/3">
+                        <p class="text-xl md:text-2xl font-black text-dark leading-relaxed">${item.statement}</p>
+                    </div>
+                    <div class="md:w-1/3 flex flex-col gap-2 w-full">
+                        <div class="flex items-center gap-3">
+                            <label class="option-label flex-1 justify-center py-2" id="label-tf-${item.id}-true">
+                                <input type="radio" name="${item.id}" value="true" class="w-6 h-6 accent-dark">
+                                <span class="uppercase tracking-wide text-lg font-black">True</span>
+                            </label>
+                            <label class="option-label flex-1 justify-center py-2" id="label-tf-${item.id}-false">
+                                <input type="radio" name="${item.id}" value="false" class="w-6 h-6 accent-dark">
+                                <span class="uppercase tracking-wide text-lg font-black">False</span>
+                            </label>
+                        </div>
+                        <div id="feedback-${item.id}"></div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderDialogueSynthesis() {
+            const container = document.getElementById('synthesis-matching-container');
+            let selectOptions = `<option value="" disabled selected>-- Choose the Best Match --</option>`;
+            for (const [key, value] of Object.entries(dialogAnswers)) {
+                selectOptions += `<option value="${key}">${value}</option>`;
+            }
+
+            container.innerHTML = dialogData.map(item => `
+                <div class="flex flex-col lg:flex-row lg:items-center gap-4 p-5 border-2 border-dark bg-white rounded">
+                    <div class="lg:w-1/2">
+                        <span class="text-xl font-bold text-dark leading-snug block">${item.prompt}</span>
+                    </div>
+                    <div class="lg:w-1/2 flex flex-col gap-2">
+                        <select id="${item.id}" class="text-input py-2 mt-0 text-lg">
+                            ${selectOptions}
+                        </select>
+                        <div id="feedback-${item.id}"></div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function evaluateThreeStateQuestion(questionId, userInput, correctValue, hint, explanation, applyStylesCallback) {
+            if (!state.attempts[questionId]) {
+                state.attempts[questionId] = 0;
+                state.status[questionId] = 'unsolved';
+            }
+
+            if (state.status[questionId] === 'solved' || state.status[questionId] === 'failed') {
+                return;
+            }
+
+            const feedbackEl = document.getElementById(`feedback-${questionId}`);
+            let isCorrect = userInput.trim().toLowerCase() === correctValue.trim().toLowerCase();
+            
+            if (!isCorrect && extractionData[questionId] && extractionData[questionId].alternate) {
+                isCorrect = userInput.trim().toLowerCase() === extractionData[questionId].alternate.toLowerCase();
+            }
+
+            if (isCorrect) {
+                state.status[questionId] = 'solved';
+                feedbackEl.className = "text-md font-bold mt-2 text-emerald-800 flex items-center gap-2";
+                feedbackEl.innerHTML = `
+                    <div class="bg-emerald-100 border-2 border-dark p-3 shadow-neo-sm flex flex-col gap-1 w-full">
+                        <span class="font-black uppercase flex items-center gap-1"><i data-lucide="check" class="w-5 h-5 text-emerald-600"></i> Correct</span>
+                        <p class="text-sm italic text-slate-700">${explanation}</p>
+                    </div>
+                `;
+                applyStylesCallback(true, 'solved');
+            } else {
+                state.attempts[questionId]++;
+                if (state.attempts[questionId] === 1) {
+                    feedbackEl.className = "text-md font-bold mt-2 text-amber-800 flex items-center gap-2";
+                    feedbackEl.innerHTML = `
+                        <div class="bg-amber-100 border-2 border-dark p-3 shadow-neo-sm flex flex-col gap-1 w-full">
+                            <span class="font-black uppercase flex items-center gap-1"><i data-lucide="help-circle" class="w-5 h-5 text-amber-600"></i> Try Again (1/2 Attempts)</span>
+                            <p class="text-sm italic text-slate-700">Hint: ${hint}</p>
+                        </div>
+                    `;
+                    applyStylesCallback(false, 'hint');
+                } else {
+                    state.status[questionId] = 'failed';
+                    feedbackEl.className = "text-md font-bold mt-2 text-rose-800 flex items-center gap-2";
+                    
+                    let resolvedDisplayValue = correctValue;
+                    if (dialogAnswers[correctValue]) {
+                        resolvedDisplayValue = dialogAnswers[correctValue];
+                    }
+
+                    feedbackEl.innerHTML = `
+                        <div class="bg-rose-100 border-2 border-dark p-3 shadow-neo-sm flex flex-col gap-1 w-full">
+                            <span class="font-black uppercase flex items-center gap-1"><i data-lucide="lock" class="w-5 h-5 text-rose-600"></i> Locked (2/2 Attempts)</span>
+                            <p class="text-sm font-black text-dark">Correct Answer: <span class="underline">${resolvedDisplayValue}</span></p>
+                            <p class="text-sm italic text-slate-600">${explanation}</p>
+                        </div>
+                    `;
+                    applyStylesCallback(true, 'failed');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        function checkPhase1Sentences() {
+            let completed = true;
+            for (const id of Object.keys(phase1Data)) {
+                const inputEl = document.getElementById(id);
+                if (inputEl && inputEl.value.trim() === "") {
+                    completed = false;
+                    break;
+                }
+            }
+
+            if (!completed) {
+                openAlertModal("Incomplete Answers", "Please fill in all blanks before checking.");
+                return;
+            }
+
+            for (const [id, data] of Object.entries(phase1Data)) {
+                const inputEl = document.getElementById(id);
+                if (!inputEl) continue;
+
+                evaluateThreeStateQuestion(id, inputEl.value, data.correct, data.hint, data.explanation, (mustLock, resultState) => {
+                    if (mustLock) {
+                        inputEl.disabled = true;
+                        if (resultState === 'solved') {
+                            inputEl.className = "text-input w-full sm:w-48 text-xl p-2 mt-0 inline-block text-center uppercase border-emerald-600 bg-emerald-50 shadow-none";
+                        } else {
+                            inputEl.className = "text-input w-full sm:w-48 text-xl p-2 mt-0 inline-block text-center uppercase border-rose-600 bg-rose-50 shadow-none";
+                            inputEl.value = data.correct;
+                        }
+                    } else {
+                        inputEl.className = "text-input w-full sm:w-48 text-xl p-2 mt-0 inline-block text-center uppercase border-amber-500 bg-amber-50";
+                    }
+                });
+            }
+            showToast("Part 1 answers checked!");
+        }
+
+        function checkTFSection() {
+            let allAnswered = true;
+            tfData.forEach(item => {
+                const checkedRadio = document.querySelector(`input[name="${item.id}"]:checked`);
+                if (!checkedRadio) {
+                    allAnswered = false;
+                }
+            });
+
+            if (!allAnswered) {
+                openAlertModal("Unanswered Questions", "Please choose True or False for all questions.");
+                return;
+            }
+
+            tfData.forEach(item => {
+                const checkedRadio = document.querySelector(`input[name="${item.id}"]:checked`);
+                const userVal = checkedRadio ? checkedRadio.value : "";
+                
+                evaluateThreeStateQuestion(item.id, userVal, item.correct, item.hint, item.explanation, (mustLock, resultState) => {
+                    const labelTrue = document.getElementById(`label-tf-${item.id}-true`);
+                    const labelFalse = document.getElementById(`label-tf-${item.id}-false`);
+                    
+                    if (mustLock) {
+                        document.getElementsByName(item.id).forEach(el => el.disabled = true);
+                        if (resultState === 'solved') {
+                            if (userVal === "true") labelTrue.classList.add('correct');
+                            else labelFalse.classList.add('correct');
+                        } else {
+                            if (userVal === "true") labelTrue.classList.add('incorrect');
+                            else labelFalse.classList.add('incorrect');
+
+                            if (item.correct === "true") labelTrue.classList.add('correct');
+                            else labelFalse.classList.add('correct');
+                        }
+                    } else {
+                        if (userVal === "true") labelTrue.style.borderColor = "#f59e0b";
+                        else labelFalse.style.borderColor = "#f59e0b";
+                    }
+                });
+            });
+            showToast("True or False answers checked!");
+        }
+
+        function checkDetailedExtraction() {
+            let allInputsFilled = true;
+            for (const id of Object.keys(extractionData)) {
+                const inputEl = document.getElementById(id);
+                if (inputEl && inputEl.value.trim() === "") {
+                    allInputsFilled = false;
+                    break;
+                }
+            }
+
+            if (!allInputsFilled) {
+                openAlertModal("Empty Blanks", "Please fill in all blanks before checking.");
+                return;
+            }
+
+            for (const [id, data] of Object.entries(extractionData)) {
+                const inputEl = document.getElementById(id);
+                if (!inputEl) continue;
+
+                evaluateThreeStateQuestion(id, inputEl.value, data.correct, data.hint, data.explanation, (mustLock, resultState) => {
+                    if (mustLock) {
+                        inputEl.disabled = true;
+                        if (resultState === 'solved') {
+                            inputEl.className = "text-input w-48 text-xl p-2 mt-0 inline-block text-center uppercase border-emerald-600 bg-emerald-50 shadow-none";
+                        } else {
+                            inputEl.className = "text-input w-48 text-xl p-2 mt-0 inline-block text-center uppercase border-rose-600 bg-rose-50 shadow-none";
+                            inputEl.value = data.correct;
+                        }
+                    } else {
+                        inputEl.className = "text-input w-48 text-xl p-2 mt-0 inline-block text-center uppercase border-amber-500 bg-amber-50";
+                    }
+                });
+            }
+            showToast("Activity 2 detailed extract completed!");
+        }
+
+        function checkSynthesisSection() {
+            let processed = 0;
+            let missingSelection = false;
+
+            dialogData.forEach(item => {
+                const selectEl = document.getElementById(item.id);
+                if (!selectEl) return;
+                
+                const userVal = selectEl.value;
+                if (userVal === "") {
+                    missingSelection = true;
+                }
+            });
+
+            if (missingSelection) {
+                openAlertModal("Incomplete Matching", "Please match all sentences to their options.");
+                return;
+            }
+
+            dialogData.forEach(item => {
+                const selectEl = document.getElementById(item.id);
+                if (!selectEl) return;
+                
+                const userVal = selectEl.value;
+                evaluateThreeStateQuestion(item.id, userVal, item.correct, item.hint, item.explanation, (mustLock, resultState) => {
+                    if (mustLock) {
+                        selectEl.disabled = true;
+                        if (resultState === 'solved') {
+                            selectEl.className = "text-input py-2 mt-0 text-lg border-emerald-600 bg-emerald-50 shadow-none";
+                        } else {
+                            selectEl.className = "text-input py-2 mt-0 text-lg border-rose-600 bg-rose-50 shadow-none";
+                            selectEl.value = item.correct;
+                        }
+                    } else {
+                        selectEl.className = "text-input py-2 mt-0 text-lg border-amber-500 bg-amber-50";
+                    }
+                });
+                processed++;
+            });
+
+            if (processed > 0) showToast("Dialogue matching complete!");
+        }
+
+        function toggleTranscript() {
+            const container = document.getElementById('transcript-container');
+            const buttonText = document.getElementById('transcript-toggle-text');
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                buttonText.innerText = "Hide Transcript";
+            } else {
+                container.classList.add('hidden');
+                buttonText.innerText = "Show Transcript";
+            }
+        }
+
+        function generatePersonalPitch() {
+            const name = document.getElementById('tbl-name').value || "[Your Name]";
+            const days = document.getElementById('tbl-days').value || "[Work Days]";
+            const busy = document.getElementById('tbl-busy').value || "[Busy Months]";
+            const meeting = document.getElementById('tbl-meeting').value || "[Meeting Time]";
+            const goal = document.getElementById('tbl-goal').value || "[Workplace Goal]";
+
+            const outputText = `Hello everyone. My name is ${name}. I usually work on ${days}. For us, ${busy} is a very busy month. Today, I have a big team meeting at ${meeting}. I am very happy to join this great team. My main goal this week is to ${goal}. I hope you all have a great week!`;
+            
+            document.getElementById('pitch-output-text').innerText = outputText;
+        }
+
+        function copyPersonalPitch() {
+            const textToCopy = document.getElementById('pitch-output-text').innerText;
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = textToCopy;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast("Personal script successfully copied to clipboard!");
+            } catch (err) {
+                showToast("Failed to copy text automatically.", false);
+            }
+            document.body.removeChild(tempTextArea);
+        }
+
+        function performWorksheetReset() {
+            state.attempts = {};
+            state.status = {};
+
+            const textIds = [
+                "phase1-q1", "phase1-q2", "phase1-q3", "phase1-q4", "phase1-q5",
+                "extract-q1", "extract-q2", "extract-q3", "extract-q4", "extract-q5",
+                "tbl-name", "tbl-days", "tbl-busy", "tbl-meeting", "tbl-goal"
+            ];
+            textIds.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.value = "";
+                    input.disabled = false;
+                    if (id.startsWith('tbl-')) {
+                        input.className = "text-input p-3";
+                    } else {
+                        input.className = "text-input w-full sm:w-48 text-xl p-2 mt-0 inline-block text-center uppercase";
+                    }
+                }
+            });
+
+            renderTFEvaluation();
+            renderDialogueSynthesis();
+
+            const feedbackIDs = [
+                "feedback-phase1-q1", "feedback-phase1-q2", "feedback-phase1-q3", "feedback-phase1-q4", "feedback-phase1-q5",
+                "feedback-extract-q1", "feedback-extract-q2", "feedback-extract-q3", "feedback-extract-q4", "feedback-extract-q5"
+            ];
+            feedbackIDs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.innerHTML = "";
+            });
+
+            document.getElementById('pitch-output-text').innerText = "(Type your information in the boxes on the left to see your script here!)";
+
+            closeResetModal();
+            showToast("Worksheet successfully reset!");
+        }
+    </script>
+</body>
+</html>

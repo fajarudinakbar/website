@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Skill Building: Read, Then Speak | CEFR C1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Animation for Recording */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .recording-active {
+            animation: pulse-red 1.5s infinite;
+            background-color: #ef4444 !important; /* Red-500 */
+            border-color: #b91c1c !important;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-sm md:text-base text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Conversation</span> <span>&gt;</span> 
+            <span>Speaking</span> <span>&gt;</span> 
+            <span>CEFR C1</span> <span>&gt;</span> 
+            <span class="text-indigo-700 font-bold">Read, Then Speak</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-700 tracking-tight mb-3">
+                    Read, Then Speak
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-500 font-medium">Score Range: 120–135 | Focus: Fluency, Coherence & Complexity</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-lg text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-indigo-600 p-6 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-xl text-slate-700 leading-relaxed">
+                <i class="fas fa-microphone-alt mr-3 text-indigo-600"></i> 
+                <strong>Instructions:</strong> Master the 90-second speaking task. Read the prompt, prepare quickly, and speak extensively. The prompt remains visible while you speak.
+            </p>
+        </div>
+
+        <!-- Section 1: Concept & Recognition (Cyan Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-2xl font-bold text-cyan-900">Steps 1-3: Concept & Strategy</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-2xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-10 bg-white space-y-12">
+                    
+                    <!-- Step 1: Concept -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-cyan-800"><span class="bg-cyan-100 px-3 py-1 rounded text-lg mr-3">Step 1</span> The Concept Breakdown</h3>
+                        </div>
+                        <div class="bg-cyan-50 p-6 rounded-xl border border-cyan-100 mb-4 text-lg leading-relaxed text-slate-700">
+                            <p class="mb-4"><strong>The Task:</strong> Respond verbally (90 seconds) to a written prompt describing an object, situation, or opinion.</p>
+                            <p><strong>The Goal:</strong> Address every bullet point in the prompt while maintaining fluency and complexity.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Recognition Drill -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-cyan-800 mb-6"><span class="bg-cyan-100 px-3 py-1 rounded text-lg mr-3">Step 2</span> Recognition Drill</h3>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="p-6 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-cyan-800 mb-2"><i class="fas fa-users mr-2"></i>Experience-Based</h4>
+                                <p class="text-slate-600">"Describe a time you worked with others. What did you collaborate on? Do you enjoy it?"</p>
+                            </div>
+                            <div class="p-6 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-cyan-800 mb-2"><i class="fas fa-lightbulb mr-2"></i>Opinion-Based</h4>
+                                <p class="text-slate-600">"Describe changes you would make in the world and steps you would take."</p>
+                            </div>
+                            <div class="p-6 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <h4 class="font-bold text-cyan-800 mb-2"><i class="fas fa-book-open mr-2"></i>Description-Based</h4>
+                                <p class="text-slate-600">"Talk about a book you read recently. Title? Plot? Why did you like it?"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Strategy -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-cyan-800 mb-6"><span class="bg-cyan-100 px-3 py-1 rounded text-lg mr-3">Step 3</span> Strategic Roadmap</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 border-l-4 border-cyan-400 bg-cyan-50">
+                                <span class="font-bold text-cyan-900">1. Address Every Bullet Point:</span> Use the prompt questions as your speech outline to maximize Content scores.
+                            </div>
+                            <div class="p-4 border-l-4 border-cyan-400 bg-cyan-50">
+                                <span class="font-bold text-cyan-900">2. Maximize Time:</span> Aim for the full 90 seconds. If you finish early, elaborate or conclude.
+                            </div>
+                            <div class="p-4 border-l-4 border-cyan-400 bg-cyan-50">
+                                <span class="font-bold text-cyan-900">3. Leverage Prep Time:</span> Use the 20-second prep window to mentally map your first sentence.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Warm-up & Guided Practice (Blue Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-2xl font-bold text-blue-900">Steps 4-5: Warm-up & Guide</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white border-t border-blue-50 space-y-12">
+                    
+                    <!-- Step 4: Warm-up -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-blue-800"><span class="bg-blue-100 px-3 py-1 rounded text-lg mr-3">Step 4</span> Foundation Warm-up: Rapid Brainstorming</h3>
+                            <button onclick="startWarmupTimer()" id="warmup-btn" class="text-base font-bold text-blue-700 border-2 border-blue-200 bg-white px-5 py-2.5 rounded-lg hover:bg-blue-50 transition-colors shadow-sm">Start 20s Timer</button>
+                        </div>
+                        <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 mb-6 flex justify-between items-center">
+                            <div>
+                                <p class="text-slate-500 text-sm uppercase font-bold mb-1">Prompt:</p>
+                                <p class="text-xl font-bold text-blue-900">"Describe your favorite holiday. Where? Who? Why memorable?"</p>
+                            </div>
+                            <div class="text-3xl font-mono font-bold text-blue-400" id="warmup-timer">00:20</div>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-4">Quickly list 3 <strong>advanced adjectives</strong> or phrases:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <input type="text" class="p-4 border border-slate-300 rounded-lg text-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="1. e.g., breathtaking scenery">
+                            <input type="text" class="p-4 border border-slate-300 rounded-lg text-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="2. e.g., cultural immersion">
+                            <input type="text" class="p-4 border border-slate-300 rounded-lg text-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="3. e.g., unforgettable camaraderie">
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Guided Practice -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-blue-800 mb-6"><span class="bg-blue-100 px-3 py-1 rounded text-lg mr-3">Step 5</span> Guided Practice (Scaffolded)</h3>
+                        
+                        <div class="flex flex-col md:flex-row gap-8">
+                            <div class="md:w-1/3 space-y-4">
+                                <div class="p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                                    <h4 class="font-bold text-blue-900 mb-2"><i class="fas fa-tv mr-2"></i>Task:</h4>
+                                    <p class="text-slate-700 italic">"Discuss the influence of television on young people. What are the potential benefits and risks?"</p>
+                                </div>
+                                <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
+                                    <h5 class="font-bold text-blue-800 mb-2">Thinking Prompts:</h5>
+                                    <ul class="list-disc pl-5 text-slate-700 space-y-1 text-base">
+                                        <li><strong>Educational:</strong> Science, languages?</li>
+                                        <li><strong>Risks:</strong> Health, unrealistic standards?</li>
+                                        <li><strong>Summary:</strong> "Double-edged sword"?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="md:w-2/3">
+                                <button onclick="toggleAnswer('guided-model', this)" class="w-full text-base font-bold text-white bg-blue-600 px-5 py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-sm mb-4">Show C1 Model Response</button>
+                                
+                                <div id="guided-model" class="hidden p-6 bg-blue-100 border border-blue-200 rounded-xl">
+                                    <p class="text-lg text-slate-800 leading-relaxed mb-4">
+                                        "I believe that television can have both a positive and negative influence on young people. <strong>On the positive side</strong>, TV can be an informative tool, helping youth learn about different cultures and subjects like science or languages. <strong>However</strong>, the biggest risks involve their physical and mental health. Excessive screen time can lead to sedentary lifestyles. <strong>Furthermore</strong>, programs often promote unrealistic beauty standards, which can affect mental well-being. <strong>Basically</strong>, television is a double-edged sword; while beneficial, young people need mindful viewing habits."
+                                    </p>
+                                    <p class="text-sm text-blue-800"><strong>Why it Works:</strong> Cohesive devices (On the positive side, Furthermore), Lexical variety (sedentary, mindful), Complex structure.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Independent Challenge (Violet Theme) -->
+        <div class="mb-6 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-2xl font-bold text-violet-900">Step 6-7: Simulation & Challenge</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-violet-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white space-y-10">
+                    
+                    <!-- Simulation Setup -->
+                    <div class="bg-violet-50 p-6 rounded-xl border border-violet-200">
+                        <h3 class="font-bold text-violet-900 text-xl mb-3">Step 6: Technical Simulation</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-lg text-slate-700">
+                            <li><strong>Eye Contact:</strong> Do not look away from the screen/camera.</li>
+                            <li><strong>Timer:</strong> 90 seconds continuous speaking.</li>
+                            <li><strong>Environment:</strong> Silent room, good lighting.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Independent Challenge -->
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-violet-800"><span class="bg-violet-100 px-3 py-1 rounded text-lg mr-3">Step 7</span> Independent Challenge</h3>
+                        </div>
+                        
+                        <!-- Prompt Card -->
+                        <div class="p-8 bg-slate-50 rounded-xl border-2 border-violet-200 mb-8 text-center shadow-sm">
+                            <h4 class="font-bold text-slate-500 uppercase tracking-widest text-sm mb-4">Exam Prompt</h4>
+                            <p class="text-2xl font-serif text-slate-800 leading-relaxed mb-6">
+                                "Describe a successful person you admire.<br>
+                                <span class="block mt-4 text-xl text-slate-600 font-sans font-normal">
+                                • Who is this person?<br>
+                                • What has this person achieved?<br>
+                                • Why do you admire them?
+                                </span>
+                            </p>
+                        </div>
+
+                        <!-- Recording UI -->
+                        <div class="flex flex-col items-center justify-center gap-6 p-8 bg-white border-2 border-dashed border-violet-200 rounded-2xl">
+                            <div id="record-timer-display" class="text-6xl font-mono font-bold text-slate-700">01:30</div>
+                            
+                            <div class="flex gap-4">
+                                <button id="record-btn" onclick="toggleRecording()" class="flex items-center gap-3 px-8 py-4 bg-violet-600 hover:bg-violet-700 text-white rounded-full font-bold text-xl shadow-lg transition-all transform hover:scale-105">
+                                    <i class="fas fa-microphone"></i> <span id="record-text">Start Speaking</span>
+                                </button>
+                                <button onclick="resetRecording()" class="px-4 py-4 bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full font-bold shadow transition-colors">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </div>
+                            <p id="recording-status" class="text-red-500 font-bold hidden">Recording in progress...</p>
+                        </div>
+
+                        <!-- Self-Eval & Model -->
+                        <div class="mt-8 grid md:grid-cols-2 gap-8">
+                            <div>
+                                <label class="block text-lg font-bold text-violet-800 mb-2">Self-Reflection Notes:</label>
+                                <textarea placeholder="How did you do? Did you cover all 3 points?" class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-violet-200 focus:border-violet-500 outline-none h-48"></textarea>
+                            </div>
+                            
+                            <div>
+                                <button onclick="toggleAnswer('model-response', this)" class="w-full text-base font-bold text-violet-600 border-2 border-violet-200 bg-white px-5 py-3 rounded-lg hover:bg-violet-50 transition-colors shadow-sm mb-4">Show C1 Model Response</button>
+                                <div id="model-response" class="hidden p-6 bg-violet-50 border border-violet-200 rounded-xl h-48 overflow-y-auto custom-scrollbar">
+                                    <p class="text-lg text-violet-900 leading-relaxed">
+                                        "A successful individual I deeply admire is Malala Yousafzai. She has achieved global recognition for her advocacy for female education and became the youngest-ever Nobel Prize laureate. I admire her not just for her accolades, but for her staggering resilience in the face of adversity. Her ability to transform a personal tragedy into a universal movement for justice is truly inspiring. She demonstrates that one's voice, when used courageously, can challenge systemic barriers and initiate profound societal change..."
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Checklist -->
+                        <div class="mt-8 pt-8 border-t border-slate-100">
+                            <h4 class="font-bold text-violet-800 mb-4 text-xl">Step 8: Performance Checklist</h4>
+                            <div class="space-y-3 text-lg">
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span><strong>Content Coverage:</strong> Did I explicitly answer all three bullet points?</span>
+                                </label>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span><strong>Discourse Flow:</strong> Did I use at least 3 transitions (furthermore, conversely)?</span>
+                                </label>
+                                <label class="flex items-center gap-3">
+                                    <input type="checkbox" class="w-6 h-6 accent-violet-600">
+                                    <span><strong>Fluency:</strong> Did I speak for 75-90 seconds without long pauses?</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Reflection (Rose Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-2xl font-bold text-rose-900">Step 9-10: Feedback & Reflection</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-rose-600 text-2xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-10 bg-white space-y-8">
+                    
+                    <!-- AI Prompting -->
+                    <div class="bg-rose-50 p-6 rounded-xl border-l-4 border-rose-500 shadow-sm">
+                        <h3 class="text-xl font-bold text-rose-900 mb-2"><i class="fas fa-robot mr-2"></i>Step 9: AI Prompting Lab</h3>
+                        <p class="text-base text-slate-600 mb-3">Copy this into ChatGPT to generate more practice prompts:</p>
+                        <div class="relative bg-white p-4 rounded border border-rose-200 font-mono text-sm text-slate-600">
+                            <p id="ai-prompt-text">Act as a Duolingo English Test expert. Generate three 'Read, Then Speak' prompts suitable for a C1 level student. Each prompt should include a main topic and three sub-questions. After providing the prompts, wait for me to choose one. Once I respond, provide a model answer of approximately 150 words using C1-level vocabulary and complex sentence structures.</p>
+                            <button onclick="copyToClipboard('ai-prompt-text')" class="absolute top-2 right-2 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reflection -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-rose-800 mb-4">Step 10: Reflective Feedback Loop</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-xl text-slate-700 font-medium mb-2">1. One "Aha!" Moment:</label>
+                                <textarea placeholder="e.g., I realized I don't need to stop as soon as I finish..." class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xl text-slate-700 font-medium mb-2">2. One "Roadblock":</label>
+                                <textarea placeholder="e.g., I struggled to find a complex way to conclude..." class="w-full p-4 border border-slate-300 rounded-xl text-lg focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-lg font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Warmup Timer ---
+        let warmupInterval;
+        let warmupTime = 20;
+
+        function startWarmupTimer() {
+            const btn = document.getElementById('warmup-btn');
+            const display = document.getElementById('warmup-timer');
+            
+            clearInterval(warmupInterval);
+            warmupTime = 20;
+            display.innerText = "00:20";
+            btn.disabled = true;
+            btn.innerText = "Running...";
+            
+            warmupInterval = setInterval(() => {
+                warmupTime--;
+                display.innerText = `00:${warmupTime < 10 ? '0' : ''}${warmupTime}`;
+                
+                if (warmupTime <= 0) {
+                    clearInterval(warmupInterval);
+                    btn.disabled = false;
+                    btn.innerText = "Restart Timer";
+                    display.innerText = "00:00";
+                    alert("Warm-up time is up! Did you list 3 phrases?");
+                }
+            }, 1000);
+        }
+
+        // --- Recording Timer ---
+        let recordInterval;
+        let isRecording = false;
+        let recordTime = 90;
+
+        function toggleRecording() {
+            const btn = document.getElementById('record-btn');
+            const text = document.getElementById('record-text');
+            const status = document.getElementById('recording-status');
+            const display = document.getElementById('record-timer-display');
+
+            if (!isRecording) {
+                // Start
+                isRecording = true;
+                btn.classList.remove('bg-violet-600', 'hover:bg-violet-700');
+                btn.classList.add('bg-red-600', 'hover:bg-red-700', 'recording-active');
+                text.innerText = "Stop Speaking";
+                status.classList.remove('hidden');
+                status.classList.add('animate-pulse');
+                
+                recordInterval = setInterval(() => {
+                    recordTime--;
+                    const mins = Math.floor(recordTime / 60);
+                    const secs = recordTime % 60;
+                    display.textContent = `0${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+                    if (recordTime <= 0) {
+                        toggleRecording(); // Stop automatically
+                        alert("Time is up!");
+                    }
+                }, 1000);
+
+            } else {
+                // Stop
+                isRecording = false;
+                clearInterval(recordInterval);
+                btn.classList.add('bg-violet-600', 'hover:bg-violet-700');
+                btn.classList.remove('bg-red-600', 'hover:bg-red-700', 'recording-active');
+                text.innerText = "Start Speaking";
+                status.classList.add('hidden');
+                status.classList.remove('animate-pulse');
+            }
+        }
+
+        function resetRecording() {
+            clearInterval(recordInterval);
+            isRecording = false;
+            recordTime = 90;
+            document.getElementById('record-timer-display').textContent = "01:30";
+            document.getElementById('recording-status').classList.add('hidden');
+            
+            const btn = document.getElementById('record-btn');
+            const text = document.getElementById('record-text');
+            btn.classList.add('bg-violet-600', 'hover:bg-violet-700');
+            btn.classList.remove('bg-red-600', 'hover:bg-red-700', 'recording-active');
+            text.innerText = "Start Speaking";
+        }
+
+        // --- Utils ---
+        function toggleAnswer(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Model Response";
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = "Show C1 Model Response";
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '4000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert("Prompt copied to clipboard!");
+        }
+
+        function resetAll() {
+            if(confirm("Clear all inputs?")) {
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input').forEach(i => i.value = "");
+                document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+                
+                resetRecording();
+                clearInterval(warmupInterval);
+                document.getElementById('warmup-timer').innerText = "00:20";
+                
+                document.getElementById('guided-model').classList.add('hidden');
+                document.getElementById('model-response').classList.add('hidden');
+            }
+        }
+
+    </script>
+</body>
+</html>

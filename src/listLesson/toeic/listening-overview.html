@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>TOEIC Listening Overview</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Global Styles */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-content > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .text-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            margin-top: 0.5rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+
+        /* Buttons */
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            font-weight: 900;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+        .neo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+
+        /* Option Labels (Radios) */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+            font-weight: 700;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #0f172a;
+            cursor: pointer;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px 0px #0f172a;
+        }
+        
+        .tf-selected {
+            background-color: #3b82f6 !important;
+            color: #ffffff !important;
+            border-color: #0f172a !important;
+        }
+        
+        .option-label.correct-lock {
+            background-color: #4ade80 !important;
+            border-color: #0f172a;
+            color: #0f172a !important;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        .option-label.incorrect-lock {
+            background-color: #f87171 !important;
+            border-color: #0f172a;
+            color: #ffffff !important;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        .option-label.incorrect-lock span {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-6 md:p-8 text-sm md:text-base">
+
+    <div class="max-w-6xl mx-auto bg-white p-5 sm:p-8 lg:p-10 border-4 border-dark shadow-neo">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs sm:text-sm md:text-base text-dark mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">TOEIC</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Listening</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-[#facc15] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">B1 to B2</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Question Types</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-dark uppercase tracking-tight mb-3 md:mb-4 text-balance">
+                    Listening Section Overview
+                </h1>
+                <p class="text-lg sm:text-xl md:text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-1 border-2 border-dark text-pretty">
+                    Topic: Navigating Parts 1 to 4 and Identifying Question Types
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-2 px-5 py-3 text-sm md:text-base text-dark bg-[#f87171]">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#fefce8] border-3 border-dark p-5 md:p-6 mb-8 md:mb-12 shadow-neo-sm flex items-start gap-4">
+            <div class="bg-[#facc15] p-2 border-2 border-dark shrink-0">
+                <i data-lucide="info" class="w-6 h-6 text-dark"></i>
+            </div>
+            <p class="text-base md:text-lg text-dark font-bold leading-relaxed text-pretty">
+                <span class="uppercase font-black text-xl mr-2">Instructions:</span> Complete the tasks sequentially. For interactive quizzes, you have <strong class="text-brand-600">two attempts</strong> before the correct answer, explanation, and tactical strategy are revealed. Use the Audio feature to simulate the North American TTS test voices. All sections are closed by default.
+            </p>
+        </div>
+
+        <div class="space-y-6 md:space-y-8">
+
+            <!-- Part 1: Photographs (Cyan Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#e0f2fe]">
+                <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#38bdf8] hover:bg-[#0ea5e9] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            1
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 1: Photographs</span>
+                    </div>
+                    <div id="icon-wrapper-part1" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part1" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+
+                        <!-- Real Test Format Explanation -->
+                        <div class="bg-indigo-50 border-3 border-dark p-5 shadow-neo-sm">
+                            <h4 class="font-black uppercase text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="headphones" class="w-5 h-5"></i> Real Test Format: Part 1</h4>
+                            <p class="font-medium text-slate-800 text-pretty mb-4">In the real TOEIC test, you will see a photograph in your test book. You will hear four short statements about the photograph. <strong>These statements are spoken only once and are NOT printed.</strong> You must select the statement (A, B, C, or D) that best describes the picture.</p>
+                            
+                            <div class="bg-indigo-100 p-4 border-2 border-indigo-900">
+                                <h5 class="font-black text-indigo-900 uppercase text-sm mb-1">Strategy: Predicting and Analyzing</h5>
+                                <ul class="list-disc pl-5 font-medium text-slate-800 space-y-1">
+                                    <li>As soon as this section starts, pick out the main theme of the first photograph and start to predict the type of statements you may hear.</li>
+                                    <li>Brainstorm nouns and verbs related to the picture before you listen.</li>
+                                    <li>Listen for SVO (subject, verb, object) words, as most incorrect choices will use some correct subject, verb, and object words and some wrong ones.</li>
+                                    <li>Many of the incorrect answer choices in this section feature an inappropriate verb for the situation.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Task 1 (Step 1) -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#38bdf8] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 1</span> Diagnostic
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t1', this, 'Show Diagnostic Outline')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Diagnostic Outline</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">Without checking notes, briefly describe what test takers must do in Part 1 of the TOEIC Listening test. What are the common traps to avoid?</p>
+                            <textarea class="text-input text-base font-medium" placeholder="In Part 1, test takers have to... A common trap is..."></textarea>
+                            
+                            <div id="ans-t1" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="lightbulb" class="w-5 h-5 inline mr-1 text-[#eab308] fill-current"></i>Diagnostic Outline:</strong>
+                                <ul class="list-disc pl-6 mt-2 space-y-2 font-medium text-base">
+                                    <li><strong>Task:</strong> You will hear four statements about a picture. You must select the one statement that best describes what you see. The statements are not printed.</li>
+                                    <li><strong>Common Traps:</strong> Distractors often involve the wrong noun or verb, or use some correct subject, verb, and object words paired with incorrect ones.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 2 (Step 2 Interactive MCQ) -->
+                        <div class="bg-white border-3 border-dark shadow-neo p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#38bdf8] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 2</span> Visual Analysis (Audio Drill)
+                            </h3>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <button onclick="playTTS('script-part1')" class="neo-btn bg-[#38bdf8] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#0ea5e9]">
+                                    <i data-lucide="play" class="w-5 h-5 fill-current"></i> Listen to Audio
+                                </button>
+                                <button onclick="stopTTS()" class="neo-btn bg-[#f87171] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#ef4444]">
+                                    <i data-lucide="square" class="w-5 h-5 fill-current"></i> Stop
+                                </button>
+                                <button onclick="toggleTranscript('script-part1')" id="btn-transcript-script-part1" class="neo-btn bg-white text-dark px-4 py-2 text-sm md:text-base">
+                                    <i data-lucide="file-text" class="w-5 h-5"></i> Show Transcript
+                                </button>
+                            </div>
+                            
+                            <!-- Hidden TTS Script -->
+                            <div id="script-part1" class="hidden bg-gray-100 p-4 border-2 border-dark mb-6 text-sm font-medium italic space-y-2">
+                                <div data-speaker="narrator">Look at the picture marked number 1 in your test book.</div>
+                                <div data-speaker="male">A. He is shoveling some soil.</div>
+                                <div data-speaker="male">B. He is moving a wheelbarrow.</div>
+                                <div data-speaker="male">C. He is cutting some grass.</div>
+                                <div data-speaker="male">D. He is planting a tree.</div>
+                            </div>
+
+                            <div class="mb-6 flex justify-center">
+                                <img src="https://tse1.mm.bing.net/th/id/OIP.OOzxb3q0iwv8G_VL0gPLTAHaFa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Man shoveling soil" class="w-full max-w-lg border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                            </div>
+                            
+                            <div id="part1-mcq-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkMCQ('part1-mcq-container', part1McqData, part1Attempts)" class="neo-btn w-full md:w-auto bg-[#38bdf8] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Answer
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Question Response (Blue Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#eff6ff]">
+                <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            2
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 2: Question Response</span>
+                    </div>
+                    <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part2" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-6 md:p-10 lg:p-12 space-y-6">
+
+                        <!-- Real Test Format Explanation -->
+                        <div class="bg-indigo-50 border-3 border-dark p-5 shadow-neo-sm mb-4">
+                            <h4 class="font-black uppercase text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="headphones" class="w-5 h-5"></i> Real Test Format: Part 2</h4>
+                            <p class="font-medium text-slate-800 text-pretty mb-4">In the real test, you will hear a question or statement followed by three responses spoken in English. <strong>They will NOT be printed in your test book and are spoken only once.</strong> You must choose the best response (A, B, or C) based purely on your listening comprehension.</p>
+                            
+                            <div class="bg-indigo-100 p-4 border-2 border-indigo-900">
+                                <h5 class="font-black text-indigo-900 uppercase text-sm mb-1">Strategy: Meaning over Sound</h5>
+                                <ul class="list-disc pl-5 font-medium text-slate-800 space-y-1">
+                                    <li>Answers in the TOEIC test do not always answer the question directly.</li>
+                                    <li>Often the question and answer will be different tenses.</li>
+                                    <li>Often direct questions will not be answered with yes, no or don't know, so look for options that use different words to express these meanings.</li>
+                                    <li>Be careful when choosing responses that use the same or similar sounding words, as distractors using the same or similar sounding words are common in Part 2.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Task 3 (Step 3) -->
+                        <div class="bg-white border-3 border-dark shadow-neo p-5 md:p-6 mb-8">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#60a5fa] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 3</span> Audio Discrimination Drill
+                            </h3>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <button onclick="playTTS('script-part2')" class="neo-btn bg-[#60a5fa] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#3b82f6]">
+                                    <i data-lucide="play" class="w-5 h-5 fill-current"></i> Listen to Audio
+                                </button>
+                                <button onclick="stopTTS()" class="neo-btn bg-[#f87171] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#ef4444]">
+                                    <i data-lucide="square" class="w-5 h-5 fill-current"></i> Stop
+                                </button>
+                                <button onclick="toggleTranscript('script-part2')" id="btn-transcript-script-part2" class="neo-btn bg-white text-dark px-4 py-2 text-sm md:text-base">
+                                    <i data-lucide="file-text" class="w-5 h-5"></i> Show Transcript
+                                </button>
+                            </div>
+                            
+                            <!-- Hidden TTS Script -->
+                            <div id="script-part2" class="hidden bg-gray-100 p-4 border-2 border-dark mb-6 text-sm font-medium italic space-y-2">
+                                <div data-speaker="female">Number 7. Where is the new fax machine?</div>
+                                <div data-speaker="male">A. Next to the water fountain.</div>
+                                <div data-speaker="male">B. I will send a fax tomorrow.</div>
+                                <div data-speaker="male">C. By Wednesday.</div>
+                                <div class="my-2 border-b border-gray-300"></div>
+                                <div data-speaker="female">Number 9. Martin, are you driving to the client meeting?</div>
+                                <div data-speaker="male">A. Oh, would you like a ride?</div>
+                                <div data-speaker="male">B. Nice to meet you, too.</div>
+                                <div data-speaker="male">C. I thought it went well!</div>
+                            </div>
+
+                            <p class="text-base font-bold text-slate-700 mb-4 bg-yellow-100 border-2 border-dark p-3 inline-block shadow-[2px_2px_0_0_#0f172a]">
+                                <i data-lucide="info" class="w-4 h-4 inline text-dark mr-1"></i> Pay close attention to the interrogative words and how the speaker responds indirectly to yes/no questions.
+                            </p>
+                            
+                            <div id="part2-mcq-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkMCQ('part2-mcq-container', part2McqData, part2Attempts)" class="neo-btn w-full md:w-auto bg-[#60a5fa] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Answers
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Task 4 (Step 4) -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#60a5fa] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 4</span> Pattern Identification
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t4', this, 'Show Pattern Analysis')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Pattern Analysis</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">In Question 7 above, the distractor <em>"I will send a fax tomorrow"</em> uses word repetition to trick test takers. Why does this strategy work, and how can you teach students to avoid it?</p>
+                            <textarea class="text-input text-base font-medium" placeholder="Word repetition tricks listeners because..."></textarea>
+                            
+                            <div id="ans-t4" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="eye" class="w-5 h-5 inline mr-1 text-[#eab308]"></i>Pattern Analysis:</strong>
+                                <p class="font-medium text-base text-pretty">It works because low-level listeners panic when they miss the Wh- word (Where) and cling to the only noun they recognized (fax). Distractors using the same (or similar sounding) words are common in Part 2. To avoid it, students must drill focusing on meaning rather than matching sounds.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 3: Conversations (Emerald Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#d1fae5]">
+                <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            3
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 3: Conversations</span>
+                    </div>
+                    <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+
+                        <!-- Real Test Format Explanation -->
+                        <div class="bg-indigo-50 border-3 border-dark p-5 shadow-neo-sm">
+                            <h4 class="font-black uppercase text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> Real Test Format: Part 3</h4>
+                            <p class="font-medium text-slate-800 text-pretty mb-4">In the real test, you will hear a conversation between two or more people spoken only once. Unlike Parts 1 and 2, <strong>the questions and the four answer choices ARE printed in your test book.</strong> You must read along and select the best response based on the audio.</p>
+                            
+                            <div class="bg-indigo-100 p-4 border-2 border-indigo-900">
+                                <h5 class="font-black text-indigo-900 uppercase text-sm mb-1">Strategy: Prediction and Distractors</h5>
+                                <ul class="list-disc pl-5 font-medium text-slate-800 space-y-1">
+                                    <li>Using the time available to skim the questions and answer choices before listening will help you to identify the key parts of the conversation.</li>
+                                    <li>Part 3 sometimes uses the same words in the recording and answer choices, but with a different meaning.</li>
+                                    <li>Listen to who says what, as often the answer choice will have key words used by one of the speakers, but it may not be the speaker specified in the question.</li>
+                                    <li>Sometimes the answers are not stated directly in the conversation, so look for common inference markers such as "What can be said", "implied", or "inferred".</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Task 5 (Step 5) -->
+                        <div class="bg-white border-3 border-dark shadow-neo p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 5</span> Contextual Listening
+                            </h3>
+                            
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <button onclick="playTTS('script-part3')" class="neo-btn bg-[#4ade80] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#22c55e]">
+                                    <i data-lucide="play" class="w-5 h-5 fill-current"></i> Listen to Audio
+                                </button>
+                                <button onclick="stopTTS()" class="neo-btn bg-[#f87171] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#ef4444]">
+                                    <i data-lucide="square" class="w-5 h-5 fill-current"></i> Stop
+                                </button>
+                                <button onclick="toggleTranscript('script-part3')" id="btn-transcript-script-part3" class="neo-btn bg-white text-dark px-4 py-2 text-sm md:text-base">
+                                    <i data-lucide="file-text" class="w-5 h-5"></i> Show Transcript
+                                </button>
+                            </div>
+                            
+                            <div id="script-part3" class="hidden bg-gray-100 p-4 border-2 border-dark mb-6 text-sm font-medium italic space-y-2 text-justify">
+                                <div data-speaker="narrator">Questions 32 through 34 refer to the following conversation.</div>
+                                <div data-speaker="female">"Hello. I'm calling about a coffee machine I purchased from your Web site. It stopped working even though I haven't had it for very long. I expected it to last much longer than this."</div>
+                                <div data-speaker="male">"Oh, I'm sorry to hear that. Our warranty covers products for up to a year. Do you know when you bought it?"</div>
+                                <div data-speaker="female">"I've had it for a little over a year, so the warranty has probably just expired. This is so disappointing."</div>
+                                <div data-speaker="male">"Well, I'll tell you what we can do. Although we can't replace it, since you're a valued customer I can offer you a coupon for forty percent off your next purchase."</div>
+                            </div>
+                            
+                            <div id="part3-mcq-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkMCQ('part3-mcq-container', part3McqData, part3Attempts)" class="neo-btn w-full md:w-auto bg-[#4ade80] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Answers
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Task 6 (Step 6 Lexical Match) -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-4 border-b-2 border-dark pb-3">
+                                <span class="bg-[#4ade80] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 6</span> Lexical Match
+                            </h3>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-6 text-pretty">Match these 5 high frequency workplace terms (found in today's official anchor texts) to their definitions.</p>
+                            
+                            <div id="vocab-container" class="space-y-4">
+                                <!-- Populated by JS -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkVocab()" class="neo-btn w-full md:w-auto bg-[#4ade80] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Vocabulary
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 4: Talks (Orange Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#ffedd5]">
+                <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#fb923c] hover:bg-[#ea580c] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            4
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Part 4: Talks</span>
+                    </div>
+                    <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+
+                        <!-- Real Test Format Explanation -->
+                        <div class="bg-indigo-50 border-3 border-dark p-5 shadow-neo-sm">
+                            <h4 class="font-black uppercase text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> Real Test Format: Part 4</h4>
+                            <p class="font-medium text-slate-800 text-pretty mb-4">In the real test, you will hear a short talk given by a single speaker, spoken only once. Just like Part 3, <strong>the questions and the four answer choices ARE printed in your test book.</strong> You must use the printed options to answer questions about the audio.</p>
+                            
+                            <div class="bg-indigo-100 p-4 border-2 border-indigo-900">
+                                <h5 class="font-black text-indigo-900 uppercase text-sm mb-1">Strategy: Following the Sequence</h5>
+                                <ul class="list-disc pl-5 font-medium text-slate-800 space-y-1">
+                                    <li>Answers in Part 4 usually appear in the order in which they appear in the talks.</li>
+                                    <li>Some "what" questions require you to understand the main idea, while others require you to listen for specific information.</li>
+                                    <li>The correct answer choice often uses different words from what you will hear, so be aware of this and listen for meaning, not just the key words.</li>
+                                    <li>Be careful of questions involving number and quantity, and be careful of sound distractors in numbers ending in "teen" or "ty".</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Task 7 (Step 7) -->
+                        <div class="bg-white border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#fb923c] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 7</span> Information Extraction
+                            </h3>
+                            
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <button onclick="playTTS('script-part4')" class="neo-btn bg-[#fb923c] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#ea580c]">
+                                    <i data-lucide="play" class="w-5 h-5 fill-current"></i> Listen to Audio
+                                </button>
+                                <button onclick="stopTTS()" class="neo-btn bg-[#f87171] text-dark px-4 py-2 text-sm md:text-base hover:bg-[#ef4444]">
+                                    <i data-lucide="square" class="w-5 h-5 fill-current"></i> Stop
+                                </button>
+                                <button onclick="toggleTranscript('script-part4')" id="btn-transcript-script-part4" class="neo-btn bg-white text-dark px-4 py-2 text-sm md:text-base">
+                                    <i data-lucide="file-text" class="w-5 h-5"></i> Show Transcript
+                                </button>
+                            </div>
+                            
+                            <div id="script-part4" class="hidden bg-gray-100 p-4 border-2 border-dark mb-6 text-sm font-medium italic space-y-2 text-justify">
+                                <div data-speaker="narrator">Questions 71 through 73 refer to the following telephone message.</div>
+                                <div data-speaker="male">"Hello Mr. Lee, this is Thomas from BKS Auto Shop calling with some information about your car repair. I know we told you that it would take until next week to get the part we ordered, but we got the part early, and I was able to finish the repair. We are going to be closing for the day in a few minutes, but you are welcome to come get your car anytime tomorrow. If you need a ride to the shop tomorrow, let me know, and I can arrange one for you."</div>
+                            </div>
+                            
+                            <div id="part4-mcq-container" class="space-y-6">
+                                <!-- Populated by JS -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkMCQ('part4-mcq-container', part4McqData, part4Attempts)" class="neo-btn w-full md:w-auto bg-[#fb923c] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Answers
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Task 8 (Step 8 Evidence Verification) -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo p-5 md:p-6">
+                            <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2 mb-6 border-b-2 border-dark pb-3">
+                                <span class="bg-[#fb923c] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 8</span> Evidence Verification
+                            </h3>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-6 text-pretty">Verify the evidence from the Part 4 Talk Snippet above. Are the statements True or False?</p>
+                            
+                            <div id="tf-container" class="space-y-4">
+                                <!-- Populated by JS -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t-4 border-dark flex justify-end">
+                                <button onclick="checkTF()" class="neo-btn w-full md:w-auto bg-[#fb923c] text-dark px-8 py-3 text-base md:text-lg">
+                                    Check Evidence
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 5: Application (Fuchsia Theme) -->
+            <div class="border-4 border-dark shadow-neo bg-[#fae8ff]">
+                <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#e879f9] hover:bg-[#d946ef] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white border-3 border-dark text-dark w-10 h-10 md:w-14 md:h-14 shrink-0 flex items-center justify-center shadow-neo-sm font-black text-xl md:text-2xl">
+                            <i data-lucide="briefcase" class="w-6 h-6 md:w-8 md:h-8"></i>
+                        </div>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Workplace Application</span>
+                    </div>
+                    <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                    </div>
+                </button>
+                <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                    <div class="bg-white p-5 md:p-8 lg:p-10 space-y-10">
+                        
+                        <!-- Task 9 (Step 9) -->
+                        <div class="bg-white border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#e879f9] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 9</span> Workplace Transformation
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t9', this, 'Show Transformation')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Transformation</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">In Part 3, the woman says: <em>"It stopped working even though I haven't had it for very long."</em> Rewrite this sentence to sound professional, as if she were writing a formal complaint email to Customer Service.</p>
+                            <textarea class="text-input h-24 text-base font-medium" placeholder="Dear Customer Service, The appliance..."></textarea>
+                            
+                            <div id="ans-t9" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="check-square" class="w-5 h-5 inline mr-1 text-[#22c55e]"></i>Sample Formal Transformation:</strong>
+                                <ul class="list-disc pl-6 mt-2 space-y-2 font-medium text-base">
+                                    <li>"The appliance ceased functioning shortly after the date of purchase."</li>
+                                    <li>"Despite being recently acquired, the machine has unexpectedly malfunctioned."</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Task 10 (Step 10) -->
+                        <div class="bg-slate-50 border-3 border-dark shadow-neo-sm p-5 md:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                                <h3 class="font-black text-dark text-lg md:text-xl uppercase flex items-center gap-2">
+                                    <span class="bg-[#e879f9] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] text-sm">Step 10</span> Strategic Reflection
+                                </h3>
+                                <button onclick="toggleAnswer('ans-t10', this, 'Show Reflection Insight')" class="neo-btn bg-white text-dark px-4 py-2 text-xs md:text-sm">Show Reflection Insight</button>
+                            </div>
+                            <p class="text-base md:text-lg text-slate-800 font-bold mb-3 text-pretty">Reflecting on the entire Listening section, how can integrating authentic corporate documents (like warranties and emails) into your lessons improve your students' listening comprehension scores?</p>
+                            <textarea class="text-input text-base font-medium" placeholder="Integrating authentic materials helps students because..."></textarea>
+                            
+                            <div id="ans-t10" class="answer-box hidden mt-5 p-5 bg-[#f0fdf4] border-3 border-dark text-slate-800 shadow-inner">
+                                <strong class="font-black uppercase text-dark block mb-2"><i data-lucide="lightbulb" class="w-5 h-5 inline mr-1 text-[#eab308]"></i>Reflection Insight:</strong>
+                                <p class="font-medium text-base text-pretty">Authentic materials build schema. When students read actual warranties or memos, they anticipate the vocabulary and context required in Parts 3 and 4. This bridges the gap between passive listening and active, real world application, directly aligning with communicative teaching principles.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center mb-6">
+            <p class="text-dark text-sm md:text-base font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="confirm-modal" class="fixed inset-0 bg-dark/50 hidden items-center justify-center z-[100] p-4">
+        <div class="bg-white border-4 border-dark shadow-[8px_8px_0_0_#0f172a] p-6 max-w-sm w-full transform transition-all translate-y-4 opacity-0" id="confirm-modal-content">
+            <h3 class="font-black text-xl text-dark mb-2 uppercase flex items-center gap-2"><i data-lucide="alert-circle" class="w-6 h-6 text-[#ef4444]"></i> Reset Progress</h3>
+            <p class="text-slate-800 font-medium mb-6">Are you sure you want to clear all your progress? This cannot be undone.</p>
+            <div class="flex gap-3 justify-end">
+                <button onclick="closeConfirmModal()" class="neo-btn bg-white text-dark px-4 py-2 text-sm">Cancel</button>
+                <button onclick="executeReset()" class="neo-btn bg-[#ef4444] text-white px-4 py-2 text-sm">Yes, Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white text-dark border-4 border-dark px-6 py-4 shadow-[6px_6px_0_0_#0f172a] transition-all duration-300 translate-y-24 opacity-0 z-50 flex items-center gap-3 font-black text-sm md:text-base uppercase tracking-wide w-max max-w-[90vw]">
+        <i data-lucide="info" class="w-6 h-6 shrink-0 text-brand-600"></i> <span id="toast-msg">Notification</span>
+    </div>
+
+    <script>
+        // --- Init Lucide Icons & Setup Voice ---
+        let voices = [];
+        let speechQueue = [];
+        let isSpeaking = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            // Render specific MCQ sections
+            renderMCQ('part1-mcq-container', part1McqData);
+            renderMCQ('part2-mcq-container', part2McqData);
+            renderMCQ('part3-mcq-container', part3McqData);
+            renderMCQ('part4-mcq-container', part4McqData);
+            
+            renderVocab();
+            renderTF();
+            
+            // Pre-load voices for TTS
+            if (typeof window !== 'undefined' && window.speechSynthesis) {
+                voices = window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => {
+                    voices = window.speechSynthesis.getVoices();
+                };
+            }
+        });
+
+        // --- Data Configuration Section ---
+        
+        // PART 1 MCQ DATA
+        const part1McqData = [
+            { 
+                id: "p1_m1", 
+                question: "1. Based on the audio and image provided, select the best statement.", 
+                correct: "a", 
+                explanation: "<strong>Options Heard in Audio:</strong><br>A. He is shoveling some soil.<br>B. He is moving a wheelbarrow.<br>C. He is cutting some grass.<br>D. He is planting a tree.<br><br>The image depicts a man shoveling soil into a wheelbarrow. Option A perfectly matches the verb and object.",
+                strategy: "Most Part 1 questions follow a subject-verb-object (SVO) pattern. Listen carefully for these SVO words and compare them to what is in the picture to eliminate distractors.",
+                options: ["A", "B", "C", "D"] 
+            }
+        ];
+        let part1Attempts = {};
+
+        // PART 2 MCQ DATA
+        const part2McqData = [
+            { 
+                id: "p2_m1", 
+                question: "7. Where is the new fax machine?", 
+                correct: "a", 
+                explanation: "<strong>Options Heard in Audio:</strong><br>A. Next to the water fountain.<br>B. I will send a fax tomorrow.<br>C. By Wednesday.<br><br>The question asks for a location ('Where'). Only Option A provides a place.",
+                strategy: "For 'Where' questions, listen for location marker words (like 'next to'). Be extremely careful of same-word distractors (like hearing 'fax' again) which are common traps in Part 2.",
+                options: ["A", "B", "C"] 
+            },
+            { 
+                id: "p2_m2", 
+                question: "9. Martin, are you driving to the client meeting?", 
+                correct: "a", 
+                explanation: "<strong>Options Heard in Audio:</strong><br>A. Oh, would you like a ride?<br>B. Nice to meet you, too.<br>C. I thought it went well!<br><br>This is a yes/no question, but the response is indirect. The speaker implies 'yes' by offering a ride.",
+                strategy: "Direct questions will often not be answered with 'yes', 'no', or 'I don't know'. Look for options that use different words to express these meanings, such as offering an alternative.",
+                options: ["A", "B", "C"] 
+            }
+        ];
+        let part2Attempts = {};
+
+        // PART 3 MCQ DATA
+        const part3McqData = [
+            { 
+                id: "p3_m1", 
+                question: "32. Why is the woman calling?", 
+                correct: "b", 
+                explanation: "The woman states 'I am calling about a coffee machine... It stopped working', establishing her purpose is to complain about a defective product.",
+                strategy: "Using the time available to skim the questions and answer choices before listening will help you predict the context. Listen carefully to the first exchange, as it often contains the main idea or problem.",
+                options: ["a. To cancel an order", "b. To complain about a product", "c. To redeem a gift card", "d. To renew a warranty"] 
+            },
+            { 
+                id: "p3_m2", 
+                question: "33. What does the man ask the woman about?", 
+                correct: "d", 
+                explanation: "The man asks, 'Do you know when you bought it?' which seeks the date of purchase to check the warranty status.",
+                strategy: "Listen to who says what. Often the answer choice will have key words used by one of the speakers, but it may not be the speaker specified in the question. Noticing this helps you spot distractors.",
+                options: ["a. A model name", "b. A brand of coffee", "c. A catalog number", "d. A date of purchase"] 
+            },
+            { 
+                id: "p3_m3", 
+                question: "34. What does the man offer to do?", 
+                correct: "a", 
+                explanation: "The man states, 'I can offer you a coupon for forty percent off your next purchase', which is providing a discount.",
+                strategy: "The correct answer choice sometimes uses different words to say the same thing as the recording. Be aware of re-statements and listen for meaning, not just key words.",
+                options: ["a. Provide a discount", "b. Issue a refund", "c. Extend a warranty", "d. Send a free sample"] 
+            }
+        ];
+        let part3Attempts = {};
+
+        // PART 4 MCQ DATA
+        const part4McqData = [
+            { 
+                id: "p4_m1", 
+                question: "71. What does the speaker say about the repair?", 
+                correct: "b", 
+                explanation: "The mechanic states: '...but we got the part early, and I was able to finish the repair.'",
+                strategy: "Answers in Part 4 usually appear in the order in which they are spoken in the talks. When you hear the answer, mark it and move on immediately.",
+                options: ["a. It is not required.", "b. It has been finished early.", "c. It will be inexpensive.", "d. It is covered by a warranty."] 
+            },
+            { 
+                id: "p4_m2", 
+                question: "72. When can the listener pick up his car?", 
+                correct: "b", 
+                explanation: "The mechanic says: 'you are welcome to come get your car anytime tomorrow.'",
+                strategy: "Skim the questions and answer choices before listening to identify key words. This focuses you on exactly what specific information you have to listen for.",
+                options: ["a. Today", "b. Tomorrow", "c. Next week", "d. In two weeks"] 
+            },
+            { 
+                id: "p4_m3", 
+                question: "73. What does the speaker offer to do?", 
+                correct: "d", 
+                explanation: "He explicitly states: 'If you need a ride to the shop tomorrow, let me know, and I can arrange one for you.'",
+                strategy: "Listen for words that have the same or a similar meaning to the words in the answer choice (e.g., 'arrange a ride' vs. 'arrange one').",
+                options: ["a. Look for a used part", "b. Refund the cost of a charge", "c. Send an invoice", "d. Arrange a ride"] 
+            }
+        ];
+        let part4Attempts = {};
+
+        // VOCABULARY DATA
+        const vocabOptions = {
+            a: "a. A written guarantee for a product",
+            b: "b. To come to an end or become invalid",
+            c: "c. To repay someone who has spent money",
+            d: "d. To fail to function normally",
+            e: "e. A person or company offering goods for sale"
+        };
+        const vocabData = [
+            { id: "v1", word: "1. Warranty", correct: "a", options: vocabOptions },
+            { id: "v2", word: "2. Expire", correct: "b", options: vocabOptions },
+            { id: "v3", word: "3. Reimburse", correct: "c", options: vocabOptions },
+            { id: "v4", word: "4. Malfunction", correct: "d", options: vocabOptions },
+            { id: "v5", word: "5. Vendor", correct: "e", options: vocabOptions }
+        ];
+        let vocabAttempts = {};
+
+        // TRUE / FALSE DATA
+        const tfData = [
+            { 
+                id: "tf1", text: "1. Thomas says that the customer's car will be ready by next week.", correct: "False",
+                explanation: "Thomas says he 'was able to finish the repair' early, so the car is ready to pick up 'anytime tomorrow'."
+            },
+            { 
+                id: "tf2", text: "2. The auto shop will close in a few minutes.", correct: "True",
+                explanation: "Thomas explicitly states, 'We are going to be closing for the day in a few minutes.'"
+            },
+            { 
+                id: "tf3", text: "3. The caller is offering a free car wash.", correct: "False",
+                explanation: "The caller offers a ride to the shop, not a car wash."
+            }
+        ];
+        let tfAttempts = {};
+
+        // --- Render Functions ---
+
+        function renderMCQ(containerId, dataArray) {
+            const container = document.getElementById(containerId);
+            if(!container) return;
+            
+            let html = '';
+            dataArray.forEach(item => {
+                if (containerId === 'part1-mcq-container') part1Attempts[item.id] = 0;
+                else if (containerId === 'part2-mcq-container') part2Attempts[item.id] = 0;
+                else if (containerId === 'part3-mcq-container') part3Attempts[item.id] = 0;
+                else if (containerId === 'part4-mcq-container') part4Attempts[item.id] = 0;
+
+                html += `
+                    <div class="p-5 bg-brand-50 border-3 border-dark">
+                        <p class="font-black text-dark text-lg mb-4 text-balance">${item.question}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            ${item.options.map(opt => {
+                                const val = opt.charAt(0).toLowerCase();
+                                return `
+                                <label class="option-label group">
+                                    <input type="radio" name="${item.id}" value="${val}">
+                                    <span class="group-hover:text-brand-700 transition-colors">${opt}</span>
+                                </label>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div id="feedback-${item.id}"></div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            let html = '';
+            vocabData.forEach(item => {
+                vocabAttempts[item.id] = 0;
+                html += `
+                    <div class="flex flex-col md:flex-row gap-4 items-start md:items-center p-4 bg-brand-50 border-2 border-dark">
+                        <span class="font-black text-dark min-w-[150px]">${item.word}</span>
+                        <div class="flex-grow w-full md:w-auto">
+                            <select id="${item.id}" class="text-input !mt-0 !py-2 !px-3 text-sm cursor-pointer">
+                                <option value="" disabled selected>Select definition...</option>
+                                ${Object.entries(item.options).map(([key, val]) => `<option value="${key}">${val}</option>`).join('')}
+                            </select>
+                            <div id="feedback-${item.id}"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            let html = '';
+            tfData.forEach(item => {
+                tfAttempts[item.id] = 0;
+                html += `
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 p-4 bg-brand-50 border-2 border-dark">
+                        <p class="font-bold text-dark text-base md:text-lg flex-grow text-pretty">${item.text}</p>
+                        <div class="flex gap-3 shrink-0">
+                            <label class="option-label !p-2 !px-4 hover:shadow-[3px_3px_0_0_#0f172a] hover:-translate-y-0.5">
+                                <input type="radio" name="${item.id}" value="True" class="hidden" onchange="handleTFChange('${item.id}')">
+                                True
+                            </label>
+                            <label class="option-label !p-2 !px-4 hover:shadow-[3px_3px_0_0_#0f172a] hover:-translate-y-0.5">
+                                <input type="radio" name="${item.id}" value="False" class="hidden" onchange="handleTFChange('${item.id}')">
+                                False
+                            </label>
+                        </div>
+                        <div id="feedback-${item.id}" class="w-full mt-2 lg:mt-0 lg:w-auto"></div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // --- TTS Logic with Smart Script Handling ---
+        function getVoiceForRole(role) {
+            if (voices.length === 0) voices = window.speechSynthesis.getVoices();
+            
+            let targetVoice;
+            if (role === 'female') {
+                targetVoice = voices.find(v => v.name.includes('Online (Natural)') && v.name.includes('Aria') && v.lang === 'en-US') ||
+                              voices.find(v => v.name.includes('Zira') && v.lang === 'en-US') ||
+                              voices.find(v => v.name.includes('Female') && v.lang === 'en-US');
+            } else if (role === 'male') {
+                targetVoice = voices.find(v => v.name.includes('Online (Natural)') && v.name.includes('Guy') && v.lang === 'en-US') ||
+                              voices.find(v => v.name.includes('David') && v.lang === 'en-US') ||
+                              voices.find(v => v.name.includes('Male') && v.lang === 'en-US');
+            } else {
+                targetVoice = voices.find(v => v.name.includes('Online (Natural)') && v.lang === 'en-US') ||
+                              voices.find(v => v.lang === 'en-US') || 
+                              voices[0];
+            }
+
+            if (!targetVoice) targetVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+            return targetVoice;
+        }
+
+        function processNextUtterance() {
+            if (speechQueue.length === 0) {
+                isSpeaking = false;
+                return;
+            }
+
+            isSpeaking = true;
+            const item = speechQueue.shift();
+            const utterance = new SpeechSynthesisUtterance(item.text);
+            
+            utterance.voice = getVoiceForRole(item.role);
+            utterance.rate = 0.95; 
+            utterance.pitch = item.role === 'female' ? 1.1 : (item.role === 'male' ? 0.9 : 1.0);
+            
+            utterance.onend = () => {
+                setTimeout(processNextUtterance, 300); 
+            };
+
+            utterance.onerror = (e) => {
+                console.error("Speech Synthesis Error:", e);
+                isSpeaking = false;
+                speechQueue = [];
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function playTTS(elementId) {
+            if (typeof window.speechSynthesis === 'undefined') {
+                showToast("Text-to-speech is not supported in this browser.");
+                return;
+            }
+            
+            stopTTS(); 
+            
+            const container = document.getElementById(elementId);
+            if (!container) return;
+
+            const parts = container.querySelectorAll('[data-speaker]');
+            
+            if (parts.length > 0) {
+                parts.forEach(part => {
+                    let clone = part.cloneNode(true);
+                    
+                    let firstStrong = clone.querySelector('strong');
+                    if (firstStrong && clone.textContent.trim().startsWith(firstStrong.textContent.trim())) {
+                        firstStrong.remove();
+                    }
+                    
+                    let text = clone.textContent.trim();
+                    text = text.replace(/^(?:\[[A-Za-z]\]\s*)?(?:Mr\.|Ms\.|Mrs\.|Woman|Man|Narrator|Speaker(?:\s*\d+)?)\s*:\s*/i, '').trim();
+                    text = text.replace(/^["']|["']$/g, '').trim();
+                    
+                    if (text.length > 0) {
+                        speechQueue.push({
+                            role: part.getAttribute('data-speaker'),
+                            text: text
+                        });
+                    }
+                });
+            } else {
+                speechQueue.push({
+                    role: 'narrator',
+                    text: container.innerText || container.textContent
+                });
+            }
+
+            if (speechQueue.length > 0) {
+                showToast("Playing audio simulation...");
+                processNextUtterance();
+            }
+        }
+
+        function stopTTS() {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                speechQueue = [];
+                isSpeaking = false;
+            }
+        }
+
+        function toggleTranscript(elementId) {
+            const el = document.getElementById(elementId);
+            const btn = document.getElementById(`btn-transcript-${elementId}`);
+            
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                if(btn) {
+                    btn.innerHTML = `<i data-lucide="eye-off" class="w-5 h-5"></i> Hide Script`;
+                    btn.classList.add('bg-brand-200');
+                }
+            } else {
+                el.classList.add('hidden');
+                if(btn) {
+                    btn.innerHTML = `<i data-lucide="file-text" class="w-5 h-5"></i> Show Script`;
+                    btn.classList.remove('bg-brand-200');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        // --- Interaction Handlers ---
+
+        function handleTFChange(name) {
+            const radios = document.getElementsByName(name);
+            radios.forEach(r => {
+                const label = r.closest('.option-label');
+                if (r.checked) {
+                    label.classList.add('tf-selected');
+                } else {
+                    label.classList.remove('tf-selected');
+                }
+            });
+        }
+
+        function buildExplanationHTML(isCorrect, item, attemptNumber) {
+            if (isCorrect || attemptNumber >= 2) {
+                let statusHtml = isCorrect 
+                    ? `<span class="text-dark bg-[#4ade80] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black"><i data-lucide="check" class="w-4 h-4"></i> Correct!</span>`
+                    : `<span class="text-white bg-[#ef4444] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black"><i data-lucide="x" class="w-4 h-4"></i> Out of Attempts. Answer: ${item.correct ? item.correct.toUpperCase() : ''}</span>`;
+                
+                let explanationHTML = `
+                    <div class="mt-3 p-4 bg-[#f0fdf4] border-2 border-dark shadow-inner text-sm md:text-base animate-[fadeIn_0.3s_ease]">
+                        <div class="mb-3">${statusHtml}</div>
+                        <p class="mt-2 font-black text-dark uppercase mb-1">Explanation:</p>
+                        <p class="font-medium text-slate-800 leading-relaxed mb-3">${item.explanation}</p>
+                `;
+
+                if (item.strategy) {
+                    explanationHTML += `
+                        <p class="text-sm text-brand-800 bg-brand-100 p-3 border-l-4 border-brand-500 font-medium leading-relaxed">
+                            <strong><i data-lucide="lightbulb" class="w-4 h-4 inline fill-current mr-1"></i>Test Strategy:</strong> ${item.strategy}
+                        </p>
+                    `;
+                }
+
+                explanationHTML += `</div>`;
+                return explanationHTML;
+
+            } else {
+                return `<span class="text-dark bg-[#facc15] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black mt-2 animate-[fadeIn_0.3s_ease]"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Incorrect. Try again. (Attempt ${attemptNumber}/2)</span>`;
+            }
+        }
+
+        function buildVocabFeedback(isCorrect, item, attemptNumber) {
+            if (isCorrect || attemptNumber >= 2) {
+                let statusHtml = isCorrect 
+                    ? `<span class="text-dark bg-[#4ade80] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black"><i data-lucide="check" class="w-4 h-4"></i> Correct!</span>`
+                    : `<span class="text-white bg-[#ef4444] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black"><i data-lucide="x" class="w-4 h-4"></i> Out of Attempts. Answer: ${item.correct.toUpperCase()}</span>`;
+                
+                return `
+                    <div class="mt-3 p-3 bg-[#f0fdf4] border-2 border-dark shadow-inner text-sm animate-[fadeIn_0.3s_ease]">
+                        <div>${statusHtml}</div>
+                    </div>
+                `;
+            } else {
+                return `<span class="text-dark bg-[#facc15] px-3 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a] inline-flex items-center gap-2 uppercase text-sm font-black mt-2 animate-[fadeIn_0.3s_ease]"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Incorrect. Try again. (Attempt ${attemptNumber}/2)</span>`;
+            }
+        }
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select || select.disabled) return;
+                
+                if (select.value === "") {
+                    showToast("Please make selections before checking.");
+                    return;
+                }
+
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const isCorrect = select.value === item.correct;
+
+                if (!isCorrect) vocabAttempts[item.id]++;
+
+                select.classList.remove('bg-[#f87171]', 'text-white');
+
+                if (isCorrect || vocabAttempts[item.id] >= 2) {
+                    if (isCorrect) select.classList.add('bg-[#4ade80]', 'text-dark', 'font-bold');
+                    else select.classList.add('bg-[#facc15]', 'text-dark');
+                    
+                    select.value = item.correct;
+                    select.disabled = true;
+                    
+                    feedback.innerHTML = buildVocabFeedback(isCorrect, item, vocabAttempts[item.id]);
+                } else {
+                    select.classList.add('bg-[#f87171]', 'text-white');
+                    feedback.innerHTML = `<span class="text-[#ef4444] font-bold text-sm inline-flex items-center gap-1 mt-2"><i data-lucide="alert-circle" class="w-4 h-4"></i> Incorrect (Attempt ${vocabAttempts[item.id]}/2)</span>`;
+                }
+            });
+            lucide.createIcons();
+        }
+
+        function checkMCQ(containerId, dataArray, attemptsDict) {
+            let allAnswered = true;
+            dataArray.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                if(radios.length === 0) return; 
+
+                let userVal = "";
+                let selectedRadio = null;
+                
+                radios.forEach(r => { 
+                    if(r.checked) { userVal = r.value; selectedRadio = r; }
+                });
+
+                if (userVal === "") {
+                    allAnswered = false;
+                    return; 
+                }
+                
+                if (radios[0].disabled) return;
+
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const isCorrect = userVal === item.correct;
+
+                if (!isCorrect) attemptsDict[item.id]++;
+
+                radios.forEach(r => r.closest('.option-label').classList.remove('incorrect-lock'));
+
+                if (isCorrect || attemptsDict[item.id] >= 2) {
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        const label = r.closest('.option-label');
+                        if (r.value === item.correct) {
+                            label.classList.add('correct-lock');
+                        } else if (r.checked && !isCorrect) {
+                            label.classList.add('incorrect-lock');
+                        }
+                    });
+                    feedback.innerHTML = buildExplanationHTML(isCorrect, item, attemptsDict[item.id]);
+                } else {
+                    selectedRadio.closest('.option-label').classList.add('incorrect-lock');
+                    feedback.innerHTML = buildExplanationHTML(isCorrect, item, attemptsDict[item.id]);
+                }
+            });
+            
+            if(!allAnswered) showToast("Please answer all questions before checking.");
+            lucide.createIcons();
+        }
+
+        function checkTF() {
+            let allAnswered = true;
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                let userVal = "";
+                
+                radios.forEach(r => { 
+                    if(r.checked) userVal = r.value; 
+                });
+
+                if (userVal === "") {
+                    allAnswered = false;
+                    return;
+                }
+                
+                if (radios[0].disabled) return;
+
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const isCorrect = userVal === item.correct;
+
+                if (!isCorrect) tfAttempts[item.id]++;
+
+                if (isCorrect || tfAttempts[item.id] >= 2) {
+                    radios.forEach(r => {
+                        r.disabled = true;
+                        const label = r.closest('.option-label');
+                        label.classList.remove('tf-selected', 'hover:shadow-[3px_3px_0_0_#0f172a]', 'hover:-translate-y-0.5');
+                        
+                        if (r.value === item.correct) {
+                            label.classList.add('correct-lock');
+                        } else if (r.checked) {
+                            label.classList.add('incorrect-lock');
+                        }
+                    });
+                    feedback.innerHTML = buildExplanationHTML(isCorrect, item, tfAttempts[item.id]);
+                } else {
+                    feedback.innerHTML = buildExplanationHTML(isCorrect, item, tfAttempts[item.id]);
+                    radios.forEach(r => {
+                        if(r.checked) {
+                            const label = r.closest('.option-label');
+                            label.classList.remove('tf-selected');
+                            label.classList.add('incorrect-lock');
+                            setTimeout(() => { 
+                                if(!radios[0].disabled) {
+                                    label.classList.remove('incorrect-lock'); 
+                                    label.classList.add('tf-selected');
+                                }
+                            }, 1500);
+                        }
+                    });
+                }
+            });
+            
+            if(!allAnswered) showToast("Please answer all T/F questions.");
+            lucide.createIcons();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        function toggleAnswer(elementId, btn, baseText) {
+            const el = document.getElementById(elementId);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                btn.innerText = "Hide Output";
+                btn.classList.add('bg-brand-200');
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                btn.innerText = baseText;
+                btn.classList.remove('bg-brand-200');
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            const modal = document.getElementById('confirm-modal');
+            const content = document.getElementById('confirm-modal-content');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirm-modal');
+            const content = document.getElementById('confirm-modal-content');
+            content.classList.add('translate-y-4', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function executeReset() {
+            closeConfirmModal();
+            
+            stopTTS();
+
+            document.querySelectorAll('[id^="script-part"]').forEach(el => {
+                el.classList.add('hidden');
+            });
+            document.querySelectorAll('[id^="btn-transcript-"]').forEach(btn => {
+                 btn.innerHTML = `<i data-lucide="file-text" class="w-5 h-5"></i> Show Script`;
+                 btn.classList.remove('bg-brand-200');
+            });
+
+            Object.keys(part1Attempts).forEach(k => part1Attempts[k] = 0);
+            Object.keys(part2Attempts).forEach(k => part2Attempts[k] = 0);
+            Object.keys(part3Attempts).forEach(k => part3Attempts[k] = 0);
+            Object.keys(part4Attempts).forEach(k => part4Attempts[k] = 0);
+            Object.keys(vocabAttempts).forEach(k => vocabAttempts[k] = 0);
+            Object.keys(tfAttempts).forEach(k => tfAttempts[k] = 0);
+            
+            document.querySelectorAll('textarea').forEach(t => t.value = "");
+            
+            document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                r.checked = false; 
+                r.disabled = false; 
+            });
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.classList.remove('correct-lock', 'incorrect-lock', 'tf-selected');
+                if(label.querySelector('input[type="radio"]')?.name.startsWith('tf')) {
+                    label.classList.add('hover:shadow-[3px_3px_0_0_#0f172a]', 'hover:-translate-y-0.5');
+                }
+            });
+            
+            document.querySelectorAll('select').forEach(s => { 
+                s.value = ""; 
+                s.disabled = false; 
+                s.classList.remove('bg-[#4ade80]', 'text-dark', 'bg-[#f87171]', 'text-white', 'bg-[#facc15]', 'font-bold'); 
+            });
+            
+            document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+            
+            document.querySelectorAll('.answer-box').forEach(el => { 
+                el.classList.add('hidden'); 
+                el.classList.remove('visible'); 
+            });
+            
+            document.querySelectorAll('button[onclick^="toggleAnswer"]').forEach(btn => {
+                const params = btn.getAttribute('onclick').match(/'([^']+)'/g);
+                if(params && params.length >= 2) {
+                    btn.innerText = params[1].replace(/'/g, '');
+                }
+                btn.classList.remove('bg-brand-200');
+            });
+            
+            showToast("All progress has been reset.");
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL ITP Listening Part C - Practice Test B</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --bg-light: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --success: #22c55e;
+            --error: #ef4444;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header & Progress */
+        header {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            border-top: 6px solid var(--primary);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .progress-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .progress-step {
+            position: relative;
+            z-index: 2;
+            background: #e2e8f0;
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .progress-step.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Pages & Animations */
+        .module-page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .module-page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Homepage Styles */
+        .home-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .home-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .instruction-list {
+            text-align: left;
+            margin: 20px auto;
+            max-width: 500px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .instruction-list li {
+            margin-bottom: 10px;
+            list-style-position: inside;
+        }
+
+        .audio-setup-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e3a8a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        /* Module Containers */
+        .module-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .module-header {
+            background: #f8fafc;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .module-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .module-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .module-content {
+            padding: 24px;
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: border-color 0.3s;
+        }
+
+        .question-card.unanswered-error {
+            border: 2px solid var(--error);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .q-number {
+            font-weight: 700;
+            color: var(--secondary);
+            background: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        /* Options */
+        .options-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .option-input {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* Feedback Area */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.correct {
+            background-color: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #166534;
+        }
+
+        .feedback.incorrect {
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .transcript-box {
+            display: none;
+            background: #f1f5f9;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #334155;
+            border-radius: 4px;
+        }
+        
+        .transcript-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .transcript-content {
+            font-style: italic;
+        }
+
+        .explanation-text {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+
+        /* Controls */
+        .controls-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            color: var(--text-main);
+        }
+        
+        .btn-audio {
+            background-color: #0284c7;
+        }
+        
+        .btn-audio:hover {
+            background-color: #0369a1;
+        }
+
+        .btn-next {
+            background: var(--text-main);
+            display: none;
+        }
+        
+        .btn-next:hover {
+            background: #000;
+        }
+
+        /* Score Summary Page */
+        .summary-card {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .final-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .correct-answer-highlight {
+            border-color: var(--success) !important;
+            background-color: #dcfce7 !important;
+        }
+        
+        .wrong-answer-highlight {
+            border-color: var(--error) !important;
+            background-color: #fee2e2 !important;
+        }
+
+        /* Custom Modal Alert */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            color: var(--error);
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>TOEFL ITP Listening - Part C</h1>
+        <div class="subtitle">Practice Test B | Academic Talks (Questions 39-50)</div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-track"></div>
+            <div id="step-1" class="progress-step">1</div>
+            <div id="step-2" class="progress-step">2</div>
+            <div id="step-3" class="progress-step">3</div>
+            <div id="step-4" class="progress-step">🏁</div>
+        </div>
+    </header>
+
+    <form id="quizForm">
+        <div id="quiz-content">
+            <!-- Pages injected here by JS -->
+        </div>
+    </form>
+</div>
+
+<!-- Custom Alert Modal -->
+<div id="custom-alert" class="modal-overlay">
+    <div class="modal-content">
+        <p id="alert-message">Please answer all questions before submitting.</p>
+        <button class="btn" onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<script>
+    // --- CONVERSATION SCRIPTS ---
+    
+    // Talk 1
+    const talk1Script = `
+        <strong>(Questions 39-42)</strong><br><br>
+        <em>[Please insert the transcript for Talk 1 here.]</em>
+    `;
+
+    // Talk 2
+    const talk2Script = `
+        <strong>(Questions 43-46)</strong><br><br>
+        <em>[Please insert the transcript for Talk 2 here.]</em>
+    `;
+
+    // Talk 3
+    const talk3Script = `
+        <strong>(Questions 47-50)</strong><br><br>
+        <em>[Please insert the transcript for Talk 3 here.]</em>
+    `;
+
+    // --- QUIZ DATA ---
+    const quizData = [
+        // Talk 1 (Questions 39-42)
+        { 
+            id: 39, 
+            script: talk1Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "To encourage donations for a new park.", B: "To discourage visitors from touching the animals.", C: "To introduce people to a park.", D: "To train new volunteers." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+        { 
+            id: 40, 
+            script: talk1Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "They live in large herds.", B: "They were once native to the area.", C: "They've been domesticated.", D: "They were once thought to be extinct." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+        { 
+            id: 41, 
+            script: talk1Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "In large cages.", B: "In a small, fenced enclosure.", C: "In a setting similar to their natural habitat.", D: "In climate-controlled buildings." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+        { 
+            id: 42, 
+            script: talk1Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "Not all the animals may be visible.", B: "Certain animals can only be seen in the winter.", C: "Visitors should not get too close to the animals' cages.", D: "Only a few people at a time can view the animals." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+
+        // Talk 2 (Questions 43-46)
+        { 
+            id: 43, 
+            script: talk2Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "To explain what he's going to talk about today.", B: "To summarize the lecture he just gave.", C: "To let students know what they'll be studying soon.", D: "To suggest extra readings." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+        { 
+            id: 44, 
+            script: talk2Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "The origins of jazz.", B: "The instruments used in jazz.", C: "The newest transformation of jazz.", D: "The development of jazz recording companies." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+        { 
+            id: 45, 
+            script: talk2Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "Their textbooks.", B: "Jazz recordings.", C: "Friends who are musicians.", D: "Musical instruments." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+        { 
+            id: 46, 
+            script: talk2Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "It is no longer a popular form of music.", B: "It has only a small group of devoted fans.", C: "It has undergone many changes over the years.", D: "It is a Latin American music form." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+
+        // Talk 3 (Questions 47-50)
+        { 
+            id: 47, 
+            script: talk3Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "An English professor.", B: "A reference librarian.", C: "A member of the alumni association.", D: "A computer salesperson." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+        { 
+            id: 48, 
+            script: talk3Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "They raised the money to pay for the equipment.", B: "They convinced the faculty the new equipment was needed.", C: "They helped choose the databases.", D: "They spent the summer setting up the computers." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+        { 
+            id: 49, 
+            script: talk3Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "The date of the book's publication.", B: "The full title of the book.", C: "Whether the book is checked out.", D: "The subject of the book." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        },
+        { 
+            id: 50, 
+            script: talk3Script,
+            question: "Listen to the audio to hear the question.", 
+            options: { A: "The system should be expanded soon.", B: "People are going to find it difficult to use.", C: "The library has plenty of computer workstations.", D: "It will be useful for everyone." }, 
+            answer: "A", 
+            explanation: "[Please insert the correct explanation here.]" 
+        }
+    ];
+
+    const quizContent = document.getElementById('quiz-content');
+    const totalScore = { 1: 0, 2: 0, 3: 0 }; // Scores for each section
+
+    // Module definitions (Part C has 3 Talks)
+    const modules = [
+        { id: 1, range: [0, 4], title: "Talk 1", subtitle: "Questions 39-42" },
+        { id: 2, range: [4, 8], title: "Talk 2", subtitle: "Questions 43-46" },
+        { id: 3, range: [8, 12], title: "Talk 3", subtitle: "Questions 47-50" }
+    ];
+
+    function showModal(message) {
+        document.getElementById('alert-message').innerText = message;
+        document.getElementById('custom-alert').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('custom-alert').style.display = 'none';
+    }
+
+    function renderApp() {
+        // 1. Render Homepage
+        const homeDiv = document.createElement('div');
+        homeDiv.id = 'page-home';
+        homeDiv.className = 'module-page active';
+        homeDiv.innerHTML = `
+            <div class="home-card">
+                <span class="home-icon">🎧</span>
+                <h2>Welcome to Part C</h2>
+                <p>This section consists of three academic talks. You will hear a talk and answer several questions about it.</p>
+                
+                <div class="audio-setup-box">
+                    <strong>Step 1: Audio Setup</strong><br>
+                    <p style="margin: 8px 0; font-size: 0.9rem;">Please open the audio file in a new tab before starting the quiz.</p>
+                    <a href="https://drive.google.com/file/d/1Lc1TbGJxx8Qi3n8_SgksDS7FVwppW6pB/view?usp=drive_link" target="_blank" class="btn btn-audio">
+                        🔊 Open Audio File
+                    </a>
+                </div>
+
+                <ul class="instruction-list">
+                    <li>This part has <strong>3 Talks</strong> (Questions 39-50).</li>
+                    <li>Answer all questions in a set to reveal the transcript and explanations.</li>
+                </ul>
+
+                <button type="button" class="btn" onclick="startTest()">Start Part C &rarr;</button>
+            </div>
+        `;
+        quizContent.appendChild(homeDiv);
+
+        // 2. Render Modules
+        modules.forEach((mod) => {
+            const pageDiv = document.createElement('div');
+            pageDiv.id = `page-${mod.id}`;
+            pageDiv.className = `module-page`;
+            
+            pageDiv.innerHTML = `
+                <div class="module-container">
+                    <div class="module-header">
+                        <div class="module-title">${mod.title}</div>
+                        <div class="module-subtitle">${mod.subtitle}</div>
+                    </div>
+                    <div class="module-content" id="questions-area-${mod.id}">
+                        <!-- Questions go here -->
+                    </div>
+                </div>
+                <div class="controls-area">
+                    ${mod.id > 1 ? `<button type="button" class="btn btn-secondary" onclick="goToPreviousPage(${mod.id})">&larr; Previous Talk</button>` : '<span></span>'}
+                    
+                    <div>
+                        <button type="button" id="submit-btn-${mod.id}" class="btn" onclick="submitModule(${mod.id}, ${mod.range[0]}, ${mod.range[1]})">
+                            Submit Answers
+                        </button>
+                        <button type="button" id="next-btn-${mod.id}" class="btn btn-next" onclick="goToNextPage(${mod.id})">
+                            Proceed &rarr;
+                        </button>
+                    </div>
+                </div>
+            `;
+            quizContent.appendChild(pageDiv);
+
+            // Render Questions
+            const qContainer = pageDiv.querySelector(`#questions-area-${mod.id}`);
+            const slice = quizData.slice(mod.range[0], mod.range[1]);
+
+            slice.forEach((q, i) => {
+                const globalIndex = mod.range[0] + i;
+                const card = document.createElement('div');
+                card.id = `card-${q.id}`;
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="q-number">Question ${q.id}</span>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options-grid">
+                        ${Object.entries(q.options).map(([key, value]) => `
+                            <label class="option-label" id="label-${q.id}-${key}">
+                                <input type="radio" name="q${q.id}" value="${key}" class="option-input" onclick="clearError(${q.id})">
+                                <span><strong>(${key})</strong> ${value}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- Hidden Feedback Area -->
+                    <div id="feedback-${q.id}" class="feedback"></div>
+                    
+                    <!-- Hidden Transcript Area (Shared for conversation) -->
+                    <div id="transcript-${q.id}" class="transcript-box">
+                        <span class="transcript-header">Talk Transcript</span>
+                        <div class="transcript-content">${q.script}</div>
+                    </div>
+                `;
+                qContainer.appendChild(card);
+            });
+        });
+
+        // 3. Render Summary Page (Hidden)
+        const summaryDiv = document.createElement('div');
+        summaryDiv.id = `page-summary`;
+        summaryDiv.className = `module-page`;
+        summaryDiv.innerHTML = `
+            <div class="module-container summary-card">
+                <h2>Part C Completed!</h2>
+                <p>You have finished the Academic Talks section.</p>
+                <div class="final-score" id="total-score-display">--/12</div>
+                
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick="goToPreviousPage(4)">Review Talk 3</button>
+                    <button type="button" class="btn" onclick="location.reload()">Start Over</button>
+                </div>
+            </div>
+        `;
+        quizContent.appendChild(summaryDiv);
+    }
+
+    function startTest() {
+        document.getElementById('page-home').classList.remove('active');
+        document.getElementById('page-1').classList.add('active');
+        document.getElementById('step-1').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function clearError(id) {
+        const card = document.getElementById(`card-${id}`);
+        if(card) card.classList.remove('unanswered-error');
+    }
+
+    function submitModule(modId, start, end) {
+        const moduleQuestions = quizData.slice(start, end);
+        let unansweredCount = 0;
+        let firstUnansweredId = null;
+
+        // 1. Validation
+        moduleQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            if (!selected) {
+                unansweredCount++;
+                const card = document.getElementById(`card-${q.id}`);
+                card.classList.add('unanswered-error');
+                if (!firstUnansweredId) firstUnansweredId = q.id;
+            }
+        });
+
+        if (unansweredCount > 0) {
+            showModal('Please answer all questions in this talk before submitting.');
+            if (firstUnansweredId) {
+                document.getElementById(`card-${firstUnansweredId}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        // 2. Grading & Feedback
+        let modScore = 0;
+        moduleQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${q.id}`);
+            const transcriptEl = document.getElementById(`transcript-${q.id}`);
+            
+            // Show Transcript
+            transcriptEl.style.display = 'block';
+
+            // Reset styles
+            Object.keys(q.options).forEach(key => {
+                document.getElementById(`label-${q.id}-${key}`).classList.remove('correct-answer-highlight', 'wrong-answer-highlight');
+            });
+
+            // Logic
+            if (selected.value === q.answer) {
+                modScore++;
+                feedbackEl.className = "feedback correct";
+                feedbackEl.innerHTML = `<strong>Correct!</strong> <div class="explanation-text">${q.explanation}</div>`;
+                document.getElementById(`label-${q.id}-${q.answer}`).classList.add('correct-answer-highlight');
+            } else {
+                feedbackEl.className = "feedback incorrect";
+                feedbackEl.innerHTML = `<strong>Incorrect.</strong> The correct answer is <strong>(${q.answer})</strong>. <div class="explanation-text">${q.explanation}</div>`;
+                document.getElementById(`label-${q.id}-${selected.value}`).classList.add('wrong-answer-highlight');
+                document.getElementById(`label-${q.id}-${q.answer}`).classList.add('correct-answer-highlight');
+            }
+            feedbackEl.style.display = 'block';
+            
+            // Lock inputs
+            const inputs = document.querySelectorAll(`input[name="q${q.id}"]`);
+            inputs.forEach(i => i.disabled = true);
+        });
+
+        // 3. Save Score & UI Transition
+        totalScore[modId] = modScore;
+        
+        // Hide Submit, Show Next
+        document.getElementById(`submit-btn-${modId}`).style.display = 'none';
+        
+        const nextBtn = document.getElementById(`next-btn-${modId}`);
+        if(modId === 3) {
+            nextBtn.innerHTML = "Finish & View Score";
+        }
+        nextBtn.style.display = 'inline-flex';
+
+        // Update Step Indicator to Completed
+        document.getElementById(`step-${modId}`).classList.remove('active');
+        document.getElementById(`step-${modId}`).classList.add('completed');
+        
+        // Scroll top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToNextPage(currentModId) {
+        document.getElementById(`page-${currentModId}`).classList.remove('active');
+        
+        if (currentModId < 3) {
+            const nextId = currentModId + 1;
+            document.getElementById(`page-${nextId}`).classList.add('active');
+            document.getElementById(`step-${nextId}`).classList.add('active');
+        } else {
+            document.getElementById(`page-summary`).classList.add('active');
+            document.getElementById(`step-4`).classList.add('completed');
+            
+            const total = totalScore[1] + totalScore[2] + totalScore[3];
+            document.getElementById('total-score-display').innerText = `${total} / 12`;
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToPreviousPage(currentModId) {
+        // 1. Hide Current
+        if (currentModId === 4) { // Summary page (ID 4 in sequence)
+            document.getElementById(`page-summary`).classList.remove('active');
+            document.getElementById(`step-4`).classList.remove('completed');
+        } else {
+            document.getElementById(`page-${currentModId}`).classList.remove('active');
+            document.getElementById(`step-${currentModId}`).classList.remove('active');
+        }
+
+        // 2. Show Previous
+        const prevId = currentModId - 1;
+        document.getElementById(`page-${prevId}`).classList.add('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    renderApp();
+</script>
+
+</body>
+</html>

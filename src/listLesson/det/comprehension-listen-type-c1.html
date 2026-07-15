@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DET Mastery Module: Listen and Type | CEFR C1</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Input Styling */
+        .drill-input {
+            border-bottom: 3px solid #94a3b8;
+            padding: 4px 8px;
+            color: #0f172a;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.7);
+            font-family: 'Inter', sans-serif;
+        }
+        .drill-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            background: white;
+        }
+        .drill-input.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .drill-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+        }
+        
+        /* Play Button Disabled State */
+        .play-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8 text-lg">
+
+    <div class="max-w-6xl mx-auto bg-white p-6 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-base md:text-lg text-slate-500 mb-8 flex flex-wrap gap-2 font-medium uppercase tracking-wider">
+            <span>Comprehension</span> <span>&gt;</span> 
+            <span>Literacy</span> <span>&gt;</span> 
+            <span>CEFR C1</span> <span>&gt;</span> 
+            <span class="text-teal-700 font-bold">Listen & Type</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-700 tracking-tight mb-3">
+                    Listen and Type Mastery
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-500 font-medium">Score Range: 120–135 | Focus: Phonetic Decoding & Syntactic Expectancy</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-3 px-6 py-3 text-xl text-slate-500 hover:text-red-600 transition-colors font-medium hover:bg-red-50 rounded-xl border border-transparent hover:border-red-100">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-8 border-teal-600 p-8 mb-10 rounded-r-xl shadow-sm">
+            <p class="text-2xl text-slate-700 leading-relaxed">
+                <i class="fas fa-keyboard mr-3 text-teal-600"></i> 
+                <strong>Instructions:</strong> Master the C1-level transcription task. Audio transcripts are hidden. You have <strong>2 attempts</strong> per exercise before correct answers are revealed.
+            </p>
+        </div>
+
+        <!-- Section 1: Concept & Recognition (Cyan Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-cyan-100 shadow-md">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-6 md:p-8 bg-cyan-50 hover:bg-cyan-100 border-l-8 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-cyan-200 text-cyan-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-3xl font-bold text-cyan-900">Steps 1-2: Deep-Dive & Analysis</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 text-3xl transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part1" class="accordion-content active" style="max-height: 4000px;">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Step 1: Concept -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 1: The Deep-Dive Breakdown</h3>
+                        <div class="bg-cyan-50 p-8 rounded-xl border border-cyan-100 text-xl leading-relaxed text-slate-700 space-y-4">
+                            <p>In the "Listen and Type" task, you hear a sentence and must transcribe it exactly. At the C1 level, the complexity shifts to dense, academic statements featuring subordinate clauses, passive voice, and sophisticated vocabulary.</p>
+                            <ul class="list-disc pl-6 space-y-2">
+                                <li><strong>Linguistic Requirement:</strong> Evaluates <em>Phonetic Decoding</em> (identifying words in fast speech) and <em>Syntactic Expectancy</em> (using grammar to "fill in" missed words). You must master "reduced forms" (e.g., "would-uh-bin").</li>
+                            </ul>
+                            <div class="bg-white p-6 rounded-lg border border-red-200 mt-6">
+                                <h4 class="font-bold text-red-800 mb-3"><i class="fas fa-exclamation-triangle mr-2"></i>Common Pitfalls:</h4>
+                                <ul class="list-disc pl-6 text-red-900 space-y-2">
+                                    <li><strong>Omitting Function Words:</strong> Missing unstressed words like "the," "of," or "a".</li>
+                                    <li><strong>Morphological Errors:</strong> Writing "discuss" instead of "discussion".</li>
+                                    <li><strong>The "Memory Fade":</strong> Forgetting the end of a long sentence by the time you start typing.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Recognition Drill -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-cyan-800 mb-6">Step 2: The Recognition & Analysis Drill</h3>
+                        <p class="text-xl text-slate-600 mb-6">Review these C1-level sentences. Notice the complex syntax and vocabulary:</p>
+                        
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8 space-y-3 font-serif text-xl italic text-slate-700">
+                            <p>"Notwithstanding the initial setbacks, the research team managed to secure additional funding for the project."</p>
+                            <p>"Had the committee been aware of the financial discrepancy, the proposal would have been rejected immediately."</p>
+                            <p>"The inherent complexity of the legal framework makes it difficult for laypeople to navigate without professional assistance."</p>
+                            <p>"Synthesizing various perspectives is essential for developing a comprehensive understanding of contemporary sociological issues."</p>
+                            <p>"Scarcely had the lecture begun when a heated debate erupted regarding the ethical implications of the study."</p>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-xl shadow-sm border border-slate-200">
+                            <table class="text-lg">
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th class="text-orange-700">Weak Approach (B1/B2)</th>
+                                        <th class="text-green-700">Strong Approach (C1/C2)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-bold">First Listen</td>
+                                        <td>Attempts to type every word immediately, often panicking.</td>
+                                        <td>Focuses on the "Skeleton" (Subject-Verb-Object) and meaning.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Grammatical Logic</td>
+                                        <td>Leaves a gap or guesses a word that doesn't fit the syntax.</td>
+                                        <td>Uses "Syntactic Expectancy" to reconstruct the missing word.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Homophones</td>
+                                        <td>Confuses their/there or compliment/complement.</td>
+                                        <td>Uses context to select the correct spelling instantly.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Punctuation</td>
+                                        <td>Ignores commas or periods.</td>
+                                        <td>Uses pauses to correctly place commas, grasping clause structure.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Strategy & Warm-up (Blue Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-blue-100 shadow-md">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-6 md:p-8 bg-blue-50 hover:bg-blue-100 border-l-8 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-200 text-blue-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">2</div>
+                    <span class="text-3xl font-bold text-blue-900">Steps 3-4: Strategy & Foundations</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part2" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white border-t border-blue-50 space-y-12">
+                    
+                    <!-- Step 3: Strategy -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 3: The Strategic Roadmap (Pro-Tips+)</h3>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-headphones mr-2"></i>"Three-Pass" Protocol</h4>
+                                <p class="text-base text-slate-700">1: Gist & main verbs. 2: Fill gaps. 3: Check suffixes & punctuation.</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-sitemap mr-2"></i>Visualize Syntax Tree</h4>
+                                <p class="text-base text-slate-700">If you hear "Notwithstanding," your brain should wait for a comma and a main subject.</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-keyboard mr-2"></i>Shadow Typing</h4>
+                                <p class="text-base text-slate-700">Start typing 1-2 seconds <em>after</em> the audio begins to process full phrases first.</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl lg:col-span-2">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-search mr-2"></i>Focus on Suffixes & Function Words</h4>
+                                <p class="text-base text-slate-700">Pay extreme attention to "s" at the end of plurals and "ed" in past participles. A single missing "s" severely impacts C1 scores.</p>
+                            </div>
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-xl">
+                                <h4 class="font-bold text-blue-900 text-xl mb-2"><i class="fas fa-university mr-2"></i>Academic Logic</h4>
+                                <p class="text-base text-slate-700">Ask: "Does this make sense in a university setting?"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Warm-up -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-800 mb-6">Step 4: Foundations Skill-Building Suite</h3>
+                        
+                        <!-- Drill A -->
+                        <div class="mb-10 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill A: "Reduced Form" Decoder</h4>
+                                <button onclick="checkDrillA()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Drill A</button>
+                            </div>
+                            <p class="text-lg text-slate-600 mb-4">Write the full, formal version of these mumbled phrases:</p>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="font-mono bg-slate-200 px-3 py-1 rounded w-40 text-center">"Shoulda-bin"</span>
+                                    <input type="text" id="da1" class="drill-input flex-1 text-xl" placeholder="Full words...">
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="font-mono bg-slate-200 px-3 py-1 rounded w-40 text-center">"Intra-the-system"</span>
+                                    <input type="text" id="da2" class="drill-input flex-1 text-xl" placeholder="Full words...">
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="font-mono bg-slate-200 px-3 py-1 rounded w-40 text-center">"Could-uh-gone"</span>
+                                    <input type="text" id="da3" class="drill-input flex-1 text-xl" placeholder="Full words...">
+                                </div>
+                                <div id="feedback-da" class="font-bold min-h-[2rem]"></div>
+                            </div>
+                        </div>
+
+                        <!-- Drill B -->
+                        <div class="mb-10 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill B: Sentence Scrambling (Inversion)</h4>
+                                <button onclick="checkDrillB()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Drill B</button>
+                            </div>
+                            <p class="text-lg text-slate-600 mb-4">Reorder to form a C1 sentence:</p>
+                            <p class="text-lg font-mono text-blue-900 bg-blue-100 p-3 rounded-lg mb-4">(circumstances / under / should / be / no / the / doors / left / unlocked)</p>
+                            <input type="text" id="db1" class="w-full drill-input text-xl" placeholder="Type the ordered sentence here...">
+                            <div id="feedback-db" class="mt-4 font-bold min-h-[2rem]"></div>
+                        </div>
+
+                        <!-- Drill C -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-2xl font-bold text-slate-800">Drill C: Morphological Accuracy</h4>
+                                <button onclick="checkDrillC()" class="text-lg font-bold text-white bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-colors">Check Drill C</button>
+                            </div>
+                            <p class="text-lg text-slate-600 mb-4">Choose the correct form based on an academic context:</p>
+                            <p class="text-xl font-serif bg-white p-4 rounded border border-slate-300">
+                                "The 
+                                <select id="dc1" class="border-b-2 border-blue-400 font-bold text-blue-900 outline-none bg-transparent">
+                                    <option value="">[theorize/theoretical/theory]</option>
+                                    <option value="theorize">theorize</option>
+                                    <option value="theoretical">theoretical</option>
+                                    <option value="theory">theory</option>
+                                </select> 
+                                implications of the 
+                                <select id="dc2" class="border-b-2 border-blue-400 font-bold text-blue-900 outline-none bg-transparent">
+                                    <option value="">[discover/discovery/discovered]</option>
+                                    <option value="discover">discover</option>
+                                    <option value="discovery">discovery</option>
+                                    <option value="discovered">discovered</option>
+                                </select> 
+                                were profound."
+                            </p>
+                            <div id="feedback-dc" class="mt-4 font-bold min-h-[2rem]"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Guided Practice (Emerald Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-emerald-100 shadow-md">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-6 md:p-8 bg-emerald-50 hover:bg-emerald-100 border-l-8 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-emerald-200 text-emerald-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-3xl font-bold text-emerald-900">Step 5: Guided Practice</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-8">
+                    
+                    <div class="bg-emerald-50 p-8 rounded-xl border border-emerald-200 shadow-inner flex flex-col md:flex-row items-center gap-8">
+                        <div class="flex-1 w-full">
+                            <h4 class="font-bold text-emerald-900 text-2xl mb-4">Practice Task</h4>
+                            <p class="text-lg text-slate-700 mb-4">Listen to the audio and transcribe exactly what you hear. (Play limit: 3)</p>
+                            
+                            <!-- Audio Player -->
+                            <div class="bg-white p-4 rounded-xl border border-emerald-200 flex items-center justify-between gap-4 w-full">
+                                <button id="gp-play-btn" onclick="playAudio('gp')" class="play-btn w-14 h-14 bg-emerald-600 rounded-full flex items-center justify-center shadow-md hover:bg-emerald-700 transition-transform hover:scale-105 group flex-shrink-0">
+                                    <i class="fas fa-play text-white text-xl ml-1"></i>
+                                </button>
+                                <div class="flex-1">
+                                    <div class="h-2 bg-slate-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-emerald-400 w-full animate-pulse opacity-50"></div>
+                                    </div>
+                                </div>
+                                <span id="gp-plays" class="text-sm font-bold text-emerald-700 whitespace-nowrap bg-emerald-100 px-3 py-1 rounded-full">3 Plays Left</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-1 w-full">
+                            <h5 class="font-bold text-emerald-800 text-lg mb-2">Mental Modeling Prompt:</h5>
+                            <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                                <li><strong>Initial thought:</strong> "Something about markets... necessitated... strategy."</li>
+                                <li><strong>Syntactic check:</strong> "Necessitated" is a verb. What necessitated? "The fluctuating market trends." What did it necessitate? "A complete re-evaluation."</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <label class="font-bold text-emerald-900 text-xl">Your Transcription:</label>
+                            <button onclick="checkGuided()" class="text-lg font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-8 py-3 rounded-xl transition-colors shadow-md">Submit Answer</button>
+                        </div>
+                        <textarea id="gp-input" class="w-full p-4 border-2 border-slate-300 rounded-xl text-xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-200 outline-none" placeholder="Type what you hear..."></textarea>
+                        
+                        <div id="gp-feedback" class="hidden mt-6">
+                            <!-- Feedback injected via JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Simulation & Challenge (Violet Theme) -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-violet-100 shadow-md">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-6 md:p-8 bg-violet-50 hover:bg-violet-100 border-l-8 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-violet-200 text-violet-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-3xl font-bold text-violet-900">Step 6-8: Simulation & Challenge</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-violet-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- Simulation Setup -->
+                    <div class="bg-violet-50 p-8 rounded-xl border border-violet-200">
+                        <h3 class="font-bold text-violet-900 text-3xl mb-4">Step 6: Technical Simulation Tips</h3>
+                        <ul class="list-disc pl-6 space-y-3 text-xl text-slate-700">
+                            <li><strong>Typing Accuracy:</strong> Aim for "blind typing" above 50 WPM so your eyes stay on the screen.</li>
+                            <li><strong>No-Correction Rule:</strong> Type the whole sentence first before going back to fix spelling. Time is limited.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Independent Challenge -->
+                    <div>
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-3xl font-bold text-violet-800">Step 7: The Independent Triple-Threat</h3>
+                        </div>
+                        <p class="text-xl text-slate-600 mb-6">Listen to the audio (max 3 plays each) and type exactly what you hear. <strong>Punctuation and capitalization matter.</strong></p>
+
+                        <div class="space-y-10">
+                            <!-- Level 1 -->
+                            <div class="p-6 border-2 border-slate-200 rounded-xl">
+                                <h4 class="font-bold text-violet-900 text-xl mb-4">Level 1: Standard (C1 Intro)</h4>
+                                <div class="flex items-center gap-4 mb-4">
+                                    <button id="l1-play-btn" onclick="playAudio('l1')" class="play-btn w-12 h-12 bg-violet-600 rounded-full flex items-center justify-center shadow hover:bg-violet-700 transition-transform">
+                                        <i class="fas fa-play text-white ml-1"></i>
+                                    </button>
+                                    <span id="l1-plays" class="text-sm font-bold text-violet-700 bg-violet-100 px-3 py-1 rounded-full">3 Plays Left</span>
+                                </div>
+                                <textarea id="l1-input" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-2 focus:ring-violet-400 outline-none mb-4" placeholder="Transcribe here..."></textarea>
+                                <div class="flex justify-end">
+                                    <button onclick="checkChallenge('l1')" class="text-lg font-bold text-white bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors">Submit Level 1</button>
+                                </div>
+                                <div id="feedback-l1" class="hidden mt-4 p-4 rounded-lg text-lg"></div>
+                            </div>
+
+                            <!-- Level 2 -->
+                            <div class="p-6 border-2 border-slate-200 rounded-xl">
+                                <h4 class="font-bold text-violet-900 text-xl mb-4">Level 2: Complex (Syntactic Density)</h4>
+                                <div class="flex items-center gap-4 mb-4">
+                                    <button id="l2-play-btn" onclick="playAudio('l2')" class="play-btn w-12 h-12 bg-violet-600 rounded-full flex items-center justify-center shadow hover:bg-violet-700 transition-transform">
+                                        <i class="fas fa-play text-white ml-1"></i>
+                                    </button>
+                                    <span id="l2-plays" class="text-sm font-bold text-violet-700 bg-violet-100 px-3 py-1 rounded-full">3 Plays Left</span>
+                                </div>
+                                <textarea id="l2-input" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-2 focus:ring-violet-400 outline-none mb-4" placeholder="Transcribe here..."></textarea>
+                                <div class="flex justify-end">
+                                    <button onclick="checkChallenge('l2')" class="text-lg font-bold text-white bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors">Submit Level 2</button>
+                                </div>
+                                <div id="feedback-l2" class="hidden mt-4 p-4 rounded-lg text-lg"></div>
+                            </div>
+
+                            <!-- Level 3 -->
+                            <div class="p-6 border-2 border-slate-200 rounded-xl shadow-sm">
+                                <h4 class="font-bold text-violet-900 text-xl mb-4">Level 3: Academic/Abstract (Advanced Inversion)</h4>
+                                <div class="flex items-center gap-4 mb-4">
+                                    <button id="l3-play-btn" onclick="playAudio('l3')" class="play-btn w-12 h-12 bg-violet-600 rounded-full flex items-center justify-center shadow hover:bg-violet-700 transition-transform">
+                                        <i class="fas fa-play text-white ml-1"></i>
+                                    </button>
+                                    <span id="l3-plays" class="text-sm font-bold text-violet-700 bg-violet-100 px-3 py-1 rounded-full">3 Plays Left</span>
+                                </div>
+                                <textarea id="l3-input" class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-2 focus:ring-violet-400 outline-none mb-4" placeholder="Transcribe here..."></textarea>
+                                <div class="flex justify-end">
+                                    <button onclick="checkChallenge('l3')" class="text-lg font-bold text-white bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors">Submit Level 3</button>
+                                </div>
+                                <div id="feedback-l3" class="hidden mt-4 p-4 rounded-lg text-lg"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 8: Rubric -->
+                    <div class="mt-12 pt-10 border-t border-slate-200">
+                        <h3 class="text-3xl font-bold text-violet-800 mb-6">Step 8: Performance Rubric (Self-Evaluation)</h3>
+                        <div class="overflow-x-auto rounded-xl border border-slate-300">
+                            <table class="text-lg w-full">
+                                <thead>
+                                    <tr class="bg-violet-50 text-violet-900">
+                                        <th class="p-4">Score</th>
+                                        <th class="p-4">Accuracy</th>
+                                        <th class="p-4">Grammar/Syntax</th>
+                                        <th class="p-4">Punctuation/Spelling</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-green-700">5 (C1/C2)</td>
+                                        <td class="p-4">100% of words present and in the correct order.</td>
+                                        <td class="p-4">Advanced structures (inversions, perfect tenses) are perfect.</td>
+                                        <td class="p-4">Correct use of possessives, hyphens, and commas.</td>
+                                    </tr>
+                                    <tr class="bg-slate-50">
+                                        <td class="p-4 font-bold text-orange-600">3 (B2)</td>
+                                        <td class="p-4">90% of words present; perhaps a missing "the" or "a."</td>
+                                        <td class="p-4">Basic tenses are correct, but complex clauses may have errors.</td>
+                                        <td class="p-4">1-2 minor spelling errors; basic punctuation only.</td>
+                                    </tr>
+                                    <tr class="bg-white">
+                                        <td class="p-4 font-bold text-red-600">1 (B1)</td>
+                                        <td class="p-4">Multiple words missing or substituted with synonyms.</td>
+                                        <td class="p-4">Tense shifts (e.g., using present instead of past).</td>
+                                        <td class="p-4">Frequent spelling errors that change the word meaning.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Reflection (Rose Theme) -->
+        <div class="mb-12 rounded-2xl overflow-hidden border border-rose-100 shadow-md">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-6 md:p-8 bg-rose-50 hover:bg-rose-100 border-l-8 border-rose-500 transition-colors text-left group">
+                <div class="flex items-center gap-5">
+                    <div class="bg-rose-200 text-rose-800 w-12 h-12 rounded-full flex items-center justify-center font-bold text-2xl shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-3xl font-bold text-rose-900">Step 9-10: AI Lab & Review</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-rose-600 text-3xl transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-8 md:p-12 bg-white space-y-12">
+                    
+                    <!-- AI Prompting -->
+                    <div class="bg-rose-50 p-8 rounded-xl border-l-4 border-rose-500 shadow-sm space-y-6">
+                        <h3 class="text-3xl font-bold text-rose-900 mb-4"><i class="fas fa-robot mr-3"></i>Step 9: The AI Tutor Prompting Lab</h3>
+                        
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">1. Simulation Prompt (Generate Practice):</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-1">Act as a DET examiner. Write 10 'Listen and Type' sentences for the C1 level. They should be between 15 and 22 words long, use academic vocabulary, and include features like passive voice, relative clauses, or adverbial starters. Do not provide the answers until I ask.</p>
+                                <button onclick="copyToClipboard('ai-prompt-1')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-xl font-bold text-slate-800 mb-2">2. Evaluator Prompt (Grade your work):</p>
+                            <div class="relative bg-white p-6 rounded border border-rose-200 font-mono text-lg text-slate-700">
+                                <p id="ai-prompt-2">I am going to provide a target sentence and my transcribed version. Compare them using the Levenstein Distance logic and point out specifically if I missed any function words, suffixes, or punctuation. Give me a score out of 5 based on DET C1 standards.<br><br>Target: [INSERT TARGET SENTENCE HERE]<br>My Version: [INSERT YOUR VERSION HERE]</p>
+                                <button onclick="copyToClipboard('ai-prompt-2')" class="absolute top-3 right-3 text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-2 rounded transition-colors" title="Copy to Clipboard">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reflection -->
+                    <div>
+                        <h3 class="text-3xl font-bold text-rose-800 mb-6">Step 10: Metacognitive Review</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-2xl text-slate-700 font-medium mb-3">Linguistic Win:</label>
+                                <textarea placeholder="e.g., I correctly identified the 'had...been' inversion in Challenge 3." class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-2xl text-slate-700 font-medium mb-3">Strategy Adjustment:</label>
+                                <textarea placeholder="e.g., I am still missing the 's' on plural nouns. I will whisper the sentence back to myself to hear the endings." class="w-full p-4 border border-slate-300 rounded-xl text-xl focus:ring-4 focus:ring-rose-200 focus:border-rose-500 outline-none h-32"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-10 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-xl font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-teal-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Data Configuration & State ---
+        let attempts = {
+            da: 0,
+            db: 0,
+            dc: 0,
+            gp: 0,
+            l1: 0,
+            l2: 0,
+            l3: 0
+        };
+
+        let playCounts = {
+            gp: 3,
+            l1: 3,
+            l2: 3,
+            l3: 3
+        };
+
+        const targets = {
+            da1: "should have been",
+            da2: "into the system",
+            da3: "could have gone",
+            db1: "under no circumstances should the doors be left unlocked",
+            dc1: "theoretical",
+            dc2: "discovery",
+            gp: "The fluctuating market trends necessitated a complete re-evaluation of the company's long-term investment strategy.",
+            l1: "The professor emphasized that attendance is mandatory for those wishing to participate in the final seminar.",
+            l2: "By the time the artifacts were recovered from the site, environmental factors had already caused significant degradation.",
+            l3: "Seldom do we encounter such a compelling argument that challenges the very foundations of modern economic theory."
+        };
+
+        // --- Logic Handlers ---
+
+        function cleanString(str) {
+            return str.toLowerCase().trim().replace(/\s+/g, ' ');
+        }
+        
+        function cleanStringStrict(str) {
+            // Keep punctuation for C1 grading comparison, just normalize spaces
+            return str.trim().replace(/\s+/g, ' ');
+        }
+
+        // --- Drill Checkers ---
+
+        function checkDrillA() {
+            let correct = 0;
+            const total = 3;
+            const currentAttempt = attempts.da;
+            const feedback = document.getElementById('feedback-da');
+
+            ['da1', 'da2', 'da3'].forEach(id => {
+                const el = document.getElementById(id);
+                if (cleanString(el.value) === targets[id]) {
+                    el.classList.add('correct');
+                    el.classList.remove('incorrect');
+                    correct++;
+                } else {
+                    el.classList.add('incorrect');
+                    el.classList.remove('correct');
+                    if (currentAttempt >= 1) el.value = targets[id]; // Reveal
+                }
+            });
+
+            if (correct === total) {
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>All correct!</span>';
+                ['da1', 'da2', 'da3'].forEach(id => document.getElementById(id).disabled = true);
+                attempts.da = 2;
+            } else {
+                attempts.da++;
+                if (attempts.da >= 2) {
+                    feedback.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answers revealed.</span>';
+                    ['da1', 'da2', 'da3'].forEach(id => document.getElementById(id).disabled = true);
+                } else {
+                    feedback.innerHTML = `<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>${correct}/${total} correct. 1 attempt left.</span>`;
+                }
+            }
+        }
+
+        function checkDrillB() {
+            const el = document.getElementById('db1');
+            const feedback = document.getElementById('feedback-db');
+            const val = cleanString(el.value).replace(/\./g, ''); // ignore period if they add it
+            const currentAttempt = attempts.db;
+
+            if (val === targets.db1) {
+                el.classList.add('correct');
+                el.classList.remove('incorrect');
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Perfect inversion!</span>';
+                el.disabled = true;
+                attempts.db = 2;
+            } else {
+                el.classList.add('incorrect');
+                attempts.db++;
+                if (attempts.db >= 2) {
+                    el.value = "Under no circumstances should the doors be left unlocked.";
+                    el.disabled = true;
+                    feedback.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answer revealed.</span>';
+                } else {
+                    feedback.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Check word order. 1 attempt left.</span>';
+                }
+            }
+        }
+
+        function checkDrillC() {
+            let correct = 0;
+            const currentAttempt = attempts.dc;
+            const feedback = document.getElementById('feedback-dc');
+
+            ['dc1', 'dc2'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el.value === targets[id]) {
+                    el.classList.add('border-green-500', 'text-green-700');
+                    el.classList.remove('border-red-400', 'text-red-700');
+                    correct++;
+                } else {
+                    el.classList.add('border-red-400', 'text-red-700');
+                    el.classList.remove('border-green-500', 'text-green-700');
+                    if (currentAttempt >= 1) el.value = targets[id];
+                }
+            });
+
+            if (correct === 2) {
+                feedback.innerHTML = '<span class="text-green-600"><i class="fas fa-check-circle mr-2"></i>Both forms correct!</span>';
+                document.getElementById('dc1').disabled = true;
+                document.getElementById('dc2').disabled = true;
+                attempts.dc = 2;
+            } else {
+                attempts.dc++;
+                if (attempts.dc >= 2) {
+                    feedback.innerHTML = '<span class="text-red-600"><i class="fas fa-info-circle mr-2"></i>Answers revealed.</span>';
+                    document.getElementById('dc1').disabled = true;
+                    document.getElementById('dc2').disabled = true;
+                } else {
+                    feedback.innerHTML = '<span class="text-orange-500"><i class="fas fa-exclamation-triangle mr-2"></i>Try again. 1 attempt left.</span>';
+                }
+            }
+        }
+
+        // --- Audio & Typing Checkers ---
+
+        function playAudio(key) {
+            if (playCounts[key] <= 0) return;
+            
+            const text = targets[key];
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US'; 
+                utterance.rate = 0.95; // Natural but clear pace
+                
+                const voices = window.speechSynthesis.getVoices();
+                const preferredVoice = voices.find(v => v.name.includes('Google US English')) || voices.find(v => v.lang === 'en-US');
+                if (preferredVoice) utterance.voice = preferredVoice;
+
+                window.speechSynthesis.speak(utterance);
+                
+                // Update Play Count UI
+                playCounts[key]--;
+                const countDisplay = document.getElementById(`${key}-plays`);
+                const btn = document.getElementById(`${key}-play-btn`);
+                
+                countDisplay.innerText = `${playCounts[key]} Plays Left`;
+                if (playCounts[key] === 0) {
+                    countDisplay.classList.replace('bg-violet-100', 'bg-red-100');
+                    countDisplay.classList.replace('text-violet-700', 'text-red-700');
+                    if(key === 'gp') {
+                         countDisplay.classList.replace('bg-emerald-100', 'bg-red-100');
+                         countDisplay.classList.replace('text-emerald-700', 'text-red-700');
+                    }
+                    btn.disabled = true;
+                }
+            } else {
+                alert("Text-to-Speech not supported in this browser.");
+            }
+        }
+
+        function checkGuided() {
+            const input = document.getElementById('gp-input');
+            const feedback = document.getElementById('gp-feedback');
+            const val = cleanStringStrict(input.value);
+            const target = targets.gp;
+            const currentAttempt = attempts.gp;
+
+            feedback.classList.remove('hidden');
+
+            if (val === target) {
+                feedback.innerHTML = `
+                    <div class="p-4 bg-green-100 border border-green-300 rounded-xl">
+                        <h5 class="font-bold text-green-900 mb-2"><i class="fas fa-check-circle mr-2"></i>Perfect Transcription!</h5>
+                        <p class="text-green-800">You captured the punctuation, spelling, and function words flawlessly.</p>
+                    </div>`;
+                input.disabled = true;
+                attempts.gp = 2;
+            } else {
+                attempts.gp++;
+                if (attempts.gp >= 2) {
+                    feedback.innerHTML = `
+                        <div class="p-6 bg-red-50 border border-red-200 rounded-xl">
+                            <h5 class="font-bold text-red-900 mb-3"><i class="fas fa-times-circle mr-2"></i>Maximum Attempts Reached</h5>
+                            <p class="text-lg text-slate-700 mb-2"><strong>Target:</strong> ${target}</p>
+                            <p class="text-lg text-red-800 mb-4"><strong>Yours:</strong> ${input.value || "(empty)"}</p>
+                            <p class="text-slate-600 bg-white p-3 rounded border border-red-100"><strong>C1 Spotlight:</strong> Did you catch "necessitated", the hyphen in "re-evaluation", and the possessive "company's"?</p>
+                        </div>`;
+                    input.disabled = true;
+                } else {
+                    feedback.innerHTML = `<span class="text-orange-600 font-bold bg-orange-100 px-4 py-2 rounded-lg"><i class="fas fa-exclamation-triangle mr-2"></i>Not quite an exact match. Check spelling and punctuation. 1 attempt left.</span>`;
+                }
+            }
+        }
+
+        function checkChallenge(level) {
+            const input = document.getElementById(`${level}-input`);
+            const feedback = document.getElementById(`feedback-${level}`);
+            const val = cleanStringStrict(input.value);
+            const target = targets[level];
+            const currentAttempt = attempts[level];
+
+            feedback.classList.remove('hidden');
+
+            if (val === target) {
+                feedback.innerHTML = `<div class="bg-green-100 text-green-900 p-3 rounded-lg border border-green-300 font-bold"><i class="fas fa-check-circle mr-2"></i>Perfect! 100% Match.</div>`;
+                input.disabled = true;
+                attempts[level] = 2;
+            } else {
+                attempts[level]++;
+                if (attempts[level] >= 2) {
+                    feedback.innerHTML = `
+                        <div class="bg-red-50 text-red-900 p-4 rounded-lg border border-red-200">
+                            <p class="font-bold mb-2"><i class="fas fa-info-circle mr-2"></i>Target Sentence:</p>
+                            <p class="font-mono bg-white p-2 rounded border border-red-100">${target}</p>
+                            <p class="mt-2 text-sm text-slate-600">Compare your response carefully for missing suffixes or punctuation.</p>
+                        </div>`;
+                    input.disabled = true;
+                } else {
+                    feedback.innerHTML = `<div class="bg-orange-100 text-orange-800 p-3 rounded-lg border border-orange-300 font-bold"><i class="fas fa-exclamation-triangle mr-2"></i>Incorrect. Watch for commas and precise spelling. 1 attempt left.</div>`;
+                }
+            }
+        }
+
+        // --- Utils ---
+        
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '4000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('Prompt copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function resetAll() {
+            if(confirm("Clear all answers and reset audio limits?")) {
+                // Reset State
+                attempts = { da: 0, db: 0, dc: 0, gp: 0, l1: 0, l2: 0, l3: 0 };
+                playCounts = { gp: 3, l1: 3, l2: 3, l3: 3 };
+
+                // Reset Inputs & Textareas
+                document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('correct', 'incorrect');
+                });
+                
+                // Reset Selects
+                document.querySelectorAll('select').forEach(el => {
+                    el.value = "";
+                    el.disabled = false;
+                    el.classList.remove('border-green-500', 'text-green-700', 'border-red-400', 'text-red-700');
+                });
+                
+                // Reset Audio UI
+                ['gp', 'l1', 'l2', 'l3'].forEach(key => {
+                    const countDisplay = document.getElementById(`${key}-plays`);
+                    const btn = document.getElementById(`${key}-play-btn`);
+                    countDisplay.innerText = `3 Plays Left`;
+                    btn.disabled = false;
+                    
+                    // Reset styling colors
+                    countDisplay.classList.remove('bg-red-100', 'text-red-700');
+                    if (key === 'gp') {
+                        countDisplay.classList.add('bg-emerald-100', 'text-emerald-700');
+                    } else {
+                        countDisplay.classList.add('bg-violet-100', 'text-violet-700');
+                    }
+                });
+
+                // Clear Feedback
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => {
+                    f.innerHTML = "";
+                    if(f.id.includes('gp') || f.id.includes('l1') || f.id.includes('l2') || f.id.includes('l3')) {
+                        f.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Pre-load voices for TTS
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+            }
+        });
+
+    </script>
+</body>
+</html>

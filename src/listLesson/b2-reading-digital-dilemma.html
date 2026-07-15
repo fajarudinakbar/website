@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>B2 / GSE 59-66 Reading - The Digital Dilemma</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons for professional vector graphics -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Neo-Brutalist Components */
+        .neo-card {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            font-weight: 800;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            margin-top: 0.5rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+
+        /* Ghost Text Layering - C-Test Styling */
+        .c-wrapper {
+            position: relative;
+            display: inline-block;
+            height: 1.8em;
+            vertical-align: middle;
+            margin: 0 0.1em;
+            border-bottom: 3px solid #0f172a;
+            background-color: transparent;
+            transition: all 0.2s;
+            max-width: 100%;
+        }
+        .c-wrapper:focus-within {
+            border-bottom-color: #545be0;
+            border-bottom-width: 4px;
+            background-color: #e7e9ff;
+        }
+        .c-wrapper.correct {
+            border-bottom-color: #22c55e;
+            border-bottom-width: 4px;
+            background-color: #dcfce7;
+        }
+        .c-wrapper.incorrect {
+            border-bottom-color: #ef4444;
+            border-bottom-width: 4px;
+            background-color: #fee2e2;
+        }
+
+        .c-ghost-bg, .c-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-family: monospace;
+            letter-spacing: 0.15em;
+            font-size: 1.1em;
+            line-height: 1.6em;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 0 0.3em;
+            margin: 0;
+            text-align: left;
+            white-space: pre;
+        }
+        .c-ghost-bg {
+            color: #94a3b8;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .ghost-typed {
+            opacity: 0;
+        }
+        .c-input {
+            color: #0f172a;
+            z-index: 2;
+            caret-color: #545be0;
+            font-weight: 700;
+        }
+        .c-wrapper.correct .c-input {
+            color: #15803d;
+            font-weight: 900;
+        }
+        .c-wrapper.incorrect .c-input {
+            color: #b91c1c;
+        }
+
+        /* Radio Options - Brutalist Style */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #0f172a;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0px 0px #0f172a;
+        }
+        .option-label.correct {
+            background-color: #4ade80;
+            border-color: #0f172a;
+            color: #0f172a;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        .option-label.incorrect {
+            background-color: #f87171;
+            border-color: #0f172a;
+            color: #ffffff;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-6 md:p-8 text-sm md:text-base">
+
+    <div class="max-w-6xl mx-auto bg-white p-5 sm:p-8 lg:p-10 border-4 border-dark shadow-neo">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs sm:text-sm md:text-base text-dark mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Academic English</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Reading</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-[#facc15] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">B2 / GSE 59-66</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">The Digital Dilemma</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-dark uppercase tracking-tight mb-3 md:mb-4 text-balance">
+                    The Digital Dilemma
+                </h1>
+                <p class="text-lg sm:text-xl md:text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-1 border-2 border-dark text-pretty">
+                    Topic: Screen Time, Well-being, and App Psychology
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-2 px-5 py-3 text-sm md:text-base text-dark bg-[#f87171] uppercase tracking-wide">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#fefce8] border-3 border-dark p-5 md:p-6 mb-8 md:mb-12 shadow-neo-sm flex items-start gap-4">
+            <div class="bg-[#facc15] p-2 border-2 border-dark shrink-0">
+                <i data-lucide="info" class="w-6 h-6 text-dark"></i>
+            </div>
+            <p class="text-base md:text-lg text-dark font-bold leading-relaxed text-pretty">
+                <span class="uppercase font-black text-xl mr-2">Instructions:</span> Complete the Preparation tasks to activate your vocabulary. Then apply reading skills to parse academic texts, decode daily notices, and complete C-Tests. Use the AI prompts for extra communicative practice.
+            </p>
+        </div>
+
+        <!-- Section 1: Preparation -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#eff6ff]">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        1
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Preparation & Awareness</span>
+                </div>
+                <div id="icon-wrapper-part1" class="transition-transform duration-300 transform rotate-180 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part1" class="accordion-content active border-t-4 border-dark" style="max-height: 5000px;">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8">
+                    
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 1: Warm-Up Thinking</h3>
+                        <ul class="list-disc pl-6 md:pl-8 space-y-3 text-base md:text-lg text-slate-800 font-bold leading-relaxed mb-6">
+                            <li>Have you ever lost track of time while using your phone? Which apps cause this the most?</li>
+                            <li>Why do you think it is difficult for people to put their devices away at night?</li>
+                        </ul>
+                        <textarea class="text-input" placeholder="Share your thoughts..."></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 1.1: AI Support</h3>
+                        <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a] mb-4">
+                            <p class="font-black text-[#0284c7] uppercase mb-2 flex items-center gap-2">
+                                <i data-lucide="bot" class="w-5 h-5"></i> AI Partner Prompt:
+                            </p>
+                            <p class="font-mono text-sm md:text-base text-slate-700 bg-slate-50 p-3 border-2 border-dark italic">
+                                "I am a B2 English student. We are discussing social media habits. Can you explain why tech companies design apps with an 'infinite scroll' feature? Please give a simple explanation in 3 points."
+                            </p>
+                        </div>
+                        <textarea class="text-input h-32" placeholder="Notes from AI..."></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">The 'Hook': Active Reading Modes</h3>
+                        <p class="mb-5 md:mb-6 text-base md:text-lg text-slate-800 font-medium leading-relaxed text-pretty">Reading requires different strategies. Sometimes you scan for facts, and other times you reconstruct grammar to find meaning.</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6 mb-8">
+                            <!-- Text A -->
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo-sm">
+                                <h4 class="text-base md:text-lg font-black text-dark uppercase mb-4 border-b-2 border-dark pb-2 flex items-center gap-2 text-balance">
+                                    <i data-lucide="search" class="w-5 h-5 text-brand-500"></i> Text A (Scanning)
+                                </h4>
+                                <p class="bg-slate-100 p-4 border-2 border-dark text-slate-800 text-base md:text-lg leading-relaxed italic text-pretty">"The school's new digital detox policy begins on Monday. Phones must be stored in lockers until 3:00 PM."</p>
+                            </div>
+
+                            <!-- Text B -->
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo-sm">
+                                <h4 class="text-base md:text-lg font-black text-dark uppercase mb-4 border-b-2 border-dark pb-2 flex items-center gap-2 text-balance">
+                                    <i data-lucide="puzzle" class="w-5 h-5 text-amber-500"></i> Text B (Parsing / C-Test)
+                                </h4>
+                                <p class="bg-[#fefce8] p-4 border-2 border-dark text-dark font-mono text-base md:text-lg leading-relaxed tracking-wide break-words">"The scho___ n__ digi___ det__ pol___ beg___ o_ Monday."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Vocabulary & Strategy -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#e0e7ff]">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#818cf8] hover:bg-[#6366f1] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        2
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Vocabulary & Guided Practice</span>
+                </div>
+                <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part2" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8">
+                    
+                    <div>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                            <h3 class="text-xl md:text-2xl font-black text-dark uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 2: Vocabulary in Context</h3>
+                            <button onclick="checkVocab()" class="neo-btn bg-white text-dark px-4 py-2 uppercase text-sm md:text-base flex items-center gap-2">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i> Check Vocabulary
+                            </button>
+                        </div>
+                        <p class="text-base md:text-lg font-bold text-slate-800 mb-6 bg-brand-100 inline-block px-3 py-1 border-2 border-dark">Read the sentences and choose the correct meaning for the bold word.</p>
+                        <div id="vocab-container" class="space-y-6 text-base md:text-lg"></div>
+                    </div>
+
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo-sm mt-10">
+                        <span class="inline-flex items-center gap-2 bg-[#60a5fa] text-dark border-2 border-dark px-3 py-1 font-black text-xs md:text-sm mb-4 uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">
+                            <i data-lucide="target" class="w-4 h-4"></i> Strategy: Solving the C-Test
+                        </span>
+                        <p class="mb-5 md:mb-6 text-base md:text-lg text-slate-800 font-medium leading-relaxed text-pretty">The <strong>"Half-Word" Rule:</strong> If a word has an <strong>even</strong> number of letters (e.g., TIME), the first half is given (TI) and you provide the second half (ME). If <strong>odd</strong> (e.g., PHONE), the first part given is longer (PHO) and you provide the rest (NE).</p>
+                        
+                        <div id="strategy-ctest" class="bg-slate-50 border-3 border-dark p-4 md:p-6 shadow-inner text-base md:text-xl lg:text-2xl leading-loose text-slate-800 mb-6 font-medium break-words overflow-wrap-normal">
+                            "Too <span class="whitespace-nowrap">mu<input type="text" class="c-input" data-ans="ch" autocomplete="off"></span> <span class="whitespace-nowrap">scre<input type="text" class="c-input" data-ans="en" autocomplete="off"></span> <span class="whitespace-nowrap">ti<input type="text" class="c-input" data-ans="me" autocomplete="off"></span> <span class="whitespace-nowrap">c<input type="text" class="c-input" data-ans="an" autocomplete="off"></span> <span class="whitespace-nowrap">rui<input type="text" class="c-input" data-ans="n" autocomplete="off"></span> <span class="whitespace-nowrap">yo<input type="text" class="c-input" data-ans="ur" autocomplete="off"></span> <span class="whitespace-nowrap">sle<input type="text" class="c-input" data-ans="ep" autocomplete="off"></span>."
+                        </div>
+                        
+                        <div class="pt-2">
+                            <button id="check-strategy" class="neo-btn bg-[#4ade80] text-dark px-4 py-2 uppercase text-sm md:text-base flex items-center justify-center gap-2 w-full sm:w-auto">
+                                <i data-lucide="check-square" class="w-5 h-5"></i> Check Strategy Practice
+                            </button>
+                        </div>
+                        
+                        <div id="strategy-explanation" class="hidden answer-box bg-[#f0fdf4] border-4 border-dark shadow-neo-sm p-5 mt-6">
+                            <div class="text-lg md:text-xl font-black text-dark mb-4 flex items-center gap-3 border-b-2 border-dark pb-2 uppercase">
+                                <i data-lucide="clipboard-check" class="w-6 h-6 text-[#22c55e]"></i> Answers
+                            </div>
+                            <div class="text-sm md:text-base text-slate-800 leading-relaxed font-medium">
+                                mu<span class="text-[#15803d] font-bold">ch</span>, scre<span class="text-[#15803d] font-bold">en</span>, ti<span class="text-[#15803d] font-bold">me</span>, c<span class="text-[#15803d] font-bold">an</span>, rui<span class="text-[#15803d] font-bold">n</span>, yo<span class="text-[#15803d] font-bold">ur</span>, sle<span class="text-[#15803d] font-bold">ep</span>.
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Controlled Practice -->
+        <div class="mb-6 border-4 border-dark shadow-neo bg-[#dcfce7]">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        3
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Controlled Practice</span>
+                </div>
+                <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8 bg-white">
+                    
+                    <p class="text-base md:text-lg text-slate-800 font-bold mb-4 bg-brand-100 inline-block px-3 py-1 border-2 border-dark text-pretty">Complete the following items and check your precision.</p>
+
+                    <!-- Part A: C-Test -->
+                    <div id="step-3-ctest" class="mb-10">
+                        <h4 class="text-lg md:text-xl font-black text-dark mb-4 md:mb-6 pb-2 border-b-4 border-dark uppercase flex items-center gap-2 text-balance">
+                            <i data-lucide="keyboard" class="w-6 h-6 text-[#4ade80]"></i> Part A: C-Test Precision
+                        </h4>
+                        <div class="bg-[#f8fafc] p-5 md:p-8 border-3 border-dark shadow-inner space-y-8 text-base md:text-xl leading-loose text-dark font-medium overflow-wrap-normal">
+                            <div class="text-pretty">
+                                <span class="font-black mr-2">1.</span> Social <span class="whitespace-nowrap">me<input class="c-input" data-ans="dia" autocomplete="off"></span> <span class="whitespace-nowrap">platf<input class="c-input" data-ans="orms" autocomplete="off"></span> <span class="whitespace-nowrap">w<input class="c-input" data-ans="ant" autocomplete="off"></span> <span class="whitespace-nowrap">yo<input class="c-input" data-ans="ur" autocomplete="off"></span> <span class="whitespace-nowrap">atten<input class="c-input" data-ans="tion" autocomplete="off"></span>.
+                            </div>
+                            <div class="text-pretty">
+                                <span class="font-black mr-2">2.</span> Negative <span class="whitespace-nowrap">ne<input class="c-input" data-ans="ws" autocomplete="off"></span> <span class="whitespace-nowrap">i<input class="c-input" data-ans="s" autocomplete="off"></span> <span class="whitespace-nowrap">oft<input class="c-input" data-ans="en" autocomplete="off"></span> <span class="whitespace-nowrap">mo<input class="c-input" data-ans="re" autocomplete="off"></span> <span class="whitespace-nowrap">popul<input class="c-input" data-ans="ar" autocomplete="off"></span>.
+                            </div>
+                            <div class="text-pretty">
+                                <span class="font-black mr-2">3.</span> You <span class="whitespace-nowrap">sho<input class="c-input" data-ans="uld" autocomplete="off"></span> <span class="whitespace-nowrap">t<input class="c-input" data-ans="ry" autocomplete="off"></span> <span class="whitespace-nowrap">t<input class="c-input" data-ans="o" autocomplete="off"></span> <span class="whitespace-nowrap">lim<input class="c-input" data-ans="it" autocomplete="off"></span> <span class="whitespace-nowrap">ho<input class="c-input" data-ans="w" autocomplete="off"></span> <span class="whitespace-nowrap">mu<input class="c-input" data-ans="ch" autocomplete="off"></span> <span class="whitespace-nowrap">y<input class="c-input" data-ans="ou" autocomplete="off"></span> <span class="whitespace-nowrap">scr<input class="c-input" data-ans="oll" autocomplete="off"></span>.
+                            </div>
+                            <div class="text-pretty">
+                                <span class="font-black mr-2">4.</span> Blue <span class="whitespace-nowrap">lig<input class="c-input" data-ans="ht" autocomplete="off"></span> <span class="whitespace-nowrap">fr<input class="c-input" data-ans="om" autocomplete="off"></span> <span class="whitespace-nowrap">scre<input class="c-input" data-ans="ens" autocomplete="off"></span> <span class="whitespace-nowrap">k<input class="c-input" data-ans="eeps" autocomplete="off"></span> <span class="whitespace-nowrap">t<input class="c-input" data-ans="he" autocomplete="off"></span> <span class="whitespace-nowrap">br<input class="c-input" data-ans="ain" autocomplete="off"></span> <span class="whitespace-nowrap">awa<input class="c-input" data-ans="ke" autocomplete="off"></span>.
+                            </div>
+                            <div class="text-pretty">
+                                <span class="font-black mr-2">5.</span> Reading <span class="whitespace-nowrap">_<input class="c-input" data-ans="a" autocomplete="off"></span> <span class="whitespace-nowrap">physic<input class="c-input" data-ans="al" autocomplete="off"></span> <span class="whitespace-nowrap">bo<input class="c-input" data-ans="ok" autocomplete="off"></span> <span class="whitespace-nowrap">i<input class="c-input" data-ans="s" autocomplete="off"></span> <span class="whitespace-nowrap">relax<input class="c-input" data-ans="ing" autocomplete="off"></span>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Part B: Logic -->
+                    <div class="mb-8">
+                        <h4 class="text-lg md:text-xl font-black text-dark mb-4 md:mb-6 pb-2 border-b-4 border-dark uppercase flex items-center gap-2 text-balance">
+                            <i data-lucide="brain" class="w-6 h-6 text-[#facc15]"></i> Part B: Daily Life & Academic Logic
+                        </h4>
+                        <div class="space-y-6 md:space-y-8">
+                            
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform">
+                                <span class="inline-block text-xs md:text-sm bg-[#60a5fa] text-dark border-2 border-dark px-3 py-1 font-black uppercase tracking-wider mb-4 shadow-[2px_2px_0_0_#0f172a]">Daily Life</span>
+                                <p class="mb-4 font-medium text-slate-800 text-sm md:text-base leading-relaxed text-pretty">Poster: "Unplugged Weekend Challenge! No phones allowed in the common room from Friday evening to Sunday morning."<br><span class="text-dark font-black mt-2 inline-block">Question: Can a student play a mobile game in the common room on Saturday afternoon?</span></p>
+                                <input id="s3-q6" type="text" class="text-input text-sm md:text-base" placeholder="Type Yes/No and brief reason...">
+                            </div>
+
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform">
+                                <span class="inline-block text-xs md:text-sm bg-[#60a5fa] text-dark border-2 border-dark px-3 py-1 font-black uppercase tracking-wider mb-4 shadow-[2px_2px_0_0_#0f172a]">Daily Life</span>
+                                <p class="mb-4 font-medium text-slate-800 text-sm md:text-base leading-relaxed text-pretty">Email from Teacher: "Please ensure all devices are on 'Do Not Disturb' mode during our study sessions to maintain focus."<br><span class="text-dark font-black mt-2 inline-block">Question: What does the teacher want the students to avoid?</span></p>
+                                <input id="s3-q7" type="text" class="text-input text-sm md:text-base" placeholder="Your answer...">
+                            </div>
+
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform">
+                                <span class="inline-block text-xs md:text-sm bg-[#f87171] text-white border-2 border-dark px-3 py-1 font-black uppercase tracking-wider mb-4 shadow-[2px_2px_0_0_#0f172a]">Academic</span>
+                                <p class="mb-4 font-medium text-slate-800 text-sm md:text-base leading-relaxed text-pretty">"Although social media connects people globally, studies show that excessive use is linked to feelings of isolation and inadequacy among young adults."<br><span class="text-dark font-black mt-2 inline-block">Question: What is a negative effect of excessive social media use mentioned?</span></p>
+                                <input id="s3-q8" type="text" class="text-input text-sm md:text-base" placeholder="Your answer...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t-4 border-dark">
+                        <button id="check-step3" class="neo-btn w-full sm:w-auto bg-[#4ade80] text-dark px-6 py-4 text-base md:text-lg uppercase tracking-wide flex items-center justify-center gap-3">
+                            <i data-lucide="check-square" class="w-6 h-6"></i> Check Answers & Explanation
+                        </button>
+                    </div>
+                    
+                    <!-- Explanations -->
+                    <div id="s3-explanation" class="hidden answer-box bg-[#f0fdf4] border-4 border-dark shadow-neo-sm p-5 md:p-8 mt-8">
+                        <div class="text-lg md:text-xl font-black text-dark mb-6 flex items-center gap-3 border-b-2 border-dark pb-3 uppercase text-balance">
+                            <i data-lucide="clipboard-check" class="w-6 h-6 text-[#22c55e]"></i> Answer Key & Explanations
+                        </div>
+                        <div class="space-y-6 text-sm md:text-base text-slate-800 leading-relaxed font-medium">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Part A (C-Test):</strong>
+                                <ul class="list-decimal pl-6 space-y-2">
+                                    <li>me<span class="text-[#15803d] font-bold">dia</span>, platf<span class="text-[#15803d] font-bold">orms</span>, w<span class="text-[#15803d] font-bold">ant</span>, yo<span class="text-[#15803d] font-bold">ur</span>, atten<span class="text-[#15803d] font-bold">tion</span></li>
+                                    <li>ne<span class="text-[#15803d] font-bold">ws</span>, i<span class="text-[#15803d] font-bold">s</span>, oft<span class="text-[#15803d] font-bold">en</span>, mo<span class="text-[#15803d] font-bold">re</span>, popul<span class="text-[#15803d] font-bold">ar</span></li>
+                                    <li>sho<span class="text-[#15803d] font-bold">uld</span>, t<span class="text-[#15803d] font-bold">ry</span>, t<span class="text-[#15803d] font-bold">o</span>, lim<span class="text-[#15803d] font-bold">it</span>, ho<span class="text-[#15803d] font-bold">w</span>, mu<span class="text-[#15803d] font-bold">ch</span>, y<span class="text-[#15803d] font-bold">ou</span>, scr<span class="text-[#15803d] font-bold">oll</span></li>
+                                    <li>lig<span class="text-[#15803d] font-bold">ht</span>, fr<span class="text-[#15803d] font-bold">om</span>, scre<span class="text-[#15803d] font-bold">ens</span>, k<span class="text-[#15803d] font-bold">eeps</span>, t<span class="text-[#15803d] font-bold">he</span>, br<span class="text-[#15803d] font-bold">ain</span>, awa<span class="text-[#15803d] font-bold">ke</span></li>
+                                    <li>a, physic<span class="text-[#15803d] font-bold">al</span>, bo<span class="text-[#15803d] font-bold">ok</span>, i<span class="text-[#15803d] font-bold">s</span>, relax<span class="text-[#15803d] font-bold">ing</span></li>
+                                </ul>
+                            </div>
+                            <hr class="border-dark border-2">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Part B (Logic):</strong>
+                                <ul class="list-disc pl-6 space-y-4">
+                                    <li class="text-pretty"><strong>6. No:</strong> Saturday afternoon is between Friday evening and Sunday morning, so phones are banned.</li>
+                                    <li class="text-pretty"><strong>7. Distractions/Notifications:</strong> "Do Not Disturb" stops alerts to maintain focus.</li>
+                                    <li class="text-pretty"><strong>8. Isolation and inadequacy:</strong> The text contrasts global connection with these negative feelings.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Real Test Simulation -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#fff7ed]">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#fb923c] hover:bg-[#f97316] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        4
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Real Test Simulation</span>
+                </div>
+                <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8 bg-white">
+                    
+                    <!-- Task 1 -->
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo">
+                        <h3 class="text-lg md:text-xl font-black text-dark mb-6 flex flex-wrap items-center gap-3 border-b-2 border-dark pb-3 text-balance">
+                            <span class="bg-[#facc15] border-2 border-dark text-dark px-3 py-1 text-xs md:text-sm uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">Task 1</span>
+                            Complete the Words (Digital Literacy)
+                        </h3>
+                        <div id="step-4-ctest" class="bg-slate-50 p-4 md:p-8 border-3 border-dark shadow-inner text-base md:text-xl leading-loose text-dark font-medium overflow-wrap-normal">
+                            <span class="whitespace-nowrap">Doomscro<input class="c-input" data-ans="lling" autocomplete="off"></span> <span class="whitespace-nowrap">i<input class="c-input" data-ans="s" autocomplete="off"></span> <span class="whitespace-nowrap">n<input class="c-input" data-ans="ot" autocomplete="off"></span> <span class="whitespace-nowrap">entir<input class="c-input" data-ans="ely" autocomplete="off"></span> <span class="whitespace-nowrap">t<input class="c-input" data-ans="he" autocomplete="off"></span> <span class="whitespace-nowrap">us<input class="c-input" data-ans="er's" autocomplete="off"></span> <span class="whitespace-nowrap">fau<input class="c-input" data-ans="lt" autocomplete="off"></span>. <span class="whitespace-nowrap">Tech<input class="c-input" data-ans="nology" autocomplete="off"></span> <span class="whitespace-nowrap">compan<input class="c-input" data-ans="ies" autocomplete="off"></span> <span class="whitespace-nowrap">des<input class="c-input" data-ans="ign" autocomplete="off"></span> <span class="whitespace-nowrap">th<input class="c-input" data-ans="ese" autocomplete="off"></span> <span class="whitespace-nowrap">appli<input class="c-input" data-ans="cations" autocomplete="off"></span> <span class="whitespace-nowrap">t<input class="c-input" data-ans="o" autocomplete="off"></span> <span class="whitespace-nowrap">cap<input class="c-input" data-ans="ture" autocomplete="off"></span> <span class="whitespace-nowrap">atten<input class="c-input" data-ans="tion" autocomplete="off"></span> <span class="whitespace-nowrap">a<input class="c-input" data-ans="nd" autocomplete="off"></span> <span class="whitespace-nowrap">k<input class="c-input" data-ans="eep" autocomplete="off"></span> <span class="whitespace-nowrap">peo<input class="c-input" data-ans="ple" autocomplete="off"></span> <span class="whitespace-nowrap">engag<input class="c-input" data-ans="ed" autocomplete="off"></span> <span class="whitespace-nowrap">f<input class="c-input" data-ans="or" autocomplete="off"></span> <span class="whitespace-nowrap">lo<input class="c-input" data-ans="ng" autocomplete="off"></span> <span class="whitespace-nowrap">peri<input class="c-input" data-ans="ods" autocomplete="off"></span>.
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo">
+                        <h3 class="text-lg md:text-xl font-black text-dark mb-6 flex flex-wrap items-center gap-3 border-b-2 border-dark pb-3 text-balance">
+                            <span class="bg-[#60a5fa] border-2 border-dark text-dark px-3 py-1 text-xs md:text-sm uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">Task 2</span>
+                            Read in Daily Life (School Announcement)
+                        </h3>
+                        <div class="bg-slate-100 p-5 md:p-6 border-l-8 border-dark italic mb-6 text-base md:text-lg text-slate-800 leading-relaxed font-medium text-pretty">
+                            "Library Rules Update: Starting next week, the library will be a 'Device-Free Zone' during the lunch hour (12:00 PM - 1:00 PM). Students who need to use laptops for urgent assignments must move to the designated computer lab on the second floor."
+                        </div>
+                        <p class="mb-5 font-black text-dark text-base md:text-lg text-pretty">Question: What should a student do if they need to type an essay at 12:30 PM?</p>
+                        <div class="space-y-4 text-sm md:text-base text-slate-800">
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p2" value="A"> A) Use their laptop quietly in the library.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p2" value="B"> B) Wait until 1:00 PM to start typing.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p2" value="C"> C) Go to the computer lab on the second floor.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p2" value="D"> D) Ask the librarian for a special permission slip.</label>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo">
+                        <h3 class="text-lg md:text-xl font-black text-dark mb-6 flex flex-wrap items-center gap-3 border-b-2 border-dark pb-3 text-balance">
+                            <span class="bg-[#f87171] border-2 border-dark text-white px-3 py-1 text-xs md:text-sm uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">Task 3</span>
+                            Read an Academic Passage (Psychology)
+                        </h3>
+                        <div class="bg-slate-100 p-5 md:p-6 border-l-8 border-dark italic mb-6 text-base md:text-lg text-slate-800 leading-relaxed font-medium text-pretty">
+                            "The 'infinite scroll' feature found on many social media platforms creates a dopamine loop in the brain. Dopamine is a chemical associated with reward and pleasure. Because users never know what the next post will be, the brain anticipates a potential reward. This unpredictability makes it very difficult for the brain to signal when to stop scrolling."
+                        </div>
+                        <p class="mb-5 font-black text-dark text-base md:text-lg text-pretty">Question: Why does the unpredictability of social media make it hard to stop scrolling?</p>
+                        <div class="space-y-4 text-sm md:text-base text-slate-800">
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="A"> A) It stops the brain from producing dopamine.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="B"> B) It keeps the brain anticipating a future reward.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="C"> C) It requires more physical effort to swipe the screen.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="D"> D) It creates a sense of danger that keeps humans safe.</label>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t-4 border-dark">
+                        <button id="check-step4" class="neo-btn w-full sm:w-auto bg-[#fb923c] text-dark px-6 py-4 text-base md:text-lg uppercase tracking-wide flex items-center justify-center gap-3">
+                            <i data-lucide="flag" class="w-6 h-6"></i> Check Simulation Answers
+                        </button>
+                    </div>
+
+                    <!-- Explanations -->
+                    <div id="s4-explanation" class="hidden answer-box bg-[#fff7ed] border-4 border-dark shadow-neo-sm p-5 md:p-8 mt-8">
+                        <div class="text-lg md:text-xl font-black text-dark mb-6 flex items-center gap-3 border-b-2 border-dark pb-3 uppercase text-balance">
+                            <i data-lucide="clipboard-check" class="w-6 h-6 text-[#ea580c]"></i> Answer Key & Explanations
+                        </div>
+                        <div class="space-y-6 text-sm md:text-base text-slate-800 leading-relaxed font-medium">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Task 1 (C-Test):</strong>
+                                <p class="italic text-dark bg-white p-4 border-2 border-dark font-bold text-pretty">"Doomscrolling is not entirely the user's fault. Technology companies design these applications to capture attention and keep people engaged for long periods."</p>
+                            </div>
+                            <hr class="border-dark border-2">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Task 2 (Daily Life):</strong>
+                                <p class="mb-2 text-pretty"><span class="text-dark bg-[#4ade80] border-2 border-dark px-2 py-1 font-black uppercase mr-2 shadow-[2px_2px_0_0_#0f172a]">Correct: C</span> Go to the computer lab on the second floor.</p>
+                                <p class="text-slate-600 bg-white p-3 border-2 border-dark text-pretty"><em>Reasoning:</em> 12:30 PM is during the Device-Free Zone hour. The text instructs students needing laptops to move to the computer lab.</p>
+                            </div>
+                            <hr class="border-dark border-2">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Task 3 (Academic):</strong>
+                                <p class="mb-2 text-pretty"><span class="text-dark bg-[#4ade80] border-2 border-dark px-2 py-1 font-black uppercase mr-2 shadow-[2px_2px_0_0_#0f172a]">Correct: B</span> It keeps the brain anticipating a future reward.</p>
+                                <p class="text-slate-600 bg-white p-3 border-2 border-dark text-pretty"><em>Reasoning:</em> The passage states, "Because users never know what the next post will be, the brain anticipates a potential reward."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Speaking & Debate -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#ffe4e6]">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#fb7185] hover:bg-[#f43f5e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        5
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Speaking & Debate</span>
+                </div>
+                <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 bg-white space-y-12">
+                    
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 5: Personal Position</h3>
+                        <ul class="list-disc pl-6 md:pl-8 space-y-3 text-base md:text-lg text-slate-800 font-bold leading-relaxed mb-6 bg-slate-50 p-5 border-3 border-dark">
+                            <li>Do you think technology companies are responsible for teenage anxiety, or is it the user's responsibility?</li>
+                            <li>Have you ever tried a "digital detox" (a period without phones)? How did it feel?</li>
+                        </ul>
+                        <textarea class="text-input text-base md:text-lg" placeholder="Write down your talking points..."></textarea>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 5.1: AI Role Play</h3>
+                        <div class="bg-white p-5 border-3 border-dark shadow-[4px_4px_0_0_#0f172a]">
+                            <p class="font-black text-[#e11d48] uppercase mb-2 flex items-center gap-2">
+                                <i data-lucide="bot" class="w-5 h-5"></i> AI Partner Prompt:
+                            </p>
+                            <p class="font-mono text-sm md:text-base text-slate-700 bg-slate-50 p-3 border-2 border-dark italic">
+                                "Act as the CEO of a major social media company. I am a high school student concerned about phone addiction. Defend your app's algorithm while I ask you questions. Wait for me to ask the first question."
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">Task 6: Case Study</h3>
+                        <div class="bg-slate-50 p-6 md:p-8 border-3 border-dark shadow-neo-sm mb-6 text-base md:text-lg font-medium text-slate-800">
+                            <p class="mb-4 text-pretty"><strong>Scenario:</strong> Your best friend stays up until 3:00 AM every night watching short videos on their phone. They are falling asleep in class and their grades are dropping. They say they cannot stop.</p>
+                            <ul class="list-disc pl-6 space-y-3 font-bold mt-4">
+                                <li>What advice from the reading passage would you give them?</li>
+                                <li>How would you persuade them to change their habits without making them angry?</li>
+                            </ul>
+                        </div>
+                        <textarea class="text-input text-base md:text-lg" placeholder="Discuss your plan..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Reflection -->
+        <div class="mb-4 border-4 border-dark shadow-neo bg-[#f3e8ff]">
+            <button onclick="toggleAccordion('part6')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#c084fc] hover:bg-[#a855f7] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform font-black text-2xl">
+                        6
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Final Reflection</span>
+                </div>
+                <div id="icon-wrapper-part6" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part6" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 bg-white">
+                    <p class="text-base md:text-lg text-slate-800 font-bold mb-6 bg-brand-100 inline-block px-3 py-2 border-2 border-dark text-pretty">
+                        Write a short summary of the lesson. Mention at least two reasons why doomscrolling happens and two ways to stop it. Try to use the words <span class="bg-white px-1 border border-dark">detrimental</span> and <span class="bg-white px-1 border border-dark">unplug</span>.
+                    </p>
+                    <textarea class="text-input h-48 text-base md:text-lg" placeholder="My reflection..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center">
+            <p class="text-dark text-sm md:text-base font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Init Lucide Icons
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderVocab();
+        });
+
+        const vocabData = [
+            { id: "v1", sentence: "...a person feels <strong>compelled</strong> to continuously scroll...", correct: "a", options: { a: "Forced or strongly driven to do something", b: "Happy and relaxed about doing something", c: "Confused and unable to decide" } },
+            { id: "v2", sentence: "Today, social media platforms use a complex <strong>algorithm</strong>...", correct: "b", options: { a: "A type of modern computer virus", b: "A set of rules used by a computer to solve problems", c: "A physical part of a mobile phone" } },
+            { id: "v3", sentence: "This habit can be <strong>detrimental</strong> to mental health.", correct: "b", options: { a: "Very helpful and supportive", b: "Causing harm or damage", c: "Expensive and difficult to buy" } },
+            { id: "v4", sentence: "...can <strong>trigger</strong> feelings of stress and jealousy.", correct: "a", options: { a: "Cause a strong emotional reaction or feeling to start", b: "Stop something from happening", c: "Shoot a weapon in a video game" } },
+            { id: "v5", sentence: "...experts recommend using it in <strong>moderation</strong>.", correct: "a", options: { a: "Doing something within reasonable limits, not too much", b: "Doing something very fast", c: "Never doing something at all" } },
+            { id: "v6", sentence: "Ultimately, learning to <strong>unplug</strong> and engage in offline activities...", correct: "b", options: { a: "To break a piece of technology", b: "To disconnect from electronic devices and the internet", c: "To charge a battery quickly" } }
+        ];
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = vocabData.map(item => `
+                <div class="p-5 md:p-6 bg-slate-50 border-3 border-dark shadow-neo-sm">
+                    <p class="mb-4 italic text-dark font-medium bg-white p-3 border-2 border-dark text-pretty">"${item.sentence}"</p>
+                    <div class="flex flex-col gap-3">
+                        ${Object.entries(item.options).map(([key, val]) => `
+                            <label class="option-label">
+                                <input type="radio" name="${item.id}" value="${key}">
+                                <span>${key.toUpperCase()}) ${val}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="mt-4 font-black uppercase tracking-wide min-h-[32px]"></div>
+                </div>
+            `).join('');
+        }
+
+        function checkVocab() {
+            vocabData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                let val = "";
+                radios.forEach(r => { if(r.checked) val = r.value; });
+                
+                // Reset labels
+                document.querySelectorAll(`input[name="${item.id}"]`).forEach(input => {
+                    const label = input.closest('label');
+                    label.classList.remove('correct', 'incorrect');
+                    if (input.value === item.correct && val !== "") {
+                         label.classList.add('correct');
+                    } else if (input.checked && input.value !== item.correct) {
+                         label.classList.add('incorrect');
+                    }
+                });
+
+                if (val === item.correct) {
+                    feedback.innerHTML = '<span class="text-[#15803d] bg-[#dcfce7] px-2 py-1 border-2 border-dark inline-block">Correct!</span>';
+                } else if (val !== "") {
+                    feedback.innerHTML = '<span class="text-[#b91c1c] bg-[#fee2e2] px-2 py-1 border-2 border-dark inline-block">Try again!</span>';
+                }
+            });
+        }
+
+        // --- Helper: Check Inputs ---
+        function validateInputs(containerId) {
+            const inputs = document.querySelectorAll(`#${containerId} .c-input`);
+            inputs.forEach(input => {
+                const correct = input.getAttribute('data-ans').toLowerCase();
+                const userVal = input.value.trim().toLowerCase();
+                const wrapper = input.closest('.c-wrapper');
+                if(userVal === correct) {
+                    wrapper.classList.remove('incorrect');
+                    wrapper.classList.add('correct');
+                } else {
+                    wrapper.classList.remove('correct');
+                    wrapper.classList.add('incorrect');
+                }
+            });
+        }
+
+        // --- Helper: Set Radio Visuals ---
+        function setRadioVisuals(name, correctVal) {
+            const inputs = document.querySelectorAll(`input[name="${name}"]`);
+            inputs.forEach(input => {
+                const label = input.closest('label');
+                if (input.value === correctVal) {
+                    label.classList.add('correct');
+                    label.classList.remove('incorrect');
+                } else if (input.checked) {
+                    label.classList.add('incorrect');
+                } else {
+                    label.classList.remove('correct', 'incorrect');
+                }
+            });
+        }
+
+        // --- Helper: Check Text Inputs ---
+        function checkText(id, keywords) {
+            const el = document.getElementById(id);
+            const val = el.value.toLowerCase();
+            if(val === "") return; // Skip empty
+            const isCorrect = keywords.some(k => val.includes(k));
+            if(isCorrect) {
+                // Apply Brutalist Success styles
+                el.classList.add('border-[#22c55e]', 'bg-[#dcfce7]', 'text-[#15803d]');
+                el.classList.remove('border-[#ef4444]', 'bg-[#fee2e2]', 'text-[#b91c1c]', 'border-[#0f172a]');
+            } else {
+                // Apply Brutalist Error styles
+                el.classList.add('border-[#ef4444]', 'bg-[#fee2e2]', 'text-[#b91c1c]');
+                el.classList.remove('border-[#22c55e]', 'bg-[#dcfce7]', 'text-[#15803d]', 'border-[#0f172a]');
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                // Clear textareas and inputs
+                document.querySelectorAll('textarea, input[type="text"]').forEach(el => {
+                    el.value = "";
+                    el.classList.remove('border-[#22c55e]', 'bg-[#dcfce7]', 'text-[#15803d]', 'border-[#ef4444]', 'bg-[#fee2e2]', 'text-[#b91c1c]');
+                    el.classList.add('border-[#0f172a]'); 
+                });
+                
+                // Clear Radios
+                document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+                document.querySelectorAll('.option-label').forEach(l => l.classList.remove('correct', 'incorrect'));
+                
+                // Clear Feedbacks
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                
+                // Clear C-Test
+                document.querySelectorAll('.c-input').forEach(i => {
+                    if(!i.disabled) {
+                        i.value = "";
+                        const wrapper = i.closest('.c-wrapper');
+                        if(wrapper) {
+                            wrapper.classList.remove('correct', 'incorrect');
+                            const typedSpan = wrapper.querySelector('.ghost-typed');
+                            const underSpan = wrapper.querySelector('.ghost-underscores');
+                            if (typedSpan && underSpan) {
+                                typedSpan.textContent = "";
+                                underSpan.textContent = '_'.repeat(i.maxLength);
+                            }
+                        }
+                    }
+                });
+
+                // Hide Explanations
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+            }
+        }
+
+        // --- Init Ghost Text Layering for C-Test Inputs ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.c-input').forEach(input => {
+                const ans = input.getAttribute('data-ans');
+                const len = ans.length;
+
+                const wrapper = document.createElement('span');
+                wrapper.className = 'c-wrapper';
+                
+                // Ensure dynamic width generation accounts for text scaling
+                wrapper.style.width = `calc(${len}ch + ${len * 0.15}em + 0.6em)`;
+
+                const ghost = document.createElement('span');
+                ghost.className = 'c-ghost-bg';
+                ghost.innerHTML = `<span class="ghost-typed"></span><span class="ghost-underscores">${'_'.repeat(len)}</span>`;
+
+                input.maxLength = len;
+                
+                input.parentNode.insertBefore(wrapper, input);
+                wrapper.appendChild(ghost);
+                wrapper.appendChild(input);
+
+                const typedSpan = ghost.querySelector('.ghost-typed');
+                const underSpan = ghost.querySelector('.ghost-underscores');
+                
+                // Sync initial value (if any, like in Step 2)
+                if (input.value) {
+                    typedSpan.textContent = input.value;
+                    const remaining = Math.max(0, len - input.value.length);
+                    underSpan.textContent = '_'.repeat(remaining);
+                }
+
+                // Sync typing in real-time
+                input.addEventListener('input', (e) => {
+                    const typed = e.target.value;
+                    typedSpan.textContent = typed;
+                    const remaining = Math.max(0, len - typed.length);
+                    underSpan.textContent = '_'.repeat(remaining);
+                    
+                    wrapper.classList.remove('correct', 'incorrect');
+                });
+            });
+
+            // Strategy Check
+            document.getElementById('check-strategy').addEventListener('click', () => {
+                validateInputs('strategy-ctest');
+                const exp = document.getElementById('strategy-explanation');
+                exp.classList.remove('hidden');
+                exp.classList.add('visible');
+            });
+
+            // Step 3 Check
+            document.getElementById('check-step3').addEventListener('click', () => {
+                validateInputs('step-3-ctest');
+                checkText('s3-q6', ['no', 'banned', 'not allowed']);
+                checkText('s3-q7', ['distraction', 'notification', 'alerts', 'noise', 'phone']);
+                checkText('s3-q8', ['isolation', 'inadequacy', 'loneliness', 'sadness']);
+                
+                const exp = document.getElementById('s3-explanation');
+                exp.classList.remove('hidden');
+                exp.classList.add('visible');
+            });
+
+            // Step 4 Check
+            document.getElementById('check-step4').addEventListener('click', () => {
+                validateInputs('step-4-ctest');
+                setRadioVisuals('s4-p2', 'C');
+                setRadioVisuals('s4-p3', 'B');
+                
+                const exp = document.getElementById('s4-explanation');
+                exp.classList.remove('hidden');
+                exp.classList.add('visible');
+            });
+        });
+    </script>
+</body>
+</html>

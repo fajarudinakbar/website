@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT Reading Skill-Building Worksheet</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+        
+        /* C-Test Input Styling */
+        .c-test-input {
+            border: none;
+            border-bottom: 2px solid #cbd5e1;
+            padding: 0 2px;
+            color: #4f46e5;
+            font-weight: 600;
+            text-align: left;
+            outline: none;
+            background: transparent;
+            transition: border-color 0.3s;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        .c-test-input::placeholder {
+            color: #94a3b8;
+            opacity: 0.6;
+            letter-spacing: 2px;
+        }
+        .c-test-input:focus {
+            border-bottom-color: #4f46e5;
+            background-color: #eef2ff;
+        }
+        .c-test-input.correct {
+            border-bottom-color: #10b981;
+            color: #059669;
+        }
+        .c-test-input.incorrect {
+            border-bottom-color: #ef4444;
+            color: #b91c1c;
+        }
+        .c-test-input.revealed {
+            color: #d97706; /* Amber for revealed answers */
+            border-bottom-color: #d97706;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-slate-100">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs text-slate-400 mb-6 flex gap-2 font-medium uppercase tracking-wider">
+            <span>TOEFL iBT®</span> <span>&gt;</span> 
+            <span>Reading Section</span> <span>&gt;</span> 
+            <span class="text-indigo-600 font-bold">Complete the Words (B1 Level)</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-slate-800 tracking-tight mb-2">
+                    Complete the Words
+                </h1>
+                <p class="text-slate-500 font-medium">Topic: Context Clues, Word Forms, and B1 Vocabulary</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-400 hover:text-red-500 transition-colors font-medium hover:bg-red-50 rounded-lg">
+                    <i class="fas fa-rotate-right"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-slate-50 border-l-4 border-indigo-500 p-4 mb-8 rounded-r-lg">
+            <p class="text-slate-700">
+                <i class="fas fa-info-circle mr-2 text-indigo-500"></i> 
+                <strong>Instructions:</strong> In this reading task (often called a "C-Test"), you will read a short academic paragraph. The first sentence is complete. Starting from the second sentence, the <strong>second half</strong> of every second word is deleted. You have <strong>2 attempts</strong> to fill in the missing letters.
+            </p>
+        </div>
+
+        <!-- Part 1: Preparation (Cyan Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-cyan-100 shadow-sm">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 bg-cyan-50 hover:bg-cyan-100 border-l-4 border-cyan-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-cyan-200 text-cyan-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">1</div>
+                    <span class="text-lg font-bold text-cyan-900">Preparation: The Logic of Guessing</span>
+                </div>
+                <i id="icon-part1" class="fas fa-chevron-down text-cyan-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part1" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 1 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-cyan-800"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Task 1</span> Cultural Connection: Guessing vs. Analyzing</h3>
+                            <button onclick="toggleAnswer('ans-t1', this, 'input-t1')" class="text-xs font-bold text-cyan-600 border border-cyan-200 bg-white px-3 py-1 rounded hover:bg-cyan-50 transition-colors">Show Strategy</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Indonesian learners often guess vocabulary by trying to translate the whole idea into Bahasa Indonesia first. <br><br><strong>Question:</strong> Why is relying solely on translation dangerous for the "Complete the Words" task, and what should you look for instead?</p>
+                        <textarea id="input-t1" placeholder="Write your thoughts here..." class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all"></textarea>
+                        <div id="ans-t1" class="answer-box hidden mt-3 p-4 bg-cyan-50 rounded-lg border border-cyan-100 text-sm text-slate-700">
+                            <strong>Strategy:</strong> Translation is too slow and imprecise for this task. Instead of translation, you must analyze <strong>grammar</strong> (Is it a noun? A verb? Plural?) and <strong>morphology</strong> (word parts). For example, if you see "informat___", knowing the English suffix "-ion" (information) is faster than translating "informasi".
+                        </div>
+                    </div>
+
+                    <!-- Task 2 (Interactive Vocab) -->
+                    <div>
+                        <h3 class="font-bold text-cyan-800 mb-3"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Task 2</span> B1 Vocabulary: Word Families</h3>
+                        <p class="text-sm text-slate-500 mb-3">Match the root word to its correct form. (2 Attempts allowed)</p>
+                        <div id="vocab-container" class="space-y-3">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span id="vocab-attempts" class="text-xs font-bold text-cyan-600">Attempts used: 0/2</span>
+                            <button id="btn-vocab" onclick="checkVocab()" class="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check Vocabulary
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div>
+                         <div class="flex justify-between items-center mb-3">
+                             <h3 class="font-bold text-cyan-800"><span class="bg-cyan-100 px-2 py-0.5 rounded text-sm mr-2">Task 3</span> The "Second Half" Rule</h3>
+                             <button onclick="toggleAnswer('ans-t3', this, 'input-t3')" class="text-xs font-bold text-cyan-600 border border-cyan-200 bg-white px-3 py-1 rounded hover:bg-cyan-50 transition-colors">Show Rule</button>
+                          </div>
+                          <p class="text-sm text-slate-600 mb-2">In this task, if a word has 6 letters (e.g., "doctor"), you will see "doc___". If a word has 5 letters (e.g., "water"), you might see "wa___". <br><strong>Challenge:</strong> Identify the missing letters for these B1 words based on the partial stem given.</p>
+                          <div class="grid grid-cols-2 gap-4 text-sm mb-3">
+                              <div class="p-2 bg-slate-50 rounded border">1. tra___ (travel)</div>
+                              <div class="p-2 bg-slate-50 rounded border">2. heal___ (healthy)</div>
+                          </div>
+                          <textarea id="input-t3" placeholder="What are the missing parts?" class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 outline-none transition-all"></textarea>
+                          <div id="ans-t3" class="answer-box hidden mt-3 p-4 bg-cyan-50 rounded-lg border border-cyan-100 text-sm text-slate-700">
+                            <strong>Answer:</strong> <br>
+                            1. tra<strong>vel</strong> (3 letters missing)<br>
+                            2. heal<strong>thy</strong> (3 letters missing)<br>
+                            <em>Tip: Always count the letters in your head. The missing part is roughly half the word.</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Reading Passage (Blue Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-blue-100 shadow-sm">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 bg-blue-50 hover:bg-blue-100 border-l-4 border-blue-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-200 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform"><i class="fas fa-book-open"></i></div>
+                    <span class="text-lg font-bold text-blue-900">Input: How the Task Works</span>
+                </div>
+                <i id="icon-part2" class="fas fa-chevron-down text-blue-600 transition-transform duration-300 transform rotate-180"></i>
+            </button>
+            <div id="content-part2" class="accordion-content active" style="max-height: 8000px; opacity: 1;">
+                <div class="p-6 bg-white prose prose-slate max-w-none text-justify leading-relaxed text-sm md:text-base border-t border-blue-50">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Understanding the "C-Test" Format</h3>
+                    <p class="mb-3">The "Complete the Words" task is designed to test your processing speed and vocabulary recall. Unlike multiple-choice questions, you must actively produce the language.</p>
+                    <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 my-4">
+                        <h4 class="font-bold text-indigo-800 mt-0">Key Mechanics:</h4>
+                        <ul class="list-disc pl-5 mt-2 space-y-2 text-slate-700">
+                            <li><strong>Context First:</strong> The first sentence of the paragraph is always <strong>intact</strong> (complete). Read it carefully! It tells you the topic.</li>
+                            <li><strong>Every Second Word:</strong> Starting from the second sentence, every second word is damaged.</li>
+                            <li><strong>The Missing Half:</strong> Usually, the second half of the word is missing. If a word has an odd number of letters (e.g., 7), the missing part is usually the larger half (4 letters).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Understanding (Emerald Theme) -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-emerald-100 shadow-sm">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 bg-emerald-50 hover:bg-emerald-100 border-l-4 border-emerald-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-emerald-200 text-emerald-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">3</div>
+                    <span class="text-lg font-bold text-emerald-900">Understanding: Grammar & Context Drills</span>
+                </div>
+                <i id="icon-part3" class="fas fa-chevron-down text-emerald-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part3" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 4 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-emerald-800"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Task 4</span> Strategy Check</h3>
+                            <button onclick="toggleAnswer('ans-t4', this, 'input-t4')" class="text-xs font-bold text-emerald-600 border border-emerald-200 bg-white px-3 py-1 rounded hover:bg-emerald-50 transition-colors">Show Answer</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Read this incomplete sentence: <em>"The student dec___ to stu___ harder for the ex___."</em> <br>Based on context, what are the three words?</p>
+                        <textarea id="input-t4" placeholder="List the words..." class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none h-20 transition-all"></textarea>
+                        <div id="ans-t4" class="answer-box hidden mt-3 p-4 bg-emerald-50 rounded-lg border border-emerald-100 text-sm text-slate-700">
+                            <strong>Answer:</strong> decided, study, exam.
+                        </div>
+                    </div>
+
+                    <!-- Task 5 (Interactive MCQ) -->
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Task 5</span> Identify the Part of Speech (2 Attempts)</h3>
+                        <p class="text-sm text-slate-500 mb-4">Determine what kind of word is missing in the bracket [ ].</p>
+                        <div id="mcq-container" class="space-y-6">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span id="mcq-attempts" class="text-xs font-bold text-emerald-600">Attempts used: 0/2</span>
+                            <button id="btn-mcq" onclick="checkMCQ()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check Answers
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Task 6 (Interactive T/F) -->
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2"><span class="bg-emerald-100 px-2 py-0.5 rounded text-sm mr-2">Task 6</span> Spelling & Suffix Rules (2 Attempts)</h3>
+                        <div id="tf-container" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span id="tf-attempts" class="text-xs font-bold text-emerald-600">Attempts used: 0/2</span>
+                            <button id="btn-tf" onclick="checkTF()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition-colors">
+                                Check T/F
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Synthesis -->
+        <div class="mb-4 rounded-xl overflow-hidden border border-orange-100 shadow-sm">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 bg-orange-50 hover:bg-orange-100 border-l-4 border-orange-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-orange-200 text-orange-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">4</div>
+                    <span class="text-lg font-bold text-orange-900">Synthesis: Common Pitfalls</span>
+                </div>
+                <i id="icon-part4" class="fas fa-chevron-down text-orange-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part4" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    <!-- Task 8 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-orange-800"><span class="bg-orange-100 px-2 py-0.5 rounded text-sm mr-2">Task 7</span> False Friends</h3>
+                            <button onclick="toggleAnswer('ans-t8', this, 'input-t8')" class="text-xs font-bold text-orange-600 border border-orange-200 bg-white px-3 py-1 rounded hover:bg-orange-50 transition-colors">Show Explanation</button>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">Complete these words: Act___, Effect___.</p>
+                        <textarea id="input-t8" class="w-full p-2 border border-orange-200 rounded text-sm focus:ring-2 focus:ring-orange-400 outline-none h-20 transition-all"></textarea>
+                        <div id="ans-t8" class="answer-box hidden mt-2 text-sm text-slate-700 bg-orange-50 p-3 rounded border border-orange-100">
+                            <strong>Explanation:</strong> In English, the suffix is <strong>-ive</strong> (Active, Effective), not "-if".
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Production -->
+        <div class="mb-8 rounded-xl overflow-hidden border border-violet-100 shadow-sm">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 bg-violet-50 hover:bg-violet-100 border-l-4 border-violet-500 transition-colors text-left group">
+                <div class="flex items-center gap-3">
+                    <div class="bg-violet-200 text-violet-800 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-110 transition-transform">5</div>
+                    <span class="text-lg font-bold text-violet-900">Production: Simulation</span>
+                </div>
+                <i id="icon-part5" class="fas fa-chevron-down text-violet-600 transition-transform duration-300"></i>
+            </button>
+            <div id="content-part5" class="accordion-content">
+                <div class="p-6 bg-white space-y-8">
+                    
+                    <!-- Task 9 -->
+                    <div>
+                         <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-violet-800"><span class="bg-violet-100 px-2 py-0.5 rounded text-sm mr-2">Task 9</span> Complete the Paragraph</h3>
+                            <div class="flex items-center gap-3">
+                                <span id="ctest-attempts" class="text-xs font-bold text-violet-600">Attempts used: 0/2</span>
+                                <button id="btn-ctest" onclick="checkCTest()" class="text-xs font-bold text-white bg-violet-600 px-4 py-2 rounded-full hover:bg-violet-700 transition-colors shadow-md">Check Answers</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-slate-50 border border-slate-200 p-6 rounded-lg mb-6 text-base text-slate-800 leading-loose shadow-inner font-serif">
+                            <p>
+                                <!-- Sentence 1: Intact -->
+                                Regular exercise is essential for maintaining a healthy lifestyle. 
+                                <!-- Sentence 2 -->
+                                It str<input type="text" class="c-test-input" data-answer="engthens" maxlength="8" placeholder="--------" style="width: 8ch;"> your he<input type="text" class="c-test-input" data-answer="art" maxlength="3" placeholder="---" style="width: 3ch;"> and imp<input type="text" class="c-test-input" data-answer="roves" maxlength="5" placeholder="-----" style="width: 5ch;"> your mo<input type="text" class="c-test-input" data-answer="od" maxlength="2" placeholder="--" style="width: 2ch;">. 
+                                <!-- Sentence 3 -->
+                                Many doc<input type="text" class="c-test-input" data-answer="tors" maxlength="4" placeholder="----" style="width: 4ch;"> recommend wal<input type="text" class="c-test-input" data-answer="king" maxlength="4" placeholder="----" style="width: 4ch;"> for thir<input type="text" class="c-test-input" data-answer="ty" maxlength="2" placeholder="--" style="width: 2ch;"> minutes ev<input type="text" class="c-test-input" data-answer="ery" maxlength="3" placeholder="---" style="width: 3ch;"> day. 
+                                <!-- Sentence 4 -->
+                                This sim<input type="text" class="c-test-input" data-answer="ple" maxlength="3" placeholder="---" style="width: 3ch;"> activity c<input type="text" class="c-test-input" data-answer="an" maxlength="2" placeholder="--" style="width: 2ch;"> prevent ser<input type="text" class="c-test-input" data-answer="ious" maxlength="4" placeholder="----" style="width: 4ch;"> diseases.
+                            </p>
+                        </div>
+
+                         <div id="score-display" class="hidden mt-4 p-4 bg-violet-50 border border-violet-200 rounded-lg text-center">
+                            <span class="text-violet-900 font-bold text-lg">Your Score: <span id="score-val">0</span>/11</span>
+                            <p id="score-msg" class="text-sm text-slate-600 mt-1"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-100 text-center">
+            <p class="text-slate-400 text-sm font-medium">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-slate-500 hover:text-indigo-600 transition-colors">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- State Management ---
+        let attempts = {
+            vocab: 0,
+            mcq: 0,
+            tf: 0,
+            ctest: 0
+        };
+
+        // --- Data Configuration Section ---
+        
+        // 1. VOCABULARY DATA
+        const vocabData = [
+            { 
+                id: "v1", 
+                word: "1. Develop (Verb)", 
+                correct: "c", 
+                options: { a: "Developmental (Adjective)", b: "Develops (Verb Plural)", c: "Development (Noun)", d: "Developing (Participle)" },
+                context: "The ________ of new technology is fast.",
+                explanation: "The article 'The' indicates a noun is needed here."
+            },
+            { 
+                id: "v2", 
+                word: "2. Importance (Noun)", 
+                correct: "b", 
+                options: { a: "Importantly (Adverb)", b: "Important (Adjective)", c: "Import (Verb)", d: "Imports (Noun Plural)" },
+                context: "It is very ________ to sleep well.",
+                explanation: "'Is very' describes the subject, requiring an adjective."
+            },
+            { 
+                id: "v3", 
+                word: "3. Success (Noun)", 
+                correct: "a", 
+                options: { a: "Successful (Adjective)", b: "Succeed (Verb)", c: "Successfully (Adverb)", d: "Successes (Plural)" },
+                context: "He is a ________ business owner.",
+                explanation: "The word modifies 'business owner' (noun phrase), so an adjective is needed."
+            }
+        ];
+
+        // 2. MCQ DATA
+        const mcqData = [
+            { 
+                id: "m1", 
+                question: "Sent: 'Many people [enj___] swimming.' What is missing?", 
+                correct: "b", 
+                options: ["a. A Noun (Object)", "b. A Verb (Action)", "c. An Adjective (Description)", "d. An Adverb"],
+                explanation: "Subject (Many people) + Verb (enjoy)."
+            },
+            { 
+                id: "m2", 
+                question: "Sent: 'They live in a [beau___] house.' What is missing?", 
+                correct: "c", 
+                options: ["a. A Noun", "b. A Verb", "c. An Adjective", "d. A Preposition"],
+                explanation: "An adjective is needed to describe the noun 'house'."
+            },
+            { 
+                id: "m3", 
+                question: "Sent: 'He runs very [qui___].' What is missing?", 
+                correct: "d", 
+                options: ["a. A Noun", "b. A Verb", "c. An Adjective", "d. An Adverb"],
+                explanation: "An adverb is needed to describe how he runs."
+            },
+            { 
+                id: "m4", 
+                question: "Sent: 'The [gov___] made a new law.' What is missing?", 
+                correct: "a", 
+                options: ["a. A Noun (Subject)", "b. A Verb", "c. An Adjective", "d. An Article"],
+                explanation: "'The' introduces the subject noun (government)."
+            }
+        ];
+
+        // 3. TRUE / FALSE DATA
+        const tfData = [
+            { id: "tf1", text: "1. In 'Comfor____', the missing table is 'table' (Comfortable).", correct: "True", explanation: "Correct. 'Comfortable' is the adjective form." },
+            { id: "tf2", text: "2. In 'Scienti____', the missing part is 'st' (Scientist).", correct: "True", explanation: "Correct. 'Scientist' indicates the person." },
+            { id: "tf3", text: "3. 'Happi____' usually ends in 'ness' to make a Noun (Happiness).", correct: "True", explanation: "Correct. '-ness' is a common noun suffix." },
+            { id: "tf4", text: "4. If you see 'inform____', the missing part is definitely 'si' (Informasi).", correct: "False", explanation: "False. In English, it is 'information' (-ation)." }
+        ];
+
+        // --- Render Functions ---
+
+        function renderVocab() {
+            const container = document.getElementById('vocab-container');
+            if(vocabData.length === 0) return;
+
+            container.innerHTML = vocabData.map(item => {
+                let optionsHtml = '<option value="">Select the correct form...</option>';
+                for (const [key, value] of Object.entries(item.options)) {
+                    optionsHtml += `<option value="${key}">${value}</option>`;
+                }
+                return `
+                <div class="flex flex-col gap-2 p-4 bg-white rounded-lg border border-cyan-100 hover:border-cyan-300 transition-colors shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div class="font-bold text-cyan-900">${item.word}</div>
+                        <div class="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded">Context: "${item.context}"</div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-2">
+                        <select id="${item.id}" class="flex-1 p-2 text-sm border border-slate-200 rounded bg-cyan-50 focus:ring-1 focus:ring-cyan-500 outline-none cursor-pointer">
+                            ${optionsHtml}
+                        </select>
+                        <span id="feedback-${item.id}" class="w-6 flex justify-center"></span>
+                    </div>
+                    <div id="expl-${item.id}" class="hidden text-xs text-slate-600 italic bg-cyan-50 p-2 rounded mt-1 border-l-4 border-cyan-400"></div>
+                </div>
+            `}).join('');
+        }
+
+        function renderMCQ() {
+            const container = document.getElementById('mcq-container');
+            container.innerHTML = mcqData.map((item, index) => `
+                <div class="p-4 border border-slate-100 rounded-lg bg-slate-50 transition-all hover:shadow-md">
+                    <div class="flex gap-3 mb-3 bg-white p-3 rounded border border-slate-200 shadow-sm">
+                         <span class="font-bold text-emerald-600 bg-emerald-50 h-6 w-6 flex items-center justify-center rounded-full text-xs flex-shrink-0">${index + 1}</span>
+                         <div class="font-medium text-slate-800 text-sm font-mono">${item.question}</div>
+                    </div>
+                    <div class="space-y-1 ml-2">
+                        ${item.options.map((opt, idx) => {
+                            const val = ['a','b','c','d'][idx];
+                            return `
+                            <label class="flex items-center gap-2 p-2 rounded hover:bg-emerald-100 cursor-pointer text-sm transition-colors group">
+                                <input type="radio" name="${item.id}" value="${val}" class="accent-emerald-600 scale-110">
+                                <span class="group-hover:text-emerald-800">${opt}</span>
+                            </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div id="feedback-${item.id}" class="text-sm font-bold h-8 mt-2 ml-2 flex items-center"></div>
+                    <div id="expl-${item.id}" class="hidden text-xs text-slate-600 italic bg-emerald-50 p-2 rounded mt-1 border-l-4 border-emerald-400"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderTF() {
+            const container = document.getElementById('tf-container');
+            container.innerHTML = tfData.map(item => `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded hover:bg-emerald-50 border-b border-emerald-50 last:border-0 transition-colors" id="row-${item.id}">
+                    <span class="text-sm text-slate-700 mb-2 sm:mb-0 w-full sm:w-2/3">${item.text}</span>
+                    <div class="flex items-center gap-4 text-sm font-medium">
+                        <label class="flex items-center gap-1 cursor-pointer hover:text-emerald-700 bg-white px-2 py-1 border border-slate-200 rounded">
+                            <input type="radio" name="${item.id}" value="True" class="accent-emerald-600"> True
+                        </label>
+                        <label class="flex items-center gap-1 cursor-pointer hover:text-emerald-700 bg-white px-2 py-1 border border-slate-200 rounded">
+                            <input type="radio" name="${item.id}" value="False" class="accent-emerald-600"> False
+                        </label>
+                        <span id="feedback-${item.id}" class="ml-1 w-6"></span>
+                    </div>
+                </div>
+                <div id="expl-${item.id}" class="hidden text-xs text-slate-600 italic bg-emerald-50 p-2 rounded border-l-4 border-emerald-400 mb-2 mx-3"></div>
+            `).join('');
+        }
+
+        // --- Logic Handlers with Attempts ---
+
+        function checkVocab() {
+            if (attempts.vocab >= 2) return;
+            attempts.vocab++;
+            document.getElementById('vocab-attempts').innerText = `Attempts used: ${attempts.vocab}/2`;
+
+            const isFinalAttempt = attempts.vocab === 2;
+            let allCorrect = true;
+
+            vocabData.forEach(item => {
+                const select = document.getElementById(item.id);
+                if(!select) return;
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const expl = document.getElementById(`expl-${item.id}`);
+                
+                if (select.value === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check-circle text-green-500 text-lg"></i>';
+                    select.classList.add('border-green-500', 'bg-green-50', 'text-green-800', 'font-medium');
+                    select.classList.remove('border-red-300', 'border-orange-300');
+                    select.disabled = true;
+                } else {
+                    allCorrect = false;
+                    if (isFinalAttempt) {
+                        feedback.innerHTML = '<i class="fas fa-times-circle text-red-500 text-lg"></i>';
+                        select.classList.add('border-red-300');
+                        select.value = item.correct; // Reveal answer
+                        select.disabled = true;
+                        expl.innerText = "Answer: " + item.options[item.correct] + ". " + item.explanation;
+                        expl.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-exclamation-circle text-orange-500 text-lg"></i>';
+                        select.classList.add('border-orange-300');
+                        showToast("Some answers are incorrect. Try again!");
+                    }
+                }
+            });
+
+            if (isFinalAttempt || allCorrect) {
+                document.getElementById('btn-vocab').disabled = true;
+                document.getElementById('btn-vocab').classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function checkMCQ() {
+            if (attempts.mcq >= 2) return;
+            attempts.mcq++;
+            document.getElementById('mcq-attempts').innerText = `Attempts used: ${attempts.mcq}/2`;
+
+            const isFinalAttempt = attempts.mcq === 2;
+            let allCorrect = true;
+
+            mcqData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const expl = document.getElementById(`expl-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<span class="text-green-600 bg-green-50 px-2 py-1 rounded border border-green-200"><i class="fas fa-check mr-1"></i> Correct!</span>';
+                    radios.forEach(r => r.disabled = true);
+                } else {
+                    allCorrect = false;
+                    if (isFinalAttempt) {
+                        feedback.innerHTML = '<span class="text-red-500 bg-red-50 px-2 py-1 rounded border border-red-200"><i class="fas fa-times mr-1"></i> Incorrect.</span>';
+                        radios.forEach(r => {
+                            r.disabled = true;
+                            if (r.value === item.correct) r.parentElement.classList.add('bg-green-100', 'border-green-300');
+                        });
+                        expl.innerText = "Explanation: " + item.explanation;
+                        expl.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<span class="text-orange-500 bg-orange-50 px-2 py-1 rounded border border-orange-200"><i class="fas fa-exclamation-triangle mr-1"></i> Try again.</span>';
+                    }
+                }
+            });
+
+            if (isFinalAttempt || allCorrect) {
+                document.getElementById('btn-mcq').disabled = true;
+                document.getElementById('btn-mcq').classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function checkTF() {
+            if (attempts.tf >= 2) return;
+            attempts.tf++;
+            document.getElementById('tf-attempts').innerText = `Attempts used: ${attempts.tf}/2`;
+
+            const isFinalAttempt = attempts.tf === 2;
+            let allCorrect = true;
+
+            tfData.forEach(item => {
+                const radios = document.getElementsByName(item.id);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const expl = document.getElementById(`expl-${item.id}`);
+                let userVal = "";
+                radios.forEach(r => { if(r.checked) userVal = r.value; });
+
+                if (userVal === item.correct) {
+                    feedback.innerHTML = '<i class="fas fa-check text-green-500 text-lg"></i>';
+                    radios.forEach(r => r.disabled = true);
+                } else {
+                    allCorrect = false;
+                    if (isFinalAttempt) {
+                        feedback.innerHTML = '<i class="fas fa-times text-red-500 text-lg"></i>';
+                        radios.forEach(r => {
+                            r.disabled = true;
+                            if (r.value === item.correct) r.parentElement.classList.add('ring-2', 'ring-green-400');
+                        });
+                        expl.innerText = item.explanation;
+                        expl.classList.remove('hidden');
+                    } else {
+                        feedback.innerHTML = '<i class="fas fa-exclamation-triangle text-orange-500 text-lg"></i>';
+                    }
+                }
+            });
+            
+            if (isFinalAttempt || allCorrect) {
+                document.getElementById('btn-tf').disabled = true;
+                document.getElementById('btn-tf').classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+        
+        // --- C-Test Logic ---
+        function checkCTest() {
+            if (attempts.ctest >= 2) return;
+            attempts.ctest++;
+            document.getElementById('ctest-attempts').innerText = `Attempts used: ${attempts.ctest}/2`;
+
+            const isFinalAttempt = attempts.ctest === 2;
+            const inputs = document.querySelectorAll('.c-test-input');
+            let score = 0;
+            
+            inputs.forEach(input => {
+                const userAnswer = input.value.trim().toLowerCase();
+                const correctAnswer = input.dataset.answer.toLowerCase();
+                
+                if (userAnswer === correctAnswer) {
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    input.disabled = true;
+                    score++;
+                } else {
+                    if (isFinalAttempt) {
+                        input.value = correctAnswer; // Reveal answer
+                        input.classList.remove('incorrect');
+                        input.classList.add('revealed');
+                        input.disabled = true;
+                    } else {
+                        input.classList.remove('correct');
+                        input.classList.add('incorrect');
+                    }
+                }
+            });
+            
+            if (isFinalAttempt || score === inputs.length) {
+                const scoreDisplay = document.getElementById('score-display');
+                const scoreVal = document.getElementById('score-val');
+                const scoreMsg = document.getElementById('score-msg');
+                
+                scoreDisplay.classList.remove('hidden');
+                scoreVal.innerText = score;
+                
+                if (score === inputs.length) {
+                    scoreMsg.innerText = "Perfect! You have mastered the B1 Complete the Words task.";
+                    scoreMsg.className = "text-green-600 font-bold mt-1";
+                } else {
+                    scoreMsg.innerText = "Review the revealed answers (in amber).";
+                    scoreMsg.className = "text-orange-600 mt-1";
+                }
+
+                document.getElementById('btn-ctest').disabled = true;
+                document.getElementById('btn-ctest').classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                showToast("Some answers are incorrect. 1 Attempt remaining!");
+            }
+        }
+
+        function showToast(message) {
+            let toast = document.getElementById('custom-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'custom-toast';
+                toast.className = 'fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white px-6 py-3 rounded-full shadow-xl transition-all duration-300 translate-y-20 opacity-0 z-50 flex items-center gap-2 font-medium text-sm';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fas fa-pen-fancy"></i> <span>${message}</span>`;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function toggleAnswer(elementId, btn, inputId) {
+            const el = document.getElementById(elementId);
+            const inputEl = document.getElementById(inputId);
+
+            if (inputEl) {
+                const attemptText = inputEl.value.trim();
+                // Require at least a brief attempt (3 characters minimum)
+                if (attemptText.length < 3) {
+                    showToast("Please give it a try first! 😉");
+                    inputEl.focus();
+                    inputEl.classList.add('ring-2', 'ring-red-400', 'border-red-400', 'bg-red-50');
+                    setTimeout(() => inputEl.classList.remove('ring-2', 'ring-red-400', 'border-red-400', 'bg-red-50'), 1500);
+                    return;
+                }
+            }
+
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('visible');
+                
+                if (!btn.dataset.originalHtml) {
+                    btn.dataset.originalHtml = btn.innerHTML;
+                }
+                btn.innerHTML = '<i class="fas fa-eye-slash mr-1"></i> Hide';
+            } else {
+                el.classList.remove('visible');
+                el.classList.add('hidden');
+                if (btn.dataset.originalHtml) {
+                    btn.innerHTML = btn.dataset.originalHtml;
+                } else {
+                    btn.innerHTML = '<i class="fas fa-eye mr-1"></i> Show';
+                }
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '8000px'; 
+                content.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Are you sure you want to clear all your progress?")) {
+                // Reset State
+                attempts = { vocab: 0, mcq: 0, tf: 0, ctest: 0 };
+                document.getElementById('vocab-attempts').innerText = "Attempts used: 0/2";
+                document.getElementById('mcq-attempts').innerText = "Attempts used: 0/2";
+                document.getElementById('tf-attempts').innerText = "Attempts used: 0/2";
+                document.getElementById('ctest-attempts').innerText = "Attempts used: 0/2";
+
+                // Re-enable buttons
+                ['btn-vocab', 'btn-mcq', 'btn-tf', 'btn-ctest'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+
+                // Clear Inputs
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                    r.checked = false; 
+                    r.disabled = false; 
+                    r.parentElement.classList.remove('bg-green-100', 'border-green-300', 'bg-red-50', 'border-red-200', 'ring-2', 'ring-green-400');
+                });
+                document.querySelectorAll('.c-test-input').forEach(i => { 
+                    i.value = ""; 
+                    i.classList.remove('correct', 'incorrect', 'revealed'); 
+                    i.disabled = false;
+                });
+                document.querySelectorAll('select').forEach(s => { 
+                    s.value = ""; 
+                    s.disabled = false; 
+                    s.className = "flex-1 p-2 text-sm border border-slate-200 rounded bg-cyan-50 focus:ring-1 focus:ring-cyan-500 outline-none cursor-pointer"; 
+                });
+                
+                // Hide Feedback/Explanations
+                document.querySelectorAll('[id^="feedback-"]').forEach(f => f.innerHTML = "");
+                document.querySelectorAll('[id^="expl-"]').forEach(e => e.classList.add('hidden'));
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+                
+                // Reset toggle buttons
+                document.querySelectorAll('button[data-original-html]').forEach(btn => {
+                    btn.innerHTML = btn.dataset.originalHtml;
+                });
+                document.getElementById('score-display').classList.add('hidden');
+            }
+        }
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVocab();
+            renderMCQ();
+            renderTF();
+        });
+
+    </script>
+</body>
+</html>

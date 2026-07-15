@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEFL iBT® Practice Test 3 - Reading Section</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #app {
+            flex-grow: 1;
+        }
+        /* Custom scrollbar for reading pane */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f0f9ff;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #7dd3fc;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #38bdf8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- App Container -->
+    <div id="app"></div>
+
+    <script>
+        // --- DATA STRUCTURE ---
+        const testData = {
+            module1: {
+                title: "Module 1",
+                sections: [
+                    {
+                        id: "m1_cloze",
+                        type: "cloze",
+                        title: "Complete the Words",
+                        text: "The unprecedented proliferation of anthropogenic pollutants poses a formidable challenge to contemporary global ecosystems. Dedicated %1% must %2% pursue %3% strategies %4% atmospheric %5% and %6% conservation. Transitioning %7% toward %8% infrastructures %9% another %10% prerequisite for achieving environmental sustainability. International consortiums often collaborate extensively to formulate stringent regulations that successfully curtail destructive industrial practices.",
+                        blanks: [
+                            { id: 1, prefix: "scien", suffix: "", answer: "scientists", explanation: "Requires a plural noun indicating professionals conducting environmental research." },
+                            { id: 2, prefix: "acti", suffix: "", answer: "actively", explanation: "An adverb modifying 'pursue' to show a high level of engagement." },
+                            { id: 3, prefix: "innov", suffix: "", answer: "innovative", explanation: "An adjective describing new, creative strategies." },
+                            { id: 4, prefix: "regar", suffix: "", answer: "regarding", explanation: "A preposition acting as a synonym for 'concerning' or 'about'." },
+                            { id: 5, prefix: "purifi", suffix: "", answer: "purification", explanation: "A noun associated with cleaning the atmosphere (air)." },
+                            { id: 6, prefix: "biodiv", suffix: "", answer: "biodiversity", explanation: "A core environmental term referring to the variety of life, paired here with 'conservation'." },
+                            { id: 7, prefix: "comprehe", suffix: "", answer: "comprehensively", explanation: "An adverb meaning thoroughly or completely transitioning." },
+                            { id: 8, prefix: "rene", suffix: "", answer: "renewable", explanation: "An adjective commonly collocated with 'infrastructures' or energy in sustainability contexts." },
+                            { id: 9, prefix: "consti", suffix: "", answer: "constitutes", explanation: "A formal verb meaning 'makes up' or 'forms' the next prerequisite." },
+                            { id: 10, prefix: "funda", suffix: "", answer: "fundamental", explanation: "An adjective meaning essential or foundational." }
+                        ]
+                    },
+                    {
+                        id: "m1_email1",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Symposia Volunteer Coordination",
+                        passageContent: `To: alexander.w@intlhumanities.org\nFrom: logistics@intlhumanities.org\nDate: 05/14/2026\nSubject: Symposia Volunteer Coordination\n\nDear Alexander,\n\nWe formally acknowledge your registration to officiate as a liaison at the upcoming International Humanities Symposium. This correspondence serves to ratify your deployment on June 15th, strictly from 09:00 to 12:00 hours. You are instructed to convene at the primary registration pavilion promptly upon arrival.\n\nYour primary mandates will encompass orchestrating attendee logistics, elucidating schedule inquiries, and ensuring the structural integrity of the plenary seating arrangements. Should extenuating circumstances preclude your attendance, we mandate a formal notification no less than twenty-four hours prior to your scheduled commencement.\n\nCordially,\n\nSymposium Logistics Committee`,
+                        questions: [
+                            {
+                                id: 11,
+                                text: "What is the primary purpose of this correspondence?",
+                                options: [
+                                    "To recruit new volunteers for an upcoming academic event.",
+                                    "To formally confirm a volunteer schedule and outline specific duties.",
+                                    "To reprimand a volunteer for failing to attend a mandatory orientation.",
+                                    "To announce a change in the location of the symposium."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The email explicitly confirms deployment details ('ratify your deployment on June 15th') and lists specific tasks ('Your primary mandates will encompass...')."
+                            },
+                            {
+                                id: 12,
+                                text: "What is Alexander instructed to do immediately upon arriving?",
+                                options: [
+                                    "Reorganize the plenary seating arrangements.",
+                                    "Answer schedule inquiries from attendees.",
+                                    "Convene at the primary registration pavilion.",
+                                    "Submit a formal notification of attendance."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The text provides a direct instruction: 'You are instructed to convene at the primary registration pavilion promptly upon arrival.'"
+                            },
+                            {
+                                id: 13,
+                                text: "What does the email imply regarding absences?",
+                                options: [
+                                    "They are strictly forbidden under any circumstances.",
+                                    "They require advance formal notification due to extenuating circumstances.",
+                                    "They will result in the immediate termination of the volunteer's registration.",
+                                    "They must be approved by the attendees."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The email states that if a volunteer cannot attend ('Should extenuating circumstances preclude your attendance'), they must provide notice 'no less than twenty-four hours prior'."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m1_email2",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Mandatory Cybersecurity Audit",
+                        passageContent: `To: s.jones@aegiscorp.net\nFrom: infosec@aegiscorp.net\nDate: 01/08/2026\nSubject: Mandatory Cybersecurity Audit\n\nDear Ms. Jones,\n\nA preliminary review of our enterprise directory indicates that your institutional workstation is delinquent for a mandatory cryptographic security patch. You are required to physically surrender your hardware to the IT Infrastructure nexus on February 18th, strictly between 10:00 and 16:00 hours. \n\nThe diagnostic and patching protocol will consume approximately forty-five minutes. Personnel may utilize the adjacent waiting atrium or abscond and retrieve the apparatus subsequently. Should this temporal window prove irreconcilable with your departmental obligations, contact the central helpdesk immediately to orchestrate an alternative dispensation.\n\nRegards,\n\nAegis InfoSec Division`,
+                        questions: [
+                            {
+                                id: 14,
+                                text: "Why is the IT department contacting Ms. Jones?",
+                                options: [
+                                    "To issue her a brand new institutional workstation.",
+                                    "To enforce compliance with a mandatory cybersecurity update.",
+                                    "To penalize her for failing a recent diagnostic exam.",
+                                    "To request her assistance in patching the enterprise directory."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The email states her workstation is 'delinquent for a mandatory cryptographic security patch' and requires her to surrender the hardware for updates."
+                            },
+                            {
+                                id: 15,
+                                text: "How long is the security procedure projected to take?",
+                                options: [
+                                    "Exactly ten hours",
+                                    "Approximately forty-five minutes",
+                                    "Until the end of the workday",
+                                    "It varies depending on departmental obligations"
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The text explicitly mentions: 'The diagnostic and patching protocol will consume approximately forty-five minutes.'"
+                            },
+                            {
+                                id: 16,
+                                text: "What should Ms. Jones do if she is busy during the designated time?",
+                                options: [
+                                    "Leave her computer at the front desk overnight.",
+                                    "Delegate the task to another member of her department.",
+                                    "Contact the helpdesk to arrange an alternative appointment.",
+                                    "Ignore the email until the next mandatory audit cycle."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "If the time is 'irreconcilable with departmental obligations', she is instructed to 'contact the central helpdesk immediately to orchestrate an alternative dispensation'."
+                            }
+                        ]
+                    },
+                    {
+                        id: "m1_academic",
+                        type: "reading",
+                        title: "Read an Academic Passage",
+                        passageTitle: "Avian Urban Adaptation and Phenotypic Plasticity",
+                        passageContent: `Metropolitan landscapes, despite their concrete ubiquity, sustain an astonishing array of avian species. Numerous bird populations have demonstrated remarkable phenotypic plasticity, adapting to anthropogenic environments by exploiting localized resources in plazas, thoroughfares, and commercial peripheries. Interestingly, certain species have bypassed natural foliage entirely, opting to construct elaborate roosts on the architectural facades of skyscrapers.\n\nThe proliferation of urban avifauna can be attributed to several interrelated factors. Urban heat islands consistently generate microclimates that are substantially milder than surrounding rural expanses, a critical advantage during winter months. Furthermore, human settlements inadvertently provide a surplus of accessible foraging opportunities, largely stemming from discarded organic refuse.\n\nNevertheless, these concrete ecosystems present formidable impediments. Avian inhabitants must constantly navigate a labyrinth of high-velocity traffic, evade invasive predators such as feral felines, and tolerate the chronic cacophony of urban noise pollution, which can severely disrupt acoustic communication crucial for mating. Despite these substantial barriers, diverse species continue to thrive and multiply.\n\nEcologists rigorously analyze these urban bird cohorts to decode the mechanisms of rapid adaptation in human-dominated biomes. Such empirical studies are indispensable, empowering municipalities to implement ecologically sound urban planning, such as cultivating native vegetation corridors and establishing protected nesting sanctuaries.`,
+                        questions: [
+                            {
+                                id: 17,
+                                text: "What is the primary focus of the passage?",
+                                options: [
+                                    "The detrimental effects of urban noise pollution on human populations.",
+                                    "The migration patterns of specific avian species during winter.",
+                                    "The mechanisms, benefits, and challenges of avian adaptation to urban ecosystems.",
+                                    "The architectural strategies used to deter birds from nesting on skyscrapers."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The passage discusses how birds adapt (paragraph 1), the advantages of cities like heat and food (paragraph 2), the dangers like traffic and noise (paragraph 3), and how ecologists study this (paragraph 4)."
+                            },
+                            {
+                                id: 18,
+                                text: "According to the text, why are urban environments advantageous for birds in winter?",
+                                options: [
+                                    "They contain fewer invasive predators than rural areas.",
+                                    "The urban heat island effect creates milder microclimates.",
+                                    "Natural foliage is more abundant in metropolitan centers.",
+                                    "Traffic slows down, making foraging significantly safer."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "Paragraph 2 specifically notes that 'Urban heat islands consistently generate microclimates that are substantially milder... a critical advantage during winter months.'"
+                            },
+                            {
+                                id: 19,
+                                text: "The word 'cacophony' in paragraph 3 is closest in meaning to:",
+                                options: [
+                                    "Harmonious melody",
+                                    "Deafening and discordant noise",
+                                    "Visible atmospheric pollution",
+                                    "Unpredictable weather pattern"
+                                ],
+                                correctAnswer: 1,
+                                explanation: "Context clues linking 'cacophony' to 'urban noise pollution' and its ability to 'severely disrupt acoustic communication' point directly to harsh, discordant noise."
+                            },
+                            {
+                                id: 20,
+                                text: "What is a specific consequence of noise pollution mentioned in the text?",
+                                options: [
+                                    "It causes birds to abandon their roosts on skyscrapers.",
+                                    "It severely disrupts the acoustic communication necessary for mating.",
+                                    "It forces birds to migrate to rural expanses prematurely.",
+                                    "It increases the likelihood of birds being struck by high-velocity traffic."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The text explicitly states that urban noise pollution 'can severely disrupt acoustic communication crucial for mating.'"
+                            },
+                            {
+                                id: 21,
+                                text: "What can be inferred about the ecological studies mentioned in the final paragraph?",
+                                options: [
+                                    "They are primarily focused on eradicating feral felines.",
+                                    "They offer actionable data that assists in sustainable urban planning.",
+                                    "They have concluded that birds cannot survive long-term in cities.",
+                                    "They are funded exclusively by commercial peripheral businesses."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The passage states these studies empower 'municipalities to implement ecologically sound urban planning', proving the data provides actionable benefits."
+                            }
+                        ]
+                    }
+                ]
+            },
+            module2: {
+                title: "Module 2",
+                sections: [
+                    {
+                        id: "m2_cloze",
+                        type: "cloze",
+                        title: "Complete the Words",
+                        text: "The proliferation of asynchronous e-learning has fundamentally revolutionized contemporary pedagogical methodologies worldwide. Sophisticated %22% empower %23% individuals %24% customized %25% with %26% flexibility. Multimedia %27%, comprehensive %28%, and %29% documents %30% participants %31% mastering complex academic competencies. Establishing a rigorous daily regimen and defining concrete objectives remain imperative for ensuring that longitudinal progress remains unequivocally stable. As digital infrastructure matures globally, these decentralized virtual paradigms will inevitably become the ubiquitous standard for continuing education.",
+                        blanks: [
+                            { id: 22, prefix: "platf", suffix: "", answer: "platforms", explanation: "Refers to the digital systems or software used for e-learning." },
+                            { id: 23, prefix: "dedic", suffix: "", answer: "dedicated", explanation: "Adjective describing committed or focused individuals." },
+                            { id: 24, prefix: "utili", suffix: "", answer: "utilizing", explanation: "Gerund meaning making practical or effective use of the customized materials." },
+                            { id: 25, prefix: "curric", suffix: "", answer: "curriculums", explanation: "Noun referring to the subjects or study plans comprising a course." },
+                            { id: 26, prefix: "unprece", suffix: "", answer: "unprecedented", explanation: "Adjective meaning never known or done before, modifying 'flexibility'." },
+                            { id: 27, prefix: "lect", suffix: "", answer: "lectures", explanation: "Noun referring to educational talks or video presentations." },
+                            { id: 28, prefix: "assess", suffix: "", answer: "assessments", explanation: "Noun indicating tests, quizzes, or evaluations." },
+                            { id: 29, prefix: "supplem", suffix: "", answer: "supplementary", explanation: "Adjective meaning additional or extra documents provided." },
+                            { id: 30, prefix: "ena", suffix: "", answer: "enable", explanation: "Verb meaning to give someone the authority or means to do something." },
+                            { id: 31, prefix: "tow", suffix: "", answer: "toward", explanation: "Preposition showing the direction of their mastery." }
+                        ]
+                    },
+                    {
+                        id: "m2_email1",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Degree Audit Consultation",
+                        passageContent: `To: m.harris@westwood.edu\nFrom: advising@westwood.edu\nDate: 10/02/2026\nSubject: Degree Audit Consultation Confirmation\n\nDear Mark,\n\nThis memorandum officially corroborates your scheduled degree audit consultation with the senior academic advisor on November 3rd at 14:15 hours. You are required to bring a comprehensively drafted syllabus roster for the forthcoming academic term. \n\nDuring this strategic session, your advisor will meticulously evaluate your prospective course load to guarantee exact alignment with your departmental graduation prerequisites. Should you necessitate a modification to this itinerary due to unforeseen academic conflicts, please reply directly to this correspondence to expedite rescheduling.\n\nSincerely,\n\nWestwood Academic Advising`,
+                        questions: [
+                            {
+                                id: 32,
+                                text: "What is the primary function of this email?",
+                                options: [
+                                    "To notify the student that they have failed to meet graduation requirements.",
+                                    "To confirm an upcoming academic advising appointment.",
+                                    "To demand the immediate submission of a final syllabus.",
+                                    "To announce a change in departmental prerequisites."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The email opens by stating: 'This memorandum officially corroborates your scheduled degree audit consultation', which is a formal way of confirming an appointment."
+                            },
+                            {
+                                id: 33,
+                                text: "What is Mark required to bring to the session?",
+                                options: [
+                                    "A comprehensive list of his previous grades.",
+                                    "A printed map of the Westwood campus.",
+                                    "A drafted roster of courses for the next term.",
+                                    "A signed memorandum from his professors."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The email explicitly requests him to 'bring a comprehensively drafted syllabus roster for the forthcoming academic term.'"
+                            },
+                            {
+                                id: 34,
+                                text: "How should the student proceed if they have a scheduling conflict?",
+                                options: [
+                                    "Contact the registrar's office immediately by phone.",
+                                    "Reply directly to the email to arrange a new time.",
+                                    "Visit the senior academic advisor's office in person.",
+                                    "Cancel the course load evaluation entirely."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The instructions clearly state: 'please reply directly to this correspondence to expedite rescheduling.'"
+                            }
+                        ]
+                    },
+                    {
+                        id: "m2_email2",
+                        type: "reading",
+                        title: "Read in Daily Life",
+                        passageTitle: "Municipal Infrastructure Rehabilitation",
+                        passageContent: `To: s.jenkins@townparks.org\nFrom: infrastructure@townparks.org\nSubject: Notice: Municipal Infrastructure Rehabilitation\n\nDear Sarah,\n\nThis bulletin is distributed to notify you that the Oak Avenue Recreational Complex will undergo a mandatory, short-term closure for infrastructure rehabilitation from May 10th through May 13th. Municipal contractors will be executing the systematic replacement of compromised structural components and applying protective sealants to high-traffic zones. \n\nThe precinct will reopen to the general public only after comprehensive safety audits have been finalized. If you preside over any sanctioned public gatherings scheduled within this timeframe, please contact the municipal liaison office immediately to negotiate the allocation of an alternative venue.\n\nWarmly,\n\nTown Parks Facilities Management`,
+                        questions: [
+                            {
+                                id: 35,
+                                text: "Why is the recreational complex closing?",
+                                options: [
+                                    "To host a private, sanctioned municipal event.",
+                                    "For routine seasonal cleaning.",
+                                    "For infrastructure rehabilitation and structural repairs.",
+                                    "To undergo a staff training protocol."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The text states the closure is 'for infrastructure rehabilitation', involving the 'replacement of compromised structural components'."
+                            },
+                            {
+                                id: 36,
+                                text: "When will the closure take place?",
+                                options: [
+                                    "Only on the morning of May 10th.",
+                                    "From May 10th through May 13th.",
+                                    "Throughout the entirety of May.",
+                                    "Until the protective sealants run out."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The dates are clearly specified in the first paragraph: 'from May 10th through May 13th.'"
+                            },
+                            {
+                                id: 37,
+                                text: "What action is required of event organizers affected by the closure?",
+                                options: [
+                                    "Cancel their gatherings without exception.",
+                                    "Delay their events until the safety audits begin.",
+                                    "Contact the liaison office to secure an alternate location.",
+                                    "Assist the municipal contractors with the structural replacements."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "Organizers are told to 'contact the municipal liaison office immediately to negotiate the allocation of an alternative venue.'"
+                            }
+                        ]
+                    },
+                    {
+                        id: "m2_academic",
+                        type: "reading",
+                        title: "Read an Academic Passage",
+                        passageTitle: "Chronometry and Horological Advancements",
+                        passageContent: `Prior to the advent of mechanical escapements, ancient civilizations relied upon primitive chronometric instruments to delineate the passage of time, most notably sundials and clepsydras. Solar dials tracked the shifting diurnal shadows cast by the sun, whereas clepsydras, or water clocks, quantified time via the regulated, incremental flow of liquid between calibrated vessels.\n\nMechanical gear-driven timepieces initially proliferated across Europe during the late Medieval epoch. These rudimentary mechanisms were unwieldy, typically housed within towering municipal belfries. Operating on a system of descending weights and interlocking cogs, they effectively democratized timekeeping for the public, albeit with a conspicuous lack of persistent accuracy.\n\nThe trajectory of horology experienced a paradigm shift in the seventeenth century with the integration of the oscillating pendulum. This engineering marvel exponentially augmented chronological precision, mitigating previous mechanical discrepancies. Such refined exactitude empowered societies to synchronize complex logistical operations and catalyzed unprecedented advancements in the empirical sciences.\n\nIn contemporary society, timekeeping has achieved microscopic precision through the utilization of quartz oscillators and atomic resonance. These ultra-precise chronometers are fundamentally integrated into satellite navigation, global telecommunications, and quantum research, vividly illustrating how the quantification of time has intrinsically shaped the trajectory of human civilization.`,
+                        questions: [
+                            {
+                                id: 38,
+                                text: "What is the primary theme of the passage?",
+                                options: [
+                                    "The role of water clocks in ancient agricultural societies.",
+                                    "The historical evolution and increasing precision of chronometric instruments.",
+                                    "The architectural significance of municipal belfries in Medieval Europe.",
+                                    "The superiority of mechanical escapements over modern atomic resonance."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "The passage follows a chronological progression of timekeeping devices: ancient sundials/water clocks, medieval mechanical clocks, 17th-century pendulums, and modern quartz/atomic clocks."
+                            },
+                            {
+                                id: 39,
+                                text: "What was a significant limitation of early mechanical gear-driven clocks?",
+                                options: [
+                                    "They were entirely dependent on diurnal shadows.",
+                                    "They suffered from a conspicuous lack of persistent accuracy.",
+                                    "They were too small to be seen by the general public.",
+                                    "They frequently leaked liquid from their calibrated vessels."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "Paragraph 2 states that these mechanisms had 'a conspicuous lack of persistent accuracy.'"
+                            },
+                            {
+                                id: 40,
+                                text: "What impact did the oscillating pendulum have on society?",
+                                options: [
+                                    "It reduced the need for municipal belfries.",
+                                    "It exponentially augmented precision and aided empirical science.",
+                                    "It made quartz oscillators completely obsolete.",
+                                    "It introduced the concept of timekeeping to Europe for the first time."
+                                ],
+                                correctAnswer: 1,
+                                explanation: "Paragraph 3 explains the pendulum 'exponentially augmented chronological precision' and 'catalyzed unprecedented advancements in the empirical sciences.'"
+                            },
+                            {
+                                id: 41,
+                                text: "The word 'unwieldy' in paragraph 2 is closest in meaning to:",
+                                options: [
+                                    "Technologically advanced",
+                                    "Cumbersome and difficult to manage",
+                                    "Highly accurate and reliable",
+                                    "Aesthetically pleasing"
+                                ],
+                                correctAnswer: 1,
+                                explanation: "Contextually, they were 'housed within towering municipal belfries' and operated by 'descending weights and interlocking cogs', implying they were massive and cumbersome."
+                            },
+                            {
+                                id: 42,
+                                text: "Based on the passage, how is modern timekeeping applied today?",
+                                options: [
+                                    "It relies heavily on the study of diurnal shadows.",
+                                    "It is primarily used to operate descending weights in belfries.",
+                                    "It is intrinsically integrated into satellite navigation and telecommunications.",
+                                    "It operates without the need for any resonance or oscillation."
+                                ],
+                                correctAnswer: 2,
+                                explanation: "The final paragraph notes that modern ultra-precise chronometers are 'fundamentally integrated into satellite navigation, global telecommunications, and quantum research.'"
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // --- STATE MANAGEMENT ---
+        const state = {
+            currentModule: null,
+            flatSteps: [],
+            currentStepIndex: 0,
+            answers: {},
+            showResults: false,
+            showInstructions: false,
+            timeLeft: 900, // 15 minutes (900 seconds) per module
+            timerInterval: null,
+            isReviewMode: false
+        };
+
+        // --- LOGIC FUNCTIONS ---
+        function startTest() {
+            state.answers = {};
+            loadModule('module1');
+        }
+
+        function loadModule(moduleId) {
+            state.currentModule = moduleId;
+            state.showResults = false;
+            state.showInstructions = true;
+            state.timeLeft = 900; // 15 minutes per module
+            state.currentStepIndex = 0;
+
+            // Flatten steps
+            const steps = [];
+            testData[moduleId].sections.forEach(section => {
+                if (section.type === 'cloze') {
+                    steps.push({
+                        type: 'cloze',
+                        data: section,
+                        sectionId: section.id
+                    });
+                } else if (section.type === 'reading') {
+                    section.questions.forEach((q, idx) => {
+                        steps.push({
+                            type: 'reading',
+                            data: section,
+                            question: q,
+                            questionIndex: idx + 1,
+                            totalQuestions: section.questions.length,
+                            sectionId: section.id
+                        });
+                    });
+                }
+            });
+            state.flatSteps = steps;
+            
+            render();
+        }
+
+        function startTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                if (state.timeLeft > 0) {
+                    state.timeLeft--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(state.timerInterval);
+                    handleModuleComplete();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function handleNext() {
+            if (state.currentStepIndex < state.flatSteps.length - 1) {
+                state.currentStepIndex++;
+                render();
+            } else {
+                if (state.isReviewMode) {
+                    endReview();
+                } else {
+                    handleModuleComplete();
+                }
+            }
+        }
+
+        function handleModuleComplete() {
+            stopTimer();
+            if (state.currentModule === 'module1') {
+                // Transition seamlessly to Module 2
+                loadModule('module2');
+            } else {
+                // Both modules complete
+                finishTest();
+            }
+        }
+
+        function handleBack() {
+            if (state.currentStepIndex > 0) {
+                state.currentStepIndex--;
+                render();
+            }
+        }
+
+        function handleBeginTest() {
+            state.showInstructions = false;
+            render();
+            startTimer();
+        }
+
+        function finishTest() {
+            stopTimer();
+            state.showResults = true;
+            render();
+        }
+
+        function startReview() {
+            state.isReviewMode = true;
+            state.showResults = false;
+            state.currentStepIndex = 0;
+
+            // Flatten ALL steps from both modules for the review phase
+            const steps = [];
+            Object.values(testData).forEach(moduleData => {
+                moduleData.sections.forEach(section => {
+                    if (section.type === 'cloze') {
+                        steps.push({ type: 'cloze', data: section, sectionId: section.id });
+                    } else if (section.type === 'reading') {
+                        section.questions.forEach((q, idx) => {
+                            steps.push({ type: 'reading', data: section, question: q, questionIndex: idx + 1, totalQuestions: section.questions.length, sectionId: section.id });
+                        });
+                    }
+                });
+            });
+            state.flatSteps = steps;
+            render();
+        }
+
+        function endReview() {
+            state.isReviewMode = false;
+            state.showResults = true;
+            render();
+        }
+
+        function handleClozeInput(id, value) {
+            state.answers[id] = value;
+        }
+
+        function handleRadioInput(qId, value) {
+            state.answers[qId] = value;
+        }
+
+        function resetApp() {
+            state.currentModule = null;
+            state.flatSteps = [];
+            state.answers = {};
+            state.showResults = false;
+            state.showInstructions = false;
+            state.isReviewMode = false;
+            stopTimer();
+            render();
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            let total = 0;
+
+            // Calculate across all modules for final score
+            Object.values(testData).forEach(moduleData => {
+                moduleData.sections.forEach(sec => {
+                    if (sec.type === 'cloze') {
+                        sec.blanks.forEach(b => {
+                            total++;
+                            const userInput = state.answers[b.id] ? state.answers[b.id].trim() : "";
+                            const fullWord = (b.prefix || "") + userInput + (b.suffix || "");
+                            if (fullWord.toLowerCase() === b.answer.toLowerCase()) {
+                                correct++;
+                            }
+                        });
+                    } else {
+                        sec.questions.forEach(q => {
+                            total++;
+                            if (state.answers[q.id] === q.correctAnswer) {
+                                correct++;
+                            }
+                        });
+                    }
+                });
+            });
+            return { correct, total };
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('timer-display');
+            if (el) el.innerText = formatTime(state.timeLeft);
+        }
+
+        function downloadPDF() {
+            const nameInput = document.getElementById('learner-name').value.trim();
+            const studentName = nameInput || "Learner";
+            
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : (correct/total);
+            const rawBand = (Math.round(percent * 10) / 2) + 1;
+            const bandScore = Math.min(6.0, Math.max(1.0, rawBand)).toFixed(1);
+            
+            let cefr = "";
+            if (bandScore >= 6.0) cefr = "CEFR C2";
+            else if (bandScore >= 5.0) cefr = "CEFR C1";
+            else if (bandScore >= 4.0) cefr = "CEFR B2";
+            else if (bandScore >= 3.0) cefr = "CEFR B1";
+            else if (bandScore >= 2.0) cefr = "CEFR A2";
+            else cefr = "CEFR A1";
+
+            let feedback = "";
+            if (bandScore >= 5.0) {
+                feedback = "Excellent work! Your ability to comprehend complex academic passages and practical notices is highly commendable. Keep engaging with authentic English materials to sustain this exceptional proficiency.";
+            } else if (bandScore >= 3.5) {
+                feedback = "Good job! You have demonstrated a solid grasp of reading strategies. To further refine your skills, practice deriving meaning from context clues and explore a wider variety of real-world texts.";
+            } else {
+                feedback = "Keep practicing! Developing reading fluency is a steady process. Focus on integrating shorter English texts into your daily routine and building your vocabulary to boost your comprehension.";
+            }
+
+            const dateStr = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Professional Visual Header
+            doc.setFillColor(2, 132, 199); // Tailwind Sky-600
+            doc.rect(0, 0, 210, 45, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(24);
+            doc.text("TOEFL iBT Practice Test 3 Score", 105, 22, { align: "center" });
+            
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text("Reading Section Performance Report", 105, 32, { align: "center" });
+
+            // Test Taker Info Section
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.text("Test Taker Information", 20, 65);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Name: ${studentName}`, 20, 75);
+            doc.text(`Date: ${dateStr}`, 20, 85);
+
+            // Score Box Design
+            doc.setFillColor(240, 249, 255); // Sky 50
+            doc.setDrawColor(186, 230, 253); // Sky 200
+            doc.setLineWidth(0.5);
+            doc.roundedRect(20, 100, 170, 40, 3, 3, 'FD');
+
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(2, 132, 199); // Sky 600
+            doc.text("Total Correct Answers:", 30, 115);
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.text(`${correct} / ${total}`, 90, 115);
+
+            doc.setTextColor(2, 132, 199); // Sky 600
+            doc.text("Predicted Band Score:", 30, 130);
+            doc.setTextColor(51, 65, 85); // Slate 700
+            doc.text(`${bandScore}/6.0 (${cefr})`, 90, 130);
+
+            // Instructor Feedback
+            doc.setFont("helvetica", "bold");
+            doc.text("Instructor Feedback", 20, 160);
+            doc.setFont("helvetica", "normal");
+            const splitFeedback = doc.splitTextToSize(feedback, 170);
+            doc.text(splitFeedback, 20, 170);
+
+            // Footer branding
+            doc.setFontSize(10);
+            doc.setTextColor(148, 163, 184); // Slate 400
+            doc.text("Generated by EnglishTech Solutions", 105, 280, { align: "center" });
+
+            // Save the PDF file
+            const safeFileName = studentName.replace(/\s+/g, '_');
+            doc.save(`TOEFL_Reading_Score_${safeFileName}.pdf`);
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderWelcome() {
+            return `
+            <div class="h-full bg-slate-50 flex items-center justify-center p-4">
+                <div class="bg-white max-w-4xl w-full shadow-lg rounded-lg overflow-hidden border-t-8 border-sky-600">
+                    <div class="bg-sky-600 p-6 text-white text-center">
+                        <i data-lucide="monitor" class="w-12 h-12 mx-auto mb-4 opacity-90"></i>
+                        <h1 class="text-3xl font-bold font-sans">TOEFL iBT® Practice Test 3</h1>
+                        <p class="opacity-90 mt-2">Reading Section</p>
+                    </div>
+                    
+                    <div class="p-8 text-center">
+                        <div class="bg-sky-50 border-l-4 border-sky-500 p-5 mb-8 text-left text-sm text-slate-700 space-y-3 rounded-r shadow-sm">
+                            <h3 class="font-bold text-sky-900 text-base flex items-center">
+                                <i data-lucide="info" class="w-5 h-5 mr-2"></i> Important Notes
+                            </h3>
+                            <p>
+                                <strong>This is a guided practice lesson focused on reading strategy,</strong> not a full simulation test. For a full simulation to see exactly how the real test looks and operates, please visit the <a href="https://www.ets.org/toefl/test-takers/ibt/prepare/sample-test-jan-2026-1.html" target="_blank" class="text-sky-600 font-semibold hover:underline">official TOEFL sample test</a>.
+                            </p>
+                            <p>
+                                <strong>Structure:</strong> This practice test consists of two sequential modules. You will have 15 minutes to complete Module 1, and an additional 15 minutes to complete Module 2. Your final predicted band score will be calculated at the very end.
+                            </p>
+                        </div>
+                        
+                        <div class="flex justify-center mt-8">
+                            <button onclick="startTest()" class="px-8 py-4 bg-sky-600 text-white font-bold text-lg rounded-xl shadow-md hover:bg-sky-700 transition-colors flex items-center">
+                                Begin Practice Test <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-slate-100 p-4 text-center text-xs text-slate-400">
+                        Simulated interface for educational purposes.
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderResults() {
+            const { correct, total } = calculateScore();
+            const percent = total === 0 ? 0 : (correct/total);
+            
+            // Calculate Predicted Score (1.0 to 6.0 scale, 0.5 increments)
+            const rawBand = (Math.round(percent * 10) / 2) + 1;
+            const bandScore = Math.min(6.0, Math.max(1.0, rawBand)).toFixed(1);
+            
+            // Map to CEFR Level based on TOEFL iBT technical manual mapping
+            let cefr = "";
+            if (bandScore >= 6.0) cefr = "CEFR C2";
+            else if (bandScore >= 5.0) cefr = "CEFR C1";
+            else if (bandScore >= 4.0) cefr = "CEFR B2";
+            else if (bandScore >= 3.0) cefr = "CEFR B1";
+            else if (bandScore >= 2.0) cefr = "CEFR A2";
+            else cefr = "CEFR A1";
+
+            const scoreColor = bandScore >= 4.0 ? 'text-green-600' : 'text-orange-500';
+
+            return `
+            <div class="h-full bg-slate-50 pt-24 pb-12 px-4 overflow-y-auto custom-scroll">
+                <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+                    <div class="bg-sky-600 p-8 text-white text-center">
+                        <h2 class="text-3xl font-bold mb-2">Test Completed</h2>
+                        <p class="text-sky-100">Here is your performance report</p>
+                    </div>
+                    
+                    <div class="p-8">
+                        <div class="flex flex-col md:flex-row justify-center items-center gap-12 mb-8">
+                            <div class="text-center">
+                                <div class="text-6xl font-bold text-sky-600 mb-2">${correct}</div>
+                                <div class="text-slate-500 uppercase tracking-widest text-sm font-semibold">Correct Answers</div>
+                            </div>
+                            <div class="w-px h-24 bg-slate-200 hidden md:block"></div>
+                            <div class="text-center">
+                                <div class="text-6xl font-bold mb-2 ${scoreColor}">${bandScore}<span class="text-3xl text-slate-400 font-medium">/6.0</span></div>
+                                <div class="text-slate-500 uppercase tracking-widest text-sm font-semibold mb-2">Predicted Band Score</div>
+                                <div class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-600 rounded-full inline-block">${cefr}</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 mb-8 bg-sky-50 p-6 rounded-lg border border-sky-100 flex flex-col items-center">
+                            <h3 class="text-lg font-bold text-sky-900 mb-3">Download Your Score Report</h3>
+                            <input type="text" id="learner-name" placeholder="Enter your full name" class="px-4 py-2 border border-slate-300 rounded mb-4 w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                            <button onclick="downloadPDF()" class="px-6 py-3 bg-green-600 text-white font-bold rounded shadow hover:bg-green-700 transition-colors flex items-center justify-center">
+                                <i data-lucide="download" class="w-5 h-5 mr-2"></i> Save as PDF
+                            </button>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row justify-center border-t border-slate-100 pt-8 gap-4">
+                            <button onclick="startReview()" class="px-8 py-3 bg-white text-sky-700 border-2 border-sky-700 font-bold rounded shadow hover:bg-sky-50 transition-colors flex items-center justify-center">
+                                <i data-lucide="search" class="w-4 h-4 mr-2"></i> Review Answers
+                            </button>
+                            <button onclick="resetApp()" class="px-8 py-3 bg-sky-700 text-white font-bold rounded shadow hover:bg-sky-800 transition-colors flex items-center justify-center">
+                                <i data-lucide="home" class="w-4 h-4 mr-2"></i> Return to Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderHeader() {
+            const isInstructionPhase = state.showInstructions;
+            let navButtons = '';
+
+            if (isInstructionPhase) {
+                navButtons = `
+                    <button onclick="handleBeginTest()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors">
+                        Begin
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            } else {
+                const backBtn = state.currentStepIndex > 0 
+                    ? `<button onclick="handleBack()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors mr-2">
+                        <i data-lucide="chevron-left" class="mr-1 w-5 h-5"></i> Back
+                       </button>` 
+                    : '';
+                
+                const nextText = state.currentStepIndex === state.flatSteps.length - 1 ? (state.isReviewMode ? 'Return to Results' : 'Finish') : 'Next';
+                
+                navButtons = `
+                    ${backBtn}
+                    <button onclick="handleNext()" class="flex items-center px-6 py-2 bg-white text-sky-700 font-bold rounded shadow hover:bg-slate-100 transition-colors">
+                        ${nextText}
+                        <i data-lucide="chevron-right" class="ml-1 w-5 h-5"></i>
+                    </button>
+                `;
+            }
+
+            return `
+            <header class="bg-sky-600 h-16 flex items-center justify-between px-6 shadow-md z-50 fixed w-full top-0">
+                <div class="flex items-center space-x-4">
+                    ${isInstructionPhase ? '<span class="text-white text-lg font-sans font-semibold">Reading Section</span>' : '<div class="text-sky-100 opacity-90"></div>'}
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="flex space-x-2">
+                        ${navButtons}
+                    </div>
+                </div>
+            </header>
+            `;
+        }
+
+        function renderSubHeader() {
+            if (state.showInstructions) return '';
+            
+            const totalSteps = state.flatSteps.length;
+            const moduleName = state.isReviewMode ? 'Full Review' : (state.currentModule === 'module1' ? 'Module 1' : 'Module 2');
+            const displayText = `Reading | ${moduleName} | Question ${state.currentStepIndex + 1} of ${totalSteps}`;
+
+            let rightSide = '';
+            if (state.isReviewMode) {
+                rightSide = `<div class="text-sky-700 font-bold bg-sky-100 px-3 py-1 rounded flex items-center"><i data-lucide="search" class="w-4 h-4 mr-2"></i> Review Mode</div>`;
+            } else {
+                rightSide = `<div class="flex items-center text-slate-500 font-mono bg-slate-100 px-3 py-1 rounded">
+                    <i data-lucide="clock" class="mr-2 w-4 h-4 text-sky-600"></i>
+                    <span id="timer-display" class="font-bold">${formatTime(state.timeLeft)}</span>
+                </div>`;
+            }
+
+            return `
+            <div class="fixed top-16 w-full bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center text-slate-700 text-sm font-sans z-40 shadow-sm">
+                <span class="font-semibold text-lg">${displayText}</span>
+                ${rightSide}
+            </div>
+            `;
+        }
+
+        function renderInstructions() {
+            const title = state.currentModule === 'module1' ? 'Reading Section - Module 1' : 'Reading Section - Module 2';
+            const intro = state.currentModule === 'module1' 
+                ? "You are about to begin Module 1. You will have 15 minutes to answer all questions. Once you finish or time runs out, you will automatically proceed to Module 2."
+                : "You are about to begin Module 2. You will have 15 minutes to answer all questions. Your final predicted score will be calculated after completing this module.";
+
+            return `
+            <div class="pt-24 px-8 max-w-5xl mx-auto h-full overflow-y-auto custom-scroll pb-10">
+                <h1 class="text-3xl text-slate-800 mb-6 font-sans font-bold">${title}</h1>
+                
+                <p class="text-sky-900 font-semibold bg-sky-100 border-l-4 border-sky-600 p-4 rounded mb-8 text-lg leading-relaxed shadow-sm">
+                    ${intro}
+                </p>
+
+                <p class="text-slate-700 text-lg mb-8 leading-relaxed">
+                    In an actual test, you will answer up to 50 reading questions to demonstrate how well you 
+                    understand academic and non-academic texts in English. There are three types of tasks in the reading section of the test:
+                </p>
+
+                <div class="border border-slate-300 rounded overflow-hidden shadow-sm">
+                    <div class="grid grid-cols-[30%_70%] bg-sky-200 border-b border-slate-300 text-sky-900">
+                        <div class="p-4 font-bold border-r border-slate-300">Type of Task</div>
+                        <div class="p-4 font-bold">Description</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-[30%_70%] border-b border-slate-300 bg-white">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Complete the Words</div>
+                        <div class="p-4 text-slate-600">Fill in the missing letters in a paragraph.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] border-b border-slate-300 bg-slate-50">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Read in Daily Life</div>
+                        <div class="p-4 text-slate-600">Answer questions about everyday reading material.</div>
+                    </div>
+
+                    <div class="grid grid-cols-[30%_70%] bg-white">
+                        <div class="p-4 border-r border-slate-300 font-semibold text-slate-700">Read an Academic Passage</div>
+                        <div class="p-4 text-slate-600">Answer questions about academic passages.</div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        function renderCloze(step) {
+            const { data } = step;
+            const parts = data.text.split(/%\d+%/);
+            
+            let content = '';
+            parts.forEach((part, idx) => {
+                content += part;
+                const blank = data.blanks[idx];
+                if (blank) {
+                    const val = state.answers[blank.id] || '';
+                    
+                    if (state.isReviewMode) {
+                        const fullUserWord = (blank.prefix || "") + val.trim() + (blank.suffix || "");
+                        const isCorrect = fullUserWord.toLowerCase() === blank.answer.toLowerCase();
+                        
+                        if (isCorrect) {
+                            content += `<span class="inline-block px-1 mx-1 bg-green-100 text-green-700 font-bold border border-green-300 rounded">${fullUserWord}</span>`;
+                        } else {
+                            content += `<span class="inline-block px-1 mx-1 bg-red-50 text-red-500 line-through decoration-2 decoration-red-500 border border-red-200 rounded">${fullUserWord || "(empty)"}</span>
+                                        <span class="inline-block px-1 mx-1 bg-green-100 text-green-700 font-bold border border-green-300 rounded shadow-sm">${blank.answer}</span>`;
+                        }
+                    } else {
+                        const prefixLen = blank.prefix ? blank.prefix.length : 0;
+                        const suffixLen = blank.suffix ? blank.suffix.length : 0;
+                        const missingLength = blank.answer.length - prefixLen - suffixLen;
+                        
+                        const safeVal = val.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+                        
+                        // Dynamically width the single robust input
+                        const inputWidth = Math.max(missingLength * 1.2, 2.5);
+                        
+                        content += `
+                        <span class="inline-flex items-baseline mx-0.5 whitespace-nowrap">
+                            ${blank.prefix ? `<span class="text-sky-800 font-bold tracking-wide">${blank.prefix}</span>` : ''}
+                            <input 
+                                type="text" 
+                                value="${safeVal}" 
+                                maxlength="${missingLength}"
+                                placeholder="${'_'.repeat(missingLength)}"
+                                oninput="handleClozeInput(${blank.id}, this.value)"
+                                class="mx-0.5 border-b-[3px] border-slate-300 focus:border-sky-500 bg-transparent focus:bg-sky-50 text-sky-700 font-mono text-xl tracking-[0.2em] font-bold text-center focus:outline-none transition-colors"
+                                style="width: ${inputWidth}rem;"
+                                aria-label="Blank ${blank.id}"
+                                autocomplete="off"
+                                autocorrect="off"
+                                autocapitalize="none"
+                                spellcheck="false"
+                            />
+                            ${blank.suffix ? `<span class="text-sky-800 font-bold tracking-wide">${blank.suffix}</span>` : ''}
+                        </span>`;
+                    }
+                }
+            });
+
+            let explanationBlock = '';
+            if (state.isReviewMode) {
+                let explanationsHtml = '';
+                data.blanks.forEach(blank => {
+                    const userVal = state.answers[blank.id] ? state.answers[blank.id].trim() : "";
+                    const fullUserWord = (blank.prefix || "") + userVal + (blank.suffix || "");
+                    const isCorrect = fullUserWord.toLowerCase() === blank.answer.toLowerCase();
+                    const icon = isCorrect ? '<i data-lucide="check" class="w-4 h-4 text-green-600 mt-1 mr-2 flex-shrink-0"></i>' : '<i data-lucide="x" class="w-4 h-4 text-red-500 mt-1 mr-2 flex-shrink-0"></i>';
+                    explanationsHtml += `<li class="flex items-start">${icon}<div><strong class="text-sky-800">${blank.answer}:</strong> ${blank.explanation}</div></li>`;
+                });
+                
+                explanationBlock = `
+                <div class="mt-8 bg-sky-50 border border-sky-100 rounded-lg p-6">
+                    <h4 class="font-bold text-sky-900 mb-4 flex items-center">
+                        <i data-lucide="lightbulb" class="w-5 h-5 mr-2"></i> Vocabulary Context Explanations
+                    </h4>
+                    <ul class="space-y-3 text-slate-700 text-base">
+                        ${explanationsHtml}
+                    </ul>
+                </div>`;
+            }
+
+            return `
+            <div class="pt-32 px-4 md:px-12 max-w-5xl mx-auto pb-12">
+                <h2 class="text-center text-2xl font-sans font-bold text-slate-800 mb-12">
+                    ${data.title}
+                </h2>
+                
+                <div class="bg-white p-8 leading-loose text-lg text-slate-800 font-sans text-justify shadow-md border border-slate-200 rounded-lg">
+                    ${content}
+                </div>
+                ${explanationBlock}
+            </div>
+            `;
+        }
+
+        function renderReading(step) {
+            const { data, question } = step;
+            
+            const paragraphs = data.passageContent.split('\n').map(line => `<p class="mb-5">${line}</p>`).join('');
+            
+            const options = question.options.map((opt, idx) => {
+                const isChecked = state.answers[question.id] === idx ? 'checked' : '';
+                
+                if (state.isReviewMode) {
+                    const isUserAns = state.answers[question.id] === idx;
+                    const isCorrectAns = question.correctAnswer === idx;
+                    let optionClass = "p-3 rounded border border-slate-200 text-slate-700";
+                    let icon = "";
+                    
+                    if (isCorrectAns) {
+                        optionClass = "p-3 rounded border-2 border-green-500 bg-green-50 text-green-800 font-bold shadow-sm";
+                        icon = '<i data-lucide="check-circle" class="w-5 h-5 ml-auto text-green-600 flex-shrink-0"></i>';
+                    } else if (isUserAns && !isCorrectAns) {
+                        optionClass = "p-3 rounded border-2 border-red-300 bg-red-50 text-red-800";
+                        icon = '<i data-lucide="x-circle" class="w-5 h-5 ml-auto text-red-500 flex-shrink-0"></i>';
+                    } else {
+                        optionClass = "p-3 rounded border border-slate-100 bg-white opacity-60";
+                    }
+                    
+                    return `
+                    <label class="flex items-start cursor-default bg-white p-4 rounded-lg mb-3 shadow-sm ${optionClass}">
+                        <div class="relative flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <input 
+                                type="radio" 
+                                disabled
+                                ${isChecked}
+                                class="peer appearance-none w-5 h-5 border-2 border-slate-400 rounded-full checked:border-sky-600 checked:border-4 transition-all opacity-60 mr-4"
+                            />
+                        </div>
+                        <span class="text-slate-700 font-sans text-lg flex-grow pr-2">${opt}</span>
+                        ${icon}
+                    </label>
+                    `;
+                } else {
+                    return `
+                    <label class="flex items-start cursor-pointer group bg-white p-4 rounded-lg border border-slate-200 hover:border-sky-400 hover:bg-sky-50 transition-all shadow-sm">
+                        <div class="relative flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <input 
+                                type="radio" 
+                                name="q-${question.id}" 
+                                ${isChecked}
+                                onchange="handleRadioInput(${question.id}, ${idx})"
+                                class="peer appearance-none w-5 h-5 border-2 border-slate-400 rounded-full checked:border-sky-600 checked:border-4 transition-all"
+                            />
+                        </div>
+                        <span class="ml-4 text-slate-700 font-sans text-lg group-hover:text-sky-900">
+                            ${opt}
+                        </span>
+                    </label>
+                    `;
+                }
+            }).join('');
+
+            let explanationBlock = '';
+            if (state.isReviewMode) {
+                const isUserAnsCorrect = state.answers[question.id] === question.correctAnswer;
+                const correctnessBadge = isUserAnsCorrect 
+                    ? '<span class="text-green-600 font-bold text-sm flex items-center bg-green-50 px-2 py-1 rounded mb-3 w-max border border-green-200"><i data-lucide="check" class="w-4 h-4 mr-1"></i> Correct</span>' 
+                    : '<span class="text-red-500 font-bold text-sm flex items-center bg-red-50 px-2 py-1 rounded mb-3 w-max border border-red-200"><i data-lucide="x" class="w-4 h-4 mr-1"></i> Incorrect</span>';
+                    
+                explanationBlock = `
+                <div class="mt-6 p-5 bg-sky-50 rounded-lg border border-sky-100 text-slate-700 shadow-sm">
+                    ${correctnessBadge}
+                    <div class="flex items-start">
+                        <i data-lucide="lightbulb" class="w-5 h-5 mr-3 text-sky-600 flex-shrink-0 mt-0.5"></i>
+                        <div>
+                            <strong class="text-sky-900 block mb-1">Strategy & Context:</strong>
+                            ${question.explanation}
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            return `
+            <div class="pt-28 h-screen flex flex-col md:flex-row overflow-hidden bg-slate-50">
+                <div class="w-full md:w-1/2 h-full overflow-y-auto border-r border-slate-300 p-8 bg-white custom-scroll shadow-inner">
+                    <h2 class="text-2xl font-bold mb-6 font-sans text-sky-800 border-b border-slate-100 pb-4">${data.passageTitle}</h2>
+                    <div class="prose max-w-none text-slate-800 font-sans leading-relaxed text-lg">
+                        ${paragraphs}
+                    </div>
+                </div>
+                
+                <div class="w-full md:w-1/2 h-full overflow-y-auto p-8 bg-slate-50 custom-scroll">
+                    <div class="max-w-xl mx-auto pb-12">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+                            <h3 class="text-xl font-bold text-slate-800 font-sans">${question.text}</h3>
+                        </div>
+                        <div class="space-y-4">
+                            ${options}
+                        </div>
+                        ${explanationBlock}
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // MAIN RENDER LOOP
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (!state.currentModule) {
+                app.innerHTML = renderWelcome();
+            } else if (state.showResults) {
+                app.innerHTML = renderResults();
+            } else {
+                let mainContent = '';
+                if (state.showInstructions) {
+                    mainContent = renderInstructions();
+                } else {
+                    const step = state.flatSteps[state.currentStepIndex];
+                    if (step.type === 'cloze') {
+                        mainContent = renderCloze(step);
+                    } else if (step.type === 'reading') {
+                        mainContent = renderReading(step);
+                    }
+                }
+                
+                app.innerHTML = renderHeader() + renderSubHeader() + mainContent;
+            }
+
+            lucide.createIcons();
+        }
+
+        render();
+    </script>
+</body>
+</html>

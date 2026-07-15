@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>TOEFL iBT Reading Skill-Building Worksheet</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons for professional vector graphics -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config for Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f2f3ff',
+                            100: '#e7e9ff',
+                            200: '#d0d4ff',
+                            300: '#aeb5ff',
+                            400: '#949af8',
+                            500: '#737df5',
+                            600: '#545be0',
+                            700: '#4346bc',
+                            800: '#373a99',
+                            900: '#2f347a',
+                        },
+                        dark: '#0f172a',
+                    },
+                    boxShadow: {
+                        'neo': '8px 8px 0px 0px #0f172a',
+                        'neo-sm': '4px 4px 0px 0px #0f172a',
+                        'neo-hover': '6px 6px 0px 0px #0f172a',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                        '4': '4px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* --- Neo-Brutalist Background & Global Styles --- */
+        body {
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            background-color: #f2f3ff;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            text-wrap: pretty; /* Pedagogical adjustment for readability */
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f2f3ff; border-left: 3px solid #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0f172a; border: 2px solid #f2f3ff; }
+        ::-webkit-scrollbar-thumb:hover { background: #373a99; }
+
+        /* Neo-Brutalist Components */
+        .neo-card {
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            background-color: #ffffff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .neo-btn {
+            border: 3px solid #0f172a;
+            box-shadow: 3px 3px 0px 0px #0f172a;
+            font-weight: 800;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px #0f172a;
+        }
+
+        /* Accordion Transitions */
+        .accordion-content {
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.active {
+            opacity: 1;
+        }
+        
+        /* Answer Fade In */
+        .answer-box {
+            transition: all 0.3s ease;
+        }
+        .answer-box.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .answer-box.visible {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements - Brutalist Style */
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 4px 4px 0px 0px #0f172a;
+            margin-top: 0.5rem;
+            background-color: #ffffff;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .text-input:focus {
+            outline: none;
+            border-color: #545be0;
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0px 0px #0f172a;
+        }
+
+        /* Ghost Text Layering - C-Test Styling */
+        .c-wrapper {
+            position: relative;
+            display: inline-block;
+            height: 1.8em;
+            vertical-align: middle;
+            margin: 0 0.1em;
+            border-bottom: 3px solid #0f172a;
+            background-color: transparent;
+            transition: all 0.2s;
+            max-width: 100%;
+        }
+        .c-wrapper:focus-within {
+            border-bottom-color: #545be0;
+            border-bottom-width: 4px;
+            background-color: #e7e9ff;
+        }
+        .c-wrapper.correct {
+            border-bottom-color: #22c55e;
+            border-bottom-width: 4px;
+            background-color: #dcfce7;
+        }
+        .c-wrapper.incorrect {
+            border-bottom-color: #ef4444;
+            border-bottom-width: 4px;
+            background-color: #fee2e2;
+        }
+
+        .c-ghost-bg, .c-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-family: monospace;
+            letter-spacing: 0.15em;
+            font-size: 1.1em;
+            line-height: 1.6em;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 0 0.3em;
+            margin: 0;
+            text-align: left;
+            white-space: pre;
+        }
+        .c-ghost-bg {
+            color: #94a3b8;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .ghost-typed {
+            opacity: 0;
+        }
+        .c-input {
+            color: #0f172a;
+            z-index: 2;
+            caret-color: #545be0;
+            font-weight: 700;
+        }
+        .c-wrapper.correct .c-input {
+            color: #15803d;
+            font-weight: 900;
+        }
+        .c-wrapper.incorrect .c-input {
+            color: #b91c1c;
+        }
+
+        /* Radio Options - Brutalist Style */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            border: 3px solid #0f172a;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: white;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #0f172a;
+        }
+        .option-label:hover {
+            background-color: #f8fafc;
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0px 0px #0f172a;
+        }
+        .option-label.correct {
+            background-color: #4ade80;
+            border-color: #0f172a;
+            color: #0f172a;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+        .option-label.incorrect {
+            background-color: #f87171;
+            border-color: #0f172a;
+            color: #ffffff;
+            box-shadow: 2px 2px 0px 0px #0f172a;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 p-3 sm:p-6 md:p-8 text-sm md:text-base">
+
+    <div class="max-w-6xl mx-auto bg-white p-5 sm:p-8 lg:p-10 border-4 border-dark shadow-neo">
+        
+        <!-- Breadcrumbs -->
+        <div class="text-xs sm:text-sm md:text-base text-dark mb-8 flex gap-2 font-black uppercase tracking-wider items-center flex-wrap">
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">TOEFL iBT</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-200 px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Reading</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-[#facc15] px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">B2 Level</span> 
+            <i data-lucide="chevron-right" class="w-4 h-4"></i> 
+            <span class="bg-brand-500 text-white px-2 py-1 border-2 border-dark shadow-[2px_2px_0_0_#0f172a]">Format Overview</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8 md:mb-12 border-b-4 border-dark pb-8">
+            <div>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-dark uppercase tracking-tight mb-3 md:mb-4 text-balance">
+                    TOEFL iBT Reading Overview
+                </h1>
+                <p class="text-lg sm:text-xl md:text-2xl text-slate-800 font-bold leading-tight bg-brand-100 inline-block px-3 py-1 border-2 border-dark text-pretty">
+                    Skill Focus: Navigating Diverse Text Structures and Lexical Precision
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="resetAll()" class="neo-btn w-full lg:w-auto flex items-center justify-center gap-2 px-5 py-3 text-sm md:text-base text-dark bg-[#f87171] uppercase tracking-wide">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-[#fefce8] border-3 border-dark p-5 md:p-6 mb-8 md:mb-12 shadow-neo-sm flex items-start gap-4">
+            <div class="bg-[#facc15] p-2 border-2 border-dark shrink-0">
+                <i data-lucide="info" class="w-6 h-6 text-dark"></i>
+            </div>
+            <p class="text-base md:text-lg text-dark font-bold leading-relaxed text-pretty">
+                <span class="uppercase font-black text-xl mr-2">Instructions:</span> Work through the modules to master the 2026 TOEFL iBT Reading format. Use the interactive inputs to test your lexical and grammatical competence.
+            </p>
+        </div>
+
+        <!-- Section 1: Awareness -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#eff6ff]">
+            <button onclick="toggleAccordion('part1')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#60a5fa] hover:bg-[#3b82f6] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform">
+                        <i data-lucide="eye" class="w-6 h-6 md:w-8 md:h-8"></i>
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Step 1: Introduction & Awareness</span>
+                </div>
+                <div id="icon-wrapper-part1" class="transition-transform duration-300 transform rotate-180 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part1" class="accordion-content active border-t-4 border-dark" style="max-height: 5000px;">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8">
+                    
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">Introduction to the 2026 Reading Format</h3>
+                        <p class="mb-4 text-base md:text-lg text-slate-800 font-medium leading-relaxed text-pretty">The updated TOEFL iBT Reading section reflects the "new literacy" required for modern academic success. It tests your ability to process English in three distinct ways:</p>
+                        <ul class="list-disc pl-6 md:pl-8 space-y-3 text-base md:text-lg text-slate-800 font-bold leading-relaxed bg-white p-5 md:p-6 border-3 border-dark shadow-neo-sm">
+                            <li class="text-pretty"><strong>Complete the Words (C-Test):</strong> Measures lexical and grammatical competence. You must reconstruct words in a paragraph where the second half of every second word is deleted.</li>
+                            <li class="text-pretty"><strong>Read in Daily Life:</strong> Involves "non-linear" reading (flyers, menus, maps). Tests finding specific info quickly in a functional context.</li>
+                            <li class="text-pretty"><strong>Read an Academic Passage:</strong> Short, formal articles testing main ideas, details, and author's purpose.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-black text-dark mb-4 uppercase inline-block border-b-4 border-dark pb-1 text-balance">The 'Hook': Awareness</h3>
+                        <p class="mb-5 md:mb-6 text-base md:text-lg text-slate-800 font-medium leading-relaxed text-pretty">In the 2026 format, reading is an active search for meaning rather than a passive scan. You need to adjust your reading speed and focus based on the task.</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6 mb-8">
+                            <!-- Text A -->
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo-sm">
+                                <h4 class="text-base md:text-lg font-black text-dark uppercase mb-4 border-b-2 border-dark pb-2 flex items-center gap-2 text-balance">
+                                    <i data-lucide="search" class="w-5 h-5 text-brand-500"></i> Text A (Scanning)
+                                </h4>
+                                <p class="bg-slate-100 p-4 border-2 border-dark text-slate-800 text-base md:text-lg leading-relaxed italic text-pretty">"The seminar is in Room 402, not Room 405. Please arrive ten minutes early for registration."</p>
+                            </div>
+
+                            <!-- Text B -->
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo-sm">
+                                <h4 class="text-base md:text-lg font-black text-dark uppercase mb-4 border-b-2 border-dark pb-2 flex items-center gap-2 text-balance">
+                                    <i data-lucide="puzzle" class="w-5 h-5 text-amber-500"></i> Text B (Parsing / C-Test)
+                                </h4>
+                                <p class="bg-[#fefce8] p-4 border-2 border-dark text-dark font-mono text-base md:text-lg leading-relaxed tracking-wide break-words">"The sem____ is i_ Room 402, n__ Room 405."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="p-5 bg-[#facc15] border-3 border-dark shadow-neo-sm text-dark text-sm md:text-base leading-relaxed font-medium flex items-start gap-4">
+                            <div class="bg-white p-2 border-2 border-dark shrink-0 mt-1"><i data-lucide="lightbulb" class="w-5 h-5"></i></div>
+                            <p class="text-pretty"><strong>Self-Learning Insight:</strong> If you are reading Text A, you are looking for a location. If you are completing Text B, you are using your knowledge of English spelling and grammar to fill in the missing pieces. The 2026 test asks you to do both.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Guided Practice -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#e0e7ff]">
+            <button onclick="toggleAccordion('part2')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#818cf8] hover:bg-[#6366f1] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform">
+                        <i data-lucide="presentation" class="w-6 h-6 md:w-8 md:h-8"></i>
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Step 2: Guided Practice</span>
+                </div>
+                <div id="icon-wrapper-part2" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part2" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8">
+                    
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo-sm">
+                        <span class="inline-flex items-center gap-2 bg-[#60a5fa] text-dark border-2 border-dark px-3 py-1 font-black text-xs md:text-sm mb-4 uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">
+                            <i data-lucide="target" class="w-4 h-4"></i> Strategy: Solving the C-Test
+                        </span>
+                        <p class="mb-5 md:mb-6 text-base md:text-lg text-slate-800 font-medium leading-relaxed text-pretty">The <strong>"Half-Word" Rule:</strong> If a word has an <strong>even</strong> number of letters (e.g., HELP), the first half is given (HE) and you provide the second half (LP). If <strong>odd</strong> (e.g., STUDY), the first part given is longer (STU) and you provide the rest (DY).</p>
+                        
+                        <div class="bg-slate-50 border-3 border-dark p-4 md:p-6 shadow-inner text-base md:text-xl lg:text-2xl leading-loose text-slate-800 mb-8 font-medium break-words overflow-wrap-normal">
+                            "The <span class="whitespace-nowrap">stud<input type="text" class="c-input" data-ans="ents" disabled></span> had <span class="whitespace-nowrap">t<input type="text" class="c-input" data-ans="o" disabled></span> finish <span class="whitespace-nowrap">th<input type="text" class="c-input" data-ans="e" disabled></span> project <span class="whitespace-nowrap">b<input type="text" class="c-input" data-ans="y" disabled></span> Monday."
+                        </div>
+                        
+                        <div class="border-3 border-dark p-5 md:p-6 bg-[#fefce8] shadow-neo-sm">
+                            <h4 class="text-lg md:text-xl font-black text-dark mb-4 uppercase flex items-center gap-2 border-b-2 border-dark pb-2 text-balance">
+                                <i data-lucide="message-circle" class="w-5 h-5"></i> Think-Aloud Logic:
+                            </h4>
+                            <ul class="list-none space-y-4 text-sm md:text-base text-slate-800 font-medium leading-relaxed">
+                                <li class="text-pretty"><span class="font-mono bg-white px-2 py-1 border-2 border-dark font-black text-dark mr-2 inline-block shadow-[2px_2px_0_0_#0f172a]">stud____:</span> Starts with "stud." Context: a person in a school. Likely <em>students</em>.</li>
+                                <li class="text-pretty"><span class="font-mono bg-white px-2 py-1 border-2 border-dark font-black text-dark mr-2 inline-block shadow-[2px_2px_0_0_#0f172a]">t_:</span> Follows "had." This is the infinitive marker <em>to</em>.</li>
+                                <li class="text-pretty"><span class="font-mono bg-white px-2 py-1 border-2 border-dark font-black text-dark mr-2 inline-block shadow-[2px_2px_0_0_#0f172a]">th_:</span> A common article. Likely <em>the</em>.</li>
+                                <li class="text-pretty"><span class="font-mono bg-white px-2 py-1 border-2 border-dark font-black text-dark mr-2 inline-block shadow-[2px_2px_0_0_#0f172a]">b_:</span> A preposition indicating a deadline. Likely <em>by</em>.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Controlled Practice -->
+        <div class="mb-6 border-4 border-dark shadow-neo bg-[#dcfce7]">
+            <button onclick="toggleAccordion('part3')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#4ade80] hover:bg-[#22c55e] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform">
+                        <i data-lucide="pen-tool" class="w-6 h-6 md:w-8 md:h-8"></i>
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Step 3: Controlled Practice</span>
+                </div>
+                <div id="icon-wrapper-part3" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part3" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8 bg-white">
+                    
+                    <p class="text-base md:text-lg text-slate-800 font-bold mb-4 bg-brand-100 inline-block px-3 py-1 border-2 border-dark text-pretty">Complete the following items and check your precision.</p>
+
+                    <!-- Part A: C-Test -->
+                    <div id="step-3-ctest" class="mb-10">
+                        <h4 class="text-lg md:text-xl font-black text-dark mb-4 md:mb-6 pb-2 border-b-4 border-dark uppercase flex items-center gap-2 text-balance">
+                            <i data-lucide="keyboard" class="w-6 h-6 text-[#4ade80]"></i> Part A: C-Test Precision
+                        </h4>
+                        <div class="bg-[#f8fafc] p-5 md:p-8 border-3 border-dark shadow-inner space-y-8 text-base md:text-xl leading-loose text-dark font-medium overflow-wrap-normal">
+                            <div class="text-pretty">
+                                <span class="font-black mr-2">1.</span> Many <span class="whitespace-nowrap">peo<input class="c-input" data-ans="ple" autocomplete="off"></span> believe <span class="whitespace-nowrap">th<input class="c-input" data-ans="at" autocomplete="off"></span> <span class="whitespace-nowrap">techn<input class="c-input" data-ans="ology" autocomplete="off"></span> is <span class="whitespace-nowrap">cha<input class="c-input" data-ans="nging" autocomplete="off"></span> our <span class="whitespace-nowrap">li<input class="c-input" data-ans="ves" autocomplete="off"></span>.
+                            </div>
+                            <div class="text-pretty">
+                                <span class="font-black mr-2">2.</span> The <span class="whitespace-nowrap">prof<input class="c-input" data-ans="essor" autocomplete="off"></span> asked <span class="whitespace-nowrap">t<input class="c-input" data-ans="he" autocomplete="off"></span> students <span class="whitespace-nowrap">t<input class="c-input" data-ans="o" autocomplete="off"></span> submit <span class="whitespace-nowrap">th<input class="c-input" data-ans="eir" autocomplete="off"></span> essays.
+                            </div>
+                            <div class="text-pretty">
+                                <span class="font-black mr-2">3.</span> We <span class="whitespace-nowrap">ne<input class="c-input" data-ans="ed" autocomplete="off"></span> to <span class="whitespace-nowrap">fi<input class="c-input" data-ans="nd" autocomplete="off"></span> a way <span class="whitespace-nowrap">t<input class="c-input" data-ans="o" autocomplete="off"></span> reduce <span class="whitespace-nowrap">ener<input class="c-input" data-ans="gy" autocomplete="off"></span> consumption.
+                            </div>
+                            <div class="text-pretty">
+                                <span class="font-black mr-2">4.</span> The <span class="whitespace-nowrap">lib<input class="c-input" data-ans="rary" autocomplete="off"></span> is open <span class="whitespace-nowrap">unt<input class="c-input" data-ans="il" autocomplete="off"></span> midnight <span class="whitespace-nowrap">dur<input class="c-input" data-ans="ing" autocomplete="off"></span> the <span class="whitespace-nowrap">fi<input class="c-input" data-ans="nals" autocomplete="off"></span> week.
+                            </div>
+                            <div class="text-pretty">
+                                <span class="font-black mr-2">5.</span> It <span class="whitespace-nowrap">i<input class="c-input" data-ans="s" autocomplete="off"></span> important <span class="whitespace-nowrap">t<input class="c-input" data-ans="o" autocomplete="off"></span> eat a <span class="whitespace-nowrap">bal<input class="c-input" data-ans="anced" autocomplete="off"></span> diet <span class="whitespace-nowrap">f<input class="c-input" data-ans="or" autocomplete="off"></span> good <span class="whitespace-nowrap">hea<input class="c-input" data-ans="lth" autocomplete="off"></span>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Part B: Logic -->
+                    <div class="mb-8">
+                        <h4 class="text-lg md:text-xl font-black text-dark mb-4 md:mb-6 pb-2 border-b-4 border-dark uppercase flex items-center gap-2 text-balance">
+                            <i data-lucide="brain" class="w-6 h-6 text-[#facc15]"></i> Part B: Daily Life & Academic Logic
+                        </h4>
+                        <div class="space-y-6 md:space-y-8">
+                            
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform">
+                                <span class="inline-block text-xs md:text-sm bg-[#60a5fa] text-dark border-2 border-dark px-3 py-1 font-black uppercase tracking-wider mb-4 shadow-[2px_2px_0_0_#0f172a]">Daily Life</span>
+                                <p class="mb-4 font-medium text-slate-800 text-sm md:text-base leading-relaxed text-pretty">A poster says: "Free Yoga Class: Tuesday @ 5 PM in the Gym. Bring your own mat."<br><span class="text-dark font-black mt-2 inline-block">Question: Can a student attend if they don't have a mat?</span></p>
+                                <input id="s3-q6" type="text" class="text-input text-sm md:text-base" placeholder="Type Yes/No and brief reason...">
+                            </div>
+
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform">
+                                <span class="inline-block text-xs md:text-sm bg-[#60a5fa] text-dark border-2 border-dark px-3 py-1 font-black uppercase tracking-wider mb-4 shadow-[2px_2px_0_0_#0f172a]">Daily Life</span>
+                                <p class="mb-4 font-medium text-slate-800 text-sm md:text-base leading-relaxed text-pretty">An email subject: "REVISED: Lab hours for Chemistry 101."<br><span class="text-dark font-black mt-2 inline-block">Question: What is the likely purpose of this email?</span></p>
+                                <input id="s3-q7" type="text" class="text-input text-sm md:text-base" placeholder="Your answer...">
+                            </div>
+
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform">
+                                <span class="inline-block text-xs md:text-sm bg-[#60a5fa] text-dark border-2 border-dark px-3 py-1 font-black uppercase tracking-wider mb-4 shadow-[2px_2px_0_0_#0f172a]">Daily Life</span>
+                                <p class="mb-4 font-medium text-slate-800 text-sm md:text-base leading-relaxed text-pretty">A campus map shows "Building C" between the Library and the Cafeteria.<br><span class="text-dark font-black mt-2 inline-block">Question: Where is Building C?</span></p>
+                                <input id="s3-q8" type="text" class="text-input text-sm md:text-base" placeholder="Your answer...">
+                            </div>
+
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform">
+                                <span class="inline-block text-xs md:text-sm bg-[#f87171] text-white border-2 border-dark px-3 py-1 font-black uppercase tracking-wider mb-4 shadow-[2px_2px_0_0_#0f172a]">Academic</span>
+                                <p class="mb-4 font-medium text-slate-800 text-sm md:text-base leading-relaxed text-pretty">"While solar power is renewable, the initial cost of installing panels remains high."<br><span class="text-dark font-black mt-2 inline-block">Question: What is the main disadvantage of solar power mentioned?</span></p>
+                                <input id="s3-q9" type="text" class="text-input text-sm md:text-base" placeholder="Your answer...">
+                            </div>
+
+                            <div class="bg-white p-5 md:p-6 border-3 border-dark shadow-neo hover:-translate-y-1 transition-transform">
+                                <span class="inline-block text-xs md:text-sm bg-[#f87171] text-white border-2 border-dark px-3 py-1 font-black uppercase tracking-wider mb-4 shadow-[2px_2px_0_0_#0f172a]">Academic</span>
+                                <p class="mb-4 font-medium text-slate-800 text-sm md:text-base leading-relaxed text-pretty">"The term 'urban heat island' refers to cities being warmer than rural areas due to human activity."<br><span class="text-dark font-black mt-2 inline-block">Question: What causes the temperature difference in cities?</span></p>
+                                <input id="s3-q10" type="text" class="text-input text-sm md:text-base" placeholder="Your answer...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t-4 border-dark">
+                        <button id="check-step3" class="neo-btn w-full sm:w-auto bg-[#4ade80] text-dark px-6 py-4 text-base md:text-lg uppercase tracking-wide flex items-center justify-center gap-3">
+                            <i data-lucide="check-square" class="w-6 h-6"></i> Check Answers & Explanation
+                        </button>
+                    </div>
+                    
+                    <!-- Explanations -->
+                    <div id="s3-explanation" class="hidden answer-box bg-[#f0fdf4] border-4 border-dark shadow-neo-sm p-5 md:p-8 mt-8">
+                        <div class="text-lg md:text-xl font-black text-dark mb-6 flex items-center gap-3 border-b-2 border-dark pb-3 uppercase text-balance">
+                            <i data-lucide="clipboard-check" class="w-6 h-6 text-[#22c55e]"></i> Answer Key & Explanations
+                        </div>
+                        <div class="space-y-6 text-sm md:text-base text-slate-800 leading-relaxed font-medium">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Part A (C-Test):</strong>
+                                <ul class="list-decimal pl-6 space-y-2">
+                                    <li>peo<span class="text-[#15803d] font-bold">ple</span>, th<span class="text-[#15803d] font-bold">at</span>, techn<span class="text-[#15803d] font-bold">ology</span>, cha<span class="text-[#15803d] font-bold">nging</span>, li<span class="text-[#15803d] font-bold">ves</span></li>
+                                    <li>prof<span class="text-[#15803d] font-bold">essor</span>, t<span class="text-[#15803d] font-bold">he</span>, t<span class="text-[#15803d] font-bold">o</span>, th<span class="text-[#15803d] font-bold">eir</span></li>
+                                    <li>ne<span class="text-[#15803d] font-bold">ed</span>, fi<span class="text-[#15803d] font-bold">nd</span>, t<span class="text-[#15803d] font-bold">o</span>, ener<span class="text-[#15803d] font-bold">gy</span></li>
+                                    <li>lib<span class="text-[#15803d] font-bold">rary</span>, unt<span class="text-[#15803d] font-bold">il</span>, dur<span class="text-[#15803d] font-bold">ing</span>, fi<span class="text-[#15803d] font-bold">nals</span></li>
+                                    <li>i<span class="text-[#15803d] font-bold">s</span>, t<span class="text-[#15803d] font-bold">o</span>, bal<span class="text-[#15803d] font-bold">anced</span>, f<span class="text-[#15803d] font-bold">or</span>, hea<span class="text-[#15803d] font-bold">lth</span></li>
+                                </ul>
+                            </div>
+                            <hr class="border-dark border-2">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Part B (Logic):</strong>
+                                <ul class="list-disc pl-6 space-y-4">
+                                    <li class="text-pretty"><strong>6. No:</strong> The poster explicitly says "Bring your own mat," meaning mats are not provided.</li>
+                                    <li class="text-pretty"><strong>7. To inform/update:</strong> "REVISED" implies a change to the schedule.</li>
+                                    <li class="text-pretty"><strong>8. Between library/cafeteria:</strong> This is a spatial reasoning task based on the description.</li>
+                                    <li class="text-pretty"><strong>9. High initial cost:</strong> The text uses "While" to contrast the benefit (renewable) with the cost (disadvantage).</li>
+                                    <li class="text-pretty"><strong>10. Human activity:</strong> The text explicitly attributes the warmth to "human activity."</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Real Test Simulation -->
+        <div class="mb-8 border-4 border-dark shadow-neo bg-[#fff7ed]">
+            <button onclick="toggleAccordion('part4')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#fb923c] hover:bg-[#f97316] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform">
+                        <i data-lucide="timer" class="w-6 h-6 md:w-8 md:h-8"></i>
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Step 4: Real Test Simulation</span>
+                </div>
+                <div id="icon-wrapper-part4" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part4" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8 bg-white">
+                    
+                    <!-- Task 1 -->
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo">
+                        <h3 class="text-lg md:text-xl font-black text-dark mb-6 flex flex-wrap items-center gap-3 border-b-2 border-dark pb-3 text-balance">
+                            <span class="bg-[#facc15] border-2 border-dark text-dark px-3 py-1 text-xs md:text-sm uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">Task 1</span>
+                            Complete the Words (Geography & Maps)
+                        </h3>
+                        <div id="step-4-ctest" class="bg-slate-50 p-4 md:p-8 border-3 border-dark shadow-inner text-base md:text-xl leading-loose text-dark font-medium overflow-wrap-normal">
+                            Maps are tools that help us understand the world around us. They <span class="whitespace-nowrap">sh<input class="c-input" data-ans="ow" autocomplete="off"></span> the <span class="whitespace-nowrap">loca<input class="c-input" data-ans="tions" autocomplete="off"></span> of <span class="whitespace-nowrap">pla<input class="c-input" data-ans="ces" autocomplete="off"></span> like <span class="whitespace-nowrap">cit<input class="c-input" data-ans="ies" autocomplete="off"></span>, rivers, <span class="whitespace-nowrap">a<input class="c-input" data-ans="nd" autocomplete="off"></span> mountains. <span class="whitespace-nowrap">Th<input class="c-input" data-ans="ese" autocomplete="off"></span> visual <span class="whitespace-nowrap">gu<input class="c-input" data-ans="ides" autocomplete="off"></span> can <span class="whitespace-nowrap">al<input class="c-input" data-ans="so" autocomplete="off"></span> display different <span class="whitespace-nowrap">ty<input class="c-input" data-ans="pes" autocomplete="off"></span> of <span class="whitespace-nowrap">infor<input class="c-input" data-ans="mation" autocomplete="off"></span>, such as climate or population. There are many kinds, including physical, political, and thematic versions. The study of maps and cartography, the process by which they are made, can teach us about the geography of our planet and how people live in different regions.
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo">
+                        <h3 class="text-lg md:text-xl font-black text-dark mb-6 flex flex-wrap items-center gap-3 border-b-2 border-dark pb-3 text-balance">
+                            <span class="bg-[#60a5fa] border-2 border-dark text-dark px-3 py-1 text-xs md:text-sm uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">Task 2</span>
+                            Read in Daily Life (Functional Reading)
+                        </h3>
+                        <div class="bg-slate-100 p-5 md:p-6 border-l-8 border-dark italic mb-6 text-base md:text-lg text-slate-800 leading-relaxed font-medium text-pretty">
+                            "Dormitory Maintenance Notice: Wednesday, Nov 12. Water will be turned off in West Wing between 9:00 AM and 11:00 AM for pipe inspections. Residents are advised to shower before 8:30 AM. Elevators will remain operational."
+                        </div>
+                        <p class="mb-5 font-black text-dark text-base md:text-lg text-pretty">Question: Which of the following is true?</p>
+                        <div class="space-y-4 text-sm md:text-base text-slate-800">
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p2" value="A"> A) The water will be off all day Wednesday.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p2" value="B"> B) Residents can still use the elevators during the inspection.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p2" value="C"> C) The inspection is happening in all dormitory wings.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p2" value="D"> D) Students must leave the building by 9:00 AM.</label>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="bg-white p-5 md:p-8 border-3 border-dark shadow-neo">
+                        <h3 class="text-lg md:text-xl font-black text-dark mb-6 flex flex-wrap items-center gap-3 border-b-2 border-dark pb-3 text-balance">
+                            <span class="bg-[#f87171] border-2 border-dark text-white px-3 py-1 text-xs md:text-sm uppercase tracking-wider shadow-[2px_2px_0_0_#0f172a]">Task 3</span>
+                            Read an Academic Passage (Social Science)
+                        </h3>
+                        <div class="bg-slate-100 p-5 md:p-6 border-l-8 border-dark italic mb-6 text-base md:text-lg text-slate-800 leading-relaxed font-medium text-pretty">
+                            "Social identity theory suggests that an individual's sense of who they are is based on their group membership. People naturally categorize themselves into 'in-groups' and 'out-groups.' This categorization often leads to 'in-group favoritism,' where individuals prefer members of their own group over others. While this can build strong community bonds, it can also lead to prejudice against those outside the group."
+                        </div>
+                        <p class="mb-5 font-black text-dark text-base md:text-lg text-pretty">Question: What is a potential negative consequence of social categorization?</p>
+                        <div class="space-y-4 text-sm md:text-base text-slate-800">
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="A"> A) Stronger community bonds within out-groups.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="B"> B) Decreased preference for one's own group.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="C"> C) Prejudice against individuals outside the group.</label>
+                            <label class="option-label text-pretty"><input type="radio" name="s4-p3" value="D"> D) A loss of individual identity.</label>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t-4 border-dark">
+                        <button id="check-step4" class="neo-btn w-full sm:w-auto bg-[#fb923c] text-dark px-6 py-4 text-base md:text-lg uppercase tracking-wide flex items-center justify-center gap-3">
+                            <i data-lucide="flag" class="w-6 h-6"></i> Check Simulation Answers
+                        </button>
+                    </div>
+
+                    <!-- Explanations -->
+                    <div id="s4-explanation" class="hidden answer-box bg-[#fff7ed] border-4 border-dark shadow-neo-sm p-5 md:p-8 mt-8">
+                        <div class="text-lg md:text-xl font-black text-dark mb-6 flex items-center gap-3 border-b-2 border-dark pb-3 uppercase text-balance">
+                            <i data-lucide="clipboard-check" class="w-6 h-6 text-[#ea580c]"></i> Answer Key & Explanations
+                        </div>
+                        <div class="space-y-6 text-sm md:text-base text-slate-800 leading-relaxed font-medium">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Task 1 (C-Test):</strong>
+                                <p class="italic text-dark bg-white p-4 border-2 border-dark font-bold text-pretty">"Maps are tools that help us understand the world around us. They show the locations of places like cities, rivers, and mountains. These visual guides can also display different types of information, such as climate or population. There are many kinds, including physical, political, and thematic versions. The study of maps and cartography, the process by which they are made, can teach us about the geography of our planet and how people live in different regions."</p>
+                            </div>
+                            <hr class="border-dark border-2">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Task 2 (Daily Life):</strong>
+                                <p class="mb-2 text-pretty"><span class="text-dark bg-[#4ade80] border-2 border-dark px-2 py-1 font-black uppercase mr-2 shadow-[2px_2px_0_0_#0f172a]">Correct: B</span> Residents can still use the elevators.</p>
+                                <p class="text-slate-600 bg-white p-3 border-2 border-dark text-pretty"><em>Reasoning:</em> The text explicitly states "Elevators will remain operational," which directly supports option B.</p>
+                            </div>
+                            <hr class="border-dark border-2">
+                            <div>
+                                <strong class="text-dark font-black uppercase block mb-3 bg-white border-2 border-dark px-2 py-1 w-fit">Task 3 (Academic):</strong>
+                                <p class="mb-2 text-pretty"><span class="text-dark bg-[#4ade80] border-2 border-dark px-2 py-1 font-black uppercase mr-2 shadow-[2px_2px_0_0_#0f172a]">Correct: C</span> Prejudice against individuals outside the group.</p>
+                                <p class="text-slate-600 bg-white p-3 border-2 border-dark text-pretty"><em>Reasoning:</em> The passage states that while categorization builds bonds, "it can also lead to prejudice against those outside the group."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Reflection -->
+        <div class="mb-4 border-4 border-dark shadow-neo bg-[#f3e8ff]">
+            <button onclick="toggleAccordion('part5')" class="w-full flex items-center justify-between p-5 md:p-6 lg:p-8 bg-[#c084fc] hover:bg-[#a855f7] transition-colors text-left group border-b-4 border-dark border-opacity-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white border-3 border-dark text-dark w-12 h-12 md:w-16 md:h-16 shrink-0 flex items-center justify-center shadow-neo-sm group-hover:scale-105 transition-transform">
+                        <i data-lucide="brain" class="w-6 h-6 md:w-8 md:h-8"></i>
+                    </div>
+                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-dark uppercase tracking-tight text-balance">Step 5: Reflection & Self-Assessment</span>
+                </div>
+                <div id="icon-wrapper-part5" class="transition-transform duration-300 shrink-0 ml-2 bg-white border-2 border-dark p-1">
+                    <i data-lucide="chevron-down" class="w-6 h-6 text-dark"></i>
+                </div>
+            </button>
+            <div id="content-part5" class="accordion-content border-t-4 border-dark">
+                <div class="p-5 md:p-8 lg:p-10 space-y-8 bg-white">
+                    
+                    <div class="space-y-8 md:space-y-10">
+                        <div class="bg-slate-50 p-5 md:p-6 border-3 border-dark shadow-neo-sm">
+                            <p class="mb-4 text-base md:text-lg font-black text-dark text-pretty">1. Accuracy Check: <span class="font-bold text-slate-700 block mt-2 text-sm md:text-base">When doing the C-Test, did you find it easier to complete small words (like "t_" for "to") or longer content words?</span></p>
+                            <textarea class="text-input text-sm md:text-base" placeholder="My reflection..."></textarea>
+                        </div>
+                        <div class="bg-slate-50 p-5 md:p-6 border-3 border-dark shadow-neo-sm">
+                            <p class="mb-4 text-base md:text-lg font-black text-dark text-pretty">2. Strategy Check: <span class="font-bold text-slate-700 block mt-2 text-sm md:text-base">In the "Daily Life" task, did you read the whole notice first, or did you look at the question and then scan for the time/location?</span></p>
+                            <textarea class="text-input text-sm md:text-base" placeholder="My reflection..."></textarea>
+                        </div>
+                        <div class="bg-slate-50 p-5 md:p-6 border-3 border-dark shadow-neo-sm">
+                            <p class="mb-4 text-base md:text-lg font-black text-dark text-pretty">3. Goal Setting: <span class="font-bold text-slate-700 block mt-2 text-sm md:text-base">Which format (C-Test, Daily Life, or Academic) feels most difficult for you to complete within a short time frame?</span></p>
+                            <textarea class="text-input text-sm md:text-base" placeholder="My reflection..."></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t-4 border-dark text-center">
+            <p class="text-dark text-sm md:text-base font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm">
+                Designed by <a href="https://fajarudinakbar.online" target="_blank" class="text-brand-700 hover:text-brand-900 transition-colors underline decoration-4 underline-offset-4">fajarudinakbar.online</a>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // --- Init Lucide Icons ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+
+        // --- Helper: Check Inputs ---
+        function validateInputs(containerId) {
+            const inputs = document.querySelectorAll(`#${containerId} .c-input`);
+            inputs.forEach(input => {
+                const correct = input.getAttribute('data-ans').toLowerCase();
+                const userVal = input.value.trim().toLowerCase();
+                const wrapper = input.closest('.c-wrapper');
+                if(userVal === correct) {
+                    wrapper.classList.remove('incorrect');
+                    wrapper.classList.add('correct');
+                } else {
+                    wrapper.classList.remove('correct');
+                    wrapper.classList.add('incorrect');
+                }
+            });
+        }
+
+        // --- Helper: Set Radio Visuals ---
+        function setRadioVisuals(name, correctVal) {
+            const inputs = document.querySelectorAll(`input[name="${name}"]`);
+            inputs.forEach(input => {
+                const label = input.closest('label');
+                if (input.value === correctVal) {
+                    label.classList.add('correct');
+                    label.classList.remove('incorrect');
+                } else if (input.checked) {
+                    label.classList.add('incorrect');
+                } else {
+                    label.classList.remove('correct', 'incorrect');
+                }
+            });
+        }
+
+        // --- Helper: Check Text Inputs ---
+        function checkText(id, keywords) {
+            const el = document.getElementById(id);
+            const val = el.value.toLowerCase();
+            if(val === "") return; // Skip empty
+            const isCorrect = keywords.some(k => val.includes(k));
+            if(isCorrect) {
+                // Apply Brutalist Success styles
+                el.classList.add('border-[#22c55e]', 'bg-[#dcfce7]', 'text-[#15803d]');
+                el.classList.remove('border-[#ef4444]', 'bg-[#fee2e2]', 'text-[#b91c1c]', 'border-[#0f172a]');
+            } else {
+                // Apply Brutalist Error styles
+                el.classList.add('border-[#ef4444]', 'bg-[#fee2e2]', 'text-[#b91c1c]');
+                el.classList.remove('border-[#22c55e]', 'bg-[#dcfce7]', 'text-[#15803d]', 'border-[#0f172a]');
+            }
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconWrapper = document.getElementById(`icon-wrapper-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.style.maxHeight = '0px';
+                content.classList.remove('active');
+                iconWrapper.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = '5000px'; 
+                content.classList.add('active');
+                iconWrapper.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function resetAll() {
+            if(confirm("Clear all your notes and answers?")) {
+                // Clear inputs
+                document.querySelectorAll('textarea').forEach(t => t.value = "");
+                document.querySelectorAll('.text-input').forEach(i => {
+                    i.value = "";
+                    i.classList.remove('border-[#22c55e]', 'bg-[#dcfce7]', 'text-[#15803d]', 'border-[#ef4444]', 'bg-[#fee2e2]', 'text-[#b91c1c]');
+                    i.classList.add('border-[#0f172a]'); // reset to dark border
+                });
+                
+                // Clear C-Test
+                document.querySelectorAll('.c-input').forEach(i => {
+                    if(!i.disabled) {
+                        i.value = "";
+                        const wrapper = i.closest('.c-wrapper');
+                        if(wrapper) {
+                            wrapper.classList.remove('correct', 'incorrect');
+                            const typedSpan = wrapper.querySelector('.ghost-typed');
+                            const underSpan = wrapper.querySelector('.ghost-underscores');
+                            if (typedSpan && underSpan) {
+                                typedSpan.textContent = "";
+                                underSpan.textContent = '_'.repeat(i.maxLength);
+                            }
+                        }
+                    }
+                });
+
+                // Clear Radios
+                document.querySelectorAll('input[type="radio"]').forEach(r => { 
+                    r.checked = false; 
+                });
+                document.querySelectorAll('.option-label').forEach(l => {
+                    l.classList.remove('correct', 'incorrect');
+                });
+
+                // Hide Explanations
+                document.querySelectorAll('.answer-box').forEach(el => { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('visible'); 
+                });
+            }
+        }
+
+        // --- Init Ghost Text Layering for C-Test Inputs ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.c-input').forEach(input => {
+                const ans = input.getAttribute('data-ans');
+                const len = ans.length;
+
+                const wrapper = document.createElement('span');
+                wrapper.className = 'c-wrapper';
+                
+                // Ensure dynamic width generation accounts for text scaling
+                wrapper.style.width = `calc(${len}ch + ${len * 0.15}em + 0.6em)`;
+
+                const ghost = document.createElement('span');
+                ghost.className = 'c-ghost-bg';
+                ghost.innerHTML = `<span class="ghost-typed"></span><span class="ghost-underscores">${'_'.repeat(len)}</span>`;
+
+                input.maxLength = len;
+                
+                input.parentNode.insertBefore(wrapper, input);
+                wrapper.appendChild(ghost);
+                wrapper.appendChild(input);
+
+                const typedSpan = ghost.querySelector('.ghost-typed');
+                const underSpan = ghost.querySelector('.ghost-underscores');
+                
+                // Sync initial value (if any, like in Step 2)
+                if (input.value) {
+                    typedSpan.textContent = input.value;
+                    const remaining = Math.max(0, len - input.value.length);
+                    underSpan.textContent = '_'.repeat(remaining);
+                }
+
+                // Sync typing in real-time
+                input.addEventListener('input', (e) => {
+                    const typed = e.target.value;
+                    typedSpan.textContent = typed;
+                    const remaining = Math.max(0, len - typed.length);
+                    underSpan.textContent = '_'.repeat(remaining);
+                    
+                    wrapper.classList.remove('correct', 'incorrect');
+                });
+            });
+
+            // Step 3 Check
+            document.getElementById('check-step3').addEventListener('click', () => {
+                validateInputs('step-3-ctest');
+                checkText('s3-q6', ['no']);
+                checkText('s3-q7', ['inform', 'change', 'schedule', 'revise', 'update']);
+                checkText('s3-q8', ['between', 'library', 'cafeteria', 'middle']);
+                checkText('s3-q9', ['cost', 'expensive', 'money', 'high', 'price']);
+                checkText('s3-q10', ['human', 'activity', 'people']);
+                
+                const exp = document.getElementById('s3-explanation');
+                exp.classList.remove('hidden');
+                exp.classList.add('visible');
+            });
+
+            // Step 4 Check
+            document.getElementById('check-step4').addEventListener('click', () => {
+                validateInputs('step-4-ctest');
+                setRadioVisuals('s4-p2', 'B');
+                setRadioVisuals('s4-p3', 'C');
+                
+                const exp = document.getElementById('s4-explanation');
+                exp.classList.remove('hidden');
+                exp.classList.add('visible');
+            });
+        });
+    </script>
+</body>
+</html>
