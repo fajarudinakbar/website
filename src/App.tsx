@@ -2,67 +2,7 @@ import { useEffect } from 'react'
 import CoursePage from './pages/CoursePage'
 import EnglishPage from './pages/EnglishPage'
 
-const metaConfig = {
-    english: {
-        title: 'Digital Lessons Project by Teacher Fajar',
-        description: 'This page serves as a repository for my digital lessons, open educational resources (OER), and EdTech projects.',
-        siteName: 'Digital Lessons Project by Teacher Fajar',
-        image: 'https://raw.githubusercontent.com/fajarudinakbar/Images/refs/heads/main/Fajarudin%20Akbar.png',
-        imageAlt: 'A professional headshot of Fajarudin Akbar',
-        imageWidth: '1200',
-        imageHeight: '630',
-        url: window.location.origin,
-    },
-} as const
-
-const setMetaContent = (selector: string, content: string) => {
-    let element = document.head.querySelector<HTMLMetaElement>(selector)
-
-    if (!element) {
-        element = document.createElement('meta')
-        const attribute = selector.startsWith('meta[property=') ? 'property' : 'name'
-        const value = selector.match(/["'](.+)["']/)?.[1]
-
-        if (!value) return
-
-        element.setAttribute(attribute, value)
-        document.head.appendChild(element)
-    }
-
-    element.content = content
-}
-
 const App = () => {
-    useEffect(() => {
-        const isEnglishPage = ['/', '/english', '/english/'].includes(window.location.pathname)
-        if (!isEnglishPage) return
-
-        const meta = metaConfig.english
-        document.title = meta.title
-        setMetaContent('meta[name="description"]', meta.description)
-        setMetaContent('meta[property="og:title"]', meta.title)
-        setMetaContent('meta[property="og:site_name"]', meta.siteName)
-        setMetaContent('meta[property="og:description"]', meta.description)
-        setMetaContent('meta[property="og:image"]', meta.image)
-        setMetaContent('meta[property="og:image:alt"]', meta.imageAlt)
-        setMetaContent('meta[property="og:image:width"]', meta.imageWidth)
-        setMetaContent('meta[property="og:image:height"]', meta.imageHeight)
-        setMetaContent('meta[property="og:url"]', meta.url)
-        setMetaContent('meta[property="og:type"]', 'website')
-        setMetaContent('meta[name="twitter:card"]', 'summary_large_image')
-        setMetaContent('meta[name="twitter:title"]', meta.title)
-        setMetaContent('meta[name="twitter:description"]', meta.description)
-        setMetaContent('meta[name="twitter:image"]', meta.image)
-
-        let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
-        if (!canonical) {
-            canonical = document.createElement('link')
-            canonical.rel = 'canonical'
-            document.head.appendChild(canonical)
-        }
-        canonical.href = meta.url
-    }, [])
-
     useEffect(() => {
         const mobileMenuButton = document.getElementById('mobile-menu-button')
         const mobileMenu = document.getElementById('mobile-menu')
