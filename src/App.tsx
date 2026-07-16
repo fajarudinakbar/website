@@ -115,6 +115,8 @@ const App = () => {
 
     if (
         window.location.pathname === '/' ||
+        window.location.pathname === '/en' ||
+        window.location.pathname === '/en/' ||
         window.location.pathname === '/english' ||
         window.location.pathname === '/english/'
     ) {
