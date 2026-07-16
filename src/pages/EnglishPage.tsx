@@ -74,8 +74,8 @@ const EnglishPage = () => {
       <footer className="mt-12 pt-8 border-t-4 border-dark text-center mb-6">
         <p
           className="text-dark text-xl md:text-2xl font-black uppercase tracking-wider bg-[#facc15] inline-block px-4 py-2 border-3 border-dark shadow-neo-sm">
-          Designed by <a href="https://fajarudinakbar.online" target="_blank"
-            className="underline hover:text-teal-700 transition-colors">fajarudinakbar.online</a>
+          Designed by <a href="https://fajarudinakbar.com" target="_blank"
+            className="underline hover:text-teal-700 transition-colors">fajarudinakbar.com</a>
         </p>
       </footer>
 
