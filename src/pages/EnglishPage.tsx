@@ -1,25 +1,9 @@
 import LessonCatalog from '../components/LessonCatalog'
 
 const EnglishPage = () => {
-  const currentUrl = new URL(window.location.href)
-  if (!currentUrl.pathname.endsWith('/')) currentUrl.pathname += '/'
-  const homeUrl = new URL('../', currentUrl).toString()
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <ol className="flex items-center gap-2 text-sm font-black uppercase tracking-wider">
-          <li>
-            <a href={homeUrl} className="inline-flex items-center gap-2 text-slate-600 hover:text-accent transition-colors">
-              <i className="fa-solid fa-house" aria-hidden="true"></i>
-              Home
-            </a>
-          </li>
-          <li className="text-slate-400" aria-hidden="true">/</li>
-          <li className="text-dark" aria-current="page">English</li>
-        </ol>
-      </nav>
-
       <section id="home" className="py-16 sm:py-20 md:py-32 overflow-hidden px-4">
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <div className="inline-block relative mb-8">
