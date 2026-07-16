@@ -4,10 +4,13 @@ import EnglishPage from './pages/EnglishPage'
 
 const metaConfig = {
     english: {
-        title: 'English Lessons & Resources | Fajarudin Akbar',
-        description: 'Explore free English lessons, open educational resources, and EdTech projects created by Fajarudin Akbar for students and educators.',
+        title: 'Digital Lessons Project by Teacher Fajar',
+        description: 'This page serves as a repository for my digital lessons, open educational resources (OER), and EdTech projects.',
+        siteName: 'Digital Lessons Project by Teacher Fajar',
         image: 'https://raw.githubusercontent.com/fajarudinakbar/Images/refs/heads/main/Fajarudin%20Akbar.png',
-        imageAlt: 'Fajarudin Akbar, English teacher and EdTech practitioner',
+        imageAlt: 'A professional headshot of Fajarudin Akbar',
+        imageWidth: '1200',
+        imageHeight: '630',
         url: window.location.origin,
     },
 } as const
@@ -38,9 +41,12 @@ const App = () => {
         document.title = meta.title
         setMetaContent('meta[name="description"]', meta.description)
         setMetaContent('meta[property="og:title"]', meta.title)
+        setMetaContent('meta[property="og:site_name"]', meta.siteName)
         setMetaContent('meta[property="og:description"]', meta.description)
         setMetaContent('meta[property="og:image"]', meta.image)
         setMetaContent('meta[property="og:image:alt"]', meta.imageAlt)
+        setMetaContent('meta[property="og:image:width"]', meta.imageWidth)
+        setMetaContent('meta[property="og:image:height"]', meta.imageHeight)
         setMetaContent('meta[property="og:url"]', meta.url)
         setMetaContent('meta[property="og:type"]', 'website')
         setMetaContent('meta[name="twitter:card"]', 'summary_large_image')
