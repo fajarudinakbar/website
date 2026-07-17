@@ -5,6 +5,8 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 const lessonsRoot = resolve(__dirname, 'src/listLesson')
+const virtualLessonsId = 'virtual:lessons'
+const resolvedVirtualLessonsId = `\0${virtualLessonsId}`
 
 const walkFiles = (directory: string): string[] => readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
   if (entry.name === '.git') return []
@@ -20,6 +22,30 @@ const injectTailwindStylesheet = (html: string, stylesheetUrl: string) => {
 
 const lessonsPlugin = (): Plugin => ({
   name: 'lessons-catalog',
+  resolveId(id) {
+    if (id === virtualLessonsId) return resolvedVirtualLessonsId
+  },
+  load(id) {
+    if (id !== resolvedVirtualLessonsId) return
+
+    const lessons = walkFiles(lessonsRoot)
+      .filter((file) => extname(file).toLowerCase() === '.html')
+      .map((file) => {
+        const relativePath = toPosixPath(relative(lessonsRoot, file))
+        const pathParts = relativePath.split('/')
+        return {
+          category: pathParts.length === 1 ? 'Uncategorized' : pathParts[0],
+          fileName: pathParts.at(-1) ?? relativePath,
+          modifiedAt: statSync(file).mtimeMs,
+          relativePath,
+          url: relativePath === 'index.html'
+            ? '/uncategorized/index.html'
+            : `/${relativePath.split('/').map(encodeURIComponent).join('/')}`,
+        }
+      })
+
+    return `export default ${JSON.stringify(lessons)}`
+  },
   configureServer(server) {
     server.middlewares.use((request, response, next) => {
       const publicPath = decodeURIComponent((request.url ?? '/').split('?')[0]).replace(/^\/+/, '')

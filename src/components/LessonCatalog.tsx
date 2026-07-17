@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import lessons, { type LessonManifestItem } from '../generated/lessons'
+import lessons, { type LessonManifestItem } from 'virtual:lessons'
 import { lessonCatalogColors, lessonPageSizes, lessonSortOptions } from '../config/lessonCatalog'
 
 type SortOption = (typeof lessonSortOptions)[number]['value']
@@ -28,12 +28,12 @@ const Pagination = ({ currentPage, onChange, totalPages }: PaginationProps) => {
   const pages = getPageNumbers(totalPages, currentPage)
 
   return (
-    <nav className="flex flex-wrap justify-center items-center gap-2" aria-label="Pagination">
+    <nav className="flex flex-wrap justify-end items-center gap-2" aria-label="Pagination">
       <button
         type="button"
         onClick={() => onChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="neo-btn bg-white px-3 py-2 text-xs uppercase disabled:opacity-40 disabled:pointer-events-none"
+        className="neo-btn cursor-pointer bg-white px-3 py-2 text-xs uppercase disabled:cursor-not-allowed disabled:opacity-40"
       >
         <i className="fa-solid fa-arrow-left mr-2" aria-hidden="true"></i> Previous
       </button>
@@ -45,7 +45,7 @@ const Pagination = ({ currentPage, onChange, totalPages }: PaginationProps) => {
             type="button"
             onClick={() => onChange(page)}
             aria-current={page === currentPage ? 'page' : undefined}
-            className={`border-3 border-dark min-w-10 h-10 font-black ${page === currentPage ? 'bg-highlight shadow-neo-sm' : 'bg-white'}`}
+            className={`cursor-pointer border-3 border-dark min-w-10 h-10 font-black ${page === currentPage ? 'bg-highlight shadow-neo-sm' : 'bg-white'}`}
           >
             {page}
           </button>
@@ -56,7 +56,7 @@ const Pagination = ({ currentPage, onChange, totalPages }: PaginationProps) => {
         type="button"
         onClick={() => onChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="neo-btn bg-white px-3 py-2 text-xs uppercase disabled:opacity-40 disabled:pointer-events-none"
+        className="neo-btn cursor-pointer bg-white px-3 py-2 text-xs uppercase disabled:cursor-not-allowed disabled:opacity-40"
       >
         Next <i className="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
       </button>
