@@ -4,6 +4,7 @@ declare module 'virtual:lessons' {
     fileName: string
     modifiedAt: number
     relativePath: string
+    title: string
     url: string
   }
 
