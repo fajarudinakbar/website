@@ -40,7 +40,7 @@ const Pagination = ({ currentPage, onChange, totalPages }: PaginationProps) => {
 
       {pages.map((page, index) => (
         <span key={page} className="contents">
-          {index > 0 && pages[index - 1] !== page - 1 && <span className="font-black px-1">…</span>}
+          {index > 0 && pages[index - 1] !== page - 1 && <span className="font-black px-1">...</span>}
           <button
             type="button"
             onClick={() => onChange(page)}
@@ -65,8 +65,8 @@ const Pagination = ({ currentPage, onChange, totalPages }: PaginationProps) => {
 }
 
 const PageSizeSelect = ({ value, onChange }: { value: PageSize; onChange: (size: PageSize) => void }) => (
-  <label className="block">
-    <span className="block text-xs font-black uppercase tracking-wider text-dark mb-2">Show data</span>
+  <label className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-xs font-black uppercase">
+    Show data
     <select
       value={value}
       onChange={(event) => onChange(event.target.value === 'all' ? 'all' : Number(event.target.value) as PageSize)}
@@ -78,8 +78,8 @@ const PageSizeSelect = ({ value, onChange }: { value: PageSize; onChange: (size:
 )
 
 const CategoryLessons = ({ category, items }: { category: string; items: LessonManifestItem[] }) => {
-  const [sort, setSort] = useState<SortOption>('newest')
-  const [pageSize, setPageSize] = useState<PageSize>(5)
+  const [sort, setSort] = useState('newest')
+  const [pageSize, setPageSize] = useState(5)
   const [currentPage, setCurrentPage] = useState(1)
 
   const sortedItems = useMemo(() => [...items].sort((first, second) => {
@@ -89,9 +89,7 @@ const CategoryLessons = ({ category, items }: { category: string; items: LessonM
   }), [items, sort])
 
   const totalPages = getTotalPages(sortedItems.length, pageSize)
-  const visibleItems = pageSize === 'all'
-    ? sortedItems
-    : sortedItems.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+  const visibleItems = pageSize === 'all' ? sortedItems : sortedItems.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
   useEffect(() => setCurrentPage(1), [sort, pageSize, items])
   useEffect(() => {
@@ -99,14 +97,12 @@ const CategoryLessons = ({ category, items }: { category: string; items: LessonM
   }, [currentPage, totalPages])
 
   return (
-    <div className="border-x-3 border-b-3 border-dark bg-white p-3 sm:p-5">
-      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-4 items-end pb-5 mb-5 border-b-2 border-slate-200">
-        <p className="font-black text-sm uppercase text-slate-600">
-          {items.length} lessons in this category
-        </p>
+    <div className="p-4 border-t-3 border-dark">
+      <p className="text-xs font-bold uppercase mb-4">{items.length} lessons in this category</p>
 
-        <label className="block">
-          <span className="block text-xs font-black uppercase tracking-wider text-dark mb-2">Sort lessons</span>
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <label className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-xs font-black uppercase">
+          Sort lessons
           <select
             value={sort}
             onChange={(event) => setSort(event.target.value as SortOption)}
@@ -119,32 +115,24 @@ const CategoryLessons = ({ category, items }: { category: string; items: LessonM
         <PageSizeSelect value={pageSize} onChange={setPageSize} />
       </div>
 
-      <div className="space-y-3">
+      <div className="flex flex-col gap-3">
         {visibleItems.map((lesson) => (
-          <article
-            key={lesson.relativePath}
-            className="border-2 border-dark p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:-translate-y-0.5 transition-transform"
-            style={{ backgroundColor: lessonCatalogColors.lessonHover }}
-          >
-            <div className="min-w-0">
-              <h3 className="font-black text-dark break-words">{formatName(lesson.fileName)}</h3>
-              {category !== 'Uncategorized' && (
-                <p className="text-xs text-slate-500 font-bold mt-1 break-all">{lesson.relativePath}</p>
-              )}
-            </div>
+          <div key={lesson.relativePath} className="border-3 border-dark p-4 bg-white hover:bg-lessonHover transition-colors">
+            <h3 className="font-black text-lg mb-1">{lesson.title || formatName(lesson.fileName)}</h3>
+            {category !== 'Uncategorized' && (
+              <p className="text-xs text-gray-500 mb-3 font-mono">{lesson.relativePath}</p>
+            )}
             <a
               href={lesson.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="neo-btn shrink-0 inline-flex items-center justify-center gap-2 bg-white text-dark px-4 py-2 text-xs uppercase"
+              className="neo-btn inline-block px-4 py-2 text-xs font-black uppercase border-3 border-dark bg-highlight hover:shadow-neo-sm transition-shadow"
             >
-              Show Lesson <i className="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+              Show Lesson
             </a>
-          </article>
+          </div>
         ))}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-4">
         <Pagination currentPage={currentPage} onChange={setCurrentPage} totalPages={totalPages} />
       </div>
     </div>
@@ -153,7 +141,7 @@ const CategoryLessons = ({ category, items }: { category: string; items: LessonM
 
 const LessonCatalog = () => {
   const [query, setQuery] = useState('')
-  const [categoryPageSize, setCategoryPageSize] = useState<PageSize>(5)
+  const [categoryPageSize, setCategoryPageSize] = useState(5)
   const [categoryPage, setCategoryPage] = useState(1)
 
   const categories = useMemo(() => {
@@ -163,7 +151,8 @@ const LessonCatalog = () => {
     lessons.forEach((lesson) => {
       const categoryMatches = lesson.category.toLocaleLowerCase().includes(normalizedQuery)
       const fileMatches = lesson.fileName.toLocaleLowerCase().includes(normalizedQuery)
-      if (normalizedQuery && !categoryMatches && !fileMatches) return
+      const titleMatches = lesson.title.toLocaleLowerCase().includes(normalizedQuery)
+      if (normalizedQuery && !categoryMatches && !fileMatches && !titleMatches) return
       const categoryItems = groups.get(lesson.category) ?? []
       categoryItems.push(lesson)
       groups.set(lesson.category, categoryItems)
@@ -177,9 +166,7 @@ const LessonCatalog = () => {
   }, [query])
 
   const totalCategoryPages = getTotalPages(categories.length, categoryPageSize)
-  const visibleCategories = categoryPageSize === 'all'
-    ? categories
-    : categories.slice((categoryPage - 1) * categoryPageSize, categoryPage * categoryPageSize)
+  const visibleCategories = categoryPageSize === 'all' ? categories : categories.slice((categoryPage - 1) * categoryPageSize, categoryPage * categoryPageSize)
 
   useEffect(() => setCategoryPage(1), [query, categoryPageSize])
   useEffect(() => {
@@ -187,73 +174,64 @@ const LessonCatalog = () => {
   }, [categoryPage, totalCategoryPages])
 
   return (
-    <section className="pb-16 sm:pb-24" aria-labelledby="lesson-catalog-title">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 text-center">
-          <span className="inline-block bg-accent text-white border-3 border-dark px-4 py-2 font-black uppercase text-xs shadow-neo-sm mb-5">Learning Repository</span>
-          <h2 id="lesson-catalog-title" className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tighter text-dark">Explore English Lessons</h2>
-          <p className="mt-4 text-slate-600 font-medium">Search and browse {lessons.length} interactive lesson files by category.</p>
+    <div>
+      <header className="mb-8">
+        <p className="text-xs font-black uppercase tracking-widest mb-2">Learning Repository</p>
+        <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-4">Explore English Lessons</h2>
+        <p className="text-sm font-bold">Search and browse {lessons.length} interactive lesson files by category.</p>
+      </header>
+
+      <div className="border-3 border-dark p-4 mb-6 bg-white">
+        <label className="block text-xs font-black uppercase mb-2">Search lessons</label>
+        <div className="relative">
+          <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true"></i>
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search by lesson or category..."
+            className="w-full border-3 border-dark bg-white pl-11 pr-4 py-3 font-bold outline-none focus:ring-4 focus:ring-highlight/60"
+          />
         </div>
 
-        <div className="neo-card p-4 sm:p-6 mb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 items-end">
-            <label className="block">
-              <span className="block text-xs font-black uppercase tracking-wider text-dark mb-2">Search lessons</span>
-              <span className="relative block">
-                <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" aria-hidden="true"></i>
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search by lesson or category..."
-                  className="w-full border-3 border-dark bg-white pl-11 pr-4 py-3 font-bold outline-none focus:ring-4 focus:ring-highlight/60"
-                />
+        <div className="flex justify-between items-center mt-4 pt-4 border-t-3 border-dark">
+          <span className="text-xs font-black uppercase">{categories.length} categories found</span>
+          <span className="text-xs font-black uppercase">Category page {categoryPage} of {totalCategoryPages}</span>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {visibleCategories.map(([category, categoryLessons], categoryIndex) => (
+          <details key={category} className={`border-3 border-dark ${categoryIndex > 0 ? '' : ''}`}>
+            <summary className="flex items-center justify-between p-4 cursor-pointer font-black uppercase text-lg" style={{ backgroundColor: lessonCatalogColors.accordion[categoryIndex % lessonCatalogColors.accordion.length] }}>
+              <span className="flex items-center gap-3">
+                <i className="fa-solid fa-folder" aria-hidden="true"></i>
+                {formatName(category)}
               </span>
-            </label>
-            <PageSizeSelect value={categoryPageSize} onChange={setCategoryPageSize} />
-          </div>
+              <span className="flex items-center gap-3">
+                <span className="border-3 border-dark bg-white px-2 py-0.5 text-sm">{categoryLessons.length}</span>
+                <span className="text-xs">Open Details <i className="fa-solid fa-chevron-down"></i></span>
+              </span>
+            </summary>
+            <CategoryLessons category={category} items={categoryLessons} />
+          </details>
+        ))}
+      </div>
 
-          <div className="mt-5 pt-4 border-t-2 border-slate-200 flex flex-wrap justify-between gap-2 text-xs font-black uppercase tracking-wider text-slate-600">
-            <span>{categories.length} categories found</span>
-            <span>Category page {categoryPage} of {totalCategoryPages}</span>
-          </div>
+      {categories.length === 0 && (
+        <div className="border-3 border-dark p-8 text-center bg-white">
+          <h3 className="font-black text-xl mb-2">No lessons found</h3>
+          <p className="text-sm">Try another lesson name or category.</p>
         </div>
+      )}
 
-        <div className="space-y-5">
-          {visibleCategories.map(([category, categoryLessons], categoryIndex) => (
-            <details key={category} className="lesson-accordion group" open={query.trim().length > 0}>
-              <summary
-                className="cursor-pointer list-none border-3 border-dark shadow-neo-sm px-4 sm:px-6 py-4 flex items-center justify-between gap-4"
-                style={{ backgroundColor: lessonCatalogColors.accordion[categoryIndex % lessonCatalogColors.accordion.length] }}
-              >
-                <span className="min-w-0 flex items-center gap-3">
-                  <i className="fa-solid fa-folder-open text-xl" aria-hidden="true"></i>
-                  <span className="font-black uppercase tracking-tight truncate">{formatName(category)}</span>
-                  <span className="shrink-0 bg-white border-2 border-dark px-2 py-0.5 text-xs font-black">{categoryLessons.length}</span>
-                </span>
-                <span className="shrink-0 flex items-center gap-2 text-xs sm:text-sm font-black uppercase">
-                  <span className="hidden sm:inline">Open Details</span>
-                  <i className="fa-solid fa-chevron-down transition-transform duration-200 group-open:rotate-180" aria-hidden="true"></i>
-                </span>
-              </summary>
-              <CategoryLessons category={category} items={categoryLessons} />
-            </details>
-          ))}
-        </div>
-
-        {categories.length === 0 && (
-          <div className="neo-card p-8 sm:p-12 text-center bg-white">
-            <i className="fa-solid fa-file-circle-xmark text-4xl text-slate-400 mb-4" aria-hidden="true"></i>
-            <h3 className="text-xl font-black uppercase text-dark">No lessons found</h3>
-            <p className="mt-2 text-slate-600 font-medium">Try another lesson name or category.</p>
-          </div>
-        )}
-
-        <div className="mt-10">
+      <div className="mt-6">
+        <PageSizeSelect value={categoryPageSize} onChange={setCategoryPageSize} />
+        <div className="mt-4">
           <Pagination currentPage={categoryPage} onChange={setCategoryPage} totalPages={totalCategoryPages} />
         </div>
       </div>
-    </section>
+    </div>
   )
 }
 
