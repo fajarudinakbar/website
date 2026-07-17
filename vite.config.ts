@@ -15,9 +15,15 @@ const walkFiles = (directory: string): string[] => readdirSync(directory, { with
 })
 
 const toPosixPath = (path: string) => path.split(sep).join('/')
+
 const injectTailwindStylesheet = (html: string, stylesheetUrl: string) => {
   const stylesheet = `<link rel="stylesheet" href="${stylesheetUrl}" data-local-tailwind>`
-  return html.includes('</head>') ? html.replace('</head>', `  ${stylesheet}\n</head>`) : `${stylesheet}\n${html}`
+  return html.includes('</head>') ? html.replace('</head>', ` ${stylesheet}\n</head>`) : `${stylesheet}\n${html}`
+}
+
+const extractTitle = (html: string): string => {
+  const match = html.match(/<title[^>]*>([^<]*)<\/title>/i)
+  return match ? match[1].trim() : ''
 }
 
 const lessonsPlugin = (): Plugin => ({
@@ -27,23 +33,24 @@ const lessonsPlugin = (): Plugin => ({
   },
   load(id) {
     if (id !== resolvedVirtualLessonsId) return
-
     const lessons = walkFiles(lessonsRoot)
       .filter((file) => extname(file).toLowerCase() === '.html')
       .map((file) => {
         const relativePath = toPosixPath(relative(lessonsRoot, file))
         const pathParts = relativePath.split('/')
+        const html = readFileSync(file, 'utf8')
+        const title = extractTitle(html)
         return {
           category: pathParts.length === 1 ? 'Uncategorized' : pathParts[0],
           fileName: pathParts.at(-1) ?? relativePath,
           modifiedAt: statSync(file).mtimeMs,
           relativePath,
+          title,
           url: relativePath === 'index.html'
             ? '/uncategorized/index.html'
             : `/${relativePath.split('/').map(encodeURIComponent).join('/')}`,
         }
       })
-
     return `export default ${JSON.stringify(lessons)}`
   },
   configureServer(server) {
@@ -52,7 +59,6 @@ const lessonsPlugin = (): Plugin => ({
       const requestedPath = publicPath === 'uncategorized/index.html' ? 'index.html' : publicPath
       const absolutePath = resolve(lessonsRoot, requestedPath)
       if (absolutePath !== join(lessonsRoot, 'index.html') && !absolutePath.startsWith(`${lessonsRoot}${sep}`)) return next()
-
       try {
         const stats = statSync(absolutePath)
         if (!stats.isFile()) return next()
@@ -60,8 +66,8 @@ const lessonsPlugin = (): Plugin => ({
         const contentType = extension === '.html'
           ? 'text/html; charset=utf-8'
           : extension === '.wav'
-            ? 'audio/wav'
-            : 'application/octet-stream'
+          ? 'audio/wav'
+          : 'application/octet-stream'
         response.setHeader('Content-Type', contentType)
         if (extension === '.html') {
           response.end(injectTailwindStylesheet(readFileSync(absolutePath, 'utf8'), '/src/index.css'))
@@ -76,7 +82,6 @@ const lessonsPlugin = (): Plugin => ({
   generateBundle(_options, bundle) {
     const stylesheet = Object.values(bundle).find((output) => output.type === 'asset' && output.fileName.endsWith('.css'))
     const stylesheetUrl = stylesheet ? `/${stylesheet.fileName}` : '/src/index.css'
-
     walkFiles(lessonsRoot).forEach((file) => {
       const relativePath = toPosixPath(relative(lessonsRoot, file))
       const extension = extname(file).toLowerCase()
