@@ -37,7 +37,6 @@ const Pagination = ({ currentPage, onChange, totalPages }: PaginationProps) => {
       >
         <i className="fa-solid fa-arrow-left mr-2" aria-hidden="true"></i> Previous
       </button>
-
       {pages.map((page, index) => (
         <span key={page} className="contents">
           {index > 0 && pages[index - 1] !== page - 1 && <span className="font-black px-1">...</span>}
@@ -51,7 +50,6 @@ const Pagination = ({ currentPage, onChange, totalPages }: PaginationProps) => {
           </button>
         </span>
       ))}
-
       <button
         type="button"
         onClick={() => onChange(Math.min(totalPages, currentPage + 1))}
@@ -65,8 +63,8 @@ const Pagination = ({ currentPage, onChange, totalPages }: PaginationProps) => {
 }
 
 const PageSizeSelect = ({ value, onChange }: { value: PageSize; onChange: (size: PageSize) => void }) => (
-  <label className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-xs font-black uppercase">
-    Show data
+  <label className="flex flex-col gap-1">
+    <span className="text-xs font-black uppercase">Show data</span>
     <select
       value={value}
       onChange={(event) => onChange(event.target.value === 'all' ? 'all' : Number(event.target.value) as PageSize)}
@@ -97,12 +95,11 @@ const CategoryLessons = ({ category, items }: { category: string; items: LessonM
   }, [currentPage, totalPages])
 
   return (
-    <div className="p-4 border-t-3 border-dark">
-      <p className="text-xs font-bold uppercase mb-4">{items.length} lessons in this category</p>
-
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <label className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-xs font-black uppercase">
-          Sort lessons
+    <div className="p-4 flex flex-col gap-4">
+      <div className="flex flex-wrap justify-between items-center gap-2">
+        <p className="text-sm font-bold">{items.length} lessons in this category</p>
+        <label className="flex flex-col gap-1">
+          <span className="text-xs font-black uppercase">Sort lessons</span>
           <select
             value={sort}
             onChange={(event) => setSort(event.target.value as SortOption)}
@@ -111,28 +108,23 @@ const CategoryLessons = ({ category, items }: { category: string; items: LessonM
             {lessonSortOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
           </select>
         </label>
-
+      </div>
+      {visibleItems.map((lesson) => (
+        <div key={lesson.fileName} className="border-3 border-dark bg-white p-4 flex flex-col gap-2 shadow-neo-sm">
+          <h3 className="font-black text-lg">{lesson.title || formatName(lesson.fileName)}</h3>
+          {category !== 'Uncategorized' && (
+            <p className="text-xs text-gray-500 font-mono">{lesson.relativePath}</p>
+          )}
+          <a
+            href={lesson.url}
+            className="neo-btn cursor-pointer bg-highlight border-3 border-dark px-4 py-2 text-sm font-black uppercase self-start shadow-neo-sm hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
+          >
+            Show Lesson
+          </a>
+        </div>
+      ))}
+      <div className="flex flex-wrap justify-between items-center gap-2">
         <PageSizeSelect value={pageSize} onChange={setPageSize} />
-      </div>
-
-      <div className="flex flex-col gap-3">
-        {visibleItems.map((lesson) => (
-          <div key={lesson.relativePath} className="border-3 border-dark p-4 bg-white hover:bg-lessonHover transition-colors">
-            <h3 className="font-black text-lg mb-1">{lesson.title || formatName(lesson.fileName)}</h3>
-            {category !== 'Uncategorized' && (
-              <p className="text-xs text-gray-500 mb-3 font-mono">{lesson.relativePath}</p>
-            )}
-            <a
-              href={lesson.url}
-              className="neo-btn inline-block px-4 py-2 text-xs font-black uppercase border-3 border-dark bg-highlight hover:shadow-neo-sm transition-shadow"
-            >
-              Show Lesson
-            </a>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-4">
         <Pagination currentPage={currentPage} onChange={setCurrentPage} totalPages={totalPages} />
       </div>
     </div>
@@ -145,13 +137,13 @@ const LessonCatalog = () => {
   const [categoryPage, setCategoryPage] = useState(1)
 
   const categories = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase()
+    const normalizedQuery = query.trim().toLocaleLowerCase().replace(/[-_]+/g, ' ')
     const groups = new Map<string, LessonManifestItem[]>()
 
     lessons.forEach((lesson) => {
       const categoryMatches = lesson.category.toLocaleLowerCase().includes(normalizedQuery)
-      const fileMatches = lesson.fileName.toLocaleLowerCase().includes(normalizedQuery)
-      const titleMatches = lesson.title.toLocaleLowerCase().includes(normalizedQuery)
+      const fileMatches = lesson.fileName.toLocaleLowerCase().replace(/[-_]+/g, ' ').includes(normalizedQuery)
+      const titleMatches = lesson.title.toLocaleLowerCase().replace(/[-_]+/g, ' ').includes(normalizedQuery)
       if (normalizedQuery && !categoryMatches && !fileMatches && !titleMatches) return
       const categoryItems = groups.get(lesson.category) ?? []
       categoryItems.push(lesson)
@@ -174,64 +166,64 @@ const LessonCatalog = () => {
   }, [categoryPage, totalCategoryPages])
 
   return (
-    <div>
-      <header className="mb-8">
-        <p className="text-xs font-black uppercase tracking-widest mb-2">Learning Repository</p>
-        <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-4">Explore English Lessons</h2>
-        <p className="text-sm font-bold">Search and browse {lessons.length} interactive lesson files by category.</p>
-      </header>
+    <main>
+      <div className="text-center mb-8">
+        <span className="inline-block bg-primary text-white text-xs font-black uppercase px-4 py-2 mb-4">Learning Repository</span>
+        <h1 className="text-4xl sm:text-5xl font-black uppercase">Explore English Lessons</h1>
+        <p className="mt-2 text-gray-600">Search and browse {lessons.length} interactive lesson files by category.</p>
+      </div>
 
-      <div className="border-3 border-dark p-4 mb-6 bg-white">
-        <label className="block text-xs font-black uppercase mb-2">Search lessons</label>
-        <div className="relative">
-          <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true"></i>
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search by lesson or category..."
-            className="w-full border-3 border-dark bg-white pl-11 pr-4 py-3 font-bold outline-none focus:ring-4 focus:ring-highlight/60"
-          />
-        </div>
-
-        <div className="flex justify-between items-center mt-4 pt-4 border-t-3 border-dark">
-          <span className="text-xs font-black uppercase">{categories.length} categories found</span>
-          <span className="text-xs font-black uppercase">Category page {categoryPage} of {totalCategoryPages}</span>
+      <div className="border-3 border-dark bg-white p-4 mb-6 flex flex-col gap-4">
+        <label className="flex flex-col gap-1">
+          <span className="text-xs font-black uppercase">Search lessons</span>
+          <div className="relative">
+            <i className="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden="true"></i>
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search by lesson or category..."
+              className="w-full border-3 border-dark bg-white pl-11 pr-4 py-3 font-bold outline-none focus:ring-4 focus:ring-highlight/60"
+            />
+          </div>
+        </label>
+        <div className="flex flex-wrap justify-between items-center gap-2">
+          <p className="text-sm font-bold">{categories.length} categories found</p>
+          <p className="text-sm font-bold">Category page {categoryPage} of {totalCategoryPages}</p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        {visibleCategories.map(([category, categoryLessons], categoryIndex) => (
-          <details key={category} className={`border-3 border-dark ${categoryIndex > 0 ? '' : ''}`}>
-            <summary className="flex items-center justify-between p-4 cursor-pointer font-black uppercase text-lg" style={{ backgroundColor: lessonCatalogColors.accordion[categoryIndex % lessonCatalogColors.accordion.length] }}>
-              <span className="flex items-center gap-3">
-                <i className="fa-solid fa-folder" aria-hidden="true"></i>
-                {formatName(category)}
-              </span>
-              <span className="flex items-center gap-3">
-                <span className="border-3 border-dark bg-white px-2 py-0.5 text-sm">{categoryLessons.length}</span>
-                <span className="text-xs">Open Details <i className="fa-solid fa-chevron-down"></i></span>
-              </span>
-            </summary>
-            <CategoryLessons category={category} items={categoryLessons} />
-          </details>
-        ))}
-      </div>
+      {visibleCategories.map(([category, categoryLessons], categoryIndex) => (
+        <details
+          key={category}
+          className={`border-3 border-dark mb-4 ${categoryIndex > 0 ? '' : ''}`}
+        >
+          <summary className={`flex justify-between items-center p-4 cursor-pointer font-black uppercase text-lg ${lessonCatalogColors[categoryIndex % lessonCatalogColors.length]}`}>
+            <span className="flex items-center gap-3">
+              <i className="fa-solid fa-folder" aria-hidden="true"></i>
+              {formatName(category)}
+            </span>
+            <span className="flex items-center gap-3">
+              <span className="border-3 border-dark bg-white text-dark text-sm px-2 py-1">{categoryLessons.length}</span>
+              <span className="text-sm">Open Details <i className="fa-solid fa-chevron-down"></i></span>
+            </span>
+          </summary>
+          <CategoryLessons category={category} items={categoryLessons} />
+        </details>
+      ))}
 
       {categories.length === 0 && (
-        <div className="border-3 border-dark p-8 text-center bg-white">
+        <div className="border-3 border-dark bg-white p-8 text-center">
           <h3 className="font-black text-xl mb-2">No lessons found</h3>
-          <p className="text-sm">Try another lesson name or category.</p>
+          <p>Try another lesson name or category.</p>
         </div>
       )}
 
-      <div className="mt-6">
+      <div className="flex flex-wrap justify-between items-center gap-2 mt-4">
         <PageSizeSelect value={categoryPageSize} onChange={setCategoryPageSize} />
-        <div className="mt-4">
-          <Pagination currentPage={categoryPage} onChange={setCategoryPage} totalPages={totalCategoryPages} />
-        </div>
+        <Pagination currentPage={categoryPage} onChange={setCategoryPage} totalPages={totalCategoryPages} />
       </div>
-    </div>
+    </main>
   )
 }
 
