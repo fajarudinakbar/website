@@ -5,8 +5,8 @@ import { lessonCatalogColors, lessonPageSizes, lessonSortOptions } from '../conf
 type SortOption = (typeof lessonSortOptions)[number]['value']
 type PageSize = (typeof lessonPageSizes)[number]
 
-const BORDER = '3px solid #0F172A'
-const SHADOW = '4px 4px 0px #0F172A'
+const BORDER = '2px solid #0F172A'
+const SHADOW = '3px 3px 0px #0F172A'
 const SHADOW_SM = '2px 2px 0px #0F172A'
 
 const formatName = (name: string) =>
@@ -114,7 +114,7 @@ const CategoryLessons = ({ category, items, accentColor }: { category: string; i
   }, [currentPage, totalPages])
 
   return (
-    <div className="space-y-4 p-4" style={{ backgroundColor: lessonCatalogColors.lessonHover }}>
+    <div className="space-y-4 p-4" style={{ backgroundColor: '#F8FAFC' }}>
       <p className="text-xs font-black uppercase">{items.length} LESSONS IN THIS CATEGORY</p>
       <div className="flex flex-wrap gap-4">
         <label className="flex flex-col gap-1">
@@ -122,7 +122,7 @@ const CategoryLessons = ({ category, items, accentColor }: { category: string; i
           <select
             value={sort}
             onChange={(event) => setSort(event.target.value as SortOption)}
-            style={{ border: BORDER, boxShadow: SHADOW_SM, backgroundColor: lessonCatalogColors.controls }}
+            style={{ border: BORDER, boxShadow: SHADOW_SM, backgroundColor: '#FFFFFF' }}
             className="w-full sm:w-40 px-4 py-2 font-black uppercase text-sm outline-none"
           >
             {lessonSortOptions.map((option) => <option key={option.value} value={option.value}>{option.label.toUpperCase()}</option>)}
@@ -134,17 +134,19 @@ const CategoryLessons = ({ category, items, accentColor }: { category: string; i
         {visibleItems.map((lesson) => (
           <div
             key={lesson.url}
-            style={{ border: BORDER, boxShadow: SHADOW, backgroundColor: lessonCatalogColors.controls }}
+            style={{ border: BORDER, boxShadow: SHADOW, backgroundColor: '#FFFFFF' }}
             className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
           >
             <div>
               <p className="font-black uppercase text-sm">{lesson.title || formatName(lesson.fileName)}</p>
               {category !== 'Uncategorized' && (
-                <p className="text-xs font-bold mt-1 opacity-60">{lesson.relativePath}</p>
+                <p className="text-xs font-bold mt-1" style={{ color: '#475569' }}>{lesson.relativePath}</p>
               )}
             </div>
             <a
               href={lesson.url}
+              target="_blank"
+              rel="noopener noreferrer"
               style={{ border: BORDER, boxShadow: SHADOW_SM, backgroundColor: accentColor }}
               className="px-4 py-2 text-xs font-black uppercase shrink-0 text-center"
             >
@@ -164,12 +166,13 @@ const LessonCatalog = () => {
   const [categoryPage, setCategoryPage] = useState(1)
 
   const categories = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase()
+    const normalizedQuery = query.trim().toLocaleLowerCase().replace(/[-_]+/g, ' ')
     const groups = new Map<string, LessonManifestItem[]>()
     lessons.forEach((lesson) => {
       const categoryMatches = lesson.category.toLocaleLowerCase().includes(normalizedQuery)
-      const fileMatches = lesson.fileName.toLocaleLowerCase().includes(normalizedQuery)
-      if (normalizedQuery && !categoryMatches && !fileMatches) return
+      const fileMatches = lesson.fileName.toLocaleLowerCase().replace(/[-_]+/g, ' ').includes(normalizedQuery)
+      const titleMatches = lesson.title.toLocaleLowerCase().replace(/[-_]+/g, ' ').includes(normalizedQuery)
+      if (normalizedQuery && !categoryMatches && !fileMatches && !titleMatches) return
       const categoryItems = groups.get(lesson.category) ?? []
       categoryItems.push(lesson)
       groups.set(lesson.category, categoryItems)
@@ -197,26 +200,26 @@ const LessonCatalog = () => {
       <header className="mb-6">
         <p className="text-xs font-black uppercase tracking-widest" style={{ color: lessonCatalogColors.accordion[0] }}>LEARNING REPOSITORY</p>
         <h1 className="text-4xl font-black mt-1 uppercase">Explore English Lessons</h1>
-        <p className="mt-2 font-bold opacity-70">
+        <p className="mt-2 font-bold" style={{ color: '#1E293B' }}>
           Search and browse {lessons.length} interactive lesson files by category.
         </p>
       </header>
 
       <div className="relative">
         <label className="sr-only" htmlFor="lesson-search">Search lessons</label>
-        <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-dark" aria-hidden="true"></i>
+        <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2" style={{ color: '#0F172A' }} aria-hidden="true"></i>
         <input
           id="lesson-search"
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="SEARCH BY LESSON OR CATEGORY..."
+          placeholder="SEARCH BY LESSON TITLE, CATEGORY, OR FILE NAME..."
           style={{
             border: BORDER,
             boxShadow: SHADOW,
             backgroundColor: lessonCatalogColors.accordion[0],
           }}
-          className="w-full pl-11 pr-4 py-3 font-black uppercase text-sm outline-none placeholder:opacity-60"
+          className="w-full pl-11 pr-4 py-3 font-black uppercase text-sm outline-none placeholder:text-dark"
         />
       </div>
 
@@ -240,7 +243,7 @@ const LessonCatalog = () => {
                 <span className="font-black uppercase">{formatName(category)}</span>
                 <div className="flex items-center gap-3">
                   <span
-                    style={{ border: BORDER, backgroundColor: lessonCatalogColors.controls }}
+                    style={{ border: BORDER, backgroundColor: '#FFFFFF' }}
                     className="px-2 py-0.5 text-xs font-black uppercase"
                   >
                     {categoryLessons.length}
