@@ -197,7 +197,7 @@ const LessonCatalog = () => {
 
   return (
     <main className="max-w-5xl mx-auto px-4 py-8">
-      <header className="mb-6">
+      <header className="mb-6 p-6" style={{ backgroundColor: '#FFFFFF', border: BORDER, boxShadow: SHADOW }}>
         <p className="text-xs font-black uppercase tracking-widest" style={{ color: lessonCatalogColors.accordion[0] }}>LEARNING REPOSITORY</p>
         <h1 className="text-4xl font-black mt-1 uppercase">Explore English Lessons</h1>
         <p className="mt-2 font-bold" style={{ color: '#1E293B' }}>
