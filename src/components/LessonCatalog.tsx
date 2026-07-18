@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import lessons, { type LessonManifestItem } from 'virtual:lessons'
-import { lessonCatalogColors, lessonPageSizes, lessonSortOptions } from '../config/lessonCatalog'
+import { lessonPageSizes, lessonSortOptions } from '../config/lessonCatalog'
 
 type SortOption = (typeof lessonSortOptions)[number]['value']
 type PageSize = (typeof lessonPageSizes)[number]
@@ -37,8 +37,7 @@ const Pagination = ({ currentPage, onChange, totalPages }: PaginationProps) => {
         disabled={currentPage === 1}
         className="neo-btn cursor-pointer bg-white px-3 py-2 text-xs uppercase disabled:cursor-not-allowed disabled:opacity-40"
       >
-        <i className="fa-solid fa-arrow-left mr-2" aria-hidden="true"></i>
-        Previous
+        <i className="fa-solid fa-arrow-left mr-2" aria-hidden="true"></i> Previous
       </button>
       {pages.map((page, index) => (
         <span key={page} className="contents">
@@ -47,9 +46,7 @@ const Pagination = ({ currentPage, onChange, totalPages }: PaginationProps) => {
             type="button"
             onClick={() => onChange(page)}
             aria-current={page === currentPage ? 'page' : undefined}
-            className={`cursor-pointer border-3 border-dark min-w-10 h-10 font-black ${
-              page === currentPage ? 'bg-highlight shadow-neo-sm' : 'bg-white'
-            }`}
+            className={`cursor-pointer border-3 border-dark min-w-10 h-10 font-black ${page === currentPage ? 'bg-highlight shadow-neo-sm' : 'bg-white'}`}
           >
             {page}
           </button>
@@ -104,9 +101,9 @@ const CategoryLessons = ({ category, items }: { category: string; items: LessonM
   }, [currentPage, totalPages])
 
   return (
-    <div>
-      <p>{items.length} lessons in this category</p>
-      <div>
+    <div className="space-y-4">
+      <p className="text-sm font-bold">{items.length} lessons in this category</p>
+      <div className="flex flex-wrap gap-4">
         <label className="flex flex-col gap-1">
           <span className="text-xs font-black uppercase">Sort lessons</span>
           <select
@@ -117,16 +114,23 @@ const CategoryLessons = ({ category, items }: { category: string; items: LessonM
             {lessonSortOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
           </select>
         </label>
-        <PageSizeSelect value={pageSize} onChange={(size) => { setPageSize(size); setCurrentPage(1) }} />
+        <PageSizeSelect value={pageSize} onChange={setPageSize} />
       </div>
-      <div>
+      <div className="space-y-2">
         {visibleItems.map((lesson) => (
-          <div key={lesson.url}>
-            <h3>{lesson.title || formatName(lesson.fileName)}</h3>
-            {category !== 'Uncategorized' && (
-              <p>{lesson.relativePath}</p>
-            )}
-            <a href={lesson.url}>Show Lesson</a>
+          <div key={lesson.url} className="border-3 border-dark bg-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <p className="font-black">{lesson.title || formatName(lesson.fileName)}</p>
+              {category !== 'Uncategorized' && (
+                <p className="text-xs text-dark/60 mt-1">{lesson.relativePath}</p>
+              )}
+            </div>
+            <a
+              href={lesson.url}
+              className="neo-btn cursor-pointer bg-highlight px-4 py-2 text-xs font-black uppercase shrink-0"
+            >
+              Show Lesson
+            </a>
           </div>
         ))}
       </div>
@@ -141,13 +145,12 @@ const LessonCatalog = () => {
   const [categoryPage, setCategoryPage] = useState(1)
 
   const categories = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase().replace(/[-_]+/g, ' ')
+    const normalizedQuery = query.trim().toLocaleLowerCase()
     const groups = new Map<string, LessonManifestItem[]>()
     lessons.forEach((lesson) => {
       const categoryMatches = lesson.category.toLocaleLowerCase().includes(normalizedQuery)
-      const fileMatches = lesson.fileName.toLocaleLowerCase().replace(/[-_]+/g, ' ').includes(normalizedQuery)
-      const titleMatches = lesson.title.toLocaleLowerCase().replace(/[-_]+/g, ' ').includes(normalizedQuery)
-      if (normalizedQuery && !categoryMatches && !fileMatches && !titleMatches) return
+      const fileMatches = lesson.fileName.toLocaleLowerCase().includes(normalizedQuery)
+      if (normalizedQuery && !categoryMatches && !fileMatches) return
       const categoryItems = groups.get(lesson.category) ?? []
       categoryItems.push(lesson)
       groups.set(lesson.category, categoryItems)
@@ -196,10 +199,10 @@ const LessonCatalog = () => {
         <p className="text-sm">Category page {categoryPage} of {totalCategoryPages}</p>
       </div>
       <div className="mt-4 space-y-4">
-        {visibleCategories.map(([category, categoryLessons], categoryIndex) => (
+        {visibleCategories.map(([category, categoryLessons]) => (
           <details
             key={category}
-            className={`border-3 border-dark ${lessonCatalogColors[categoryIndex % lessonCatalogColors.length] ?? ''}`}
+            className="border-3 border-dark"
           >
             <summary className="flex items-center justify-between p-4 cursor-pointer font-black text-lg">
               {formatName(category)}
@@ -219,7 +222,7 @@ const LessonCatalog = () => {
         )}
       </div>
       <div className="mt-6 flex flex-wrap justify-between items-center gap-4">
-        <PageSizeSelect value={categoryPageSize} onChange={(size) => { setCategoryPageSize(size); setCategoryPage(1) }} />
+        <PageSizeSelect value={categoryPageSize} onChange={setCategoryPageSize} />
         <Pagination currentPage={categoryPage} onChange={setCategoryPage} totalPages={totalCategoryPages} />
       </div>
     </main>
