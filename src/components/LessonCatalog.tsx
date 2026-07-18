@@ -217,7 +217,7 @@ const LessonCatalog = () => {
           style={{
             border: BORDER,
             boxShadow: SHADOW,
-            backgroundColor: lessonCatalogColors.accordion[0],
+            backgroundColor: '#FFFFFF',
           }}
           className="w-full pl-11 pr-4 py-3 font-black uppercase text-sm outline-none placeholder:text-dark"
         />
