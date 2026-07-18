@@ -76,7 +76,7 @@ const PageSizeSelect = ({ value, onChange }: { value: PageSize; onChange: (size:
 )
 
 const CategoryLessons = ({ category, items, pageSize }: { category: string; items: LessonManifestItem[]; pageSize: PageSize }) => {
-  const [sort, setSort] = useState('newest')
+  const [sort, setSort] = useState<SortOption>('newest')
   
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -133,7 +133,7 @@ const CategoryLessons = ({ category, items, pageSize }: { category: string; item
 
 const LessonCatalog = () => {
   const [query, setQuery] = useState('')
-  const [categoryPageSize, setCategoryPageSize] = useState(5)
+  const [categoryPageSize, setCategoryPageSize] = useState<PageSize>(5)
   const [categoryPage, setCategoryPage] = useState(1)
 
   const categories = useMemo(() => {
