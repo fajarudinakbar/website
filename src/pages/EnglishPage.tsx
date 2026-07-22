@@ -80,7 +80,7 @@ const EnglishPage = () => {
       </footer>
 
       <a
-        href="/kursus"
+        href="/kursus" target="_blank" rel="noopener noreferrer"
         className="exclusive-class-float neo-btn fixed bottom-5 right-5 sm:bottom-7 sm:right-7 z-50 inline-flex items-center gap-3 bg-highlight text-dark px-4 py-3 sm:px-6 sm:py-4 text-xs sm:text-sm font-black uppercase tracking-wide hover:bg-white"
         aria-label="Open Exclusive English Class page"
       >
